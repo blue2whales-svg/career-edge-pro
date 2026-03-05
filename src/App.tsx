@@ -6,6 +6,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import ServicesPage from "./pages/ServicesPage";
+import ScholarshipsPage from "./pages/ScholarshipsPage";
+import PricingPage from "./pages/PricingPage";
+import JobsPage from "./pages/JobsPage";
+import HowItWorksPage from "./pages/HowItWorksPage";
+import AboutPage from "./pages/AboutPage";
+import OrderPage from "./pages/OrderPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,14 +27,13 @@ const App = () => (
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
-          {/* Placeholder routes — pages to be built in next phases */}
-          <Route path="/services" element={<LandingPage />} />
-          <Route path="/scholarships" element={<LandingPage />} />
-          <Route path="/pricing" element={<LandingPage />} />
-          <Route path="/jobs" element={<LandingPage />} />
-          <Route path="/how-it-works" element={<LandingPage />} />
-          <Route path="/order" element={<LandingPage />} />
-          <Route path="/about" element={<LandingPage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/scholarships" element={<ScholarshipsPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/jobs" element={<JobsPage />} />
+          <Route path="/how-it-works" element={<HowItWorksPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/order" element={<OrderPage />} />
           <Route path="/portal" element={<LandingPage />} />
           <Route path="/admin" element={<LandingPage />} />
           <Route path="*" element={<NotFound />} />
