@@ -10,78 +10,60 @@ const fadeUp = {
   }),
 };
 
-const COUNTRY_FLAGS = [
-  { flag: "🇳🇬", code: "NG", name: "Nigeria" },
-  { flag: "🇬🇧", code: "GB", name: "United Kingdom" },
-  { flag: "🇺🇸", code: "US", name: "United States" },
-  { flag: "🇦🇪", code: "AE", name: "UAE" },
-  { flag: "🇰🇪", code: "KE", name: "Kenya" },
-  { flag: "🇿🇦", code: "ZA", name: "South Africa" },
-  { flag: "🇮🇳", code: "IN", name: "India" },
-  { flag: "🇬🇭", code: "GH", name: "Ghana" },
-  { flag: "🇩🇪", code: "DE", name: "Germany" },
-  { flag: "🇨🇦", code: "CA", name: "Canada" },
-  { flag: "🇦🇺", code: "AU", name: "Australia" },
-  { flag: "🇸🇦", code: "SA", name: "Saudi Arabia" },
-  { flag: "🇵🇰", code: "PK", name: "Pakistan" },
-  { flag: "🇧🇷", code: "BR", name: "Brazil" },
-  { flag: "🇵🇭", code: "PH", name: "Philippines" },
-];
-
 const TESTIMONIALS = [
   {
     name: "Emeka O.",
     location: "Lagos",
-    flag: "🇳🇬",
+    countryCode: "ng",
     text: "I ordered at 9pm and had my CV by midnight. Interview invite within a week.",
     outcome: "Hired as Senior Engineer",
   },
   {
     name: "Amina D.",
     location: "Nairobi",
-    flag: "🇰🇪",
+    countryCode: "ke",
     text: "My Chevening essays were powerful and authentic. I got the scholarship.",
     outcome: "Chevening Scholar 2024",
   },
   {
     name: "Sarah K.",
     location: "London",
-    flag: "🇬🇧",
+    countryCode: "gb",
     text: "The ATS CV got me past three companies I'd failed before.",
     outcome: "Joined Big 4 Consulting",
   },
   {
     name: "Khalid M.",
     location: "Dubai",
-    flag: "🇦🇪",
+    countryCode: "ae",
     text: "Executive quality. Worth every dirham. My CV commands attention now.",
     outcome: "VP of Operations",
   },
   {
     name: "Ravi P.",
     location: "Mumbai",
-    flag: "🇮🇳",
+    countryCode: "in",
     text: "My Fulbright personal statement was exceptional. I'm going to the US.",
     outcome: "Fulbright Scholar",
   },
   {
     name: "Marcus T.",
     location: "Houston",
-    flag: "🇺🇸",
+    countryCode: "us",
     text: "Fast, professional. My LinkedIn connections doubled after the rewrite.",
     outcome: "Director of Sales",
   },
   {
     name: "Grace A.",
     location: "Accra",
-    flag: "🇬🇭",
+    countryCode: "gh",
     text: "Commonwealth Scholarship essay — accepted first try. Life-changing.",
     outcome: "Commonwealth Scholar",
   },
   {
     name: "Ana S.",
     location: "Berlin",
-    flag: "🇩🇪",
+    countryCode: "de",
     text: "The Erasmus motivation letter was exactly what I needed. Perfect tone.",
     outcome: "Erasmus Mundus Scholar",
   },
@@ -99,27 +81,10 @@ export function TestimonialsSection() {
         </motion.p>
         <motion.h2
           initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}
-          className="text-3xl sm:text-5xl font-serif font-bold text-center mb-6"
+          className="text-3xl sm:text-5xl font-serif font-bold text-center mb-16"
         >
           Trusted by professionals <span className="text-gradient">worldwide</span>.
         </motion.h2>
-
-        {/* Country flags bar */}
-        <motion.div
-          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1.5}
-          className="flex flex-wrap justify-center gap-2 mb-16"
-        >
-          {COUNTRY_FLAGS.map((c) => (
-            <span
-              key={c.code}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground"
-              title={c.name}
-            >
-              <span className="text-sm">{c.flag}</span>
-              <span className="font-mono">{c.code}</span>
-            </span>
-          ))}
-        </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {TESTIMONIALS.map((t, i) => (
@@ -135,8 +100,13 @@ export function TestimonialsSection() {
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-4">"{t.text}"</p>
               <div className="border-t border-border pt-3">
-                <div className="font-semibold text-sm flex items-center gap-1.5">
-                  {t.name} <span className="text-base">{t.flag}</span>
+                <div className="font-semibold text-sm flex items-center gap-2">
+                  {t.name}
+                  <img
+                    src={`https://flagcdn.com/w20/${t.countryCode}.png`}
+                    alt={t.location}
+                    className="w-5 h-3.5 rounded-[2px] object-cover"
+                  />
                 </div>
                 <div className="text-xs text-muted-foreground mt-0.5">{t.location}</div>
                 <div className="text-xs text-primary font-mono mt-1">{t.outcome}</div>
