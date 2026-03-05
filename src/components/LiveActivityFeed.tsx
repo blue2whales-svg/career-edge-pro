@@ -2,48 +2,58 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ACTIVITY_ENTRIES = [
-  { name: "Priya", city: "Mumbai", action: "just got an interview at Google" },
-  { name: "James", city: "London", action: "applied to 3 jobs" },
-  { name: "Sofia", city: "São Paulo", action: "received an offer" },
-  { name: "Amara", city: "Lagos", action: "just got an interview at Meta" },
-  { name: "Chen", city: "Shanghai", action: "uploaded a new CV" },
-  { name: "Fatima", city: "Dubai", action: "generated a cover letter" },
-  { name: "Liam", city: "Toronto", action: "moved to interview stage" },
-  { name: "Aisha", city: "Nairobi", action: "applied to 5 roles" },
-  { name: "Marco", city: "Berlin", action: "received a screening call" },
-  { name: "Yuki", city: "Tokyo", action: "tracked a new application" },
-  { name: "David", city: "New York", action: "got an offer from Stripe" },
-  { name: "Maria", city: "Mexico City", action: "applied to 2 jobs" },
-  { name: "Oluwaseun", city: "Abuja", action: "generated AI cover letter" },
-  { name: "Emma", city: "Sydney", action: "moved to offer stage" },
-  { name: "Raj", city: "Bangalore", action: "uploaded portfolio" },
-  { name: "Ines", city: "Paris", action: "applied to a startup" },
-  { name: "Carlos", city: "Buenos Aires", action: "got an interview at Amazon" },
-  { name: "Nina", city: "Cape Town", action: "received 2 responses" },
-  { name: "Ahmed", city: "Cairo", action: "set up Zapier automation" },
-  { name: "Sven", city: "Stockholm", action: "tracked 4 applications" },
-  { name: "Mei", city: "Singapore", action: "generated CV summary" },
-  { name: "Diego", city: "Manila", action: "applied to a remote role" },
-  { name: "Sarah", city: "Dublin", action: "got an interview at Shopify" },
-  { name: "Kwame", city: "Accra", action: "uploaded new documents" },
-  { name: "Anna", city: "Warsaw", action: "moved to screening stage" },
-  { name: "Omar", city: "Riyadh", action: "applied to 6 jobs today" },
-  { name: "Lisa", city: "Amsterdam", action: "received an offer" },
-  { name: "Tariq", city: "Karachi", action: "generated a tailored CV" },
-  { name: "Julia", city: "Lisbon", action: "tracked a deadline" },
-  { name: "Kofi", city: "Kumasi", action: "applied to a fintech role" },
-  { name: "Elena", city: "Madrid", action: "got a response from Netflix" },
-  { name: "Hassan", city: "Istanbul", action: "applied to 2 companies" },
-  { name: "Chloe", city: "Melbourne", action: "uploaded a cover letter" },
-  { name: "Budi", city: "Jakarta", action: "set up auto follow-ups" },
-  { name: "Grace", city: "Vancouver", action: "moved to final round" },
-  { name: "Ravi", city: "Delhi", action: "applied to a FAANG company" },
-  { name: "Lena", city: "Munich", action: "received interview invite" },
-  { name: "Chidi", city: "Port Harcourt", action: "generated 3 cover letters" },
-  { name: "Alex", city: "Chicago", action: "tracked an offer deadline" },
-  { name: "Mia", city: "Oslo", action: "applied to her dream job" },
-  { name: "Javier", city: "Bogotá", action: "got an interview at Uber" },
-  { name: "Zara", city: "Lahore", action: "uploaded a new portfolio" },
+  { name: "Chidi", city: "Lagos", action: "just ordered an Executive CV" },
+  { name: "Sara", city: "Dubai", action: "downloaded her CV" },
+  { name: "James", city: "London", action: "ordered ATS CV" },
+  { name: "Amara", city: "Nairobi", action: "received interview invite" },
+  { name: "Mohammed", city: "Riyadh", action: "upgraded to Elite" },
+  { name: "Priya", city: "Mumbai", action: "ordered Cover Letter" },
+  { name: "Tunde", city: "Abuja", action: "ordered Chevening Essay" },
+  { name: "Sophie", city: "Berlin", action: "ordered Erasmus Motivation Letter" },
+  { name: "David", city: "Houston", action: "ordered Executive CV" },
+  { name: "Fatima", city: "Abu Dhabi", action: "downloaded LinkedIn rewrite" },
+  { name: "Kwame", city: "Accra", action: "ordered Commonwealth Scholarship essay" },
+  { name: "Aisha", city: "Islamabad", action: "ordered Fulbright Personal Statement" },
+  { name: "Carlos", city: "São Paulo", action: "ordered International CV" },
+  { name: "Yemi", city: "Abuja", action: "just got Chevening interview" },
+  { name: "Ngozi", city: "Enugu", action: "ordered Full Application Bundle" },
+  { name: "Grace", city: "Accra", action: "downloaded her Cover Letter" },
+  { name: "Ravi", city: "Bangalore", action: "ordered ATS-Friendly CV" },
+  { name: "Elena", city: "Madrid", action: "ordered CV Translation" },
+  { name: "Hassan", city: "Istanbul", action: "upgraded to Edge Pro" },
+  { name: "Mei", city: "Singapore", action: "ordered LinkedIn Profile Optimisation" },
+  { name: "Oluwaseun", city: "Port Harcourt", action: "ordered Professional CV" },
+  { name: "Anna", city: "Warsaw", action: "received her DAAD essay" },
+  { name: "Omar", city: "Jeddah", action: "ordered Executive Bio" },
+  { name: "Liam", city: "Toronto", action: "ordered CV + Cover Letter package" },
+  { name: "Chloe", city: "Melbourne", action: "ordered Australia Awards essay" },
+  { name: "Budi", city: "Jakarta", action: "ordered Professional Reference Letter" },
+  { name: "Nina", city: "Cape Town", action: "received interview invite at Deloitte" },
+  { name: "Marco", city: "Munich", action: "ordered DAAD Motivation Letter" },
+  { name: "Suki", city: "Manila", action: "ordered Scholarship Essay bundle" },
+  { name: "Ahmed", city: "Cairo", action: "downloaded his Executive CV" },
+  { name: "Zara", city: "Lahore", action: "ordered Personal Statement" },
+  { name: "Chen", city: "Shanghai", action: "ordered International CV" },
+  { name: "Emeka", city: "Lagos", action: "ordered Rush Delivery upgrade" },
+  { name: "Maria", city: "Mexico City", action: "ordered Cover Letter for Amazon" },
+  { name: "Tariq", city: "Karachi", action: "ordered MasterCard Foundation essay" },
+  { name: "Julia", city: "Lisbon", action: "ordered Erasmus Motivation Letter" },
+  { name: "Kofi", city: "Kumasi", action: "ordered ATS CV for fintech role" },
+  { name: "Sarah", city: "Dublin", action: "received her CV in 2 hours" },
+  { name: "Diego", city: "Buenos Aires", action: "ordered Executive CV + Bio" },
+  { name: "Lena", city: "Stockholm", action: "ordered Swedish Institute essay" },
+  { name: "Adebayo", city: "Ibadan", action: "ordered Chevening essays" },
+  { name: "Emma", city: "Sydney", action: "downloaded her Cover Letter" },
+  { name: "Raj", city: "Delhi", action: "ordered Gates Cambridge essay" },
+  { name: "Ines", city: "Paris", action: "ordered CV Editing & Proofreading" },
+  { name: "Alex", city: "Chicago", action: "ordered Knight-Hennessy essays" },
+  { name: "Mia", city: "Oslo", action: "ordered Professional CV package" },
+  { name: "Javier", city: "Bogotá", action: "ordered International CV" },
+  { name: "Khalid", city: "Dubai", action: "upgraded to Executive tier" },
+  { name: "Wanjiru", city: "Nairobi", action: "ordered Commonwealth essay" },
+  { name: "Lisa", city: "Amsterdam", action: "received her CV — 5-star review" },
+  { name: "Chinonso", city: "Owerri", action: "ordered Full Application Bundle" },
+  { name: "Sven", city: "Copenhagen", action: "ordered Orange Knowledge essay" },
 ];
 
 const TIME_LABELS = ["just now", "1m ago", "2m ago", "3m ago", "5m ago", "8m ago"];
@@ -64,7 +74,7 @@ interface LiveActivityFeedProps {
 export function LiveActivityFeed({ variant = "landing" }: LiveActivityFeedProps) {
   const [entries] = useState(() => shuffleArray(ACTIVITY_ENTRIES));
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [onlineCount, setOnlineCount] = useState(() => 2400 + Math.floor(Math.random() * 800));
+  const [onlineCount, setOnlineCount] = useState(() => 180 + Math.floor(Math.random() * 170));
 
   const nextEntry = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % entries.length);
@@ -95,7 +105,7 @@ export function LiveActivityFeed({ variant = "landing" }: LiveActivityFeedProps)
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
             <span className="text-muted-foreground font-mono">
-              {onlineCount.toLocaleString()} online globally
+              {onlineCount.toLocaleString()} viewing CVEdge
             </span>
           </div>
           <AnimatePresence mode="wait">
@@ -117,14 +127,14 @@ export function LiveActivityFeed({ variant = "landing" }: LiveActivityFeedProps)
   }
 
   return (
-    <div className="flex items-center gap-4 rounded-xl border border-border bg-card/60 surface-glass px-4 py-3">
+    <div className="flex items-center gap-4 rounded-xl border border-primary/20 bg-card/60 surface-glass px-4 py-3">
       <div className="flex items-center gap-2 shrink-0">
         <span className="relative flex h-2.5 w-2.5">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
         </span>
-        <span className="text-sm font-mono text-muted-foreground">
-          {onlineCount.toLocaleString()} online
+        <span className="text-sm font-mono text-primary">
+          {onlineCount.toLocaleString()} viewing now
         </span>
       </div>
       <div className="h-4 w-px bg-border" />

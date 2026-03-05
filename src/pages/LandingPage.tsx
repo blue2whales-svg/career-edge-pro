@@ -1,20 +1,18 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
-import {
-  FileText,
-  BarChart3,
-  FolderOpen,
-  Zap,
-  ArrowRight,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  Star,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
+import { TrustBar } from "@/components/landing/TrustBar";
+import { SpeedSection } from "@/components/landing/SpeedSection";
+import { ServicesSection } from "@/components/landing/ServicesSection";
+import { WhySection } from "@/components/landing/WhySection";
+import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
+import { ScholarshipPreview } from "@/components/landing/ScholarshipPreview";
+import { PricingPreview } from "@/components/landing/PricingPreview";
+import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
+import { StatsBar } from "@/components/landing/StatsBar";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -25,95 +23,37 @@ const fadeUp = {
   }),
 };
 
-const FEATURES = [
-  {
-    icon: FileText,
-    title: "AI Cover Letters",
-    desc: "Paste a job URL — get a tailored, compelling cover letter in seconds. Powered by GPT-4o.",
-  },
-  {
-    icon: BarChart3,
-    title: "Application Tracking",
-    desc: "Kanban-style board to track every application from Applied to Offer. Never lose track again.",
-  },
-  {
-    icon: FolderOpen,
-    title: "Document Vault",
-    desc: "Store CVs, cover letters, and portfolios. Version history. One-click download.",
-  },
-  {
-    icon: Zap,
-    title: "Zapier Agents",
-    desc: "Automate follow-ups, sync to Google Sheets, get deadline alerts. Your unfair advantage.",
-  },
-];
-
-const PAIN_POINTS = [
-  { icon: XCircle, text: "You apply to 50 jobs and hear back from 2." },
-  { icon: Clock, text: "You lose track of deadlines and follow-ups." },
-  { icon: XCircle, text: "Every cover letter takes 45 minutes to write." },
-];
-
-const TESTIMONIALS = [
-  {
-    name: "Amara O.",
-    location: "Lagos, Nigeria",
-    text: "CVEdge helped me land interviews at 3 FAANG companies. The AI cover letters are insane — I went from 2% response rate to 38%.",
-    role: "Software Engineer",
-  },
-  {
-    name: "James W.",
-    location: "London, UK",
-    text: "The Kanban board and Zapier automations saved me hours every week. I got an offer 3 weeks after signing up.",
-    role: "Product Manager",
-  },
-  {
-    name: "Priya S.",
-    location: "Bangalore, India",
-    text: "I was drowning in spreadsheets. CVEdge gave me clarity and confidence. Received 5 interview calls in my first month.",
-    role: "Data Analyst",
-  },
-];
-
-const STATS = [
-  { value: "34,000+", label: "Applications Tracked" },
-  { value: "180+", label: "Countries" },
-  { value: "38%", label: "Avg Response Rate" },
-  { value: "4,200+", label: "Offers Received" },
-];
-
 export default function LandingPage() {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) setSubmitted(true);
-  };
-
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background grid + orbs */}
-      <div className="fixed inset-0 bg-grid opacity-30 pointer-events-none" />
-      <div className="fixed top-[-200px] left-[-200px] w-[600px] h-[600px] rounded-full bg-primary/5 blur-[120px] animate-orb pointer-events-none" />
-      <div className="fixed bottom-[-200px] right-[-200px] w-[500px] h-[500px] rounded-full bg-secondary/5 blur-[120px] animate-orb pointer-events-none" style={{ animationDelay: "-4s" }} />
+      {/* Background effects */}
+      <div className="fixed inset-0 bg-grid opacity-20 pointer-events-none" />
+      <div className="fixed top-[-300px] left-[-200px] w-[700px] h-[700px] rounded-full bg-primary/5 blur-[150px] animate-orb pointer-events-none" />
+      <div className="fixed bottom-[-200px] right-[-200px] w-[500px] h-[500px] rounded-full bg-secondary/3 blur-[120px] animate-orb pointer-events-none" style={{ animationDelay: "-4s" }} />
 
       {/* Nav */}
-      <nav className="relative z-10 border-b border-border/50 surface-glass">
+      <nav className="relative z-10 border-b border-border/30 surface-glass sticky top-0">
         <div className="container max-w-6xl mx-auto flex items-center justify-between h-16 px-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-brand flex items-center justify-center">
-              <span className="text-sm font-bold text-background">CE</span>
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-lg bg-gradient-brand flex items-center justify-center shadow-glow-sm">
+              <span className="text-sm font-bold text-primary-foreground">CE</span>
             </div>
-            <span className="font-bold text-lg">CVEdge</span>
+            <span className="font-bold text-lg tracking-tight">CVEdge</span>
+          </div>
+          <div className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
+            <Link to="/services" className="hover:text-foreground transition-colors">Services</Link>
+            <Link to="/scholarships" className="hover:text-foreground transition-colors">Scholarships</Link>
+            <Link to="/pricing" className="hover:text-foreground transition-colors">Pricing</Link>
+            <Link to="/jobs" className="hover:text-foreground transition-colors">Jobs</Link>
+            <Link to="/how-it-works" className="hover:text-foreground transition-colors">How It Works</Link>
           </div>
           <div className="flex items-center gap-3">
             <Link to="/login">
               <Button variant="ghost" size="sm">Log in</Button>
             </Link>
-            <Link to="/signup">
-              <Button size="sm" className="bg-gradient-brand border-0 font-semibold">
-                Get Started
+            <Link to="/order">
+              <Button size="sm" className="bg-gradient-brand border-0 font-semibold shadow-glow-sm gold-shimmer">
+                Order Now
               </Button>
             </Link>
           </div>
@@ -121,333 +61,186 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="relative z-10 pt-20 pb-16 px-4">
-        <div className="container max-w-4xl mx-auto text-center">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            custom={0}
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-4 py-1.5 mb-8"
-          >
-            <span className="text-xs font-mono text-primary">NEW</span>
-            <span className="text-xs text-muted-foreground">Zapier Agents now available</span>
-          </motion.div>
+      <section className="relative z-10 pt-24 sm:pt-32 pb-20 px-4">
+        <div className="container max-w-5xl mx-auto">
+          <div className="max-w-3xl">
+            <motion.div
+              initial="hidden" animate="visible" variants={fadeUp} custom={0}
+              className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 mb-8"
+            >
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse-soft" />
+              <span className="text-xs font-mono text-primary">Same-day delivery available</span>
+            </motion.div>
 
-          <motion.h1
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            custom={1}
-            className="text-5xl sm:text-7xl font-extrabold leading-[1.05] mb-6"
-          >
-            Your Career's{" "}
-            <span className="text-gradient">Secret Weapon</span>
-          </motion.h1>
+            <motion.h1
+              initial="hidden" animate="visible" variants={fadeUp} custom={1}
+              className="text-5xl sm:text-7xl lg:text-8xl font-serif font-bold leading-[1.05] mb-6"
+            >
+              The CV That Gets{" "}
+              <span className="text-gradient">You Hired.</span>
+              <br />
+              <span className="text-3xl sm:text-4xl lg:text-5xl font-sans font-medium text-muted-foreground">
+                Today.
+              </span>
+            </motion.h1>
 
-          <motion.p
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            custom={2}
-            className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed"
-          >
-            Track every application, generate AI-powered cover letters, and automate your job search.
-            The platform that gives you an unfair advantage.
-          </motion.p>
+            <motion.p
+              initial="hidden" animate="visible" variants={fadeUp} custom={2}
+              className="text-lg sm:text-xl text-muted-foreground max-w-2xl mb-10 leading-relaxed"
+            >
+              Professional CV writing, cover letters, scholarship essays and career documents — crafted by dedicated specialists and delivered same day to clients in 90+ countries.
+            </motion.p>
 
-          <motion.form
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            custom={3}
-            onSubmit={handleSubmit}
-            className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-8"
-          >
-            {!submitted ? (
-              <>
-                <Input
-                  type="email"
-                  placeholder="you@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-muted/50 border-border h-12 text-base"
-                  required
-                />
+            <motion.div
+              initial="hidden" animate="visible" variants={fadeUp} custom={3}
+              className="flex flex-col sm:flex-row gap-3 mb-10"
+            >
+              <Link to="/order">
                 <Button
-                  type="submit"
                   size="lg"
-                  className="bg-gradient-brand border-0 font-semibold h-12 px-8 shrink-0 shadow-glow"
+                  className="bg-gradient-brand border-0 font-semibold h-13 px-8 shadow-glow gold-shimmer text-base"
                 >
-                  Join the Waitlist
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  Order My CV Now
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
-              </>
-            ) : (
-              <div className="flex items-center gap-2 text-primary mx-auto">
-                <CheckCircle2 className="h-5 w-5" />
-                <span className="font-medium">You're on the list! We'll be in touch.</span>
-              </div>
-            )}
-          </motion.form>
+              </Link>
+              <Link to="/services">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="border-primary/30 font-semibold h-13 px-8 hover:bg-primary/5"
+                >
+                  See All Services
+                </Button>
+              </Link>
+            </motion.div>
 
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            custom={4}
-            className="max-w-lg mx-auto"
-          >
-            <LiveActivityFeed />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Problem Section */}
-      <section className="relative z-10 py-20 px-4">
-        <div className="container max-w-4xl mx-auto">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            custom={0}
-            className="text-3xl sm:text-4xl font-bold text-center mb-4"
-          >
-            Job searching is <span className="text-gradient">broken</span>.
-          </motion.h2>
-          <motion.p
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            custom={1}
-            className="text-muted-foreground text-center mb-12 max-w-xl mx-auto"
-          >
-            You deserve better tools than a messy spreadsheet and copy-pasted cover letters.
-          </motion.p>
-          <div className="grid sm:grid-cols-3 gap-4">
-            {PAIN_POINTS.map((p, i) => (
-              <motion.div
-                key={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                custom={i + 2}
-                className="rounded-xl border border-border bg-card p-6 text-center"
-              >
-                <p.icon className="h-8 w-8 text-destructive mx-auto mb-4" />
-                <p className="text-sm text-muted-foreground leading-relaxed">{p.text}</p>
-              </motion.div>
-            ))}
+            <motion.div
+              initial="hidden" animate="visible" variants={fadeUp} custom={4}
+              className="max-w-lg"
+            >
+              <LiveActivityFeed />
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="relative z-10 py-20 px-4">
-        <div className="container max-w-5xl mx-auto">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            custom={0}
-            className="text-3xl sm:text-4xl font-bold text-center mb-4"
-          >
-            Everything you need to{" "}
-            <span className="text-gradient">win</span>.
-          </motion.h2>
-          <motion.p
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            custom={1}
-            className="text-muted-foreground text-center mb-12 max-w-xl mx-auto"
-          >
-            Four powerful tools working together to supercharge your job search.
-          </motion.p>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {FEATURES.map((f, i) => (
-              <motion.div
-                key={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                custom={i + 2}
-                className="group rounded-xl border border-border bg-card p-6 hover:border-primary/30 hover:shadow-glow-sm transition-all duration-300"
-              >
-                <div className="w-10 h-10 rounded-lg bg-gradient-brand-subtle flex items-center justify-center mb-4">
-                  <f.icon className="h-5 w-5 text-primary" />
-                </div>
-                <h3 className="text-lg font-semibold mb-2">{f.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Trust Bar */}
+      <TrustBar />
 
-      {/* Zapier Callout */}
-      <section className="relative z-10 py-16 px-4">
-        <div className="container max-w-4xl mx-auto">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            custom={0}
-            className="rounded-2xl border border-primary/20 bg-gradient-brand-subtle p-8 sm:p-12 text-center"
-          >
-            <Zap className="h-12 w-12 text-primary mx-auto mb-4" />
-            <h2 className="text-2xl sm:text-3xl font-bold mb-3">
-              Automation is your unfair advantage.
-            </h2>
-            <p className="text-muted-foreground max-w-lg mx-auto mb-6 leading-relaxed">
-              Zapier Agents handle follow-ups, sync your data to Google Sheets, and notify you
-              before deadlines expire — while you sleep.
-            </p>
-            <Link to="/signup">
-              <Button size="lg" className="bg-gradient-brand border-0 font-semibold shadow-glow">
-                Start Automating
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </Link>
-          </motion.div>
-        </div>
-      </section>
+      {/* Speed Promise */}
+      <SpeedSection />
 
-      {/* Stats Bar */}
-      <section className="relative z-10 py-12 px-4 border-y border-border">
-        <div className="container max-w-5xl mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-            {STATS.map((s, i) => (
-              <motion.div
-                key={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                custom={i}
-                className="text-center"
-              >
-                <div className="text-3xl sm:text-4xl font-bold text-gradient mb-1">{s.value}</div>
-                <div className="text-sm text-muted-foreground">{s.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Services */}
+      <ServicesSection />
+
+      {/* Why CVEdge */}
+      <WhySection />
+
+      {/* Stats */}
+      <StatsBar />
+
+      {/* Scholarship Preview */}
+      <ScholarshipPreview />
+
+      {/* How It Works */}
+      <HowItWorksSection />
+
+      {/* Pricing Preview */}
+      <PricingPreview />
 
       {/* Testimonials */}
-      <section className="relative z-10 py-20 px-4">
-        <div className="container max-w-5xl mx-auto">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            custom={0}
-            className="text-3xl sm:text-4xl font-bold text-center mb-12"
-          >
-            Loved by job seekers <span className="text-gradient">worldwide</span>.
-          </motion.h2>
-          <div className="grid sm:grid-cols-3 gap-4">
-            {TESTIMONIALS.map((t, i) => (
-              <motion.div
-                key={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                custom={i + 1}
-                className="rounded-xl border border-border bg-card p-6"
-              >
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, j) => (
-                    <Star key={j} className="h-4 w-4 fill-primary text-primary" />
-                  ))}
-                </div>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-4">"{t.text}"</p>
-                <div>
-                  <div className="font-semibold text-sm">{t.name}</div>
-                  <div className="text-xs text-muted-foreground">{t.role} · {t.location}</div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <TestimonialsSection />
 
       {/* Final CTA */}
-      <section className="relative z-10 py-20 px-4">
-        <div className="container max-w-xl mx-auto text-center">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            custom={0}
-            className="text-3xl sm:text-4xl font-bold mb-4"
+      <section className="relative z-10 py-24 px-4">
+        <div className="container max-w-3xl mx-auto text-center">
+          <motion.div
+            initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
+            className="rounded-2xl border border-primary/20 bg-gradient-brand-subtle p-10 sm:p-14"
           >
-            Ready to get your <span className="text-gradient">edge</span>?
-          </motion.h2>
-          <motion.p
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            custom={1}
-            className="text-muted-foreground mb-8"
-          >
-            Start for free. No credit card required.
-          </motion.p>
-          <motion.form
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            custom={2}
-            onSubmit={handleSubmit}
-            className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-          >
-            <Input
-              type="email"
-              placeholder="you@email.com"
-              className="bg-muted/50 border-border h-12 text-base"
-              required
-            />
-            <Button
-              type="submit"
-              size="lg"
-              className="bg-gradient-brand border-0 font-semibold h-12 px-8 shrink-0 shadow-glow"
-            >
-              Get Started Free
-            </Button>
-          </motion.form>
+            <h2 className="text-3xl sm:text-5xl font-serif font-bold mb-4">
+              Ready to Get the <span className="text-gradient">Edge</span>?
+            </h2>
+            <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
+              Join thousands of professionals worldwide who trust CVEdge with their career documents.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link to="/order">
+                <Button
+                  size="lg"
+                  className="bg-gradient-brand border-0 font-semibold h-13 px-10 shadow-glow gold-shimmer text-base"
+                >
+                  Order My Documents Now
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
+            <p className="text-xs text-muted-foreground mt-4 font-mono">No credit card upfront · Satisfaction guaranteed</p>
+          </motion.div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-border py-10 px-4">
-        <div className="container max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-md bg-gradient-brand flex items-center justify-center">
-              <span className="text-xs font-bold text-background">CE</span>
+      <footer className="relative z-10 border-t border-border py-12 px-4">
+        <div className="container max-w-6xl mx-auto">
+          <div className="grid sm:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-brand flex items-center justify-center">
+                  <span className="text-xs font-bold text-primary-foreground">CE</span>
+                </div>
+                <span className="font-bold">CVEdge</span>
+              </div>
+              <p className="text-xs text-muted-foreground">Your Career's Secret Weapon</p>
             </div>
-            <span className="font-semibold">CVEdge</span>
-            <span className="text-xs text-muted-foreground ml-2">Your Career's Secret Weapon</span>
+            <div>
+              <h4 className="font-semibold text-sm mb-3">Services</h4>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <Link to="/services" className="block hover:text-foreground transition-colors">CV Writing</Link>
+                <Link to="/services" className="block hover:text-foreground transition-colors">Cover Letters</Link>
+                <Link to="/services" className="block hover:text-foreground transition-colors">LinkedIn Optimisation</Link>
+                <Link to="/scholarships" className="block hover:text-foreground transition-colors">Scholarship Essays</Link>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold text-sm mb-3">Company</h4>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <Link to="/about" className="block hover:text-foreground transition-colors">About</Link>
+                <Link to="/how-it-works" className="block hover:text-foreground transition-colors">How It Works</Link>
+                <Link to="/pricing" className="block hover:text-foreground transition-colors">Pricing</Link>
+                <Link to="/jobs" className="block hover:text-foreground transition-colors">Jobs Board</Link>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold text-sm mb-3">Account</h4>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <Link to="/login" className="block hover:text-foreground transition-colors">Log in</Link>
+                <Link to="/signup" className="block hover:text-foreground transition-colors">Sign up</Link>
+                <Link to="/portal" className="block hover:text-foreground transition-colors">Client Portal</Link>
+                <Link to="/order" className="block hover:text-foreground transition-colors">Order Now</Link>
+              </div>
+            </div>
           </div>
-          <div className="flex gap-6 text-sm text-muted-foreground">
-            <Link to="/login" className="hover:text-foreground transition-colors">Log in</Link>
-            <Link to="/signup" className="hover:text-foreground transition-colors">Sign up</Link>
-            <Link to="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link>
+          <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} CVEdge. All rights reserved.</p>
+            <p className="text-xs text-muted-foreground">Professional career documents for 90+ countries worldwide.</p>
           </div>
         </div>
       </footer>
+
+      {/* Fixed WhatsApp Button */}
+      <a
+        href="https://wa.me/message"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg hover:bg-emerald-600 transition-colors"
+        aria-label="Chat on WhatsApp"
+      >
+        <svg viewBox="0 0 24 24" className="w-7 h-7 fill-white">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+      </a>
     </div>
   );
 }

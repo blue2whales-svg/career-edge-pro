@@ -6,13 +6,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
-import DashboardLayout from "./components/DashboardLayout";
-import DashboardHome from "./pages/DashboardHome";
-import DocumentsPage from "./pages/DocumentsPage";
-import AIGeneratorPage from "./pages/AIGeneratorPage";
-import AgentsPage from "./pages/AgentsPage";
-import SettingsPage from "./pages/SettingsPage";
-import ApplicationDetailPage from "./pages/ApplicationDetailPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,16 +20,16 @@ const App = () => (
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
-          <Route element={<DashboardLayout />}>
-            <Route path="/dashboard" element={<DashboardHome />} />
-            <Route path="/dashboard/applications" element={<DashboardHome />} />
-            <Route path="/dashboard/analytics" element={<DashboardHome />} />
-            <Route path="/applications/:id" element={<ApplicationDetailPage />} />
-            <Route path="/documents" element={<DocumentsPage />} />
-            <Route path="/apply" element={<AIGeneratorPage />} />
-            <Route path="/agents" element={<AgentsPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-          </Route>
+          {/* Placeholder routes — pages to be built in next phases */}
+          <Route path="/services" element={<LandingPage />} />
+          <Route path="/scholarships" element={<LandingPage />} />
+          <Route path="/pricing" element={<LandingPage />} />
+          <Route path="/jobs" element={<LandingPage />} />
+          <Route path="/how-it-works" element={<LandingPage />} />
+          <Route path="/order" element={<LandingPage />} />
+          <Route path="/about" element={<LandingPage />} />
+          <Route path="/portal" element={<LandingPage />} />
+          <Route path="/admin" element={<LandingPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
