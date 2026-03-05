@@ -10,6 +10,24 @@ const fadeUp = {
   }),
 };
 
+const COUNTRY_FLAGS = [
+  { flag: "🇳🇬", code: "NG", name: "Nigeria" },
+  { flag: "🇬🇧", code: "GB", name: "United Kingdom" },
+  { flag: "🇺🇸", code: "US", name: "United States" },
+  { flag: "🇦🇪", code: "AE", name: "UAE" },
+  { flag: "🇰🇪", code: "KE", name: "Kenya" },
+  { flag: "🇿🇦", code: "ZA", name: "South Africa" },
+  { flag: "🇮🇳", code: "IN", name: "India" },
+  { flag: "🇬🇭", code: "GH", name: "Ghana" },
+  { flag: "🇩🇪", code: "DE", name: "Germany" },
+  { flag: "🇨🇦", code: "CA", name: "Canada" },
+  { flag: "🇦🇺", code: "AU", name: "Australia" },
+  { flag: "🇸🇦", code: "SA", name: "Saudi Arabia" },
+  { flag: "🇵🇰", code: "PK", name: "Pakistan" },
+  { flag: "🇧🇷", code: "BR", name: "Brazil" },
+  { flag: "🇵🇭", code: "PH", name: "Philippines" },
+];
+
 const TESTIMONIALS = [
   {
     name: "Emeka O.",
@@ -81,10 +99,28 @@ export function TestimonialsSection() {
         </motion.p>
         <motion.h2
           initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}
-          className="text-3xl sm:text-5xl font-serif font-bold text-center mb-16"
+          className="text-3xl sm:text-5xl font-serif font-bold text-center mb-6"
         >
           Trusted by professionals <span className="text-gradient">worldwide</span>.
         </motion.h2>
+
+        {/* Country flags bar */}
+        <motion.div
+          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1.5}
+          className="flex flex-wrap justify-center gap-2 mb-16"
+        >
+          {COUNTRY_FLAGS.map((c) => (
+            <span
+              key={c.code}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground"
+              title={c.name}
+            >
+              <span className="text-sm">{c.flag}</span>
+              <span className="font-mono">{c.code}</span>
+            </span>
+          ))}
+        </motion.div>
+
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {TESTIMONIALS.map((t, i) => (
             <motion.div
@@ -100,7 +136,7 @@ export function TestimonialsSection() {
               <p className="text-sm text-muted-foreground leading-relaxed mb-4">"{t.text}"</p>
               <div className="border-t border-border pt-3">
                 <div className="font-semibold text-sm flex items-center gap-2">
-                  {t.flag} {t.name}
+                  <span className="text-base">{t.flag}</span> {t.name}
                 </div>
                 <div className="text-xs text-muted-foreground mt-0.5">{t.location}</div>
                 <div className="text-xs text-primary font-mono mt-1">{t.outcome}</div>
