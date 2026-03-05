@@ -67,6 +67,15 @@ export default {
           light: "hsl(var(--gold-light))",
           dark: "hsl(var(--gold-dark))",
         },
+        "brand-red": {
+          DEFAULT: "hsl(var(--brand-red))",
+          light: "hsl(var(--brand-red-light))",
+        },
+        "brand-blue": {
+          DEFAULT: "hsl(var(--brand-blue))",
+          light: "hsl(var(--brand-blue-light))",
+        },
+        "brand-white": "hsl(var(--brand-white))",
         glow: {
           primary: "hsl(var(--glow-primary))",
           secondary: "hsl(var(--glow-secondary))",
