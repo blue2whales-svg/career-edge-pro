@@ -135,12 +135,11 @@ export function TestimonialsSection() {
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed mb-4">"{t.text}"</p>
               <div className="border-t border-border pt-3">
-                <div className="font-semibold text-sm flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-sm shrink-0">{t.flag}</span>
-                  {t.name}
+                <div className="font-semibold text-sm flex items-center gap-1.5">
+                  {t.name} <span className="text-base">{t.flag}</span>
                 </div>
-                <div className="text-xs text-muted-foreground mt-0.5 ml-8">{t.location}</div>
-                <div className="text-xs text-primary font-mono mt-1 ml-8">{t.outcome}</div>
+                <div className="text-xs text-muted-foreground mt-0.5">{t.location}</div>
+                <div className="text-xs text-primary font-mono mt-1">{t.outcome}</div>
               </div>
             </motion.div>
           ))}
