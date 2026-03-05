@@ -36,7 +36,7 @@ export default function LandingPage() {
       <nav className="relative z-10 border-b border-border/30 surface-glass sticky top-0">
         <div className="container max-w-6xl mx-auto flex items-center justify-between h-16 px-4">
           <div className="flex items-center gap-2.5">
-            <img src={cvedgeLogo} alt="CVEdge Logo" className="w-10 h-10 object-contain" />
+            <img src={cvedgeLogo} alt="CVEdge Logo" className="w-10 h-10 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20" />
             <span className="font-bold text-lg tracking-tight">CVEdge</span>
           </div>
           <div className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
@@ -186,7 +186,7 @@ export default function LandingPage() {
           <div className="grid sm:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-2.5 mb-3">
-                <img src={cvedgeLogo} alt="CVEdge Logo" className="w-9 h-9 object-contain" />
+                <img src={cvedgeLogo} alt="CVEdge Logo" className="w-9 h-9 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20" />
                 <span className="font-bold">CVEdge</span>
               </div>
               <p className="text-xs text-muted-foreground">Your Career's Secret Weapon</p>
