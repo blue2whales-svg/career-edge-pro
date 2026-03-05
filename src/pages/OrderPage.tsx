@@ -2,13 +2,15 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight, Upload, FileText, Pen, Linkedin, GraduationCap,
-  Shield, Globe, Award, BookOpen, Users, Check
+  Shield, Globe, Award, BookOpen, Users, Check, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -19,15 +21,15 @@ const fadeUp = {
 };
 
 const SERVICES = [
-  { id: "cv", icon: FileText, label: "Professional CV", price: "$49" },
-  { id: "executive-cv", icon: Award, label: "Executive CV", price: "$199" },
-  { id: "cover-letter", icon: Pen, label: "Cover Letter", price: "$29" },
-  { id: "linkedin", icon: Linkedin, label: "LinkedIn Optimisation", price: "$39" },
-  { id: "personal-statement", icon: BookOpen, label: "Personal Statement", price: "$79" },
-  { id: "scholarship", icon: GraduationCap, label: "Scholarship Essay", price: "$99" },
-  { id: "reference", icon: Users, label: "Reference Letter", price: "$39" },
-  { id: "ats-cv", icon: Shield, label: "ATS-Optimised CV", price: "$59" },
-  { id: "international-cv", icon: Globe, label: "International CV", price: "$69" },
+  { id: "cv", icon: FileText, label: "Professional CV", price: 49 },
+  { id: "executive-cv", icon: Award, label: "Executive CV", price: 199 },
+  { id: "cover-letter", icon: Pen, label: "Cover Letter", price: 29 },
+  { id: "linkedin", icon: Linkedin, label: "LinkedIn Optimisation", price: 39 },
+  { id: "personal-statement", icon: BookOpen, label: "Personal Statement", price: 79 },
+  { id: "scholarship", icon: GraduationCap, label: "Scholarship Essay", price: 99 },
+  { id: "reference", icon: Users, label: "Reference Letter", price: 39 },
+  { id: "ats-cv", icon: Shield, label: "ATS-Optimised CV", price: 59 },
+  { id: "international-cv", icon: Globe, label: "International CV", price: 69 },
 ];
 
 export default function OrderPage() {
@@ -36,6 +38,11 @@ export default function OrderPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [details, setDetails] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderPlaced, setOrderPlaced] = useState(false);
+  const [orderId, setOrderId] = useState("");
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   const toggleService = (id: string) => {
     setSelectedServices((prev) =>
@@ -44,7 +51,103 @@ export default function OrderPage() {
   };
 
   const total = SERVICES.filter((s) => selectedServices.includes(s.id))
-    .reduce((sum, s) => sum + parseInt(s.price.replace("$", "")), 0);
+    .reduce((sum, s) => sum + s.price, 0);
+
+  const handleSubmit = async () => {
+    if (selectedServices.length === 0) {
+      toast({ title: "Select at least one service", variant: "destructive" });
+      return;
+    }
+    if (!name.trim() || !email.trim()) {
+      toast({ title: "Name and email are required", variant: "destructive" });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Get current user if logged in
+      const { data: { user } } = await supabase.auth.getUser();
+
+      // Save order to database
+      const { data: order, error } = await supabase.from("orders").insert({
+        user_id: user?.id || null,
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim() || null,
+        services: selectedServices,
+        details: details.trim() || null,
+        total_amount: total,
+        status: "pending",
+      }).select().single();
+
+      if (error) throw error;
+
+      // Trigger Zapier webhook (non-blocking)
+      supabase.functions.invoke("notify-zapier", {
+        body: { order },
+      }).catch(console.error);
+
+      setOrderId(order.id);
+      setOrderPlaced(true);
+      toast({ title: "Order placed successfully! 🎉" });
+    } catch (error: any) {
+      console.error("Order error:", error);
+      toast({ title: "Something went wrong", description: error.message, variant: "destructive" });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (orderPlaced) {
+    return (
+      <PageLayout>
+        <section className="relative z-10 pt-24 pb-32 px-4">
+          <div className="container max-w-xl mx-auto text-center">
+            <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>
+              <div className="w-20 h-20 rounded-full bg-gradient-brand flex items-center justify-center mx-auto mb-6">
+                <Check className="h-10 w-10 text-primary-foreground" />
+              </div>
+              <h1 className="text-3xl sm:text-5xl font-serif font-bold mb-4">
+                Order <span className="text-gradient">Confirmed!</span>
+              </h1>
+              <p className="text-muted-foreground mb-2">Your order has been received. We'll start working on it immediately.</p>
+              <p className="text-sm font-mono text-primary mb-8">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
+              
+              <div className="rounded-xl border border-border bg-card p-6 text-left mb-8">
+                <h3 className="font-semibold mb-3">What happens next?</h3>
+                <div className="space-y-3 text-sm text-muted-foreground">
+                  <div className="flex items-start gap-3">
+                    <span className="text-primary font-bold">1.</span>
+                    <span>A specialist will be assigned to your order within 30 minutes</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-primary font-bold">2.</span>
+                    <span>You'll receive a WhatsApp message to confirm details</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-primary font-bold">3.</span>
+                    <span>Your documents will be delivered same-day</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Link to="/">
+                  <Button variant="outline" className="border-primary/30">Back to Home</Button>
+                </Link>
+                <Link to="/signup">
+                  <Button className="bg-gradient-brand border-0 font-semibold gold-shimmer">
+                    Create Account to Track Orders
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+      </PageLayout>
+    );
+  }
 
   return (
     <PageLayout>
@@ -72,7 +175,7 @@ export default function OrderPage() {
             <div className="lg:col-span-3">
               <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}>
                 <h2 className="text-xl font-bold mb-5">1. Choose your services</h2>
-                <div className="grid sm:grid-cols-2 gap-3 mb-8">
+                <div className="grid grid-cols-2 gap-3 mb-8">
                   {SERVICES.map((s) => {
                     const selected = selectedServices.includes(s.id);
                     return (
@@ -92,7 +195,7 @@ export default function OrderPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-medium text-sm truncate">{s.label}</div>
-                          <div className="text-xs text-primary font-semibold">{s.price}</div>
+                          <div className="text-xs text-primary font-semibold">${s.price}</div>
                         </div>
                         {selected && <Check className="h-4 w-4 text-primary shrink-0" />}
                       </button>
@@ -103,14 +206,14 @@ export default function OrderPage() {
                 <h2 className="text-xl font-bold mb-5">2. Your details</h2>
                 <div className="space-y-4 mb-6">
                   <Input
-                    placeholder="Full name"
+                    placeholder="Full name *"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="h-12 bg-card border-border"
                   />
-                  <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Input
-                      placeholder="Email address"
+                      placeholder="Email address *"
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -132,7 +235,7 @@ export default function OrderPage() {
                 </div>
 
                 <h2 className="text-xl font-bold mb-3">3. Upload existing documents</h2>
-                <div className="rounded-xl border-2 border-dashed border-border bg-card/50 p-8 text-center mb-6">
+                <div className="rounded-xl border-2 border-dashed border-border bg-card/50 p-8 text-center">
                   <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
                   <p className="text-sm text-muted-foreground mb-1">Drag & drop your existing CV, or click to browse</p>
                   <p className="text-xs text-muted-foreground">PDF, DOC, DOCX — Max 10MB</p>
@@ -153,7 +256,7 @@ export default function OrderPage() {
                     {SERVICES.filter((s) => selectedServices.includes(s.id)).map((s) => (
                       <div key={s.id} className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">{s.label}</span>
-                        <span className="font-semibold">{s.price}</span>
+                        <span className="font-semibold">${s.price}</span>
                       </div>
                     ))}
                     <div className="border-t border-border pt-3 flex items-center justify-between">
@@ -164,10 +267,20 @@ export default function OrderPage() {
                 )}
 
                 <Button
+                  onClick={handleSubmit}
+                  disabled={selectedServices.length === 0 || isSubmitting}
                   className="w-full h-12 bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer text-base"
-                  disabled={selectedServices.length === 0}
                 >
-                  Place Order <ArrowRight className="ml-2 h-4 w-4" />
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Placing Order...
+                    </>
+                  ) : (
+                    <>
+                      Place Order <ArrowRight className="ml-2 h-4 w-4" />
+                    </>
+                  )}
                 </Button>
 
                 <div className="mt-4 space-y-2">
