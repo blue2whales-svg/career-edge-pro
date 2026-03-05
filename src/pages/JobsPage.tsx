@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  Search, MapPin, Briefcase, ArrowRight, Clock, Building2, DollarSign, Filter
-} from "lucide-react";
+import { Search, Briefcase, ArrowRight, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
+import { FeaturedJobs } from "@/components/jobs/FeaturedJobs";
+import { JobCard } from "@/components/jobs/JobCard";
+import { INDUSTRIES, JOBS } from "@/data/jobs";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -16,109 +17,6 @@ const fadeUp = {
   }),
 };
 
-const INDUSTRIES = [
-  "All", "Technology", "Finance", "Healthcare", "Engineering", "Marketing",
-  "Education", "Legal", "Sales", "Operations", "Consulting", "NGO", "Government",
-];
-
-const MARKETS = [
-  "All Markets", "UK", "USA", "UAE", "Nigeria", "Kenya", "South Africa",
-  "Germany", "Canada", "Australia", "India",
-];
-
-const JOBS = [
-  {
-    title: "Senior Software Engineer",
-    company: "Top Tech Firm",
-    location: "London, UK",
-    salary: "$120k–$160k",
-    type: "Full-time",
-    industry: "Technology",
-    market: "UK",
-    posted: "2 hours ago",
-  },
-  {
-    title: "Financial Analyst",
-    company: "Global Investment Bank",
-    location: "Dubai, UAE",
-    salary: "$85k–$110k",
-    type: "Full-time",
-    industry: "Finance",
-    market: "UAE",
-    posted: "5 hours ago",
-  },
-  {
-    title: "Marketing Director",
-    company: "Consumer Brand",
-    location: "Lagos, Nigeria",
-    salary: "₦15M–₦25M",
-    type: "Full-time",
-    industry: "Marketing",
-    market: "Nigeria",
-    posted: "1 day ago",
-  },
-  {
-    title: "Data Scientist",
-    company: "AI Startup",
-    location: "Berlin, Germany",
-    salary: "€75k–€95k",
-    type: "Full-time",
-    industry: "Technology",
-    market: "Germany",
-    posted: "3 hours ago",
-  },
-  {
-    title: "Healthcare Administrator",
-    company: "Private Hospital Group",
-    location: "Nairobi, Kenya",
-    salary: "KES 200k–350k/mo",
-    type: "Full-time",
-    industry: "Healthcare",
-    market: "Kenya",
-    posted: "12 hours ago",
-  },
-  {
-    title: "Product Manager",
-    company: "SaaS Company",
-    location: "New York, USA",
-    salary: "$130k–$170k",
-    type: "Full-time",
-    industry: "Technology",
-    market: "USA",
-    posted: "6 hours ago",
-  },
-  {
-    title: "Civil Engineer",
-    company: "Construction Corp",
-    location: "Johannesburg, SA",
-    salary: "R45k–R65k/mo",
-    type: "Full-time",
-    industry: "Engineering",
-    market: "South Africa",
-    posted: "1 day ago",
-  },
-  {
-    title: "Management Consultant",
-    company: "Big 4 Advisory",
-    location: "Toronto, Canada",
-    salary: "C$95k–C$130k",
-    type: "Full-time",
-    industry: "Consulting",
-    market: "Canada",
-    posted: "4 hours ago",
-  },
-  {
-    title: "HR Business Partner",
-    company: "Multinational Corp",
-    location: "Mumbai, India",
-    salary: "₹18L–₹28L",
-    type: "Full-time",
-    industry: "Operations",
-    market: "India",
-    posted: "8 hours ago",
-  },
-];
-
 export default function JobsPage() {
   const [search, setSearch] = useState("");
   const [selectedIndustry, setSelectedIndustry] = useState("All");
@@ -126,6 +24,7 @@ export default function JobsPage() {
   const filtered = JOBS.filter((job) => {
     const matchSearch = job.title.toLowerCase().includes(search.toLowerCase()) ||
       job.company.toLowerCase().includes(search.toLowerCase());
+    if (selectedIndustry === "🔥 Hot Abroad") return matchSearch && job.hot;
     const matchIndustry = selectedIndustry === "All" || job.industry === selectedIndustry;
     return matchSearch && matchIndustry;
   });
@@ -139,19 +38,25 @@ export default function JobsPage() {
             className="inline-flex items-center gap-2 rounded-full border border-brand-red/20 bg-brand-red/5 px-4 py-1.5 mb-6"
           >
             <Briefcase className="h-3.5 w-3.5 text-brand-red" />
-            <span className="text-xs font-mono text-brand-red">Jobs Board</span>
+            <span className="text-xs font-mono text-brand-red">Hot Jobs Abroad</span>
           </motion.div>
           <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={1}
             className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold leading-[1.08] mb-5"
           >
-            Find your next role.{" "}
+            Land a role abroad.{" "}
             <span className="text-gradient">Get the CV to match.</span>
           </motion.h1>
           <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={2}
-            className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-8"
+            className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-4"
           >
-            Browse opportunities across 13 industries and 10 global markets. When you find the right role, we'll craft the perfect CV for it.
+            Cruise lines, Gulf states, and 10+ global markets — updated every hour. Find the role, we'll craft the perfect CV.
           </motion.p>
+          <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}
+            className="inline-flex items-center gap-2 rounded-full bg-muted/60 border border-border px-4 py-1.5 mb-8"
+          >
+            <Flame className="h-3.5 w-3.5 text-brand-red" />
+            <span className="text-xs text-muted-foreground font-mono">Jobs updated hourly · Cruise & Gulf roles trending</span>
+          </motion.div>
 
           {/* Search */}
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={3}
@@ -159,7 +64,7 @@ export default function JobsPage() {
           >
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
-              placeholder="Search job title or company..."
+              placeholder="Search cruise, Gulf, or any job..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="h-13 pl-12 bg-card border-border text-base"
@@ -168,9 +73,16 @@ export default function JobsPage() {
         </div>
       </section>
 
+      {/* Featured Hot Jobs */}
+      <FeaturedJobs />
+
       {/* Filters */}
       <section className="relative z-10 pb-6 px-4">
         <div className="container max-w-5xl mx-auto">
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="text-lg font-serif font-bold">All Openings</h2>
+            <span className="text-xs text-muted-foreground font-mono">{filtered.length} roles</span>
+          </div>
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
             {INDUSTRIES.map((ind) => (
               <button
@@ -194,44 +106,7 @@ export default function JobsPage() {
         <div className="container max-w-5xl mx-auto">
           <div className="space-y-3">
             {filtered.map((job, i) => (
-              <motion.div
-                key={i}
-                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i % 4}
-                className="group rounded-xl border border-border bg-card p-5 sm:p-6 hover:border-primary/30 hover:shadow-glow-sm transition-all duration-300"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-gradient-brand-subtle flex items-center justify-center shrink-0 mt-0.5">
-                        <Building2 className="h-5 w-5 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-base sm:text-lg">{job.title}</h3>
-                        <p className="text-sm text-muted-foreground">{job.company}</p>
-                        <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" /> {job.location}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <DollarSign className="h-3 w-3" /> {job.salary}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" /> {job.posted}
-                          </span>
-                          <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-mono">
-                            {job.industry}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <Link to="/order" className="shrink-0">
-                    <Button className="w-full sm:w-auto bg-gradient-brand border-0 font-semibold gold-shimmer">
-                      Get CV for this role <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                </div>
-              </motion.div>
+              <JobCard key={i} job={job} index={i} />
             ))}
           </div>
 
