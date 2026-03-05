@@ -1,1 +1,4 @@
 project_id = "jxuqpxzsbkkywieughgh"
+
+[functions.notify-zapier]
+verify_jwt = false
