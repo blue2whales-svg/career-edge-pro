@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight, Upload, FileText, Pen, Linkedin, GraduationCap,
-  Shield, Globe, Award, BookOpen, Users, Check, Loader2
+  Shield, Globe, Award, BookOpen, Users, Check, Loader2, X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,9 +38,11 @@ export default function OrderPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [details, setDetails] = useState("");
+  const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -52,6 +54,20 @@ export default function OrderPage() {
 
   const total = SERVICES.filter((s) => selectedServices.includes(s.id))
     .reduce((sum, s) => sum + s.price, 0);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files || []);
+    const valid = selected.filter(f => f.size <= 10 * 1024 * 1024);
+    if (valid.length < selected.length) {
+      toast({ title: "Some files exceed 10MB and were skipped", variant: "destructive" });
+    }
+    setFiles(prev => [...prev, ...valid]);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const removeFile = (index: number) => {
+    setFiles(prev => prev.filter((_, i) => i !== index));
+  };
 
   const handleSubmit = async () => {
     if (selectedServices.length === 0) {
@@ -82,6 +98,17 @@ export default function OrderPage() {
       }).select().single();
 
       if (error) throw error;
+
+      // Upload files to storage
+      if (files.length > 0) {
+        for (const file of files) {
+          const filePath = `${order.id}/${Date.now()}-${file.name}`;
+          const { error: uploadError } = await supabase.storage
+            .from("order-documents")
+            .upload(filePath, file);
+          if (uploadError) console.error("Upload error:", uploadError);
+        }
+      }
 
       // Trigger Zapier webhook (non-blocking)
       supabase.functions.invoke("notify-zapier", {
@@ -235,11 +262,44 @@ export default function OrderPage() {
                 </div>
 
                 <h2 className="text-xl font-bold mb-3">3. Upload existing documents</h2>
-                <div className="rounded-xl border-2 border-dashed border-border bg-card/50 p-8 text-center">
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const droppedFiles = Array.from(e.dataTransfer.files);
+                    const valid = droppedFiles.filter(f => f.size <= 10 * 1024 * 1024);
+                    setFiles(prev => [...prev, ...valid]);
+                  }}
+                  className="rounded-xl border-2 border-dashed border-border bg-card/50 p-8 text-center cursor-pointer hover:border-primary/40 transition-colors"
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    accept=".pdf,.doc,.docx"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
                   <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
                   <p className="text-sm text-muted-foreground mb-1">Drag & drop your existing CV, or click to browse</p>
                   <p className="text-xs text-muted-foreground">PDF, DOC, DOCX — Max 10MB</p>
                 </div>
+                {files.length > 0 && (
+                  <div className="mt-3 space-y-2">
+                    {files.map((f, i) => (
+                      <div key={i} className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm">
+                        <FileText className="h-4 w-4 text-primary shrink-0" />
+                        <span className="truncate flex-1">{f.name}</span>
+                        <span className="text-xs text-muted-foreground shrink-0">{(f.size / 1024 / 1024).toFixed(1)}MB</span>
+                        <button onClick={(e) => { e.stopPropagation(); removeFile(i); }} className="text-muted-foreground hover:text-destructive">
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             </div>
 
