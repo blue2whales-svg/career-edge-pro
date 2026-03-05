@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
 import { ArrowRight } from "lucide-react";
+import cvedgeLogo from "@/assets/cvedge-logo.png";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { TrustBar } from "@/components/landing/TrustBar";
@@ -35,9 +36,7 @@ export default function LandingPage() {
       <nav className="relative z-10 border-b border-border/30 surface-glass sticky top-0">
         <div className="container max-w-6xl mx-auto flex items-center justify-between h-16 px-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-lg bg-gradient-brand flex items-center justify-center shadow-glow-sm">
-              <span className="text-sm font-bold text-primary-foreground">CE</span>
-            </div>
+            <img src={cvedgeLogo} alt="CVEdge Logo" className="w-10 h-10 object-contain" />
             <span className="font-bold text-lg tracking-tight">CVEdge</span>
           </div>
           <div className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
@@ -187,9 +186,7 @@ export default function LandingPage() {
           <div className="grid sm:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-2.5 mb-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-brand flex items-center justify-center">
-                  <span className="text-xs font-bold text-primary-foreground">CE</span>
-                </div>
+                <img src={cvedgeLogo} alt="CVEdge Logo" className="w-9 h-9 object-contain" />
                 <span className="font-bold">CVEdge</span>
               </div>
               <p className="text-xs text-muted-foreground">Your Career's Secret Weapon</p>
