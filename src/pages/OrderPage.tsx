@@ -328,7 +328,7 @@ export default function OrderPage() {
 
                 <Button
                   onClick={handleSubmit}
-                  disabled={selectedServices.length === 0 || isSubmitting}
+                  disabled={selectedServices.length === 0 || !name.trim() || !email.trim() || isSubmitting}
                   className="w-full h-12 bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer text-base"
                 >
                   {isSubmitting ? (
@@ -342,6 +342,16 @@ export default function OrderPage() {
                     </>
                   )}
                 </Button>
+                {selectedServices.length === 0 && (
+                  <p className="text-xs text-muted-foreground text-center mt-2">
+                    ↑ Select at least one service to continue
+                  </p>
+                )}
+                {selectedServices.length > 0 && (!name.trim() || !email.trim()) && (
+                  <p className="text-xs text-muted-foreground text-center mt-2">
+                    Fill in your name and email to continue
+                  </p>
+                )}
 
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
