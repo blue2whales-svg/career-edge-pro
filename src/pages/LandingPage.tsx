@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
 import { ArrowRight } from "lucide-react";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { MobileNav } from "@/components/landing/MobileNav";
 import { TrustBar } from "@/components/landing/TrustBar";
 import { SpeedSection } from "@/components/landing/SpeedSection";
 import { ServicesSection } from "@/components/landing/ServicesSection";
@@ -46,7 +46,7 @@ export default function LandingPage() {
             <Link to="/jobs" className="hover:text-foreground transition-colors">Jobs</Link>
             <Link to="/how-it-works" className="hover:text-foreground transition-colors">How It Works</Link>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3">
             <Link to="/login">
               <Button variant="ghost" size="sm">Log in</Button>
             </Link>
@@ -56,11 +56,12 @@ export default function LandingPage() {
               </Button>
             </Link>
           </div>
+          <MobileNav />
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="relative z-10 pt-24 sm:pt-32 pb-20 px-4">
+      <section className="relative z-10 pt-16 sm:pt-32 pb-16 sm:pb-20 px-4">
         <div className="container max-w-5xl mx-auto">
           <div className="max-w-3xl">
             <motion.div
@@ -73,41 +74,41 @@ export default function LandingPage() {
 
             <motion.h1
               initial="hidden" animate="visible" variants={fadeUp} custom={1}
-              className="text-5xl sm:text-7xl lg:text-8xl font-serif font-bold leading-[1.05] mb-6"
+              className="text-4xl sm:text-7xl lg:text-8xl font-serif font-bold leading-[1.08] mb-5"
             >
               The CV That Gets{" "}
               <span className="text-gradient">You Hired.</span>
               <br />
-              <span className="text-3xl sm:text-4xl lg:text-5xl font-sans font-medium text-muted-foreground">
+              <span className="text-2xl sm:text-4xl lg:text-5xl font-sans font-medium text-muted-foreground">
                 Today.
               </span>
             </motion.h1>
 
             <motion.p
               initial="hidden" animate="visible" variants={fadeUp} custom={2}
-              className="text-lg sm:text-xl text-muted-foreground max-w-2xl mb-10 leading-relaxed"
+              className="text-base sm:text-xl text-muted-foreground max-w-2xl mb-8 leading-relaxed"
             >
               Professional CV writing, cover letters, scholarship essays and career documents — crafted by dedicated specialists and delivered same day to clients in 90+ countries.
             </motion.p>
 
             <motion.div
               initial="hidden" animate="visible" variants={fadeUp} custom={3}
-              className="flex flex-col sm:flex-row gap-3 mb-10"
+              className="flex flex-col sm:flex-row gap-3 mb-8"
             >
-              <Link to="/order">
+              <Link to="/order" className="w-full sm:w-auto">
                 <Button
                   size="lg"
-                  className="bg-gradient-brand border-0 font-semibold h-13 px-8 shadow-glow gold-shimmer text-base"
+                  className="w-full sm:w-auto bg-gradient-brand border-0 font-semibold h-13 px-8 shadow-glow gold-shimmer text-base"
                 >
                   Order My CV Now
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Link to="/services">
+              <Link to="/services" className="w-full sm:w-auto">
                 <Button
                   variant="outline"
                   size="lg"
-                  className="border-primary/30 font-semibold h-13 px-8 hover:bg-primary/5"
+                  className="w-full sm:w-auto border-primary/30 font-semibold h-13 px-8 hover:bg-primary/5"
                 >
                   See All Services
                 </Button>
