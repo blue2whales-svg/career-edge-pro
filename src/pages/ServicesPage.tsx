@@ -33,7 +33,7 @@ const ALL_SERVICES = [
     icon: Shield, title: "ATS-Optimised CV", category: "Job Seeker",
     desc: "Engineered specifically to pass applicant tracking systems with high scores.",
     features: ["ATS score guarantee", "Keyword density analysis", "Format compliance", "Machine-readable layout"],
-    price: "From $59",
+    price: "From $30",
   },
   {
     icon: Globe, title: "International CV", category: "Job Seeker",
