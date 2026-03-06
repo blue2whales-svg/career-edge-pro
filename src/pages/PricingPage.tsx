@@ -15,7 +15,7 @@ const fadeUp = {
 const PACKAGES = [
   {
     name: "Starter",
-    price: "$49",
+    price: "$25",
     period: "one-time",
     desc: "Perfect for entry-level professionals needing a strong foundation.",
     icon: Zap,
@@ -31,7 +31,7 @@ const PACKAGES = [
   },
   {
     name: "Professional",
-    price: "$99",
+    price: "$45",
     period: "one-time",
     desc: "Our most popular package — everything you need to land interviews.",
     icon: Star,
@@ -49,7 +49,7 @@ const PACKAGES = [
   },
   {
     name: "Executive",
-    price: "$199",
+    price: "$79",
     period: "one-time",
     desc: "For senior leaders who need documents that command boardroom attention.",
     icon: Crown,
