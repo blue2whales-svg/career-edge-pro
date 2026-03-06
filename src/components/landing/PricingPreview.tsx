@@ -22,7 +22,7 @@ const PACKAGES = [
   },
   {
     name: "Professional",
-    price: "$99",
+    price: "$45",
     desc: "Most Popular — full package",
     features: ["CV + Cover Letter + LinkedIn", "ATS-Optimised", "Delivered < 3 Hours", "2 Revisions", "Dedicated Specialist"],
     popular: true,
