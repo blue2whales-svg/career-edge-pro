@@ -69,12 +69,12 @@ const PACKAGES = [
 ];
 
 const ADD_ONS = [
-  { name: "Additional Cover Letter", price: "$19" },
-  { name: "CV Review & Critique", price: "$19" },
-  { name: "Reference Letter Draft", price: "$29" },
-  { name: "Personal Statement", price: "$79" },
-  { name: "Scholarship Essay (per essay)", price: "$49" },
-  { name: "Rush Delivery (< 1 hour)", price: "+$29" },
+  { name: "Additional Cover Letter", price: "$10" },
+  { name: "CV Review & Critique", price: "$10" },
+  { name: "Reference Letter Draft", price: "$15" },
+  { name: "Personal Statement", price: "$35" },
+  { name: "Scholarship Essay (per essay)", price: "$25" },
+  { name: "Rush Delivery (< 1 hour)", price: "+$15" },
 ];
 
 export default function PricingPage() {
