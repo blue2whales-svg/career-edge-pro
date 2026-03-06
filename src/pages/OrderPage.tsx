@@ -202,14 +202,14 @@ export default function OrderPage() {
             <div className="lg:col-span-3">
               <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}>
                 <h2 className="text-xl font-bold mb-5">1. Choose your services</h2>
-                <div className="grid grid-cols-2 gap-3 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
                   {SERVICES.map((s) => {
                     const selected = selectedServices.includes(s.id);
                     return (
                       <button
                         key={s.id}
                         onClick={() => toggleService(s.id)}
-                        className={`rounded-xl border p-4 flex items-center gap-3 text-left transition-all duration-200 ${
+                        className={`rounded-xl border p-3.5 sm:p-4 flex items-center gap-3 text-left transition-all duration-200 ${
                           selected
                             ? "border-primary bg-primary/10 shadow-glow-sm"
                             : "border-border bg-card hover:border-primary/30"
@@ -221,7 +221,7 @@ export default function OrderPage() {
                           <s.icon className={`h-4 w-4 ${selected ? "text-primary-foreground" : "text-muted-foreground"}`} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm truncate">{s.label}</div>
+                          <div className="font-medium text-sm">{s.label}</div>
                           <div className="text-xs text-primary font-semibold">${s.price}</div>
                         </div>
                         {selected && <Check className="h-4 w-4 text-primary shrink-0" />}
