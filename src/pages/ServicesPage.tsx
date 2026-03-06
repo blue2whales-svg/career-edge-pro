@@ -21,7 +21,7 @@ const ALL_SERVICES = [
     icon: FileText, title: "Professional CV Writing", category: "Job Seeker",
     desc: "ATS-friendly, keyword-optimised CVs for all industries and career levels.",
     features: ["ATS-optimised formatting", "Industry-specific keywords", "Achievement-focused content", "Same-day delivery available"],
-    price: "From $49",
+    price: "From $25",
   },
   {
     icon: Award, title: "Executive CV Writing", category: "Executive",
