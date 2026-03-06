@@ -63,7 +63,7 @@ const ALL_SERVICES = [
     icon: GraduationCap, title: "Scholarship Essays", category: "Academic",
     desc: "13 major scholarship programs covered with proven success rates.",
     features: ["Program-specific format", "Leadership narratives", "Impact storytelling", "Deadline management"],
-    price: "From $99",
+    price: "From $40",
   },
   {
     icon: Users, title: "Reference Letters", category: "Academic",
