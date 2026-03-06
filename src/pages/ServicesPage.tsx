@@ -57,7 +57,7 @@ const ALL_SERVICES = [
     icon: BookOpen, title: "Personal Statement", category: "Academic",
     desc: "UCAS, postgraduate, MBA — compelling narratives that admissions love.",
     features: ["University-specific tone", "Authentic voice", "Structure optimisation", "Multiple revisions"],
-    price: "From $79",
+    price: "From $35",
   },
   {
     icon: GraduationCap, title: "Scholarship Essays", category: "Academic",
