@@ -29,7 +29,7 @@ const PACKAGES = [
   },
   {
     name: "Executive",
-    price: "$199",
+    price: "$79",
     desc: "Premium — human-reviewed",
     features: ["Executive CV + Cover Letter", "LinkedIn + Executive Bio", "Human Editor Review", "Delivered < 6 Hours", "Unlimited Revisions"],
     popular: false,
