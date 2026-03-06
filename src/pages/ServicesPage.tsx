@@ -81,7 +81,7 @@ const ALL_SERVICES = [
     icon: Briefcase, title: "Executive Bio", category: "Executive",
     desc: "Professional biography for board presentations, websites, and conferences.",
     features: ["Multiple lengths", "Tone versatility", "Achievement narrative", "Brand positioning"],
-    price: "From $49",
+    price: "From $25",
   },
   {
     icon: FileCheck, title: "CV Review & Critique", category: "Job Seeker",
