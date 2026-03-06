@@ -15,7 +15,7 @@ const fadeUp = {
 const PACKAGES = [
   {
     name: "Starter",
-    price: "$49",
+    price: "$25",
     desc: "Entry-level, fast delivery",
     features: ["Professional CV Writing", "ATS-Optimised Format", "Same-Day Delivery", "1 Revision"],
     popular: false,
