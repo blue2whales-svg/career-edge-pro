@@ -75,7 +75,7 @@ const ALL_SERVICES = [
     icon: Target, title: "Career Change CV", category: "Job Seeker",
     desc: "Repositioning your experience for a completely new industry or role.",
     features: ["Transferable skills focus", "Industry bridging", "Narrative reframing", "Skills-based format"],
-    price: "From $79",
+    price: "From $35",
   },
   {
     icon: Briefcase, title: "Executive Bio", category: "Executive",
