@@ -39,7 +39,7 @@ const ALL_SERVICES = [
     icon: Globe, title: "International CV", category: "Job Seeker",
     desc: "Country-specific formatting for 15+ markets worldwide.",
     features: ["Local format standards", "Cultural adaptation", "Language considerations", "Market-specific keywords"],
-    price: "From $69",
+    price: "From $35",
   },
   {
     icon: Pen, title: "Cover Letter Writing", category: "Job Seeker",
