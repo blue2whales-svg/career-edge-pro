@@ -51,7 +51,7 @@ const ALL_SERVICES = [
     icon: Linkedin, title: "LinkedIn Optimisation", category: "Job Seeker",
     desc: "Full profile rewrite: headline, about section, experience, and skills.",
     features: ["SEO-optimised headline", "Compelling summary", "Achievement bullets", "Skills endorsement strategy"],
-    price: "From $39",
+    price: "From $20",
   },
   {
     icon: BookOpen, title: "Personal Statement", category: "Academic",
