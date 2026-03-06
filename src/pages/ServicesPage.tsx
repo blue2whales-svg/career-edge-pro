@@ -27,7 +27,7 @@ const ALL_SERVICES = [
     icon: Award, title: "Executive CV Writing", category: "Executive",
     desc: "Premium CVs for C-suite, VP, and Director-level professionals.",
     features: ["Board-level language", "Human editor review", "Executive bio included", "Strategic positioning"],
-    price: "From $199",
+    price: "From $79",
   },
   {
     icon: Shield, title: "ATS-Optimised CV", category: "Job Seeker",
