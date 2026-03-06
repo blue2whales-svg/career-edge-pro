@@ -69,7 +69,7 @@ const ALL_SERVICES = [
     icon: Users, title: "Reference Letters", category: "Academic",
     desc: "We draft professional reference letters — your referee approves and signs.",
     features: ["Professional tone", "Achievement highlights", "Customised per program", "Quick turnaround"],
-    price: "From $39",
+    price: "From $20",
   },
   {
     icon: Target, title: "Career Change CV", category: "Job Seeker",
