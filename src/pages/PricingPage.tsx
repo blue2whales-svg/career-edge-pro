@@ -15,7 +15,7 @@ const fadeUp = {
 const PACKAGES = [
   {
     name: "Starter",
-    price: "$49",
+    price: "$25",
     period: "one-time",
     desc: "Perfect for entry-level professionals needing a strong foundation.",
     icon: Zap,
@@ -31,7 +31,7 @@ const PACKAGES = [
   },
   {
     name: "Professional",
-    price: "$99",
+    price: "$45",
     period: "one-time",
     desc: "Our most popular package — everything you need to land interviews.",
     icon: Star,
@@ -49,7 +49,7 @@ const PACKAGES = [
   },
   {
     name: "Executive",
-    price: "$199",
+    price: "$79",
     period: "one-time",
     desc: "For senior leaders who need documents that command boardroom attention.",
     icon: Crown,
@@ -69,12 +69,12 @@ const PACKAGES = [
 ];
 
 const ADD_ONS = [
-  { name: "Additional Cover Letter", price: "$19" },
-  { name: "CV Review & Critique", price: "$19" },
-  { name: "Reference Letter Draft", price: "$29" },
-  { name: "Personal Statement", price: "$79" },
-  { name: "Scholarship Essay (per essay)", price: "$49" },
-  { name: "Rush Delivery (< 1 hour)", price: "+$29" },
+  { name: "Additional Cover Letter", price: "$10" },
+  { name: "CV Review & Critique", price: "$10" },
+  { name: "Reference Letter Draft", price: "$15" },
+  { name: "Personal Statement", price: "$35" },
+  { name: "Scholarship Essay (per essay)", price: "$25" },
+  { name: "Rush Delivery (< 1 hour)", price: "+$15" },
 ];
 
 export default function PricingPage() {

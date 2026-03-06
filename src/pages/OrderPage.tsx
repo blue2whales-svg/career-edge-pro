@@ -21,15 +21,15 @@ const fadeUp = {
 };
 
 const SERVICES = [
-  { id: "cv", icon: FileText, label: "Professional CV", price: 49 },
-  { id: "executive-cv", icon: Award, label: "Executive CV", price: 199 },
-  { id: "cover-letter", icon: Pen, label: "Cover Letter", price: 29 },
-  { id: "linkedin", icon: Linkedin, label: "LinkedIn Optimisation", price: 39 },
-  { id: "personal-statement", icon: BookOpen, label: "Personal Statement", price: 79 },
-  { id: "scholarship", icon: GraduationCap, label: "Scholarship Essay", price: 99 },
-  { id: "reference", icon: Users, label: "Reference Letter", price: 39 },
-  { id: "ats-cv", icon: Shield, label: "ATS-Optimised CV", price: 59 },
-  { id: "international-cv", icon: Globe, label: "International CV", price: 69 },
+  { id: "cv", icon: FileText, label: "Professional CV", price: 25 },
+  { id: "executive-cv", icon: Award, label: "Executive CV", price: 45 },
+  { id: "cover-letter", icon: Pen, label: "Cover Letter", price: 15 },
+  { id: "linkedin", icon: Linkedin, label: "LinkedIn Optimisation", price: 20 },
+  { id: "personal-statement", icon: BookOpen, label: "Personal Statement", price: 35 },
+  { id: "scholarship", icon: GraduationCap, label: "Scholarship Essay", price: 40 },
+  { id: "reference", icon: Users, label: "Reference Letter", price: 20 },
+  { id: "ats-cv", icon: Shield, label: "ATS-Optimised CV", price: 30 },
+  { id: "international-cv", icon: Globe, label: "International CV", price: 35 },
 ];
 
 export default function OrderPage() {

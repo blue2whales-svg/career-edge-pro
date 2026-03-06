@@ -15,21 +15,21 @@ const fadeUp = {
 const PACKAGES = [
   {
     name: "Starter",
-    price: "$49",
+    price: "$25",
     desc: "Entry-level, fast delivery",
     features: ["Professional CV Writing", "ATS-Optimised Format", "Same-Day Delivery", "1 Revision"],
     popular: false,
   },
   {
     name: "Professional",
-    price: "$99",
+    price: "$45",
     desc: "Most Popular — full package",
     features: ["CV + Cover Letter + LinkedIn", "ATS-Optimised", "Delivered < 3 Hours", "2 Revisions", "Dedicated Specialist"],
     popular: true,
   },
   {
     name: "Executive",
-    price: "$199",
+    price: "$79",
     desc: "Premium — human-reviewed",
     features: ["Executive CV + Cover Letter", "LinkedIn + Executive Bio", "Human Editor Review", "Delivered < 6 Hours", "Unlimited Revisions"],
     popular: false,
