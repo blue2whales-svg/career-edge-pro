@@ -11,7 +11,7 @@ const fadeUp = {
   }),
 };
 
-export function JobCard({ job, index }: { job: Job; index: number }) {
+export function JobCard({ job, index, onClick }: { job: Job; index: number; onClick?: () => void }) {
   const isCruise = job.tag?.includes("Cruise");
   const isGulf = job.tag?.includes("Gulf");
 
