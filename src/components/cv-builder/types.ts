@@ -112,4 +112,5 @@ export const initialCVData: CVData = {
   customSectionContent: "",
   cvFormat: "chronological",
   targetMarket: "kenya",
+  experienceLevel: "",
 };
