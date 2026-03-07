@@ -52,6 +52,41 @@ export type Database = {
           },
         ]
       }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          order_id: string
+          sender_type: string
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          order_id: string
+          sender_type?: string
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          order_id?: string
+          sender_type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           created_at: string
@@ -135,6 +170,44 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      revision_requests: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          order_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          order_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          order_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "revision_requests_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

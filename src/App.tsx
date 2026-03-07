@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "@/components/ScrollToTop";
+import AuthGuard from "@/components/AuthGuard";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
@@ -16,6 +17,12 @@ import AboutPage from "./pages/AboutPage";
 import OrderPage from "./pages/OrderPage";
 import DocumentReviewPage from "./pages/DocumentReviewPage";
 import CVBuilderPage from "./pages/CVBuilderPage";
+import PortalLayout from "./components/PortalLayout";
+import PortalDashboard from "./pages/PortalDashboard";
+import OrderDetailPage from "./pages/OrderDetailPage";
+import PortalDocuments from "./pages/PortalDocuments";
+import PortalMessages from "./pages/PortalMessages";
+import PortalSettingsPage from "./pages/PortalSettingsPage";
 
 import NotFound from "./pages/NotFound";
 
@@ -41,9 +48,23 @@ const App = () => (
           <Route path="/order" element={<OrderPage />} />
           <Route path="/cv-builder" element={<CVBuilderPage />} />
           <Route path="/review/:orderId" element={<DocumentReviewPage />} />
-          
-          <Route path="/portal" element={<LandingPage />} />
-          <Route path="/admin" element={<LandingPage />} />
+
+          {/* Client Portal (auth-protected) */}
+          <Route
+            path="/portal"
+            element={
+              <AuthGuard>
+                <PortalLayout />
+              </AuthGuard>
+            }
+          >
+            <Route index element={<PortalDashboard />} />
+            <Route path="order/:orderId" element={<OrderDetailPage />} />
+            <Route path="documents" element={<PortalDocuments />} />
+            <Route path="messages" element={<PortalMessages />} />
+            <Route path="settings" element={<PortalSettingsPage />} />
+          </Route>
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
