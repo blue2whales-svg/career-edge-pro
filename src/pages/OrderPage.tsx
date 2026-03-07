@@ -41,6 +41,10 @@ export default function OrderPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [experience, setExperience] = useState("");
+  const [skills, setSkills] = useState("");
+  const [education, setEducation] = useState("");
   const [details, setDetails] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -97,7 +101,11 @@ export default function OrderPage() {
         details: details.trim() || null,
         total_amount: total,
         status: "pending",
-      }).select().single();
+        job_title: jobTitle.trim() || null,
+        experience: experience.trim() || null,
+        skills: skills.trim() || null,
+        education: education.trim() || null,
+      } as any).select().single();
 
       if (error) throw error;
 
@@ -111,13 +119,19 @@ export default function OrderPage() {
         }
       }
 
+      // Trigger Zapier webhook
       supabase.functions.invoke("notify-zapier", {
         body: { order },
       }).catch(console.error);
 
+      // Trigger AI document generation
+      supabase.functions.invoke("generate-cv", {
+        body: { orderId: order.id },
+      }).catch(console.error);
+
       setOrderId(order.id);
       setOrderPlaced(true);
-      toast({ title: "Order placed successfully! 🎉" });
+      toast({ title: "Order placed! AI is generating your documents 🚀" });
     } catch (error: any) {
       console.error("Order error:", error);
       toast({ title: "Something went wrong", description: error.message, variant: "destructive" });
@@ -138,42 +152,37 @@ export default function OrderPage() {
               <h1 className="text-3xl sm:text-5xl font-serif font-bold mb-4">
                 Order <span className="text-gradient">Confirmed!</span>
               </h1>
-              <p className="text-muted-foreground mb-2">Your order has been received. We'll start working on it immediately.</p>
-              <p className="text-sm font-mono text-primary mb-4">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
-              <p className="text-sm text-emerald-400 font-medium mb-8">📱 You'll receive an M-Pesa payment prompt on your phone shortly.</p>
-              
-              <div className="rounded-xl border border-border bg-card p-6 text-left mb-8">
-                <h3 className="font-semibold mb-3">What happens next?</h3>
-                <div className="space-y-3 text-sm text-muted-foreground">
-                  <div className="flex items-start gap-3">
-                    <span className="text-primary font-bold">1.</span>
-                    <span>Complete M-Pesa payment via the STK push on your phone</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="text-primary font-bold">2.</span>
-                    <span>A specialist will be assigned within 30 minutes</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="text-primary font-bold">3.</span>
-                    <span>You'll receive a WhatsApp message to confirm details</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="text-primary font-bold">4.</span>
-                    <span>Your documents will be delivered same-day</span>
-                  </div>
-                </div>
-              </div>
+               <p className="text-sm text-muted-foreground mb-2">Your AI-powered documents are being generated now!</p>
+               <p className="text-sm font-mono text-primary mb-8">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
+               
+               <div className="rounded-xl border border-border bg-card p-6 text-left mb-8">
+                 <h3 className="font-semibold mb-3">What happens next?</h3>
+                 <div className="space-y-3 text-sm text-muted-foreground">
+                   <div className="flex items-start gap-3">
+                     <span className="text-primary font-bold">1.</span>
+                     <span>AI is generating your documents right now (1-2 min)</span>
+                   </div>
+                   <div className="flex items-start gap-3">
+                     <span className="text-primary font-bold">2.</span>
+                     <span>Review and edit your documents on the next page</span>
+                   </div>
+                   <div className="flex items-start gap-3">
+                     <span className="text-primary font-bold">3.</span>
+                     <span>Download your polished, ready-to-use documents</span>
+                   </div>
+                 </div>
+               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link to="/">
-                  <Button variant="outline" className="border-primary/30">Back to Home</Button>
-                </Link>
-                <Link to="/signup">
-                  <Button className="bg-gradient-brand border-0 font-semibold gold-shimmer">
-                    Create Account to Track Orders
-                  </Button>
-                </Link>
-              </div>
+               <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                 <Link to={`/review/${orderId}`}>
+                   <Button className="bg-gradient-brand border-0 font-semibold gold-shimmer">
+                     Review Your Documents <ArrowRight className="ml-2 h-4 w-4" />
+                   </Button>
+                 </Link>
+                 <Link to="/">
+                   <Button variant="outline" className="border-primary/30">Back to Home</Button>
+                 </Link>
+               </div>
             </motion.div>
           </div>
         </section>
@@ -263,15 +272,44 @@ export default function OrderPage() {
                       />
                     </div>
                   </div>
+                </div>
+
+                <h2 className="text-xl font-bold mb-5">3. Career information</h2>
+                <p className="text-sm text-muted-foreground mb-4">The more detail you provide, the better your AI-generated documents will be.</p>
+                <div className="space-y-4 mb-6">
+                  <Input
+                    placeholder="Target job title (e.g. Senior Software Engineer)"
+                    value={jobTitle}
+                    onChange={(e) => setJobTitle(e.target.value)}
+                    className="h-12 bg-card border-border"
+                  />
                   <Textarea
-                    placeholder="Tell us about the role/scholarship you're targeting, your experience level, and any special instructions..."
+                    placeholder="Work experience — list your roles, companies, years, and key achievements..."
+                    value={experience}
+                    onChange={(e) => setExperience(e.target.value)}
+                    className="min-h-[120px] bg-card border-border"
+                  />
+                  <Input
+                    placeholder="Key skills (e.g. Python, Project Management, Financial Analysis)"
+                    value={skills}
+                    onChange={(e) => setSkills(e.target.value)}
+                    className="h-12 bg-card border-border"
+                  />
+                  <Input
+                    placeholder="Education (e.g. BSc Computer Science, University of Nairobi)"
+                    value={education}
+                    onChange={(e) => setEducation(e.target.value)}
+                    className="h-12 bg-card border-border"
+                  />
+                  <Textarea
+                    placeholder="Any special instructions, target company, or additional notes..."
                     value={details}
                     onChange={(e) => setDetails(e.target.value)}
-                    className="min-h-[120px] bg-card border-border"
+                    className="min-h-[100px] bg-card border-border"
                   />
                 </div>
 
-                <h2 className="text-xl font-bold mb-3">3. Upload existing documents</h2>
+                <h2 className="text-xl font-bold mb-3">4. Upload existing documents</h2>
                 <div
                   onClick={() => fileInputRef.current?.click()}
                   onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}

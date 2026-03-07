@@ -13,6 +13,7 @@ import JobsPage from "./pages/JobsPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import AboutPage from "./pages/AboutPage";
 import OrderPage from "./pages/OrderPage";
+import DocumentReviewPage from "./pages/DocumentReviewPage";
 
 import NotFound from "./pages/NotFound";
 
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/how-it-works" element={<HowItWorksPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/order" element={<OrderPage />} />
+          <Route path="/review/:orderId" element={<DocumentReviewPage />} />
           
           <Route path="/portal" element={<LandingPage />} />
           <Route path="/admin" element={<LandingPage />} />
