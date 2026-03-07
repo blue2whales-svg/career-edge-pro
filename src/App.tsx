@@ -13,6 +13,7 @@ import JobsPage from "./pages/JobsPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import AboutPage from "./pages/AboutPage";
 import OrderPage from "./pages/OrderPage";
+import DocumentReviewPage from "./pages/DocumentReviewPage";
 
 import NotFound from "./pages/NotFound";
 
