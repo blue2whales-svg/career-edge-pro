@@ -56,7 +56,7 @@ const PACKAGES = [
     features: [
       "Executive CV + Cover Letter",
       "LinkedIn + Executive Bio",
-      "Human Editor Review",
+      "Senior Editor Review",
       "Delivered in < 6 Hours",
       "Unlimited Revisions",
       "All Formats Included",

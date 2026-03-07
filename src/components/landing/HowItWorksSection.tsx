@@ -14,7 +14,7 @@ const fadeUp = {
 
 const STEPS = [
   { num: "01", title: "Submit", desc: "Fill our smart intake form, upload your existing CV, share the job or scholarship details." },
-  { num: "02", title: "We Craft It", desc: "Your dedicated specialist builds your document to the highest professional standard." },
+  { num: "02", title: "We Craft It", desc: "Your dedicated career expert personally builds your document to the highest professional standard." },
   { num: "03", title: "Download & Apply", desc: "Receive notification, log into your portal, download, and apply with confidence." },
 ];
 

@@ -26,7 +26,7 @@ const fadeUp = {
 
 const JOB_SEEKER_SERVICES = [
   { icon: FileText, title: "Professional CV Writing", desc: "ATS-friendly, keyword-optimised for all industries" },
-  { icon: Award, title: "Executive CV Writing", desc: "C-suite, VP, Director level — human-reviewed" },
+  { icon: Award, title: "Executive CV Writing", desc: "C-suite, VP, Director level — expert-reviewed" },
   { icon: Shield, title: "ATS-Friendly CV", desc: "Engineered to pass applicant tracking systems" },
   { icon: Globe, title: "International CV", desc: "Formatted for international job applications" },
   { icon: Pen, title: "Cover Letter Writing", desc: "Tailored per application with a compelling hook" },
