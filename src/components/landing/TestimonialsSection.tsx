@@ -12,60 +12,52 @@ const fadeUp = {
 
 const TESTIMONIALS = [
   {
-    name: "Emeka O.",
-    location: "Lagos",
-    countryCode: "ng",
+    name: "Wanjiru K.",
+    location: "Nairobi",
     text: "I ordered at 9pm and had my CV by midnight. Interview invite within a week.",
-    outcome: "Hired as Senior Engineer",
+    outcome: "Hired at Safaricom",
   },
   {
-    name: "Amina D.",
-    location: "Nairobi",
-    countryCode: "ke",
+    name: "Ochieng D.",
+    location: "Kisumu",
     text: "My Chevening essays were powerful and authentic. I got the scholarship.",
     outcome: "Chevening Scholar 2024",
   },
   {
-    name: "Sarah K.",
-    location: "London",
-    countryCode: "gb",
+    name: "Amina H.",
+    location: "Mombasa",
     text: "The ATS CV got me past three companies I'd failed before.",
-    outcome: "Joined Big 4 Consulting",
+    outcome: "Joined Deloitte Kenya",
   },
   {
-    name: "Khalid M.",
-    location: "Dubai",
-    countryCode: "ae",
-    text: "Executive quality. Worth every dirham. My CV commands attention now.",
-    outcome: "VP of Operations",
+    name: "Kamau N.",
+    location: "Nakuru",
+    text: "Executive quality. Worth every shilling. My CV commands attention now.",
+    outcome: "VP of Operations, KCB",
   },
   {
-    name: "Ravi P.",
-    location: "Mumbai",
-    countryCode: "in",
-    text: "My Fulbright personal statement was exceptional. I'm going to the US.",
-    outcome: "Fulbright Scholar",
+    name: "Faith M.",
+    location: "Nairobi",
+    text: "My MasterCard Foundation personal statement was exceptional. I'm going to study abroad.",
+    outcome: "MasterCard Foundation Scholar",
   },
   {
-    name: "Marcus T.",
-    location: "Houston",
-    countryCode: "us",
+    name: "Brian O.",
+    location: "Eldoret",
     text: "Fast, professional. My LinkedIn connections doubled after the rewrite.",
-    outcome: "Director of Sales",
+    outcome: "Head of Sales, Equity Bank",
   },
   {
-    name: "Grace A.",
-    location: "Accra",
-    countryCode: "gh",
+    name: "Gloria A.",
+    location: "Thika",
     text: "Commonwealth Scholarship essay — accepted first try. Life-changing.",
     outcome: "Commonwealth Scholar",
   },
   {
-    name: "Ana S.",
-    location: "Berlin",
-    countryCode: "de",
-    text: "The Erasmus motivation letter was exactly what I needed. Perfect tone.",
-    outcome: "Erasmus Mundus Scholar",
+    name: "Dennis W.",
+    location: "Nairobi",
+    text: "The cover letter was exactly what I needed for my Unilever application. Perfect tone.",
+    outcome: "Brand Manager, Unilever Kenya",
   },
 ];
 
@@ -77,13 +69,13 @@ export function TestimonialsSection() {
           initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
           className="text-primary font-mono text-sm text-center mb-3 tracking-wider uppercase"
         >
-          Global Success Stories
+          Kenyan Success Stories
         </motion.p>
         <motion.h2
           initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}
           className="text-3xl sm:text-5xl font-serif font-bold text-center mb-16"
         >
-          Trusted by professionals <span className="text-gradient">worldwide</span>.
+          Trusted by professionals <span className="text-gradient">across Kenya</span>.
         </motion.h2>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -103,8 +95,8 @@ export function TestimonialsSection() {
                 <div className="font-semibold text-sm flex items-center gap-2">
                   {t.name}
                   <img
-                    src={`https://flagcdn.com/w20/${t.countryCode}.png`}
-                    alt={t.location}
+                    src="https://flagcdn.com/w20/ke.png"
+                    alt="Kenya"
                     className="w-5 h-3.5 rounded-[2px] object-cover"
                   />
                 </div>
