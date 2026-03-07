@@ -176,7 +176,7 @@ export default function LandingPage() {
                 </Button>
               </Link>
             </div>
-            <p className="text-xs text-muted-foreground mt-4 font-mono">No credit card upfront · Satisfaction guaranteed</p>
+            <p className="text-xs text-muted-foreground mt-4 font-mono">Pay via M-Pesa · Satisfaction guaranteed</p>
           </motion.div>
         </div>
       </section>
