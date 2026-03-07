@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FileText, Download, Loader2, RefreshCw, Check, ArrowLeft } from "lucide-react";
+import { FileText, Download, Loader2, RefreshCw, Check, ArrowLeft, Eye, Edit3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import ReactMarkdown from "react-markdown";
 import PageLayout from "@/components/PageLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -12,6 +13,7 @@ const SERVICE_LABELS: Record<string, string> = {
   cv: "Professional CV",
   "executive-cv": "Executive CV",
   "ats-cv": "ATS-Optimised CV",
+  "modern-cv": "Modern CV",
   "international-cv": "International CV",
   "cover-letter": "Cover Letter",
   linkedin: "LinkedIn Profile",
