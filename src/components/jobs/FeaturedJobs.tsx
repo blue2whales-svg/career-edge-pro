@@ -74,11 +74,9 @@ export function FeaturedJobs() {
                 </span>
               </div>
 
-              <Link to="/order" className="block">
-                <Button size="sm" className="w-full bg-gradient-brand border-0 font-semibold text-xs gold-shimmer">
-                  Get CV for this role <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-                </Button>
-              </Link>
+              <Button size="sm" className="w-full bg-gradient-brand border-0 font-semibold text-xs gold-shimmer" onClick={(e) => { e.stopPropagation(); setSelectedJob(job); }}>
+                View Details & Apply <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+              </Button>
             </motion.div>
           ))}
         </div>
