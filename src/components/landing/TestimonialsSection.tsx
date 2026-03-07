@@ -69,13 +69,13 @@ export function TestimonialsSection() {
           initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
           className="text-primary font-mono text-sm text-center mb-3 tracking-wider uppercase"
         >
-          Global Success Stories
+          Kenyan Success Stories
         </motion.p>
         <motion.h2
           initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}
           className="text-3xl sm:text-5xl font-serif font-bold text-center mb-16"
         >
-          Trusted by professionals <span className="text-gradient">worldwide</span>.
+          Trusted by professionals <span className="text-gradient">across Kenya</span>.
         </motion.h2>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
