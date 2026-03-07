@@ -1,5 +1,6 @@
 import { Label } from "@/components/ui/label";
-import { CVData } from "./types";
+import { Crown, Briefcase, GraduationCap, Award } from "lucide-react";
+import { CVData, PRICING_TIERS } from "./types";
 
 interface Props {
   data: CVData;
@@ -20,11 +21,57 @@ const MARKETS = [
   { id: "usa", label: "🇺🇸 USA", desc: "No photo, 1-page preferred, called 'Resume'" },
 ];
 
+const TIER_ICONS: Record<string, React.ElementType> = {
+  "entry-level": GraduationCap,
+  "mid-level": Briefcase,
+  "senior": Award,
+  "executive": Crown,
+};
+
+function formatKES(amount: number) {
+  return `KES ${amount.toLocaleString()}`;
+}
+
 export default function StepSettings({ data, onChange }: Props) {
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-serif font-bold text-foreground">CV Settings</h2>
+      <h2 className="text-xl font-serif font-bold text-foreground">CV Settings & Pricing</h2>
 
+      {/* Experience Level / Pricing */}
+      <div className="space-y-3">
+        <Label>Your Experience Level</Label>
+        <p className="text-xs text-muted-foreground">Pricing is based on your career level — executives get premium, tailored CVs.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {Object.entries(PRICING_TIERS).map(([id, tier]) => {
+            const Icon = TIER_ICONS[id];
+            const isSelected = data.experienceLevel === id;
+            return (
+              <button
+                key={id}
+                onClick={() => onChange({ experienceLevel: id })}
+                className={`relative text-left rounded-xl border p-4 transition-all ${
+                  isSelected ? "border-primary bg-primary/10 ring-1 ring-primary/30" : "border-border bg-card hover:border-primary/30"
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className={`p-2 rounded-lg ${isSelected ? "bg-primary/20" : "bg-muted"}`}>
+                    <Icon className={`h-4 w-4 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm font-semibold block">{tier.label}</span>
+                    <p className="text-xs text-muted-foreground">{tier.desc}</p>
+                  </div>
+                </div>
+                <div className={`mt-2 text-right text-sm font-bold ${isSelected ? "text-primary" : "text-foreground"}`}>
+                  {formatKES(tier.price)}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* CV Format */}
       <div className="space-y-3">
         <Label>CV Format</Label>
         <div className="space-y-2">
@@ -32,7 +79,7 @@ export default function StepSettings({ data, onChange }: Props) {
             <button
               key={f.id}
               onClick={() => onChange({ cvFormat: f.id })}
-              className={`w-full text-left rounded-xl border p-4 transition-all ${
+              className={`w-full text-left rounded-xl border p-3 sm:p-4 transition-all ${
                 data.cvFormat === f.id ? "border-primary bg-primary/10" : "border-border bg-card hover:border-primary/30"
               }`}
             >
@@ -43,6 +90,7 @@ export default function StepSettings({ data, onChange }: Props) {
         </div>
       </div>
 
+      {/* Target Market */}
       <div className="space-y-3">
         <Label>Target Market</Label>
         <p className="text-xs text-muted-foreground">This auto-adjusts which personal details appear on your CV.</p>
@@ -51,7 +99,7 @@ export default function StepSettings({ data, onChange }: Props) {
             <button
               key={m.id}
               onClick={() => onChange({ targetMarket: m.id })}
-              className={`w-full text-left rounded-xl border p-4 transition-all ${
+              className={`w-full text-left rounded-xl border p-3 sm:p-4 transition-all ${
                 data.targetMarket === m.id ? "border-primary bg-primary/10" : "border-border bg-card hover:border-primary/30"
               }`}
             >
