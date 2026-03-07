@@ -18,7 +18,8 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
   return (
     <motion.div
       initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={index % 4}
-      className="group rounded-xl border border-border bg-card p-5 sm:p-6 hover:border-primary/30 hover:shadow-glow-sm transition-all duration-300"
+      className="group rounded-xl border border-border bg-card p-5 sm:p-6 hover:border-primary/30 hover:shadow-glow-sm transition-all duration-300 cursor-pointer"
+      onClick={onClick}
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex-1">
