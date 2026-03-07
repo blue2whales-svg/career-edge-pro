@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { MapPin, DollarSign, Clock, Building2, ArrowRight, Ship, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import type { Job } from "@/data/jobs";
 
 const fadeUp = {
