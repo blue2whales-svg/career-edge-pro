@@ -61,28 +61,28 @@ export default function PageLayout({ children }: PageLayoutProps) {
             </div>
             <div>
               <h4 className="font-semibold text-sm mb-3">Services</h4>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <Link to="/services" className="block hover:text-foreground transition-colors">CV Writing</Link>
-                <Link to="/services" className="block hover:text-foreground transition-colors">Cover Letters</Link>
-                <Link to="/services" className="block hover:text-foreground transition-colors">LinkedIn</Link>
-                <Link to="/scholarships" className="block hover:text-foreground transition-colors">Scholarships</Link>
+              <div className="space-y-2 text-sm">
+                <Link to="/services" className="block text-primary hover:text-primary/80 transition-colors">CV Writing</Link>
+                <Link to="/services" className="block text-primary hover:text-primary/80 transition-colors">Cover Letters</Link>
+                <Link to="/services" className="block text-primary hover:text-primary/80 transition-colors">LinkedIn</Link>
+                <Link to="/scholarships" className="block text-primary hover:text-primary/80 transition-colors">Scholarships</Link>
               </div>
             </div>
             <div>
               <h4 className="font-semibold text-sm mb-3">Company</h4>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <Link to="/about" className="block hover:text-foreground transition-colors">About</Link>
-                <Link to="/how-it-works" className="block hover:text-foreground transition-colors">How It Works</Link>
-                <Link to="/pricing" className="block hover:text-foreground transition-colors">Pricing</Link>
-                <Link to="/jobs" className="block hover:text-foreground transition-colors">Jobs Board</Link>
+              <div className="space-y-2 text-sm">
+                <Link to="/about" className="block text-primary hover:text-primary/80 transition-colors">About</Link>
+                <Link to="/how-it-works" className="block text-primary hover:text-primary/80 transition-colors">How It Works</Link>
+                <Link to="/pricing" className="block text-primary hover:text-primary/80 transition-colors">Pricing</Link>
+                <Link to="/jobs" className="block text-primary hover:text-primary/80 transition-colors">Jobs Board</Link>
               </div>
             </div>
             <div>
               <h4 className="font-semibold text-sm mb-3">Account</h4>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <Link to="/login" className="block hover:text-foreground transition-colors">Log in</Link>
-                <Link to="/signup" className="block hover:text-foreground transition-colors">Sign up</Link>
-                <Link to="/order" className="block hover:text-foreground transition-colors">Order Now</Link>
+              <div className="space-y-2 text-sm">
+                <Link to="/login" className="block text-primary hover:text-primary/80 transition-colors">Log in</Link>
+                <Link to="/signup" className="block text-primary hover:text-primary/80 transition-colors">Sign up</Link>
+                <Link to="/order" className="block text-primary hover:text-primary/80 transition-colors">Order Now</Link>
               </div>
             </div>
           </div>
