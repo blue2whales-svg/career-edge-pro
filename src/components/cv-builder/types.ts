@@ -69,7 +69,15 @@ export interface CVData {
   // Step 8: Settings
   cvFormat: string;
   targetMarket: string;
+  experienceLevel: string;
 }
+
+export const PRICING_TIERS: Record<string, { label: string; price: number; desc: string }> = {
+  "entry-level": { label: "Entry Level / Fresh Graduate", price: 1500, desc: "0–2 years experience" },
+  "mid-level": { label: "Mid-Level Professional", price: 2500, desc: "3–7 years experience" },
+  "senior": { label: "Senior Professional", price: 3500, desc: "8–15 years experience" },
+  "executive": { label: "Executive / C-Suite", price: 5500, desc: "15+ years, leadership roles" },
+};
 
 export const initialCVData: CVData = {
   fullName: "",
@@ -104,4 +112,5 @@ export const initialCVData: CVData = {
   customSectionContent: "",
   cvFormat: "chronological",
   targetMarket: "kenya",
+  experienceLevel: "",
 };
