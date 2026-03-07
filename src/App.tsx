@@ -14,6 +14,7 @@ import HowItWorksPage from "./pages/HowItWorksPage";
 import AboutPage from "./pages/AboutPage";
 import OrderPage from "./pages/OrderPage";
 import DocumentReviewPage from "./pages/DocumentReviewPage";
+import CVBuilderPage from "./pages/CVBuilderPage";
 
 import NotFound from "./pages/NotFound";
 
