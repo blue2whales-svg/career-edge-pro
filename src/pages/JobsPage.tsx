@@ -7,7 +7,8 @@ import { Link } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import { FeaturedJobs } from "@/components/jobs/FeaturedJobs";
 import { JobCard } from "@/components/jobs/JobCard";
-import { INDUSTRIES, JOBS } from "@/data/jobs";
+import { JobDetailModal } from "@/components/jobs/JobDetailModal";
+import { INDUSTRIES, JOBS, type Job } from "@/data/jobs";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
