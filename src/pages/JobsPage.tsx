@@ -108,7 +108,7 @@ export default function JobsPage() {
         <div className="container max-w-5xl mx-auto">
           <div className="space-y-3">
             {filtered.map((job, i) => (
-              <JobCard key={i} job={job} index={i} />
+              <JobCard key={i} job={job} index={i} onClick={() => setSelectedJob(job)} />
             ))}
           </div>
 
