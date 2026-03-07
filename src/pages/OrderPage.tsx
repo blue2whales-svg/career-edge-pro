@@ -272,15 +272,44 @@ export default function OrderPage() {
                       />
                     </div>
                   </div>
+                </div>
+
+                <h2 className="text-xl font-bold mb-5">3. Career information</h2>
+                <p className="text-sm text-muted-foreground mb-4">The more detail you provide, the better your AI-generated documents will be.</p>
+                <div className="space-y-4 mb-6">
+                  <Input
+                    placeholder="Target job title (e.g. Senior Software Engineer)"
+                    value={jobTitle}
+                    onChange={(e) => setJobTitle(e.target.value)}
+                    className="h-12 bg-card border-border"
+                  />
                   <Textarea
-                    placeholder="Tell us about the role/scholarship you're targeting, your experience level, and any special instructions..."
+                    placeholder="Work experience — list your roles, companies, years, and key achievements..."
+                    value={experience}
+                    onChange={(e) => setExperience(e.target.value)}
+                    className="min-h-[120px] bg-card border-border"
+                  />
+                  <Input
+                    placeholder="Key skills (e.g. Python, Project Management, Financial Analysis)"
+                    value={skills}
+                    onChange={(e) => setSkills(e.target.value)}
+                    className="h-12 bg-card border-border"
+                  />
+                  <Input
+                    placeholder="Education (e.g. BSc Computer Science, University of Nairobi)"
+                    value={education}
+                    onChange={(e) => setEducation(e.target.value)}
+                    className="h-12 bg-card border-border"
+                  />
+                  <Textarea
+                    placeholder="Any special instructions, target company, or additional notes..."
                     value={details}
                     onChange={(e) => setDetails(e.target.value)}
-                    className="min-h-[120px] bg-card border-border"
+                    className="min-h-[100px] bg-card border-border"
                   />
                 </div>
 
-                <h2 className="text-xl font-bold mb-3">3. Upload existing documents</h2>
+                <h2 className="text-xl font-bold mb-3">4. Upload existing documents</h2>
                 <div
                   onClick={() => fileInputRef.current?.click()}
                   onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
