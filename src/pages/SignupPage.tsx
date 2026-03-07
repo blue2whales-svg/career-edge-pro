@@ -28,7 +28,7 @@ export default function SignupPage() {
       password,
       options: {
         data: { display_name: name },
-        emailRedirectTo: window.location.origin,
+        emailRedirectTo: `${window.location.origin}/portal`,
       },
     });
 
