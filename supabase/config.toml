@@ -2,3 +2,6 @@ project_id = "jxuqpxzsbkkywieughgh"
 
 [functions.notify-zapier]
 verify_jwt = false
+
+[functions.generate-cv]
+verify_jwt = false
