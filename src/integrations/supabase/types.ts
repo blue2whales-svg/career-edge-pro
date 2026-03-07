@@ -14,15 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      generated_documents: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          order_id: string
+          service_type: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          order_id: string
+          service_type: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          order_id?: string
+          service_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_documents_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           created_at: string
           details: string | null
+          education: string | null
           email: string
+          experience: string | null
           id: string
+          job_title: string | null
           name: string
           phone: string | null
           services: string[]
+          skills: string | null
           status: string
           total_amount: number
           updated_at: string
@@ -31,11 +73,15 @@ export type Database = {
         Insert: {
           created_at?: string
           details?: string | null
+          education?: string | null
           email: string
+          experience?: string | null
           id?: string
+          job_title?: string | null
           name: string
           phone?: string | null
           services: string[]
+          skills?: string | null
           status?: string
           total_amount?: number
           updated_at?: string
@@ -44,11 +90,15 @@ export type Database = {
         Update: {
           created_at?: string
           details?: string | null
+          education?: string | null
           email?: string
+          experience?: string | null
           id?: string
+          job_title?: string | null
           name?: string
           phone?: string | null
           services?: string[]
+          skills?: string | null
           status?: string
           total_amount?: number
           updated_at?: string
