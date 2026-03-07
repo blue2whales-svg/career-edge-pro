@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin, DollarSign, Clock, Building2, ArrowRight, Flame, Ship } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { FEATURED_JOBS } from "@/data/jobs";
+import { FEATURED_JOBS, type Job } from "@/data/jobs";
+import { JobDetailModal } from "./JobDetailModal";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
