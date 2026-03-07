@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { MapPin, DollarSign, Clock, Building2, ArrowRight, Ship, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 import type { Job } from "@/data/jobs";
 
 const fadeUp = {
@@ -12,14 +11,15 @@ const fadeUp = {
   }),
 };
 
-export function JobCard({ job, index }: { job: Job; index: number }) {
+export function JobCard({ job, index, onClick }: { job: Job; index: number; onClick?: () => void }) {
   const isCruise = job.tag?.includes("Cruise");
   const isGulf = job.tag?.includes("Gulf");
 
   return (
     <motion.div
       initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={index % 4}
-      className="group rounded-xl border border-border bg-card p-5 sm:p-6 hover:border-primary/30 hover:shadow-glow-sm transition-all duration-300"
+      className="group rounded-xl border border-border bg-card p-5 sm:p-6 hover:border-primary/30 hover:shadow-glow-sm transition-all duration-300 cursor-pointer"
+      onClick={onClick}
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex-1">
@@ -63,11 +63,9 @@ export function JobCard({ job, index }: { job: Job; index: number }) {
             </div>
           </div>
         </div>
-        <Link to="/order" className="shrink-0">
-          <Button className="w-full sm:w-auto bg-gradient-brand border-0 font-semibold gold-shimmer">
-            Get CV for this role <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </Link>
+        <Button className="w-full sm:w-auto bg-gradient-brand border-0 font-semibold gold-shimmer shrink-0" onClick={(e) => { e.stopPropagation(); onClick?.(); }}>
+          View Details <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
       </div>
     </motion.div>
   );

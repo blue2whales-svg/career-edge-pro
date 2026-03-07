@@ -7,7 +7,8 @@ import { Link } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import { FeaturedJobs } from "@/components/jobs/FeaturedJobs";
 import { JobCard } from "@/components/jobs/JobCard";
-import { INDUSTRIES, JOBS } from "@/data/jobs";
+import { JobDetailModal } from "@/components/jobs/JobDetailModal";
+import { INDUSTRIES, JOBS, type Job } from "@/data/jobs";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -20,6 +21,7 @@ const fadeUp = {
 export default function JobsPage() {
   const [search, setSearch] = useState("");
   const [selectedIndustry, setSelectedIndustry] = useState("All");
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   const filtered = JOBS.filter((job) => {
     const matchSearch = job.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -31,7 +33,7 @@ export default function JobsPage() {
 
   return (
     <PageLayout>
-      {/* Hero */}
+      <JobDetailModal job={selectedJob} open={!!selectedJob} onOpenChange={(open) => !open && setSelectedJob(null)} />
       <section className="relative z-10 pt-16 sm:pt-24 pb-10 px-4">
         <div className="container max-w-5xl mx-auto text-center">
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}
@@ -106,7 +108,7 @@ export default function JobsPage() {
         <div className="container max-w-5xl mx-auto">
           <div className="space-y-3">
             {filtered.map((job, i) => (
-              <JobCard key={i} job={job} index={i} />
+              <JobCard key={i} job={job} index={i} onClick={() => setSelectedJob(job)} />
             ))}
           </div>
 

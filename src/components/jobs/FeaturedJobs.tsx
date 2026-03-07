@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin, DollarSign, Clock, Building2, ArrowRight, Flame, Ship } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { FEATURED_JOBS } from "@/data/jobs";
+import { FEATURED_JOBS, type Job } from "@/data/jobs";
+import { JobDetailModal } from "./JobDetailModal";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -13,7 +15,11 @@ const fadeUp = {
 };
 
 export function FeaturedJobs() {
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+
   return (
+    <>
+    <JobDetailModal job={selectedJob} open={!!selectedJob} onOpenChange={(open) => !open && setSelectedJob(null)} />
     <section className="relative z-10 pb-8 px-4">
       <div className="container max-w-5xl mx-auto">
         <div className="flex items-center gap-3 mb-5">
@@ -31,7 +37,8 @@ export function FeaturedJobs() {
             <motion.div
               key={i}
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}
-              className="group rounded-xl border-2 border-brand-red/20 bg-card p-5 hover:border-brand-red/40 hover:shadow-glow-sm transition-all duration-300 relative overflow-hidden"
+              className="group rounded-xl border-2 border-brand-red/20 bg-card p-5 hover:border-brand-red/40 hover:shadow-glow-sm transition-all duration-300 relative overflow-hidden cursor-pointer"
+              onClick={() => setSelectedJob(job)}
             >
               {/* Hot badge */}
               <div className="absolute top-3 right-3">
@@ -67,15 +74,14 @@ export function FeaturedJobs() {
                 </span>
               </div>
 
-              <Link to="/order" className="block">
-                <Button size="sm" className="w-full bg-gradient-brand border-0 font-semibold text-xs gold-shimmer">
-                  Get CV for this role <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-                </Button>
-              </Link>
+              <Button size="sm" className="w-full bg-gradient-brand border-0 font-semibold text-xs gold-shimmer" onClick={(e) => { e.stopPropagation(); setSelectedJob(job); }}>
+                View Details & Apply <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+              </Button>
             </motion.div>
           ))}
         </div>
       </div>
     </section>
+    </>
   );
 }
