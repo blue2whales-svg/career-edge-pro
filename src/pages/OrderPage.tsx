@@ -41,6 +41,10 @@ export default function OrderPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [experience, setExperience] = useState("");
+  const [skills, setSkills] = useState("");
+  const [education, setEducation] = useState("");
   const [details, setDetails] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
