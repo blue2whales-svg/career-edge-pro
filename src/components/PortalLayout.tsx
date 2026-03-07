@@ -10,6 +10,7 @@ import {
   Menu,
   User,
   X,
+  Home,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -87,13 +88,17 @@ export default function PortalLayout() {
           )}
         </div>
 
-        {/* Online indicator */}
+        {/* Online indicator + Back to Home */}
         {(isMobile || !collapsed) && (
-          <div className="px-4 py-3 border-b border-border">
+          <div className="px-4 py-3 border-b border-border space-y-2">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-xs text-muted-foreground">Specialist Online</span>
             </div>
+            <Link to="/" className="flex items-center gap-2 text-xs text-primary hover:underline">
+              <Home className="h-3 w-3" />
+              Back to Home
+            </Link>
           </div>
         )}
 
