@@ -279,7 +279,7 @@ export default function CheckoutPreviewPage() {
                 region="Kenya"
                 flag="🇰🇪"
                 currency="KES "
-                amount="7,800"
+                amount="4,000"
                 methods={KENYA_METHODS}
                 color="bg-emerald-500/5 border-b border-emerald-500/10"
               />
