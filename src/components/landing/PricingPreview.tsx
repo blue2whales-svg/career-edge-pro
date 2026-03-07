@@ -16,6 +16,7 @@ const PACKAGES = [
   {
     name: "Starter",
     price: "KES 2,500",
+    originalPrice: "KES 5,000",
     desc: "Entry-level, fast delivery",
     features: ["Professional CV Writing", "ATS-Optimised Format", "Same-Day Delivery", "1 Revision"],
     popular: false,
@@ -23,6 +24,7 @@ const PACKAGES = [
   {
     name: "Professional",
     price: "KES 4,500",
+    originalPrice: "KES 9,000",
     desc: "Most Popular — full package",
     features: ["CV + Cover Letter + LinkedIn", "ATS-Optimised", "Delivered < 3 Hours", "2 Revisions", "Dedicated Specialist"],
     popular: true,
@@ -30,6 +32,7 @@ const PACKAGES = [
   {
     name: "Executive",
     price: "KES 7,900",
+    originalPrice: "KES 15,000",
     desc: "Premium — human-reviewed",
     features: ["Executive CV + Cover Letter", "LinkedIn + Executive Bio", "Human Editor Review", "Delivered < 6 Hours", "Unlimited Revisions"],
     popular: false,
@@ -68,9 +71,14 @@ export function PricingPreview() {
                   Most Popular
                 </span>
               )}
-              <div className="text-3xl font-bold mt-3 mb-1">{pkg.price}</div>
+              <div className="flex items-center gap-2 mt-3 mb-1">
+                <span className="text-3xl font-bold">{pkg.price}</span>
+                <span className="text-base text-muted-foreground line-through opacity-60">{pkg.originalPrice}</span>
+              </div>
               <div className="font-semibold mb-1">{pkg.name}</div>
-              <p className="text-sm text-muted-foreground mb-5">{pkg.desc}</p>
+              <div className="inline-block rounded-full bg-brand-red/10 border border-brand-red/20 px-2 py-0.5 text-[10px] font-mono text-brand-red mb-1">
+                Save {Math.round((1 - parseInt(pkg.price.replace(/\D/g, '')) / parseInt(pkg.originalPrice.replace(/\D/g, ''))) * 100)}%
+              </div>
               <ul className="space-y-2 mb-6">
                 {pkg.features.map((f, j) => (
                   <li key={j} className="flex items-center gap-2 text-sm">
