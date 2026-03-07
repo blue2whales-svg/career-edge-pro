@@ -173,16 +173,16 @@ export default function OrderPage() {
                  </div>
                </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link to="/">
-                  <Button variant="outline" className="border-primary/30">Back to Home</Button>
-                </Link>
-                <Link to="/signup">
-                  <Button className="bg-gradient-brand border-0 font-semibold gold-shimmer">
-                    Create Account to Track Orders
-                  </Button>
-                </Link>
-              </div>
+               <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                 <Link to={`/review/${orderId}`}>
+                   <Button className="bg-gradient-brand border-0 font-semibold gold-shimmer">
+                     Review Your Documents <ArrowRight className="ml-2 h-4 w-4" />
+                   </Button>
+                 </Link>
+                 <Link to="/">
+                   <Button variant="outline" className="border-primary/30">Back to Home</Button>
+                 </Link>
+               </div>
             </motion.div>
           </div>
         </section>
