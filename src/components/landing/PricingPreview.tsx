@@ -71,8 +71,10 @@ export function PricingPreview() {
                   Most Popular
                 </span>
               )}
-              <div className="text-3xl font-bold mt-3 mb-1">{pkg.price}</div>
-              <div className="font-semibold mb-1">{pkg.name}</div>
+              <div className="flex items-center gap-2 mt-3 mb-1">
+                <span className="text-3xl font-bold">{pkg.price}</span>
+                <span className="text-base text-muted-foreground line-through opacity-60">{pkg.originalPrice}</span>
+              </div>
               <p className="text-sm text-muted-foreground mb-5">{pkg.desc}</p>
               <ul className="space-y-2 mb-6">
                 {pkg.features.map((f, j) => (
