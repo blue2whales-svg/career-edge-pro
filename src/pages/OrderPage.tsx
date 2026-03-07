@@ -29,6 +29,7 @@ const SERVICES = [
   { id: "scholarship", icon: GraduationCap, label: "Scholarship Essay", price: 4000 },
   { id: "reference", icon: Users, label: "Reference Letter", price: 2000 },
   { id: "ats-cv", icon: Shield, label: "ATS-Optimised CV", price: 3000 },
+  { id: "modern-cv", icon: FileText, label: "Modern CV", price: 3000 },
   { id: "international-cv", icon: Globe, label: "International CV", price: 3500 },
 ];
 
