@@ -21,6 +21,7 @@ const fadeUp = {
 export default function JobsPage() {
   const [search, setSearch] = useState("");
   const [selectedIndustry, setSelectedIndustry] = useState("All");
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   const filtered = JOBS.filter((job) => {
     const matchSearch = job.title.toLowerCase().includes(search.toLowerCase()) ||
