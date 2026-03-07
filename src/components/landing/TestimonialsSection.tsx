@@ -95,8 +95,8 @@ export function TestimonialsSection() {
                 <div className="font-semibold text-sm flex items-center gap-2">
                   {t.name}
                   <img
-                    src={`https://flagcdn.com/w20/${t.countryCode}.png`}
-                    alt={t.location}
+                    src="https://flagcdn.com/w20/ke.png"
+                    alt="Kenya"
                     className="w-5 h-3.5 rounded-[2px] object-cover"
                   />
                 </div>
