@@ -31,7 +31,7 @@ serve(async (req) => {
 
     // Generate a document for each CV-related service
     const cvServices = order.services.filter((s: string) =>
-      ["cv", "executive-cv", "ats-cv", "international-cv", "cover-letter", "linkedin", "personal-statement", "scholarship", "reference"].includes(s)
+      ["cv", "executive-cv", "ats-cv", "modern-cv", "international-cv", "cover-letter", "linkedin", "personal-statement", "scholarship", "reference"].includes(s)
     );
 
     const results = [];
