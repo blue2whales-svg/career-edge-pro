@@ -20,7 +20,7 @@ const NAV_ITEMS = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
   { label: "Applications", icon: Briefcase, path: "/dashboard/applications" },
   { label: "Documents", icon: FolderOpen, path: "/documents" },
-  { label: "AI Generator", icon: Sparkles, path: "/apply" },
+  { label: "Cover Letter Studio", icon: Sparkles, path: "/apply" },
   { label: "Zapier Agents", icon: Zap, path: "/agents" },
   { label: "Analytics", icon: BarChart3, path: "/dashboard/analytics" },
   { label: "Settings", icon: Settings, path: "/settings" },

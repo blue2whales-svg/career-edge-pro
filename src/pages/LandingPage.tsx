@@ -88,7 +88,7 @@ export default function LandingPage() {
               initial="hidden" animate="visible" variants={fadeUp} custom={2}
               className="text-base sm:text-xl text-muted-foreground max-w-2xl mb-8 leading-relaxed"
             >
-              Professional CV writing, cover letters, scholarship essays and career documents — crafted by dedicated specialists and delivered same day. Pay instantly via M-Pesa.
+              Professional CV writing, cover letters, scholarship essays and career documents — personally crafted by our expert team and delivered same day. We're always online. Pay instantly via M-Pesa.
             </motion.p>
 
             <motion.div

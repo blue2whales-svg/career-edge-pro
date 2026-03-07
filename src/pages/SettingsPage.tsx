@@ -38,7 +38,7 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between">
             <div>
               <div className="font-medium">Free Plan</div>
-              <div className="text-sm text-muted-foreground">Unlimited applications · 5 AI generations/month</div>
+              <div className="text-sm text-muted-foreground">Unlimited applications · 5 document requests/month</div>
             </div>
             <Button variant="outline" size="sm">Upgrade</Button>
           </div>

@@ -71,7 +71,7 @@ export default function StepSummary({ data, onChange }: Props) {
 
       <Button onClick={generateSummary} disabled={generating} variant="outline" className="gap-2">
         {generating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4 text-primary" />}
-        AI Generate Summary
+        Generate Summary
       </Button>
     </div>
   );
