@@ -15,7 +15,11 @@ const fadeUp = {
 };
 
 export function FeaturedJobs() {
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+
   return (
+    <>
+    <JobDetailModal job={selectedJob} open={!!selectedJob} onOpenChange={(open) => !open && setSelectedJob(null)} />
     <section className="relative z-10 pb-8 px-4">
       <div className="container max-w-5xl mx-auto">
         <div className="flex items-center gap-3 mb-5">
