@@ -75,7 +75,10 @@ export function PricingPreview() {
                 <span className="text-3xl font-bold">{pkg.price}</span>
                 <span className="text-base text-muted-foreground line-through opacity-60">{pkg.originalPrice}</span>
               </div>
-              <p className="text-sm text-muted-foreground mb-5">{pkg.desc}</p>
+              <div className="font-semibold mb-1">{pkg.name}</div>
+              <div className="inline-block rounded-full bg-brand-red/10 border border-brand-red/20 px-2 py-0.5 text-[10px] font-mono text-brand-red mb-1">
+                Save {Math.round((1 - parseInt(pkg.price.replace(/\D/g, '')) / parseInt(pkg.originalPrice.replace(/\D/g, ''))) * 100)}%
+              </div>
               <ul className="space-y-2 mb-6">
                 {pkg.features.map((f, j) => (
                   <li key={j} className="flex items-center gap-2 text-sm">
