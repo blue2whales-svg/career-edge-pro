@@ -152,31 +152,26 @@ export default function OrderPage() {
               <h1 className="text-3xl sm:text-5xl font-serif font-bold mb-4">
                 Order <span className="text-gradient">Confirmed!</span>
               </h1>
-              <p className="text-muted-foreground mb-2">Your order has been received. We'll start working on it immediately.</p>
-              <p className="text-sm font-mono text-primary mb-4">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
-              <p className="text-sm text-emerald-400 font-medium mb-8">📱 You'll receive an M-Pesa payment prompt on your phone shortly.</p>
-              
-              <div className="rounded-xl border border-border bg-card p-6 text-left mb-8">
-                <h3 className="font-semibold mb-3">What happens next?</h3>
-                <div className="space-y-3 text-sm text-muted-foreground">
-                  <div className="flex items-start gap-3">
-                    <span className="text-primary font-bold">1.</span>
-                    <span>Complete M-Pesa payment via the STK push on your phone</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="text-primary font-bold">2.</span>
-                    <span>A specialist will be assigned within 30 minutes</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="text-primary font-bold">3.</span>
-                    <span>You'll receive a WhatsApp message to confirm details</span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <span className="text-primary font-bold">4.</span>
-                    <span>Your documents will be delivered same-day</span>
-                  </div>
-                </div>
-              </div>
+               <p className="text-sm text-muted-foreground mb-2">Your AI-powered documents are being generated now!</p>
+               <p className="text-sm font-mono text-primary mb-8">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
+               
+               <div className="rounded-xl border border-border bg-card p-6 text-left mb-8">
+                 <h3 className="font-semibold mb-3">What happens next?</h3>
+                 <div className="space-y-3 text-sm text-muted-foreground">
+                   <div className="flex items-start gap-3">
+                     <span className="text-primary font-bold">1.</span>
+                     <span>AI is generating your documents right now (1-2 min)</span>
+                   </div>
+                   <div className="flex items-start gap-3">
+                     <span className="text-primary font-bold">2.</span>
+                     <span>Review and edit your documents on the next page</span>
+                   </div>
+                   <div className="flex items-start gap-3">
+                     <span className="text-primary font-bold">3.</span>
+                     <span>Download your polished, ready-to-use documents</span>
+                   </div>
+                 </div>
+               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link to="/">
