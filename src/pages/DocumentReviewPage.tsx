@@ -92,6 +92,7 @@ export default function DocumentReviewPage() {
     URL.revokeObjectURL(url);
   };
 
+  const [viewMode, setViewMode] = useState<"edit" | "preview" | "split">("split");
   const activeDocument = documents.find((d) => d.id === activeDoc);
   const isGenerating = documents.some((d) => d.status === "generating");
 
