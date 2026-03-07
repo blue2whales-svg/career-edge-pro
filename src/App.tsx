@@ -13,7 +13,7 @@ import JobsPage from "./pages/JobsPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import AboutPage from "./pages/AboutPage";
 import OrderPage from "./pages/OrderPage";
-import CheckoutPreviewPage from "./pages/CheckoutPreviewPage";
+
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
