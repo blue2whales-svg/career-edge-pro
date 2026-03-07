@@ -101,7 +101,11 @@ export default function OrderPage() {
         details: details.trim() || null,
         total_amount: total,
         status: "pending",
-      }).select().single();
+        job_title: jobTitle.trim() || null,
+        experience: experience.trim() || null,
+        skills: skills.trim() || null,
+        education: education.trim() || null,
+      } as any).select().single();
 
       if (error) throw error;
 
