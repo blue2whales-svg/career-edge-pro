@@ -184,17 +184,33 @@ export default function DocumentReviewPage() {
                     animate={{ opacity: 1, y: 0 }}
                     className="rounded-2xl border border-border bg-card p-6"
                   >
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                       <h2 className="text-lg font-bold">
                         {SERVICE_LABELS[activeDocument.service_type] || activeDocument.service_type}
                       </h2>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 items-center">
+                        <div className="flex rounded-lg border border-border overflow-hidden">
+                          <button
+                            onClick={() => setViewMode("edit")}
+                            className={`px-3 py-1.5 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "edit" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:text-foreground"}`}
+                          >
+                            <Edit3 className="h-3 w-3" /> Edit
+                          </button>
+                          <button
+                            onClick={() => setViewMode("split")}
+                            className={`px-3 py-1.5 text-xs font-medium transition-colors ${viewMode === "split" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:text-foreground"}`}
+                          >
+                            Split
+                          </button>
+                          <button
+                            onClick={() => setViewMode("preview")}
+                            className={`px-3 py-1.5 text-xs font-medium flex items-center gap-1 transition-colors ${viewMode === "preview" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:text-foreground"}`}
+                          >
+                            <Eye className="h-3 w-3" /> Preview
+                          </button>
+                        </div>
                         <Button onClick={saveEdits} disabled={saving} size="sm" variant="outline">
-                          {saving ? (
-                            <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                          ) : (
-                            <Check className="h-3 w-3 mr-1" />
-                          )}
+                          {saving ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Check className="h-3 w-3 mr-1" />}
                           Save
                         </Button>
                         <Button onClick={downloadAsText} size="sm" className="bg-gradient-brand border-0">
@@ -209,12 +225,21 @@ export default function DocumentReviewPage() {
                         <span className="text-muted-foreground">AI is writing your document...</span>
                       </div>
                     ) : (
-                      <Textarea
-                        value={editContent}
-                        onChange={(e) => setEditContent(e.target.value)}
-                        className="min-h-[500px] bg-background border-border font-mono text-sm leading-relaxed"
-                        placeholder="Your document content will appear here..."
-                      />
+                      <div className={`grid gap-4 ${viewMode === "split" ? "grid-cols-2" : "grid-cols-1"}`}>
+                        {(viewMode === "edit" || viewMode === "split") && (
+                          <Textarea
+                            value={editContent}
+                            onChange={(e) => setEditContent(e.target.value)}
+                            className="min-h-[500px] bg-background border-border font-mono text-sm leading-relaxed"
+                            placeholder="Your document content will appear here..."
+                          />
+                        )}
+                        {(viewMode === "preview" || viewMode === "split") && (
+                          <div className="min-h-[500px] rounded-md border border-border bg-background p-6 overflow-auto prose prose-sm dark:prose-invert max-w-none prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-li:text-foreground">
+                            <ReactMarkdown>{editContent}</ReactMarkdown>
+                          </div>
+                        )}
+                      </div>
                     )}
                   </motion.div>
                 ) : (

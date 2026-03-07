@@ -145,6 +145,8 @@ Additional Details: ${details}
       return `Write an executive-level CV for a senior professional. Include: Executive Summary, Leadership Experience, Strategic Achievements, Board/Advisory Roles, Education, and Executive Competencies. Use powerful action verbs and quantify achievements.\n\n${context}`;
     case "ats-cv":
       return `Write a highly ATS-optimised CV. Focus on keyword density, clean formatting, standard section headers, and quantified achievements. Ensure it passes applicant tracking systems.\n\n${context}`;
+    case "modern-cv":
+      return `Write a modern, visually-described CV with a clean contemporary layout. Use creative section headers, a strong personal brand statement, highlight key achievements with metrics, include a skills matrix, and use a tone that's professional yet personable. Structure it for maximum visual impact when formatted.\n\n${context}`;
     case "international-cv":
       return `Write an international-format CV suitable for global job applications. Include all standard international sections and adapt formatting for cross-border applications.\n\n${context}`;
     case "cover-letter":
