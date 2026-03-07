@@ -119,13 +119,19 @@ export default function OrderPage() {
         }
       }
 
+      // Trigger Zapier webhook
       supabase.functions.invoke("notify-zapier", {
         body: { order },
       }).catch(console.error);
 
+      // Trigger AI document generation
+      supabase.functions.invoke("generate-cv", {
+        body: { orderId: order.id },
+      }).catch(console.error);
+
       setOrderId(order.id);
       setOrderPlaced(true);
-      toast({ title: "Order placed successfully! 🎉" });
+      toast({ title: "Order placed! AI is generating your documents 🚀" });
     } catch (error: any) {
       console.error("Order error:", error);
       toast({ title: "Something went wrong", description: error.message, variant: "destructive" });
