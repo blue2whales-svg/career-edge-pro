@@ -15,7 +15,7 @@ const fadeUp = {
 const PACKAGES = [
   {
     name: "Starter",
-    price: "$25",
+    price: "KES 2,500",
     period: "one-time",
     desc: "Perfect for entry-level professionals needing a strong foundation.",
     icon: Zap,
@@ -31,7 +31,7 @@ const PACKAGES = [
   },
   {
     name: "Professional",
-    price: "$45",
+    price: "KES 4,500",
     period: "one-time",
     desc: "Our most popular package — everything you need to land interviews.",
     icon: Star,
@@ -49,7 +49,7 @@ const PACKAGES = [
   },
   {
     name: "Executive",
-    price: "$79",
+    price: "KES 7,900",
     period: "one-time",
     desc: "For senior leaders who need documents that command boardroom attention.",
     icon: Crown,
@@ -69,12 +69,12 @@ const PACKAGES = [
 ];
 
 const ADD_ONS = [
-  { name: "Additional Cover Letter", price: "$10" },
-  { name: "CV Review & Critique", price: "$10" },
-  { name: "Reference Letter Draft", price: "$15" },
-  { name: "Personal Statement", price: "$35" },
-  { name: "Scholarship Essay (per essay)", price: "$25" },
-  { name: "Rush Delivery (< 1 hour)", price: "+$15" },
+  { name: "Additional Cover Letter", price: "KES 1,000" },
+  { name: "CV Review & Critique", price: "KES 1,000" },
+  { name: "Reference Letter Draft", price: "KES 1,500" },
+  { name: "Personal Statement", price: "KES 3,500" },
+  { name: "Scholarship Essay (per essay)", price: "KES 2,500" },
+  { name: "Rush Delivery (< 1 hour)", price: "+KES 1,500" },
 ];
 
 export default function PricingPage() {
@@ -97,7 +97,7 @@ export default function PricingPage() {
           <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={2}
             className="text-sm font-mono text-primary"
           >
-            💳 Pay via card, PayPal, M-Pesa, or bank transfer
+            📱 Pay instantly via M-Pesa
           </motion.p>
         </div>
       </section>
@@ -126,7 +126,7 @@ export default function PricingPage() {
                 </div>
                 <h3 className="text-xl font-bold mb-1">{pkg.name}</h3>
                 <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-4xl font-bold text-primary">{pkg.price}</span>
+                  <span className="text-3xl font-bold text-primary">{pkg.price}</span>
                   <span className="text-sm text-muted-foreground">/{pkg.period}</span>
                 </div>
                 <p className="text-sm text-muted-foreground mb-6">{pkg.desc}</p>

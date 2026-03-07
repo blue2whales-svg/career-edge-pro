@@ -222,7 +222,7 @@ export default function LandingPage() {
           </div>
           <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} CVEdge. All rights reserved.</p>
-            <p className="text-xs text-muted-foreground">Professional career documents for 90+ countries worldwide.</p>
+            <p className="text-xs text-muted-foreground">Professional career documents for Kenyan professionals.</p>
           </div>
         </div>
       </footer>
