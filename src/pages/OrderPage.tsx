@@ -21,16 +21,20 @@ const fadeUp = {
 };
 
 const SERVICES = [
-  { id: "cv", icon: FileText, label: "Professional CV", price: 25 },
-  { id: "executive-cv", icon: Award, label: "Executive CV", price: 45 },
-  { id: "cover-letter", icon: Pen, label: "Cover Letter", price: 15 },
-  { id: "linkedin", icon: Linkedin, label: "LinkedIn Optimisation", price: 20 },
-  { id: "personal-statement", icon: BookOpen, label: "Personal Statement", price: 35 },
-  { id: "scholarship", icon: GraduationCap, label: "Scholarship Essay", price: 40 },
-  { id: "reference", icon: Users, label: "Reference Letter", price: 20 },
-  { id: "ats-cv", icon: Shield, label: "ATS-Optimised CV", price: 30 },
-  { id: "international-cv", icon: Globe, label: "International CV", price: 35 },
+  { id: "cv", icon: FileText, label: "Professional CV", price: 2500 },
+  { id: "executive-cv", icon: Award, label: "Executive CV", price: 4500 },
+  { id: "cover-letter", icon: Pen, label: "Cover Letter", price: 1500 },
+  { id: "linkedin", icon: Linkedin, label: "LinkedIn Optimisation", price: 2000 },
+  { id: "personal-statement", icon: BookOpen, label: "Personal Statement", price: 3500 },
+  { id: "scholarship", icon: GraduationCap, label: "Scholarship Essay", price: 4000 },
+  { id: "reference", icon: Users, label: "Reference Letter", price: 2000 },
+  { id: "ats-cv", icon: Shield, label: "ATS-Optimised CV", price: 3000 },
+  { id: "international-cv", icon: Globe, label: "International CV", price: 3500 },
 ];
+
+function formatKES(amount: number) {
+  return `KES ${amount.toLocaleString()}`;
+}
 
 export default function OrderPage() {
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
@@ -82,10 +86,8 @@ export default function OrderPage() {
     setIsSubmitting(true);
 
     try {
-      // Get current user if logged in
       const { data: { user } } = await supabase.auth.getUser();
 
-      // Save order to database
       const { data: order, error } = await supabase.from("orders").insert({
         user_id: user?.id || null,
         name: name.trim(),
@@ -99,7 +101,6 @@ export default function OrderPage() {
 
       if (error) throw error;
 
-      // Upload files to storage
       if (files.length > 0) {
         for (const file of files) {
           const filePath = `${order.id}/${Date.now()}-${file.name}`;
@@ -110,7 +111,6 @@ export default function OrderPage() {
         }
       }
 
-      // Trigger Zapier webhook (non-blocking)
       supabase.functions.invoke("notify-zapier", {
         body: { order },
       }).catch(console.error);
@@ -139,21 +139,26 @@ export default function OrderPage() {
                 Order <span className="text-gradient">Confirmed!</span>
               </h1>
               <p className="text-muted-foreground mb-2">Your order has been received. We'll start working on it immediately.</p>
-              <p className="text-sm font-mono text-primary mb-8">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
+              <p className="text-sm font-mono text-primary mb-4">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
+              <p className="text-sm text-emerald-400 font-medium mb-8">📱 You'll receive an M-Pesa payment prompt on your phone shortly.</p>
               
               <div className="rounded-xl border border-border bg-card p-6 text-left mb-8">
                 <h3 className="font-semibold mb-3">What happens next?</h3>
                 <div className="space-y-3 text-sm text-muted-foreground">
                   <div className="flex items-start gap-3">
                     <span className="text-primary font-bold">1.</span>
-                    <span>A specialist will be assigned to your order within 30 minutes</span>
+                    <span>Complete M-Pesa payment via the STK push on your phone</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <span className="text-primary font-bold">2.</span>
-                    <span>You'll receive a WhatsApp message to confirm details</span>
+                    <span>A specialist will be assigned within 30 minutes</span>
                   </div>
                   <div className="flex items-start gap-3">
                     <span className="text-primary font-bold">3.</span>
+                    <span>You'll receive a WhatsApp message to confirm details</span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-primary font-bold">4.</span>
                     <span>Your documents will be delivered same-day</span>
                   </div>
                 </div>
@@ -189,7 +194,7 @@ export default function OrderPage() {
           <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={1}
             className="text-base text-muted-foreground max-w-xl mx-auto"
           >
-            Select your services, fill in your details, and we'll get to work immediately.
+            Select your services, fill in your details, and pay via M-Pesa. We'll get to work immediately.
           </motion.p>
         </div>
       </section>
@@ -222,7 +227,7 @@ export default function OrderPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-medium text-sm">{s.label}</div>
-                          <div className="text-xs text-primary font-semibold">${s.price}</div>
+                          <div className="text-xs text-primary font-semibold">{formatKES(s.price)}</div>
                         </div>
                         {selected && <Check className="h-4 w-4 text-primary shrink-0" />}
                       </button>
@@ -246,12 +251,17 @@ export default function OrderPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       className="h-12 bg-card border-border"
                     />
-                    <Input
-                      placeholder="WhatsApp number"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="h-12 bg-card border-border"
-                    />
+                    <div className="flex gap-2">
+                      <div className="rounded-lg border border-border bg-card px-3 flex items-center text-sm text-muted-foreground shrink-0">
+                        +254
+                      </div>
+                      <Input
+                        placeholder="M-Pesa number"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="h-12 bg-card border-border"
+                      />
+                    </div>
                   </div>
                   <Textarea
                     placeholder="Tell us about the role/scholarship you're targeting, your experience level, and any special instructions..."
@@ -316,12 +326,12 @@ export default function OrderPage() {
                     {SERVICES.filter((s) => selectedServices.includes(s.id)).map((s) => (
                       <div key={s.id} className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">{s.label}</span>
-                        <span className="font-semibold">${s.price}</span>
+                        <span className="font-semibold">{formatKES(s.price)}</span>
                       </div>
                     ))}
                     <div className="border-t border-border pt-3 flex items-center justify-between">
                       <span className="font-bold">Total</span>
-                      <span className="text-2xl font-bold text-primary">${total}</span>
+                      <span className="text-2xl font-bold text-primary">{formatKES(total)}</span>
                     </div>
                   </div>
                 )}
@@ -338,7 +348,7 @@ export default function OrderPage() {
                     </>
                   ) : (
                     <>
-                      Place Order <ArrowRight className="ml-2 h-4 w-4" />
+                      Pay via M-Pesa <ArrowRight className="ml-2 h-4 w-4" />
                     </>
                   )}
                 </Button>
@@ -353,6 +363,12 @@ export default function OrderPage() {
                   </p>
                 )}
 
+                <div className="mt-4 rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3">
+                  <p className="text-xs text-emerald-400 font-medium flex items-center gap-1.5">
+                    📱 You'll receive an M-Pesa STK push to confirm payment
+                  </p>
+                </div>
+
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Check className="h-3 w-3 text-primary" />
@@ -364,7 +380,7 @@ export default function OrderPage() {
                   </div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Check className="h-3 w-3 text-primary" />
-                    <span>Pay after review</span>
+                    <span>Instant M-Pesa payment</span>
                   </div>
                 </div>
               </motion.div>

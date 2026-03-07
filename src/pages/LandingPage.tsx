@@ -88,7 +88,7 @@ export default function LandingPage() {
               initial="hidden" animate="visible" variants={fadeUp} custom={2}
               className="text-base sm:text-xl text-muted-foreground max-w-2xl mb-8 leading-relaxed"
             >
-              Professional CV writing, cover letters, scholarship essays and career documents — crafted by dedicated specialists and delivered same day to clients in 90+ countries.
+              Professional CV writing, cover letters, scholarship essays and career documents — crafted by dedicated specialists and delivered same day. Pay instantly via M-Pesa.
             </motion.p>
 
             <motion.div
@@ -176,7 +176,7 @@ export default function LandingPage() {
                 </Button>
               </Link>
             </div>
-            <p className="text-xs text-muted-foreground mt-4 font-mono">No credit card upfront · Satisfaction guaranteed</p>
+            <p className="text-xs text-muted-foreground mt-4 font-mono">Pay via M-Pesa · Satisfaction guaranteed</p>
           </motion.div>
         </div>
       </section>
@@ -222,7 +222,7 @@ export default function LandingPage() {
           </div>
           <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} CVEdge. All rights reserved.</p>
-            <p className="text-xs text-muted-foreground">Professional career documents for 90+ countries worldwide.</p>
+            <p className="text-xs text-muted-foreground">Professional career documents for Kenyan professionals.</p>
           </div>
         </div>
       </footer>
