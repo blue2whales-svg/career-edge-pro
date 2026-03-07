@@ -37,7 +37,8 @@ export function FeaturedJobs() {
             <motion.div
               key={i}
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}
-              className="group rounded-xl border-2 border-brand-red/20 bg-card p-5 hover:border-brand-red/40 hover:shadow-glow-sm transition-all duration-300 relative overflow-hidden"
+              className="group rounded-xl border-2 border-brand-red/20 bg-card p-5 hover:border-brand-red/40 hover:shadow-glow-sm transition-all duration-300 relative overflow-hidden cursor-pointer"
+              onClick={() => setSelectedJob(job)}
             >
               {/* Hot badge */}
               <div className="absolute top-3 right-3">
