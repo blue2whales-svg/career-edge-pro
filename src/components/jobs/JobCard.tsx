@@ -63,11 +63,9 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
             </div>
           </div>
         </div>
-        <Link to="/order" className="shrink-0">
-          <Button className="w-full sm:w-auto bg-gradient-brand border-0 font-semibold gold-shimmer">
-            Get CV for this role <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </Link>
+        <Button className="w-full sm:w-auto bg-gradient-brand border-0 font-semibold gold-shimmer shrink-0" onClick={(e) => { e.stopPropagation(); onClick?.(); }}>
+          View Details <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
       </div>
     </motion.div>
   );

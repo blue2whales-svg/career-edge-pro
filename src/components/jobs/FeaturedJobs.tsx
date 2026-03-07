@@ -82,5 +82,6 @@ export function FeaturedJobs() {
         </div>
       </div>
     </section>
+    </>
   );
 }
