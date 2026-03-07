@@ -118,11 +118,11 @@ function CheckoutMockup({
       <div className="px-6 py-3 border-b border-border">
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Professional CV</span>
-          <span>{currency}49</span>
+          <span>{currency}{region === "Kenya" ? "2,500" : "49"}</span>
         </div>
         <div className="flex items-center justify-between text-sm mt-1">
           <span className="text-muted-foreground">Cover Letter</span>
-          <span>{currency}29</span>
+          <span>{currency}{region === "Kenya" ? "1,500" : "29"}</span>
         </div>
       </div>
 
@@ -279,7 +279,7 @@ export default function CheckoutPreviewPage() {
                 region="Kenya"
                 flag="🇰🇪"
                 currency="KES "
-                amount="7,800"
+                amount="4,000"
                 methods={KENYA_METHODS}
                 color="bg-emerald-500/5 border-b border-emerald-500/10"
               />
