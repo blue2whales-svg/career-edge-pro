@@ -129,6 +129,21 @@ function buildPrompt(serviceType: string, order: any): string {
   const education = order.education || "";
   const details = order.details || "";
 
+  // Parse page preference from details JSON if present
+  let cvPages = "2";
+  try {
+    if (details) {
+      const parsed = JSON.parse(details);
+      if (parsed.cvPages) cvPages = parsed.cvPages;
+    }
+  } catch { /* details is plain text, not JSON */ }
+
+  const pageInstruction = cvPages === "1"
+    ? "Keep the CV to exactly 1 page. Be concise — prioritise the most recent and relevant experience only."
+    : cvPages === "3"
+    ? "Create a comprehensive 3+ page CV. Include full career history with detailed bullet points, all qualifications, certifications, languages, and personal details."
+    : "Target a 2-page CV. Balance detail with conciseness — cover all key roles with strong bullet points.";
+
   const context = `
 Client Name: ${name}
 Target Job/Role: ${jobTitle}
@@ -138,17 +153,28 @@ Education: ${education}
 Additional Details: ${details}
   `.trim();
 
+  const qualityDirective = `
+QUALITY STANDARDS — Follow these strictly:
+• Use bold section headers with clear visual hierarchy (Professional Profile, Core Skills, Work Experience, Education, Licences, Languages, Personal Details).
+• For Work Experience: include company name, location, job title, dates, and 5-10 strong bullet points per role starting with powerful action verbs.
+• Quantify achievements wherever possible (%, KES, team sizes, years).
+• Include a Core Skills grid/matrix with 12-15 competencies.
+• Use professional, executive-grade language — no fluff, no generic phrases.
+• Structure content so it prints cleanly on A4 paper.
+• ${pageInstruction}
+  `.trim();
+
   switch (serviceType) {
     case "cv":
-      return `Write a professional CV for the following client. Make it ATS-friendly, compelling, and well-structured with sections: Professional Summary, Work Experience, Education, Skills, and any relevant sections.\n\n${context}`;
+      return `Write a professional CV for the following client. Make it ATS-friendly, compelling, and well-structured.\n\n${qualityDirective}\n\n${context}`;
     case "executive-cv":
-      return `Write an executive-level CV for a senior professional. Include: Executive Summary, Leadership Experience, Strategic Achievements, Board/Advisory Roles, Education, and Executive Competencies. Use powerful action verbs and quantify achievements.\n\n${context}`;
+      return `Write an executive-level CV for a senior professional. Include: Executive Summary, Leadership Experience, Strategic Achievements, Board/Advisory Roles, Education, and Executive Competencies. Use powerful action verbs and quantify achievements.\n\n${qualityDirective}\n\n${context}`;
     case "ats-cv":
-      return `Write a highly ATS-optimised CV. Focus on keyword density, clean formatting, standard section headers, and quantified achievements. Ensure it passes applicant tracking systems.\n\n${context}`;
+      return `Write a highly ATS-optimised CV. Focus on keyword density, clean formatting, standard section headers, and quantified achievements. Ensure it passes applicant tracking systems.\n\n${qualityDirective}\n\n${context}`;
     case "modern-cv":
-      return `Write a modern, visually-described CV with a clean contemporary layout. Use creative section headers, a strong personal brand statement, highlight key achievements with metrics, include a skills matrix, and use a tone that's professional yet personable. Structure it for maximum visual impact when formatted.\n\n${context}`;
+      return `Write a modern, visually-described CV with a clean contemporary layout. Use creative section headers, a strong personal brand statement, highlight key achievements with metrics, include a skills matrix, and use a tone that's professional yet personable.\n\n${qualityDirective}\n\n${context}`;
     case "international-cv":
-      return `Write an international-format CV suitable for global job applications. Include all standard international sections and adapt formatting for cross-border applications.\n\n${context}`;
+      return `Write an international-format CV suitable for global job applications. Include all standard international sections and adapt formatting for cross-border applications.\n\n${qualityDirective}\n\n${context}`;
     case "cover-letter":
       return `Write a compelling, tailored cover letter. Open with a strong hook, demonstrate value with specific examples, and close with a clear call to action.\n\n${context}`;
     case "linkedin":
