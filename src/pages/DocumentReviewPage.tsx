@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FileText, Download, Loader2, RefreshCw, Check, ArrowLeft, Eye, Edit3 } from "lucide-react";
+import { FileText, Download, Loader2, RefreshCw, Check, ArrowLeft, Eye, Edit3, Lock, ShieldAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import ReactMarkdown from "react-markdown";
