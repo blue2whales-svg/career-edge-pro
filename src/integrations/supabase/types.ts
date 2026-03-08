@@ -96,6 +96,8 @@ export type Database = {
           experience: string | null
           id: string
           job_title: string | null
+          mpesa_checkout_request_id: string | null
+          mpesa_receipt: string | null
           name: string
           phone: string | null
           services: string[]
@@ -113,6 +115,8 @@ export type Database = {
           experience?: string | null
           id?: string
           job_title?: string | null
+          mpesa_checkout_request_id?: string | null
+          mpesa_receipt?: string | null
           name: string
           phone?: string | null
           services: string[]
@@ -130,6 +134,8 @@ export type Database = {
           experience?: string | null
           id?: string
           job_title?: string | null
+          mpesa_checkout_request_id?: string | null
+          mpesa_receipt?: string | null
           name?: string
           phone?: string | null
           services?: string[]
