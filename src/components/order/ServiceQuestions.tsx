@@ -24,6 +24,34 @@ export default function ServiceQuestions({ selectedServices, values, onChange }:
       {hasCV && (
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">CV Details</h3>
+          
+          {/* Page count selector */}
+          <div>
+            <label className="block text-sm text-muted-foreground mb-2">How many pages should your CV be?</label>
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { value: "1", label: "1 Page", desc: "Entry-level / concise" },
+                { value: "2", label: "2 Pages", desc: "Most popular" },
+                { value: "3", label: "3+ Pages", desc: "Senior / detailed" },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => onChange("cvPages", opt.value)}
+                  className={cn(
+                    "rounded-xl border p-3 text-left transition-all",
+                    values.cvPages === opt.value
+                      ? "border-primary bg-primary/10 ring-1 ring-primary"
+                      : "border-border bg-card hover:border-primary/40"
+                  )}
+                >
+                  <span className="block text-sm font-semibold">{opt.label}</span>
+                  <span className="block text-[10px] text-muted-foreground mt-0.5">{opt.desc}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
           <Input
             placeholder="Target job title (e.g. Senior Software Engineer)"
             value={values.jobTitle || ""}
