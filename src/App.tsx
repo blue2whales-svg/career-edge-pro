@@ -15,6 +15,7 @@ import JobsPage from "./pages/JobsPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import AboutPage from "./pages/AboutPage";
 import OrderPage from "./pages/OrderPage";
+import ContactPage from "./pages/ContactPage";
 import DocumentReviewPage from "./pages/DocumentReviewPage";
 import CVBuilderPage from "./pages/CVBuilderPage";
 import PortalLayout from "./components/PortalLayout";
