@@ -434,7 +434,8 @@ export default function OrderPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-semibold text-sm">{s.label}</div>
-                          <div className="text-xs text-primary font-bold">{formatKES(s.price)}</div>
+                          <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">{s.desc}</div>
+                          <div className="text-xs text-primary font-bold mt-1">{formatKES(s.price)}</div>
                         </div>
                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
                           selected
