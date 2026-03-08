@@ -2,15 +2,15 @@ import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight, Upload, FileText, Pen, Linkedin, GraduationCap,
-  Shield, Globe, Award, BookOpen, Users, Check, Loader2, X
+  Shield, Globe, Award, BookOpen, Users, Check, Loader2, X, Clock, Phone
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Link, useNavigate } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import ServiceQuestions from "@/components/order/ServiceQuestions";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -42,15 +42,14 @@ export default function OrderPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [jobTitle, setJobTitle] = useState("");
-  const [experience, setExperience] = useState("");
-  const [skills, setSkills] = useState("");
-  const [education, setEducation] = useState("");
-  const [details, setDetails] = useState("");
+  const [formValues, setFormValues] = useState<Record<string, string>>({});
   const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderId, setOrderId] = useState("");
+  const [stkSent, setStkSent] = useState(false);
+  const [paymentChecking, setPaymentChecking] = useState(false);
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -63,6 +62,10 @@ export default function OrderPage() {
 
   const total = SERVICES.filter((s) => selectedServices.includes(s.id))
     .reduce((sum, s) => sum + s.price, 0);
+
+  const handleFormChange = (key: string, value: string) => {
+    setFormValues(prev => ({ ...prev, [key]: value }));
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files || []);
@@ -78,6 +81,23 @@ export default function OrderPage() {
     setFiles(prev => prev.filter((_, i) => i !== index));
   };
 
+  const checkPaymentStatus = async (id: string) => {
+    setPaymentChecking(true);
+    const { data } = await supabase
+      .from("orders")
+      .select("status")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (data?.status === "paid") {
+      setPaymentConfirmed(true);
+      toast({ title: "Payment confirmed! 🎉" });
+    } else {
+      toast({ title: "Payment not yet received. Please check your phone and try again.", variant: "destructive" });
+    }
+    setPaymentChecking(false);
+  };
+
   const handleSubmit = async () => {
     if (selectedServices.length === 0) {
       toast({ title: "Select at least one service", variant: "destructive" });
@@ -87,11 +107,18 @@ export default function OrderPage() {
       toast({ title: "Name and email are required", variant: "destructive" });
       return;
     }
+    if (!phone.trim()) {
+      toast({ title: "M-Pesa phone number is required for payment", variant: "destructive" });
+      return;
+    }
 
     setIsSubmitting(true);
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
+
+      // Combine all form values into details JSON
+      const allDetails = JSON.stringify(formValues);
 
       const { data: order, error } = await supabase.from("orders").insert({
         user_id: user?.id || null,
@@ -99,13 +126,13 @@ export default function OrderPage() {
         email: email.trim(),
         phone: phone.trim() || null,
         services: selectedServices,
-        details: details.trim() || null,
+        details: allDetails,
         total_amount: total,
         status: "pending",
-        job_title: jobTitle.trim() || null,
-        experience: experience.trim() || null,
-        skills: skills.trim() || null,
-        education: education.trim() || null,
+        job_title: formValues.jobTitle?.trim() || formValues.coverLetterRole?.trim() || null,
+        experience: formValues.experience?.trim() || null,
+        skills: formValues.skills?.trim() || null,
+        education: formValues.education?.trim() || null,
       } as any).select().single();
 
       if (error) throw error;
@@ -120,35 +147,36 @@ export default function OrderPage() {
         }
       }
 
+      setOrderId(order.id);
+      setOrderPlaced(true);
+
       // Trigger M-Pesa STK Push
-      if (phone.trim()) {
+      try {
         const { data: stkData, error: stkError } = await supabase.functions.invoke("mpesa-stk-push", {
           body: { orderId: order.id, phone: phone.trim(), amount: total },
         });
 
         if (stkError) {
           console.error("STK push error:", stkError);
-          toast({ title: "Order saved but M-Pesa prompt failed. We'll follow up via email.", variant: "destructive" });
+          toast({ title: "M-Pesa prompt could not be sent. Please use the manual payment option below.", variant: "destructive" });
         } else if (stkData?.ResponseCode === "0") {
+          setStkSent(true);
           toast({ title: "Check your phone for the M-Pesa payment prompt 📱" });
         } else {
-          toast({ title: "M-Pesa request failed. We'll follow up via email.", variant: "destructive" });
+          console.error("STK response:", stkData);
+          toast({ title: "M-Pesa request failed. Please try again or pay manually.", variant: "destructive" });
         }
+      } catch (stkErr) {
+        console.error("STK invoke error:", stkErr);
+        toast({ title: "Could not reach payment service. Try the manual option below.", variant: "destructive" });
       }
 
-      // Trigger Zapier webhook
-      supabase.functions.invoke("notify-zapier", {
-        body: { order },
-      }).catch(console.error);
+      // Trigger Zapier webhook (background)
+      supabase.functions.invoke("notify-zapier", { body: { order } }).catch(console.error);
 
-      // Trigger AI document generation
-      supabase.functions.invoke("generate-cv", {
-        body: { orderId: order.id },
-      }).catch(console.error);
+      // Trigger AI document generation (background)
+      supabase.functions.invoke("generate-cv", { body: { orderId: order.id } }).catch(console.error);
 
-      setOrderId(order.id);
-      setOrderPlaced(true);
-      toast({ title: "Order placed! AI is generating your documents 🚀" });
     } catch (error: any) {
       console.error("Order error:", error);
       toast({ title: "Something went wrong", description: error.message, variant: "destructive" });
@@ -163,43 +191,107 @@ export default function OrderPage() {
         <section className="relative z-10 pt-24 pb-32 px-4">
           <div className="container max-w-xl mx-auto text-center">
             <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}>
-              <div className="w-20 h-20 rounded-full bg-gradient-brand flex items-center justify-center mx-auto mb-6">
-                <Check className="h-10 w-10 text-primary-foreground" />
-              </div>
-              <h1 className="text-3xl sm:text-5xl font-serif font-bold mb-4">
-                Order <span className="text-gradient">Confirmed!</span>
-              </h1>
-               <p className="text-sm text-muted-foreground mb-2">Your AI-powered documents are being generated now!</p>
-               <p className="text-sm font-mono text-primary mb-8">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
-               
-               <div className="rounded-xl border border-border bg-card p-6 text-left mb-8">
-                 <h3 className="font-semibold mb-3">What happens next?</h3>
-                 <div className="space-y-3 text-sm text-muted-foreground">
-                   <div className="flex items-start gap-3">
-                     <span className="text-primary font-bold">1.</span>
-                     <span>AI is generating your documents right now (1-2 min)</span>
-                   </div>
-                   <div className="flex items-start gap-3">
-                     <span className="text-primary font-bold">2.</span>
-                     <span>Review and edit your documents on the next page</span>
-                   </div>
-                   <div className="flex items-start gap-3">
-                     <span className="text-primary font-bold">3.</span>
-                     <span>Download your polished, ready-to-use documents</span>
-                   </div>
-                 </div>
-               </div>
+              {paymentConfirmed ? (
+                <>
+                  <div className="w-20 h-20 rounded-full bg-gradient-brand flex items-center justify-center mx-auto mb-6">
+                    <Check className="h-10 w-10 text-primary-foreground" />
+                  </div>
+                  <h1 className="text-3xl sm:text-5xl font-serif font-bold mb-4">
+                    Payment <span className="text-gradient">Confirmed!</span>
+                  </h1>
+                  <p className="text-sm text-muted-foreground mb-2">Your AI-powered documents are being generated now!</p>
+                  <p className="text-sm font-mono text-primary mb-8">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
 
-               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                 <Link to={`/review/${orderId}`}>
-                   <Button className="bg-gradient-brand border-0 font-semibold gold-shimmer">
-                     Review Your Documents <ArrowRight className="ml-2 h-4 w-4" />
-                   </Button>
-                 </Link>
-                 <Link to="/">
-                   <Button variant="outline" className="border-primary/30">Back to Home</Button>
-                 </Link>
-               </div>
+                  <div className="rounded-xl border border-border bg-card p-6 text-left mb-8">
+                    <h3 className="font-semibold mb-3">What happens next?</h3>
+                    <div className="space-y-3 text-sm text-muted-foreground">
+                      <div className="flex items-start gap-3">
+                        <span className="text-primary font-bold">1.</span>
+                        <span>AI is generating your documents right now (1-2 min)</span>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <span className="text-primary font-bold">2.</span>
+                        <span>Review and edit your documents on the next page</span>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <span className="text-primary font-bold">3.</span>
+                        <span>Download your polished, ready-to-use documents</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Link to={`/review/${orderId}`}>
+                      <Button className="bg-gradient-brand border-0 font-semibold gold-shimmer">
+                        Review Your Documents <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
+                    <Link to="/">
+                      <Button variant="outline" className="border-primary/30">Back to Home</Button>
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="w-20 h-20 rounded-full bg-amber-500/20 border-2 border-amber-500 flex items-center justify-center mx-auto mb-6">
+                    <Clock className="h-10 w-10 text-amber-400" />
+                  </div>
+                  <h1 className="text-3xl sm:text-5xl font-serif font-bold mb-4">
+                    Awaiting <span className="text-gradient">Payment</span>
+                  </h1>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {stkSent
+                      ? "An M-Pesa payment prompt has been sent to your phone. Please enter your PIN to complete payment."
+                      : "Complete your M-Pesa payment to unlock your documents."}
+                  </p>
+                  <p className="text-sm font-mono text-primary mb-8">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
+
+                  <div className="rounded-xl border border-amber-500/20 bg-card p-6 text-left mb-6">
+                    <h3 className="font-semibold mb-3 flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-primary" /> M-Pesa Payment
+                    </h3>
+                    <div className="space-y-3 text-sm text-muted-foreground">
+                      {stkSent ? (
+                        <>
+                          <p>📱 Check your phone for the M-Pesa prompt and enter your PIN.</p>
+                          <p>Once payment is complete, click the button below to confirm.</p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="font-medium text-foreground">Manual Payment:</p>
+                          <div className="space-y-1">
+                            <p>1. Go to M-Pesa → Lipa na M-Pesa → Pay Bill</p>
+                            <p>2. Business Number: <span className="font-mono text-primary">{import.meta.env.VITE_MPESA_SHORTCODE || "174379"}</span></p>
+                            <p>3. Account Number: <span className="font-mono text-primary">{orderId.slice(0, 12).toUpperCase()}</span></p>
+                            <p>4. Amount: <span className="font-semibold text-primary">{formatKES(total)}</span></p>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                    <Button
+                      onClick={() => checkPaymentStatus(orderId)}
+                      disabled={paymentChecking}
+                      className="bg-gradient-brand border-0 font-semibold gold-shimmer"
+                    >
+                      {paymentChecking ? (
+                        <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...</>
+                      ) : (
+                        <>I've Paid — Confirm Payment <Check className="ml-2 h-4 w-4" /></>
+                      )}
+                    </Button>
+                    <Link to="/">
+                      <Button variant="outline" className="border-primary/30">Back to Home</Button>
+                    </Link>
+                  </div>
+
+                  <p className="text-xs text-muted-foreground mt-4">
+                    Your documents are being generated in the background. Once payment is confirmed, you'll get full access to edit and download them.
+                  </p>
+                </>
+              )}
             </motion.div>
           </div>
         </section>
@@ -229,7 +321,7 @@ export default function OrderPage() {
       <section className="relative z-10 pb-24 px-4">
         <div className="container max-w-4xl mx-auto">
           <div className="grid lg:grid-cols-5 gap-8">
-            {/* Services Selection */}
+            {/* Main Form */}
             <div className="lg:col-span-3">
               <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}>
                 <h2 className="text-xl font-bold mb-5">1. Choose your services</h2>
@@ -282,7 +374,7 @@ export default function OrderPage() {
                         +254
                       </div>
                       <Input
-                        placeholder="M-Pesa number"
+                        placeholder="M-Pesa number *"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         className="h-12 bg-card border-border"
@@ -291,42 +383,25 @@ export default function OrderPage() {
                   </div>
                 </div>
 
-                <h2 className="text-xl font-bold mb-5">3. Career information</h2>
-                <p className="text-sm text-muted-foreground mb-4">The more detail you provide, the better your AI-generated documents will be.</p>
-                <div className="space-y-4 mb-6">
-                  <Input
-                    placeholder="Target job title (e.g. Senior Software Engineer)"
-                    value={jobTitle}
-                    onChange={(e) => setJobTitle(e.target.value)}
-                    className="h-12 bg-card border-border"
-                  />
-                  <Textarea
-                    placeholder="Work experience — list your roles, companies, years, and key achievements..."
-                    value={experience}
-                    onChange={(e) => setExperience(e.target.value)}
-                    className="min-h-[120px] bg-card border-border"
-                  />
-                  <Input
-                    placeholder="Key skills (e.g. Python, Project Management, Financial Analysis)"
-                    value={skills}
-                    onChange={(e) => setSkills(e.target.value)}
-                    className="h-12 bg-card border-border"
-                  />
-                  <Input
-                    placeholder="Education (e.g. BSc Computer Science, University of Nairobi)"
-                    value={education}
-                    onChange={(e) => setEducation(e.target.value)}
-                    className="h-12 bg-card border-border"
-                  />
-                  <Textarea
-                    placeholder="Any special instructions, target company, or additional notes..."
-                    value={details}
-                    onChange={(e) => setDetails(e.target.value)}
-                    className="min-h-[100px] bg-card border-border"
-                  />
-                </div>
+                {selectedServices.length > 0 && (
+                  <>
+                    <h2 className="text-xl font-bold mb-5">3. Service-specific details</h2>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      The more detail you provide, the better your AI-generated documents will be.
+                    </p>
+                    <div className="mb-6">
+                      <ServiceQuestions
+                        selectedServices={selectedServices}
+                        values={formValues}
+                        onChange={handleFormChange}
+                      />
+                    </div>
+                  </>
+                )}
 
-                <h2 className="text-xl font-bold mb-3">4. Upload existing documents</h2>
+                <h2 className="text-xl font-bold mb-3">
+                  {selectedServices.length > 0 ? "4" : "3"}. Upload existing documents
+                </h2>
                 <div
                   onClick={() => fileInputRef.current?.click()}
                   onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
@@ -393,7 +468,7 @@ export default function OrderPage() {
 
                 <Button
                   onClick={handleSubmit}
-                  disabled={selectedServices.length === 0 || !name.trim() || !email.trim() || isSubmitting}
+                  disabled={selectedServices.length === 0 || !name.trim() || !email.trim() || !phone.trim() || isSubmitting}
                   className="w-full h-12 bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer text-base"
                 >
                   {isSubmitting ? (
@@ -412,9 +487,9 @@ export default function OrderPage() {
                     ↑ Select at least one service to continue
                   </p>
                 )}
-                {selectedServices.length > 0 && (!name.trim() || !email.trim()) && (
+                {selectedServices.length > 0 && (!name.trim() || !email.trim() || !phone.trim()) && (
                   <p className="text-xs text-muted-foreground text-center mt-2">
-                    Fill in your name and email to continue
+                    Fill in your name, email, and M-Pesa number to continue
                   </p>
                 )}
 
