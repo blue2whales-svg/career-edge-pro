@@ -214,7 +214,7 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
             <p className="text-xs text-muted-foreground">
               A professionally crafted CV tailored to this exact role increases your chances by up to 3×. Our specialists know what {job.company} is looking for.
             </p>
-            <Link to="/order" onClick={() => onOpenChange(false)}>
+            <Link to={`/order?service=cv&job_title=${encodeURIComponent(job.title)}&company=${encodeURIComponent(job.company)}`} onClick={() => onOpenChange(false)}>
               <Button size="lg" className="w-full bg-gradient-brand border-0 font-semibold h-12 shadow-glow gold-shimmer mt-2">
                 Get My CV for This Role <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
