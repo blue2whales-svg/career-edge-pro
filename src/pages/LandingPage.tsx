@@ -190,7 +190,8 @@ export default function LandingPage() {
                 <img src={cvedgeLogo} alt="CVEdge Logo" className="w-9 h-9 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20" />
                 <span className="font-bold">CVEdge</span>
               </div>
-              <p className="text-xs text-muted-foreground">Your Career's Secret Weapon</p>
+              <p className="text-xs text-muted-foreground mb-2">Your Career's Secret Weapon</p>
+              <a href="mailto:support@cvedge.live" className="text-xs text-primary hover:text-primary/80 transition-colors">support@cvedge.live</a>
             </div>
             <div>
               <h4 className="font-semibold text-sm mb-3">Services</h4>
