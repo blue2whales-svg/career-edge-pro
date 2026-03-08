@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { encode as base64Encode } from "https://deno.land/std@0.208.0/encoding/base64.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -6,10 +7,15 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+function toBase64(str: string): string {
+  const encoder = new TextEncoder();
+  return base64Encode(encoder.encode(str));
+}
+
 async function getAccessToken(): Promise<string> {
   const consumerKey = Deno.env.get("VITE_MPESA_CONSUMER_KEY")!;
   const consumerSecret = Deno.env.get("VITE_MPESA_CONSUMER_SECRET")!;
-  const credentials = btoa(`${consumerKey}:${consumerSecret}`);
+  const credentials = toBase64(`${consumerKey}:${consumerSecret}`);
 
   const res = await fetch(
     "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
