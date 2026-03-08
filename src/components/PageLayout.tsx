@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 import { MobileNav } from "@/components/landing/MobileNav";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 interface PageLayoutProps {
   children: ReactNode;
