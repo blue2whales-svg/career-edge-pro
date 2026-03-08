@@ -162,7 +162,54 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* Which CV Quiz */}
+      <CVQuizSection />
+
+      {/* CV Comparison Table */}
+      <section className="relative z-10 pb-20 px-4">
+        <div className="container max-w-4xl mx-auto">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0} className="text-center mb-10">
+            <h2 className="text-3xl sm:text-4xl font-serif font-bold mb-3">
+              CV Types <span className="text-gradient">Compared</span>
+            </h2>
+            <p className="text-muted-foreground text-sm max-w-lg mx-auto">Side-by-side breakdown so you pick the perfect fit.</p>
+          </motion.div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}
+            className="rounded-2xl border border-border bg-card overflow-hidden"
+          >
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border bg-muted/30">
+                    <th className="text-left p-4 font-semibold text-muted-foreground">Feature</th>
+                    <th className="p-4 font-semibold text-center">Professional<br/><span className="text-primary text-xs font-bold">KES 2,500</span></th>
+                    <th className="p-4 font-semibold text-center">ATS-Optimised<br/><span className="text-primary text-xs font-bold">KES 3,000</span></th>
+                    <th className="p-4 font-semibold text-center">Modern<br/><span className="text-primary text-xs font-bold">KES 3,000</span></th>
+                    <th className="p-4 font-semibold text-center">Executive<br/><span className="text-primary text-xs font-bold">KES 4,500</span></th>
+                    <th className="p-4 font-semibold text-center">International<br/><span className="text-primary text-xs font-bold">KES 3,500</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {CV_COMPARISON.map((row, i) => (
+                    <tr key={i} className={i % 2 === 0 ? "bg-transparent" : "bg-muted/10"}>
+                      <td className="p-4 font-medium text-muted-foreground whitespace-nowrap">{row.feature}</td>
+                      {row.values.map((v, j) => (
+                        <td key={j} className="p-4 text-center">
+                          {v === true ? <Check className="h-4 w-4 text-primary mx-auto" /> :
+                           v === false ? <span className="text-muted-foreground/30">—</span> :
+                           <span className="text-xs text-muted-foreground">{v}</span>}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+
       <section className="relative z-10 py-20 px-4">
         <div className="container max-w-3xl mx-auto text-center">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
