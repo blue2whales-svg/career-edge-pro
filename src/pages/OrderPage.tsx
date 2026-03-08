@@ -244,14 +244,21 @@ export default function OrderPage() {
                     </div>
                   </div>
 
+                  <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 mb-6 text-left">
+                    <h3 className="font-semibold text-sm mb-1">🚀 Your CV is ready — now put it to work!</h3>
+                    <p className="text-xs text-muted-foreground">Browse open roles and apply instantly with your new professional CV.</p>
+                  </div>
+
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                    <Link to={`/review/${orderId}`}>
+                    <Link to="/jobs">
                       <Button className="bg-gradient-brand border-0 font-semibold gold-shimmer">
-                        Review Your Documents <ArrowRight className="ml-2 h-4 w-4" />
+                        Browse Jobs & Apply <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </Link>
-                    <Link to="/">
-                      <Button variant="outline" className="border-primary/30">Back to Home</Button>
+                    <Link to={`/review/${orderId}`}>
+                      <Button variant="outline" className="border-primary/30">
+                        Review Your Documents
+                      </Button>
                     </Link>
                   </div>
                 </>
