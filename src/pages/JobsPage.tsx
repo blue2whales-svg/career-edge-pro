@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, Briefcase, ArrowRight, Flame, RefreshCw } from "lucide-react";
+import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Globe } from "lucide-react";
 import { Link } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import { FeaturedJobs } from "@/components/jobs/FeaturedJobs";
