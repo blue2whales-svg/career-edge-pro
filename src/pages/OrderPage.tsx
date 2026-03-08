@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight, Upload, FileText, Pen, Linkedin, GraduationCap,
@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -37,7 +37,14 @@ function formatKES(amount: number) {
   return `KES ${amount.toLocaleString()}`;
 }
 
+const PACKAGE_MAP: Record<string, string[]> = {
+  starter: ["cv"],
+  professional: ["cv", "cover-letter", "linkedin"],
+  executive: ["executive-cv", "cover-letter", "linkedin"],
+};
+
 export default function OrderPage() {
+  const [searchParams] = useSearchParams();
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -53,6 +60,13 @@ export default function OrderPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const pkg = searchParams.get("package");
+    if (pkg && PACKAGE_MAP[pkg]) {
+      setSelectedServices(PACKAGE_MAP[pkg]);
+    }
+  }, [searchParams]);
 
   const toggleService = (id: string) => {
     setSelectedServices((prev) =>
