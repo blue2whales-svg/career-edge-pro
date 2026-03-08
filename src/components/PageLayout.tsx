@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 import { MobileNav } from "@/components/landing/MobileNav";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 interface PageLayoutProps {
   children: ReactNode;
@@ -90,15 +91,20 @@ export default function PageLayout({ children }: PageLayoutProps) {
             <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} CVEdge. All rights reserved.</p>
             <p className="text-xs text-muted-foreground">Professional career documents for 90+ countries worldwide.</p>
           </div>
+          {/* Extra bottom padding on mobile for bottom nav */}
+          <div className="h-20 md:h-0" />
         </div>
       </footer>
 
-      {/* WhatsApp */}
+      {/* Mobile Bottom Nav */}
+      <MobileBottomNav />
+
+      {/* WhatsApp — shift up on mobile to clear bottom nav */}
       <a
         href="https://wa.me/254793919962"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg hover:bg-emerald-600 transition-colors"
+        className="fixed bottom-24 md:bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg hover:bg-emerald-600 transition-colors"
         aria-label="Chat on WhatsApp"
       >
         <svg viewBox="0 0 24 24" className="w-7 h-7 fill-white">
