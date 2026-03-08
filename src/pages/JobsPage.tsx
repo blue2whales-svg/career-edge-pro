@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, Briefcase, ArrowRight, Flame } from "lucide-react";
+import { Search, Briefcase, ArrowRight, Flame, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
@@ -8,7 +8,8 @@ import PageLayout from "@/components/PageLayout";
 import { FeaturedJobs } from "@/components/jobs/FeaturedJobs";
 import { JobCard } from "@/components/jobs/JobCard";
 import { JobDetailModal } from "@/components/jobs/JobDetailModal";
-import { INDUSTRIES, JOBS, type Job } from "@/data/jobs";
+import { INDUSTRIES, type Job } from "@/data/jobs";
+import { useJobs, triggerJobsFetch } from "@/hooks/useJobs";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -23,7 +24,15 @@ export default function JobsPage() {
   const [selectedIndustry, setSelectedIndustry] = useState("All");
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
-  const filtered = JOBS.filter((job) => {
+  const { data, isLoading, refetch } = useJobs();
+  const jobs = data?.jobs ?? [];
+
+  // Trigger a background refresh on first visit
+  useEffect(() => {
+    triggerJobsFetch();
+  }, []);
+
+  const filtered = jobs.filter((job) => {
     const matchSearch = job.title.toLowerCase().includes(search.toLowerCase()) ||
       job.company.toLowerCase().includes(search.toLowerCase());
     if (selectedIndustry === "🔥 Hot Abroad") return matchSearch && job.hot;
@@ -40,7 +49,7 @@ export default function JobsPage() {
             className="inline-flex items-center gap-2 rounded-full border border-brand-red/20 bg-brand-red/5 px-4 py-1.5 mb-6"
           >
             <Briefcase className="h-3.5 w-3.5 text-brand-red" />
-            <span className="text-xs font-mono text-brand-red">Hot Jobs Abroad</span>
+            <span className="text-xs font-mono text-brand-red">Live Jobs — Updated Hourly</span>
           </motion.div>
           <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={1}
             className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold leading-[1.08] mb-5"
@@ -51,13 +60,15 @@ export default function JobsPage() {
           <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={2}
             className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-4"
           >
-            Cruise lines, Gulf states, and 10+ global markets — updated every hour. Find the role, we'll craft the perfect CV.
+            Real jobs from cruise lines, Gulf states, and 10+ global markets — refreshed live. Find the role, we'll craft the perfect CV.
           </motion.p>
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}
             className="inline-flex items-center gap-2 rounded-full bg-muted/60 border border-border px-4 py-1.5 mb-8"
           >
             <Flame className="h-3.5 w-3.5 text-brand-red" />
-            <span className="text-xs text-muted-foreground font-mono">Jobs updated hourly · Cruise & Gulf roles trending</span>
+            <span className="text-xs text-muted-foreground font-mono">
+              {jobs.length} live roles · Cruise & Gulf trending
+            </span>
           </motion.div>
 
           {/* Search */}
@@ -84,6 +95,14 @@ export default function JobsPage() {
           <div className="flex items-center gap-3 mb-4">
             <h2 className="text-lg font-serif font-bold">All Openings</h2>
             <span className="text-xs text-muted-foreground font-mono">{filtered.length} roles</span>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="ml-auto text-xs gap-1.5"
+              onClick={() => { triggerJobsFetch().then(() => refetch()); }}
+            >
+              <RefreshCw className="h-3.5 w-3.5" /> Refresh
+            </Button>
           </div>
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
             {INDUSTRIES.map((ind) => (
@@ -106,13 +125,20 @@ export default function JobsPage() {
       {/* Job Listings */}
       <section className="relative z-10 pb-24 px-4">
         <div className="container max-w-5xl mx-auto">
-          <div className="space-y-3">
-            {filtered.map((job, i) => (
-              <JobCard key={i} job={job} index={i} onClick={() => setSelectedJob(job)} />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="text-center py-20">
+              <RefreshCw className="h-6 w-6 animate-spin mx-auto text-muted-foreground mb-3" />
+              <p className="text-muted-foreground text-sm">Loading live jobs...</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {filtered.map((job, i) => (
+                <JobCard key={i} job={job} index={i} onClick={() => setSelectedJob(job)} />
+              ))}
+            </div>
+          )}
 
-          {filtered.length === 0 && (
+          {!isLoading && filtered.length === 0 && (
             <div className="text-center py-20">
               <p className="text-muted-foreground">No jobs found matching your search. Try a different filter.</p>
             </div>

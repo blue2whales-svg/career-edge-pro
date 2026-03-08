@@ -187,6 +187,25 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
             </ul>
           </div>
 
+          {/* Description (for live jobs) */}
+          {job.description && (
+            <div>
+              <h4 className="flex items-center gap-2 text-sm font-semibold mb-3">
+                <Briefcase className="h-4 w-4 text-primary" /> Job Description
+              </h4>
+              <p className="text-sm text-muted-foreground whitespace-pre-line line-clamp-6">{job.description}</p>
+            </div>
+          )}
+
+          {/* Apply direct link for live jobs */}
+          {(job as any).apply_url && (
+            <a href={(job as any).apply_url} target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" className="w-full mb-2">
+                Apply Directly on Company Site <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </a>
+          )}
+
           {/* Urgency + CTA */}
           <div className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-5 text-center space-y-3">
             <p className="text-sm font-semibold">

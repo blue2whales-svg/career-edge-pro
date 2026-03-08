@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      cached_jobs: {
+        Row: {
+          apply_url: string | null
+          company: string
+          created_at: string
+          description: string | null
+          external_id: string | null
+          hot: boolean | null
+          id: string
+          industry: string | null
+          location: string
+          market: string | null
+          posted: string | null
+          posted_at: string | null
+          salary: string | null
+          source: string
+          tag: string | null
+          title: string
+          type: string | null
+          updated_at: string
+        }
+        Insert: {
+          apply_url?: string | null
+          company: string
+          created_at?: string
+          description?: string | null
+          external_id?: string | null
+          hot?: boolean | null
+          id?: string
+          industry?: string | null
+          location: string
+          market?: string | null
+          posted?: string | null
+          posted_at?: string | null
+          salary?: string | null
+          source?: string
+          tag?: string | null
+          title: string
+          type?: string | null
+          updated_at?: string
+        }
+        Update: {
+          apply_url?: string | null
+          company?: string
+          created_at?: string
+          description?: string | null
+          external_id?: string | null
+          hot?: boolean | null
+          id?: string
+          industry?: string | null
+          location?: string
+          market?: string | null
+          posted?: string | null
+          posted_at?: string | null
+          salary?: string | null
+          source?: string
+          tag?: string | null
+          title?: string
+          type?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       generated_documents: {
         Row: {
           content: string

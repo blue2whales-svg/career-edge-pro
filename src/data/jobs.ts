@@ -10,6 +10,8 @@ export interface Job {
   featured?: boolean;
   hot?: boolean;
   tag?: string;
+  apply_url?: string;
+  description?: string;
 }
 
 export const INDUSTRIES = [
