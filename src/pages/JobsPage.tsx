@@ -124,6 +124,22 @@ export default function JobsPage() {
               </button>
             ))}
           </div>
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none mt-3">
+            <Globe className="h-4 w-4 text-muted-foreground shrink-0 mt-2" />
+            {MARKETS.map((mkt) => (
+              <button
+                key={mkt}
+                onClick={() => setSelectedMarket(mkt)}
+                className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                  selectedMarket === mkt
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/30"
+                }`}
+              >
+                {mkt}
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
