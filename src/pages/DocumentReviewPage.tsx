@@ -39,6 +39,18 @@ export default function DocumentReviewPage() {
 
   const fetchDocuments = async () => {
     setLoading(true);
+    
+    // Fetch order status
+    const { data: orderData } = await supabase
+      .from("orders")
+      .select("status")
+      .eq("id", orderId)
+      .maybeSingle();
+    
+    if (orderData) {
+      setOrderStatus(orderData.status);
+    }
+
     const { data, error } = await supabase
       .from("generated_documents")
       .select("*")
@@ -52,10 +64,15 @@ export default function DocumentReviewPage() {
       setDocuments(data || []);
       if (data && data.length > 0 && !activeDoc) {
         setActiveDoc(data[0].id);
-        setEditContent(data[0].content);
+        setEditContent(isPaid ? data[0].content : blurContent(data[0].content));
       }
     }
     setLoading(false);
+  };
+
+  const blurContent = (content: string) => {
+    // Show first 200 chars, blur the rest
+    return content.slice(0, 200);
   };
 
   const selectDoc = (doc: any) => {
