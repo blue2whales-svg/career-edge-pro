@@ -208,7 +208,7 @@ export default function LandingPage() {
                 <Link to="/about" className="block text-primary hover:text-primary/80 transition-colors">About</Link>
                 <Link to="/how-it-works" className="block text-primary hover:text-primary/80 transition-colors">How It Works</Link>
                 <Link to="/pricing" className="block text-primary hover:text-primary/80 transition-colors">Pricing</Link>
-                <Link to="/jobs" className="block text-primary hover:text-primary/80 transition-colors">Jobs Board</Link>
+                <Link to="/contact" className="block text-primary hover:text-primary/80 transition-colors">Contact Us</Link>
               </div>
             </div>
             <div>

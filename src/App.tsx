@@ -15,6 +15,7 @@ import JobsPage from "./pages/JobsPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import AboutPage from "./pages/AboutPage";
 import OrderPage from "./pages/OrderPage";
+import ContactPage from "./pages/ContactPage";
 import DocumentReviewPage from "./pages/DocumentReviewPage";
 import CVBuilderPage from "./pages/CVBuilderPage";
 import PortalLayout from "./components/PortalLayout";
@@ -46,6 +47,7 @@ const App = () => (
           <Route path="/how-it-works" element={<HowItWorksPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/order" element={<OrderPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/cv-builder" element={<CVBuilderPage />} />
           <Route path="/review/:orderId" element={<DocumentReviewPage />} />
 
