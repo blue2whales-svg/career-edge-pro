@@ -21,16 +21,16 @@ const fadeUp = {
 };
 
 const SERVICES = [
-  { id: "cv", icon: FileText, label: "Professional CV", price: 2500 },
-  { id: "executive-cv", icon: Award, label: "Executive CV", price: 4500 },
-  { id: "cover-letter", icon: Pen, label: "Cover Letter", price: 1500 },
-  { id: "linkedin", icon: Linkedin, label: "LinkedIn Optimisation", price: 2000 },
-  { id: "personal-statement", icon: BookOpen, label: "Personal Statement", price: 3500 },
-  { id: "scholarship", icon: GraduationCap, label: "Scholarship Essay", price: 4000 },
-  { id: "reference", icon: Users, label: "Reference Letter", price: 2000 },
-  { id: "ats-cv", icon: Shield, label: "ATS-Optimised CV", price: 3000 },
-  { id: "modern-cv", icon: FileText, label: "Modern CV", price: 3000 },
-  { id: "international-cv", icon: Globe, label: "International CV", price: 3500 },
+  { id: "cv", icon: FileText, label: "Professional CV", price: 2500, desc: "Corporate standard — clean layout trusted by HR managers" },
+  { id: "executive-cv", icon: Award, label: "Executive CV", price: 4500, desc: "C-suite ready — highlights leadership, P&L, and board experience" },
+  { id: "cover-letter", icon: Pen, label: "Cover Letter", price: 1500, desc: "Tailored to the role — compelling story that gets you shortlisted" },
+  { id: "linkedin", icon: Linkedin, label: "LinkedIn Optimisation", price: 2000, desc: "Keyword-rich profile that attracts recruiters and opportunities" },
+  { id: "personal-statement", icon: BookOpen, label: "Personal Statement", price: 3500, desc: "UCAS & postgrad ready — showcases your academic passion" },
+  { id: "scholarship", icon: GraduationCap, label: "Scholarship Essay", price: 4000, desc: "Chevening, Mastercard, DAAD — winning narratives that fund dreams" },
+  { id: "reference", icon: Users, label: "Reference Letter", price: 2000, desc: "Professional draft your referee can sign with confidence" },
+  { id: "ats-cv", icon: Shield, label: "ATS-Optimised CV", price: 3000, desc: "Beats applicant tracking systems — keyword-matched for online portals" },
+  { id: "modern-cv", icon: FileText, label: "Modern CV", price: 3000, desc: "Visual impact — contemporary design for tech, creative & startups" },
+  { id: "international-cv", icon: Globe, label: "International CV", price: 3500, desc: "Formatted for Gulf, UK, EU — adapts photo, layout & conventions" },
 ];
 
 function formatKES(amount: number) {
@@ -434,7 +434,8 @@ export default function OrderPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="font-semibold text-sm">{s.label}</div>
-                          <div className="text-xs text-primary font-bold">{formatKES(s.price)}</div>
+                          <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">{s.desc}</div>
+                          <div className="text-xs text-primary font-bold mt-1">{formatKES(s.price)}</div>
                         </div>
                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
                           selected
