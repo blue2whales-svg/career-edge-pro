@@ -77,8 +77,12 @@ Deno.serve(async (req) => {
       formattedPhone = "254" + formattedPhone;
     }
 
-    const shortcode = Deno.env.get("VITE_MPESA_SHORTCODE")!;
-    const passkey = Deno.env.get("VITE_MPESA_PASSKEY")!;
+    const shortcode = (Deno.env.get("VITE_MPESA_SHORTCODE") ?? "").trim();
+    const passkey = (Deno.env.get("VITE_MPESA_PASSKEY") ?? "").trim();
+
+    if (!shortcode || !passkey) {
+      throw new Error("M-Pesa shortcode or passkey not configured");
+    }
 
     const timestamp = new Date()
       .toISOString()
