@@ -370,6 +370,48 @@ export default function OrderPage() {
                 </motion.div>
               )}
 
+              {/* Recommended bundle when coming from a job */}
+              {jobFromQuery && (
+                <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1.5}
+                  className="rounded-xl border border-accent/40 bg-accent/5 p-4 mb-6"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    <p className="text-sm font-semibold">Recommended Bundle</p>
+                    <span className="ml-auto text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary px-2 py-0.5 rounded-full">Most Popular</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Applicants who add a Cover Letter + LinkedIn see <span className="font-semibold text-foreground">3× more interview callbacks</span>.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { id: "cover-letter", label: "Cover Letter", price: 1500 },
+                      { id: "linkedin", label: "LinkedIn Optimisation", price: 2000 },
+                    ].map((item) => {
+                      const alreadySelected = selectedServices.includes(item.id);
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => !alreadySelected && toggleService(item.id)}
+                          className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition-all ${
+                            alreadySelected
+                              ? "border-primary bg-primary/10 text-primary cursor-default"
+                              : "border-border bg-card hover:border-primary/40 hover:bg-primary/5"
+                          }`}
+                        >
+                          {alreadySelected ? (
+                            <Check className="h-3 w-3" />
+                          ) : (
+                            <span className="text-primary">+</span>
+                          )}
+                          {item.label} · {formatKES(item.price)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+
               <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}>
                 <h2 className="text-xl font-bold mb-5">1. Choose your services</h2>
                 <div className="grid grid-cols-1 gap-3 mb-8">
