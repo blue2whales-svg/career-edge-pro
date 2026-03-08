@@ -1,8 +1,9 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FileText, Shield, Globe, Zap, GraduationCap, Pen, Linkedin, Award,
   BookOpen, Users, ArrowRight, Check, Briefcase, FileCheck, Target,
-  Clock, Star, Sparkles
+  Clock, Star, Sparkles, HelpCircle, ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
