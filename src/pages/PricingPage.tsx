@@ -141,7 +141,7 @@ export default function PricingPage() {
                     </li>
                   ))}
                 </ul>
-                <Link to="/order">
+                <Link to={`/order?package=${pkg.package}`}>
                   <Button
                     className={`w-full h-12 font-semibold ${
                       pkg.popular ? "bg-gradient-brand border-0 shadow-glow gold-shimmer" : "border-primary/30"
