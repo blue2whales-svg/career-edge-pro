@@ -145,6 +145,10 @@ export default function OrderPage() {
       supabase.functions.invoke("generate-cv", {
         body: { orderId: order.id },
       }).catch(console.error);
+
+      setOrderId(order.id);
+      setOrderPlaced(true);
+      toast({ title: "Order placed! AI is generating your documents 🚀" });
     } catch (error: any) {
       console.error("Order error:", error);
       toast({ title: "Something went wrong", description: error.message, variant: "destructive" });
