@@ -92,7 +92,148 @@ const ALL_SERVICES = [
   },
 ];
 
-const CATEGORIES = ["All", "Job Seeker", "Executive", "Academic"];
+const CV_COMPARISON = [
+  { feature: "ATS-friendly format", values: [true, true, false, true, true] },
+  { feature: "Visual design elements", values: [false, false, true, false, "Market-specific"] },
+  { feature: "Keyword optimisation", values: ["Basic", "Advanced", "Basic", "Advanced", "Advanced"] },
+  { feature: "Two-column layout", values: [false, false, true, false, "Market-specific"] },
+  { feature: "Human editor review", values: [false, false, false, true, false] },
+  { feature: "Country formatting", values: [false, false, false, false, true] },
+  { feature: "Photo adaptation", values: [false, false, false, false, true] },
+  { feature: "Best for", values: ["Corporate roles", "Online portals", "Creative / tech", "C-suite / VP", "Gulf / UK / EU"] },
+];
+
+const QUIZ_QUESTIONS = [
+  {
+    question: "How are you applying?",
+    options: [
+      { label: "Online job portals", result: "ats" },
+      { label: "Direct to hiring manager", result: "professional" },
+      { label: "Creative / startup role", result: "modern" },
+      { label: "Abroad (Gulf, UK, EU)", result: "international" },
+    ],
+  },
+  {
+    question: "What's your experience level?",
+    options: [
+      { label: "Entry-level / Graduate", result: "professional" },
+      { label: "Mid-level (3-8 years)", result: "ats" },
+      { label: "Senior / Manager", result: "ats" },
+      { label: "Director / C-suite", result: "executive" },
+    ],
+  },
+  {
+    question: "What matters most to you?",
+    options: [
+      { label: "Passing ATS screening", result: "ats" },
+      { label: "Standing out visually", result: "modern" },
+      { label: "Corporate credibility", result: "professional" },
+      { label: "International standards", result: "international" },
+    ],
+  },
+];
+
+const QUIZ_RESULTS: Record<string, { title: string; desc: string; service: string; price: string }> = {
+  ats: { title: "ATS-Optimised CV", desc: "Engineered to beat applicant tracking systems at large companies.", service: "ats-cv", price: "KES 3,000" },
+  professional: { title: "Professional CV", desc: "Clean, corporate layout trusted by HR managers across all industries.", service: "cv", price: "KES 2,500" },
+  modern: { title: "Modern CV", desc: "Contemporary visual design that stands out for creative and tech roles.", service: "modern-cv", price: "KES 3,000" },
+  executive: { title: "Executive CV", desc: "Premium positioning for C-suite, VP, and Director-level professionals.", service: "executive-cv", price: "KES 4,500" },
+  international: { title: "International CV", desc: "Formatted for Gulf, UK, EU markets with country-specific conventions.", service: "international-cv", price: "KES 3,500" },
+};
+
+function CVQuizSection() {
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState<string[]>([]);
+  const [showResult, setShowResult] = useState(false);
+
+  const handleAnswer = (result: string) => {
+    const next = [...answers, result];
+    setAnswers(next);
+    if (step < QUIZ_QUESTIONS.length - 1) {
+      setStep(step + 1);
+    } else {
+      setShowResult(true);
+    }
+  };
+
+  const reset = () => { setStep(0); setAnswers([]); setShowResult(false); };
+
+  const getResult = () => {
+    const counts: Record<string, number> = {};
+    answers.forEach((a) => { counts[a] = (counts[a] || 0) + 1; });
+    return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || "professional";
+  };
+
+  const result = showResult ? QUIZ_RESULTS[getResult()] : null;
+
+  return (
+    <section className="relative z-10 pb-20 px-4">
+      <div className="container max-w-2xl mx-auto">
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0} className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 mb-4">
+            <HelpCircle className="h-3.5 w-3.5 text-primary" />
+            <span className="text-xs font-mono text-primary">Quick Quiz</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-serif font-bold mb-3">
+            Which CV is <span className="text-gradient">right for me?</span>
+          </h2>
+          <p className="text-muted-foreground text-sm">Answer 3 quick questions — get a personalised recommendation.</p>
+        </motion.div>
+
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}
+          className="rounded-2xl border border-border bg-card p-6 sm:p-8"
+        >
+          <AnimatePresence mode="wait">
+            {!showResult ? (
+              <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.25 }}>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-mono text-primary">Q{step + 1} of {QUIZ_QUESTIONS.length}</span>
+                  <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                    <div className="h-full bg-gradient-brand rounded-full transition-all" style={{ width: `${((step + 1) / QUIZ_QUESTIONS.length) * 100}%` }} />
+                  </div>
+                </div>
+                <h3 className="text-lg font-semibold mb-5">{QUIZ_QUESTIONS[step].question}</h3>
+                <div className="grid gap-3">
+                  {QUIZ_QUESTIONS[step].options.map((opt) => (
+                    <button
+                      key={opt.label}
+                      onClick={() => handleAnswer(opt.result)}
+                      className="rounded-xl border border-border bg-card p-4 text-left text-sm font-medium hover:border-primary/40 hover:bg-primary/5 transition-all flex items-center justify-between group"
+                    >
+                      {opt.label}
+                      <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            ) : result && (
+              <motion.div key="result" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }} className="text-center">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-brand flex items-center justify-center mx-auto mb-4">
+                  <Check className="h-8 w-8 text-primary-foreground" />
+                </div>
+                <h3 className="text-xl font-bold mb-1">We recommend: {result.title}</h3>
+                <p className="text-sm text-muted-foreground mb-2">{result.desc}</p>
+                <p className="text-2xl font-bold text-primary mb-6">{result.price}</p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Link to={`/order?service=${result.service}`}>
+                    <Button className="bg-gradient-brand border-0 font-semibold gold-shimmer">
+                      Order Now <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                  <Button variant="outline" className="border-primary/30" onClick={reset}>
+                    Retake Quiz
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+
 
 export default function ServicesPage() {
   return (
