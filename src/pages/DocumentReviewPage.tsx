@@ -232,15 +232,28 @@ export default function DocumentReviewPage() {
                             <Eye className="h-3 w-3" /> Preview
                           </button>
                         </div>
-                        <Button onClick={saveEdits} disabled={saving} size="sm" variant="outline">
+                        <Button onClick={saveEdits} disabled={saving || !isPaid} size="sm" variant="outline">
                           {saving ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Check className="h-3 w-3 mr-1" />}
                           Save
                         </Button>
-                        <Button onClick={downloadAsText} size="sm" className="bg-gradient-brand border-0">
-                          <Download className="h-3 w-3 mr-1" /> Download
+                        <Button onClick={downloadAsText} disabled={!isPaid} size="sm" className="bg-gradient-brand border-0">
+                          {isPaid ? <Download className="h-3 w-3 mr-1" /> : <Lock className="h-3 w-3 mr-1" />}
+                          Download
                         </Button>
                       </div>
                     </div>
+
+                    {!isPaid && (
+                      <div className="mb-4 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 flex items-start gap-3">
+                        <ShieldAlert className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-sm font-semibold text-amber-300">Payment Required</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Complete your M-Pesa payment to unlock full access. You can preview a snippet below, but editing, copying, and downloading are locked until payment is confirmed.
+                          </p>
+                        </div>
+                      </div>
+                    )}
 
                     {activeDocument.status === "generating" ? (
                       <div className="flex items-center justify-center py-16">
@@ -248,20 +261,31 @@ export default function DocumentReviewPage() {
                         <span className="text-muted-foreground">AI is writing your document...</span>
                       </div>
                     ) : (
-                      <div className={`grid gap-4 ${viewMode === "split" ? "grid-cols-2" : "grid-cols-1"}`}>
-                        {(viewMode === "edit" || viewMode === "split") && (
-                          <Textarea
-                            value={editContent}
-                            onChange={(e) => setEditContent(e.target.value)}
-                            className="min-h-[500px] bg-background border-border font-mono text-sm leading-relaxed"
-                            placeholder="Your document content will appear here..."
+                      <div className="relative">
+                        {!isPaid && (
+                          <div className="absolute inset-0 z-10 pointer-events-auto select-none" 
+                            onCopy={(e) => e.preventDefault()}
+                            style={{ userSelect: 'none' }}
                           />
                         )}
-                        {(viewMode === "preview" || viewMode === "split") && (
-                          <div className="min-h-[500px] rounded-md border border-border bg-background p-6 overflow-auto prose prose-sm dark:prose-invert max-w-none prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-li:text-foreground">
-                            <ReactMarkdown>{editContent}</ReactMarkdown>
-                          </div>
-                        )}
+                        <div className={`grid gap-4 ${viewMode === "split" ? "grid-cols-2" : "grid-cols-1"} ${!isPaid ? "blur-sm opacity-60" : ""}`}
+                          style={!isPaid ? { userSelect: 'none' } : {}}
+                        >
+                          {(viewMode === "edit" || viewMode === "split") && (
+                            <Textarea
+                              value={isPaid ? editContent : blurContent(editContent) + "\n\n... [Complete payment to view full document]"}
+                              onChange={(e) => isPaid && setEditContent(e.target.value)}
+                              readOnly={!isPaid}
+                              className="min-h-[500px] bg-background border-border font-mono text-sm leading-relaxed"
+                              placeholder="Your document content will appear here..."
+                            />
+                          )}
+                          {(viewMode === "preview" || viewMode === "split") && (
+                            <div className="min-h-[500px] rounded-md border border-border bg-background p-6 overflow-auto prose prose-sm dark:prose-invert max-w-none prose-headings:text-foreground prose-p:text-foreground prose-strong:text-foreground prose-li:text-foreground">
+                              <ReactMarkdown>{isPaid ? editContent : blurContent(editContent) + "\n\n... *Complete payment to view the full document*"}</ReactMarkdown>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     )}
                   </motion.div>
