@@ -30,6 +30,8 @@ export default function DocumentReviewPage() {
   const [activeDoc, setActiveDoc] = useState<string | null>(null);
   const [editContent, setEditContent] = useState("");
   const [saving, setSaving] = useState(false);
+  const [orderStatus, setOrderStatus] = useState<string>("pending");
+  const isPaid = orderStatus === "paid";
 
   useEffect(() => {
     if (orderId) fetchDocuments();
