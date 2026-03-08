@@ -120,6 +120,22 @@ export default function OrderPage() {
         }
       }
 
+      // Trigger M-Pesa STK Push
+      if (phone.trim()) {
+        const { data: stkData, error: stkError } = await supabase.functions.invoke("mpesa-stk-push", {
+          body: { orderId: order.id, phone: phone.trim(), amount: total },
+        });
+
+        if (stkError) {
+          console.error("STK push error:", stkError);
+          toast({ title: "Order saved but M-Pesa prompt failed. We'll follow up via email.", variant: "destructive" });
+        } else if (stkData?.ResponseCode === "0") {
+          toast({ title: "Check your phone for the M-Pesa payment prompt 📱" });
+        } else {
+          toast({ title: "M-Pesa request failed. We'll follow up via email.", variant: "destructive" });
+        }
+      }
+
       // Trigger Zapier webhook
       supabase.functions.invoke("notify-zapier", {
         body: { order },
@@ -129,10 +145,6 @@ export default function OrderPage() {
       supabase.functions.invoke("generate-cv", {
         body: { orderId: order.id },
       }).catch(console.error);
-
-      setOrderId(order.id);
-      setOrderPlaced(true);
-      toast({ title: "Order placed! AI is generating your documents 🚀" });
     } catch (error: any) {
       console.error("Order error:", error);
       toast({ title: "Something went wrong", description: error.message, variant: "destructive" });
