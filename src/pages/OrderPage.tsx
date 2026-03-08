@@ -365,29 +365,35 @@ export default function OrderPage() {
 
               <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}>
                 <h2 className="text-xl font-bold mb-5">1. Choose your services</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+                <div className="grid grid-cols-1 gap-3 mb-8">
                   {SERVICES.map((s) => {
                     const selected = selectedServices.includes(s.id);
                     return (
                       <button
                         key={s.id}
                         onClick={() => toggleService(s.id)}
-                        className={`rounded-xl border p-3.5 sm:p-4 flex items-center gap-3 text-left transition-all duration-200 ${
+                        className={`rounded-xl border p-4 flex items-center gap-3 text-left transition-all duration-200 ${
                           selected
-                            ? "border-primary bg-primary/10 shadow-glow-sm"
+                            ? "border-primary bg-primary/10 shadow-glow-sm ring-2 ring-primary/30"
                             : "border-border bg-card hover:border-primary/30"
                         }`}
                       >
-                        <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
                           selected ? "bg-gradient-brand" : "bg-muted"
                         }`}>
-                          <s.icon className={`h-4 w-4 ${selected ? "text-primary-foreground" : "text-muted-foreground"}`} />
+                          <s.icon className={`h-5 w-5 ${selected ? "text-primary-foreground" : "text-muted-foreground"}`} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm">{s.label}</div>
-                          <div className="text-xs text-primary font-semibold">{formatKES(s.price)}</div>
+                          <div className="font-semibold text-sm">{s.label}</div>
+                          <div className="text-xs text-primary font-bold">{formatKES(s.price)}</div>
                         </div>
-                        {selected && <Check className="h-4 w-4 text-primary shrink-0" />}
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                          selected
+                            ? "border-primary bg-primary"
+                            : "border-muted-foreground/30 bg-transparent"
+                        }`}>
+                          {selected && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
+                        </div>
                       </button>
                     );
                   })}
