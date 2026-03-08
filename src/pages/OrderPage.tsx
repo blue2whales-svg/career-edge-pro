@@ -61,10 +61,20 @@ export default function OrderPage() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  const jobFromQuery = searchParams.get("job_title");
+  const companyFromQuery = searchParams.get("company");
+
   useEffect(() => {
     const pkg = searchParams.get("package");
+    const singleService = searchParams.get("service");
     if (pkg && PACKAGE_MAP[pkg]) {
       setSelectedServices(PACKAGE_MAP[pkg]);
+    } else if (singleService) {
+      setSelectedServices((prev) => prev.includes(singleService) ? prev : [...prev, singleService]);
+    }
+    // Pre-fill job title if coming from jobs board
+    if (jobFromQuery) {
+      setFormValues((prev) => ({ ...prev, jobTitle: jobFromQuery, targetCompany: companyFromQuery || "" }));
     }
   }, [searchParams]);
 
