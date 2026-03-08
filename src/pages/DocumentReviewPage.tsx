@@ -81,7 +81,7 @@ export default function DocumentReviewPage() {
   };
 
   const saveEdits = async () => {
-    if (!activeDoc) return;
+    if (!activeDoc || !isPaid) return;
     setSaving(true);
     const { error } = await supabase
       .from("generated_documents")
@@ -100,6 +100,10 @@ export default function DocumentReviewPage() {
   };
 
   const downloadAsText = () => {
+    if (!isPaid) {
+      toast({ title: "Please complete payment to download", variant: "destructive" });
+      return;
+    }
     const doc = documents.find((d) => d.id === activeDoc);
     if (!doc) return;
     const blob = new Blob([editContent], { type: "text/plain" });
