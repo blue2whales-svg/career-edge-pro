@@ -1,5 +1,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { encode as base64Encode } from "https://deno.land/std@0.208.0/encoding/base64.ts";
+
+const OAUTH_TOKEN_URL =
+  "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,37 +9,50 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-function toBase64(str: string): string {
-  const encoder = new TextEncoder();
-  return base64Encode(encoder.encode(str));
+function toBase64(value: string): string {
+  return btoa(value);
 }
 
 async function getAccessToken(): Promise<string> {
-  const consumerKey = (Deno.env.get("VITE_MPESA_CONSUMER_KEY") || "").trim();
-  const consumerSecret = (Deno.env.get("VITE_MPESA_CONSUMER_SECRET") || "").trim();
-  
-  console.log(`Consumer key length: ${consumerKey.length}, Secret length: ${consumerSecret.length}`);
-  console.log(`Key starts with: ${consumerKey.substring(0, 6)}...`);
-  
+  const consumerKey =
+    (Deno.env.get("VITE_MPESA_CONSUMER_KEY") ?? "").trim().replace(/\s+/g, "");
+  const consumerSecret =
+    (Deno.env.get("VITE_MPESA_CONSUMER_SECRET") ?? "").trim().replace(/\s+/g, "");
+
   if (!consumerKey || !consumerSecret) {
     throw new Error("M-Pesa consumer key or secret not configured");
   }
-  
-  const credentials = toBase64(`${consumerKey}:${consumerSecret}`);
 
-  const res = await fetch(
-    "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials",
-    { headers: { Authorization: `Basic ${credentials}` } }
-  );
+  const basicAuth = toBase64(`${consumerKey}:${consumerSecret}`);
+
+  const res = await fetch(OAUTH_TOKEN_URL, {
+    method: "GET",
+    headers: {
+      Authorization: `Basic ${basicAuth}`,
+      Accept: "application/json",
+    },
+  });
 
   const text = await res.text();
-  console.log(`Safaricom OAuth response status: ${res.status}, body: ${text}`);
-  
+  console.log(`Safaricom OAuth response status: ${res.status}, body: ${text || "<empty>"}`);
+
   if (!res.ok) {
-    throw new Error(`Token error (${res.status}): ${text}`);
+    throw new Error(
+      `Token error (${res.status}): ${text || "Empty response body from Safaricom OAuth endpoint"}`
+    );
   }
 
-  const data = JSON.parse(text);
+  let data: { access_token?: string };
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error(`Token response was not valid JSON: ${text || "<empty>"}`);
+  }
+
+  if (!data.access_token) {
+    throw new Error(`Token response missing access_token: ${text || "<empty>"}`);
+  }
+
   return data.access_token;
 }
 
