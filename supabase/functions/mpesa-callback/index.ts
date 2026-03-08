@@ -30,32 +30,21 @@ Deno.serve(async (req) => {
     );
 
     if (ResultCode === 0 && CallbackMetadata) {
-      // Payment successful
       const items = CallbackMetadata.Item || [];
       const mpesaReceipt = items.find((i: any) => i.Name === "MpesaReceiptNumber")?.Value;
       const amountPaid = items.find((i: any) => i.Name === "Amount")?.Value;
-      const phoneUsed = items.find((i: any) => i.Name === "PhoneNumber")?.Value;
 
-      console.log(`Payment success: Receipt=${mpesaReceipt}, Amount=${amountPaid}, Phone=${phoneUsed}`);
+      console.log(`Payment success: Receipt=${mpesaReceipt}, Amount=${amountPaid}`);
 
-      // Find orders with awaiting_payment status and update the most recent one
-      // In production, you'd store CheckoutRequestID to match exactly
-      const { data: orders } = await supabase
-        .from("orders")
-        .select("id")
-        .eq("status", "awaiting_payment")
-        .order("created_at", { ascending: false })
-        .limit(1);
-
-      if (orders && orders.length > 0) {
-        await supabase.from("orders").update({
-          status: "paid",
-        }).eq("id", orders[0].id);
-
-        console.log(`Order ${orders[0].id} marked as paid`);
-      }
+      await supabase.from("orders").update({
+        status: "paid",
+        mpesa_receipt: mpesaReceipt,
+      } as any).eq("mpesa_checkout_request_id" as any, CheckoutRequestID);
     } else {
-      console.log(`Payment failed or cancelled. ResultCode: ${ResultCode}`);
+      console.log(`Payment failed. ResultCode: ${ResultCode}`);
+      await supabase.from("orders").update({
+        status: "payment_failed",
+      }).eq("mpesa_checkout_request_id" as any, CheckoutRequestID);
     }
 
     return new Response(JSON.stringify({ ResultCode: 0, ResultDesc: "Accepted" }), {

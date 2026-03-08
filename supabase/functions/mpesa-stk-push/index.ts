@@ -88,7 +88,6 @@ Deno.serve(async (req) => {
     const stkData = await stkRes.json();
 
     if (stkData.ResponseCode === "0") {
-      // Store CheckoutRequestID for callback matching
       const supabase = createClient(
         Deno.env.get("SUPABASE_URL")!,
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -96,7 +95,8 @@ Deno.serve(async (req) => {
 
       await supabase.from("orders").update({
         status: "awaiting_payment",
-      }).eq("id", orderId);
+        mpesa_checkout_request_id: stkData.CheckoutRequestID,
+      } as any).eq("id", orderId);
     }
 
     return new Response(JSON.stringify(stkData), {
