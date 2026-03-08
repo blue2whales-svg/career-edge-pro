@@ -347,6 +347,22 @@ export default function OrderPage() {
           <div className="grid lg:grid-cols-5 gap-8">
             {/* Main Form */}
             <div className="lg:col-span-3">
+              {/* Job context banner */}
+              {jobFromQuery && (
+                <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1}
+                  className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-4 mb-6 flex items-center gap-3"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                    <FileText className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold truncate">CV tailored for: {jobFromQuery}</p>
+                    {companyFromQuery && <p className="text-xs text-muted-foreground">at {companyFromQuery}</p>}
+                    <p className="text-xs text-muted-foreground mt-0.5">CV pre-selected · add more services below to boost your application</p>
+                  </div>
+                </motion.div>
+              )}
+
               <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}>
                 <h2 className="text-xl font-bold mb-5">1. Choose your services</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
