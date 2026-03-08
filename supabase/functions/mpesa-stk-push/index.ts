@@ -60,7 +60,7 @@ Deno.serve(async (req) => {
       .replace(/[-T:Z.]/g, "")
       .slice(0, 14);
 
-    const password = btoa(`${shortcode}${passkey}${timestamp}`);
+    const password = toBase64(`${shortcode}${passkey}${timestamp}`);
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const callbackUrl = `${supabaseUrl}/functions/v1/mpesa-callback`;
