@@ -564,6 +564,33 @@ export default function OrderPage() {
           </div>
         </div>
       </section>
+
+      {/* Mobile sticky bottom bar */}
+      <div className="fixed bottom-16 left-0 right-0 z-30 lg:hidden border-t border-border/60 bg-card/95 backdrop-blur-xl px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.3)]">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-xs text-muted-foreground">
+              {selectedServices.length === 0
+                ? "No services selected"
+                : `${selectedServices.length} service${selectedServices.length > 1 ? "s" : ""}`}
+            </p>
+            <p className="text-lg font-bold text-primary truncate">{formatKES(total)}</p>
+          </div>
+          <Button
+            onClick={handleSubmit}
+            disabled={selectedServices.length === 0 || !name.trim() || !email.trim() || !phone.trim() || isSubmitting}
+            className="h-11 px-6 bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer shrink-0"
+          >
+            {isSubmitting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <>Pay Now <ArrowRight className="ml-1 h-4 w-4" /></>
+            )}
+          </Button>
+        </div>
+      </div>
+      {/* Spacer so content isn't hidden behind sticky bar on mobile */}
+      <div className="h-20 lg:hidden" />
     </PageLayout>
   );
 }
