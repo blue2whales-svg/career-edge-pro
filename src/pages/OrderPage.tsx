@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight, Upload, FileText, Pen, Linkedin, GraduationCap,
-  Shield, Globe, Award, BookOpen, Users, Check, Loader2, X, Clock, Phone
+  Shield, Globe, Award, BookOpen, Users, Check, Loader2, X, Clock, Phone, Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
