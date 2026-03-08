@@ -77,7 +77,7 @@ export default function DocumentReviewPage() {
 
   const selectDoc = (doc: any) => {
     setActiveDoc(doc.id);
-    setEditContent(doc.content);
+    setEditContent(isPaid ? doc.content : blurContent(doc.content));
   };
 
   const saveEdits = async () => {
