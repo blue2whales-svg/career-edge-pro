@@ -8,7 +8,7 @@ import PageLayout from "@/components/PageLayout";
 import { FeaturedJobs } from "@/components/jobs/FeaturedJobs";
 import { JobCard } from "@/components/jobs/JobCard";
 import { JobDetailModal } from "@/components/jobs/JobDetailModal";
-import { INDUSTRIES, type Job } from "@/data/jobs";
+import { INDUSTRIES, MARKETS, type Job } from "@/data/jobs";
 import { useJobs, triggerJobsFetch } from "@/hooks/useJobs";
 
 const fadeUp = {
@@ -22,6 +22,7 @@ const fadeUp = {
 export default function JobsPage() {
   const [search, setSearch] = useState("");
   const [selectedIndustry, setSelectedIndustry] = useState("All");
+  const [selectedMarket, setSelectedMarket] = useState("All Markets");
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   const { data, isLoading, refetch } = useJobs();
@@ -35,9 +36,13 @@ export default function JobsPage() {
   const filtered = jobs.filter((job) => {
     const matchSearch = job.title.toLowerCase().includes(search.toLowerCase()) ||
       job.company.toLowerCase().includes(search.toLowerCase());
-    if (selectedIndustry === "🔥 Hot Abroad") return matchSearch && job.hot;
+    if (selectedIndustry === "🔥 Hot Abroad") {
+      const matchMarket = selectedMarket === "All Markets" || job.market === selectedMarket;
+      return matchSearch && job.hot && matchMarket;
+    }
     const matchIndustry = selectedIndustry === "All" || job.industry === selectedIndustry;
-    return matchSearch && matchIndustry;
+    const matchMarket = selectedMarket === "All Markets" || job.market === selectedMarket;
+    return matchSearch && matchIndustry && matchMarket;
   });
 
   return (
