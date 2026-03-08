@@ -13,8 +13,16 @@ function toBase64(str: string): string {
 }
 
 async function getAccessToken(): Promise<string> {
-  const consumerKey = Deno.env.get("VITE_MPESA_CONSUMER_KEY")!;
-  const consumerSecret = Deno.env.get("VITE_MPESA_CONSUMER_SECRET")!;
+  const consumerKey = (Deno.env.get("VITE_MPESA_CONSUMER_KEY") || "").trim();
+  const consumerSecret = (Deno.env.get("VITE_MPESA_CONSUMER_SECRET") || "").trim();
+  
+  console.log(`Consumer key length: ${consumerKey.length}, Secret length: ${consumerSecret.length}`);
+  console.log(`Key starts with: ${consumerKey.substring(0, 6)}...`);
+  
+  if (!consumerKey || !consumerSecret) {
+    throw new Error("M-Pesa consumer key or secret not configured");
+  }
+  
   const credentials = toBase64(`${consumerKey}:${consumerSecret}`);
 
   const res = await fetch(
@@ -22,12 +30,14 @@ async function getAccessToken(): Promise<string> {
     { headers: { Authorization: `Basic ${credentials}` } }
   );
 
+  const text = await res.text();
+  console.log(`Safaricom OAuth response status: ${res.status}, body: ${text}`);
+  
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Token error: ${text}`);
+    throw new Error(`Token error (${res.status}): ${text}`);
   }
 
-  const data = await res.json();
+  const data = JSON.parse(text);
   return data.access_token;
 }
 
