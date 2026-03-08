@@ -28,6 +28,7 @@ const PACKAGES = [
     ],
     popular: false,
     accent: "border-border",
+    package: "starter",
   },
   {
     name: "Professional",
@@ -46,6 +47,7 @@ const PACKAGES = [
     ],
     popular: true,
     accent: "border-primary shadow-glow",
+    package: "professional",
   },
   {
     name: "Executive",
@@ -65,6 +67,7 @@ const PACKAGES = [
     ],
     popular: false,
     accent: "border-gold-dark/30",
+    package: "executive",
   },
 ];
 
