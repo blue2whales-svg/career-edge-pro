@@ -57,6 +57,8 @@ export default function OrderPage() {
   const [stkSent, setStkSent] = useState(false);
   const [paymentChecking, setPaymentChecking] = useState(false);
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
+  const [paymentError, setPaymentError] = useState<"credentials" | "network" | "generic" | null>(null);
+  const [retryingPayment, setRetryingPayment] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
