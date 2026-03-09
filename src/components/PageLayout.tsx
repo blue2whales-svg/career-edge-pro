@@ -153,7 +153,7 @@ export default function PageLayout({ children }: PageLayoutProps) {
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.85, type: "spring", stiffness: 300, damping: 20 }}
+            transition={{ delay: 0.35, type: "spring", stiffness: 300, damping: 20 }}
           >
             <Link to="/order">
               <Button size="sm" className="bg-gradient-brand border-0 font-semibold shadow-glow-sm gold-shimmer rounded-xl h-10 px-5">
