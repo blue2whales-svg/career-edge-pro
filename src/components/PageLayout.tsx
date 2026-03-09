@@ -1,16 +1,29 @@
 import { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Home, Briefcase, GraduationCap, CreditCard, Wrench, BookOpen, Phone } from "lucide-react";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 import { MobileNav } from "@/components/landing/MobileNav";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import { cn } from "@/lib/utils";
 
 interface PageLayoutProps {
   children: ReactNode;
 }
 
+const DOCK_LINKS = [
+  { to: "/", icon: Home, label: "Home" },
+  { to: "/services", icon: Wrench, label: "Services" },
+  { to: "/scholarships", icon: GraduationCap, label: "Scholarships" },
+  { to: "/pricing", icon: CreditCard, label: "Pricing" },
+  { to: "/jobs", icon: Briefcase, label: "Jobs" },
+  { to: "/how-it-works", icon: BookOpen, label: "How It Works" },
+  { to: "/contact", icon: Phone, label: "Contact" },
+];
+
 export default function PageLayout({ children }: PageLayoutProps) {
+  const { pathname } = useLocation();
+
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Background effects */}
@@ -18,20 +31,13 @@ export default function PageLayout({ children }: PageLayoutProps) {
       <div className="fixed top-[-300px] left-[-200px] w-[700px] h-[700px] rounded-full bg-primary/5 blur-[150px] animate-orb pointer-events-none" />
       <div className="fixed bottom-[-200px] right-[-200px] w-[500px] h-[500px] rounded-full bg-secondary/3 blur-[120px] animate-orb pointer-events-none" style={{ animationDelay: "-4s" }} />
 
-      {/* Nav */}
+      {/* Minimal Top Bar */}
       <nav className="relative z-10 border-b border-border/30 surface-glass sticky top-0">
         <div className="container max-w-6xl mx-auto flex items-center justify-between h-16 px-4">
           <Link to="/" className="flex items-center gap-2.5">
             <img src={cvedgeLogo} alt="CVEdge Logo" className="w-10 h-10 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20" />
             <span className="font-bold text-lg tracking-tight">CVEdge</span>
           </Link>
-          <div className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
-            <Link to="/services" className="hover:text-foreground transition-colors">Services</Link>
-            <Link to="/scholarships" className="hover:text-foreground transition-colors">Scholarships</Link>
-            <Link to="/pricing" className="hover:text-foreground transition-colors">Pricing</Link>
-            <Link to="/jobs" className="hover:text-foreground transition-colors">Jobs</Link>
-            <Link to="/how-it-works" className="hover:text-foreground transition-colors">How It Works</Link>
-          </div>
           <div className="hidden md:flex items-center gap-3">
             <Link to="/login">
               <Button variant="ghost" size="sm">Log in</Button>
@@ -92,20 +98,57 @@ export default function PageLayout({ children }: PageLayoutProps) {
             <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} CVEdge. All rights reserved.</p>
             <p className="text-xs text-muted-foreground">Professional career documents for 90+ countries worldwide.</p>
           </div>
-          {/* Extra bottom padding on mobile for bottom nav */}
-          <div className="h-20 md:h-0" />
+          {/* Extra bottom padding for bottom nav */}
+          <div className="h-20 md:h-24" />
         </div>
       </footer>
 
       {/* Mobile Bottom Nav */}
       <MobileBottomNav />
 
-      {/* WhatsApp — shift up on mobile to clear bottom nav */}
+      {/* Desktop Floating Bottom Dock */}
+      <div className="hidden md:block fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+        <div className="flex items-center gap-1 px-3 py-2 rounded-2xl border border-border/40 bg-background/70 backdrop-blur-2xl shadow-[0_8px_40px_-12px_hsl(var(--primary)/0.25)]">
+          {DOCK_LINKS.map((link) => {
+            const isActive = link.to === "/" ? pathname === "/" : pathname.startsWith(link.to);
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={cn(
+                  "group relative flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-all duration-200",
+                  isActive
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                )}
+              >
+                <link.icon className={cn(
+                  "w-[18px] h-[18px] transition-transform duration-200 group-hover:scale-110",
+                  isActive && "scale-110"
+                )} />
+                <span className="text-[10px] font-medium leading-none">{link.label}</span>
+                {isActive && (
+                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
+                )}
+              </Link>
+            );
+          })}
+          <div className="w-px h-8 bg-border/50 mx-1" />
+          <Link to="/order">
+            <Button size="sm" className="bg-gradient-brand border-0 font-semibold shadow-glow-sm gold-shimmer rounded-xl h-10 px-5">
+              Order
+              <ArrowRight className="ml-1 h-3.5 w-3.5" />
+            </Button>
+          </Link>
+        </div>
+      </div>
+
+      {/* WhatsApp — shift up on mobile to clear bottom nav, on desktop to clear dock */}
       <a
         href="https://wa.me/254793919962"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-24 md:bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg hover:bg-emerald-600 transition-colors"
+        className="fixed bottom-24 md:bottom-24 right-6 z-50 w-14 h-14 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg hover:bg-emerald-600 transition-colors"
         aria-label="Chat on WhatsApp"
       >
         <svg viewBox="0 0 24 24" className="w-7 h-7 fill-white">
