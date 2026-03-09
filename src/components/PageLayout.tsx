@@ -122,7 +122,7 @@ export default function PageLayout({ children }: PageLayoutProps) {
                 key={link.to}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5 + i * 0.05, duration: 0.3 }}
+                transition={{ delay: 0.15 + i * 0.03, duration: 0.2 }}
               >
                 <Link
                   to={link.to}
