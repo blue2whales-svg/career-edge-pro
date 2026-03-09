@@ -1,12 +1,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const SAFARICOM_BASE_URL = "https://sandbox.safaricom.co.ke";
+const SAFARICOM_BASE_URL = "https://api.safaricom.co.ke";
 const OAUTH_TOKEN_URL = `${SAFARICOM_BASE_URL}/oauth/v1/generate?grant_type=client_credentials`;
 const STK_PUSH_URL = `${SAFARICOM_BASE_URL}/mpesa/stkpush/v1/processrequest`;
-
-const SANDBOX_SHORTCODE = "174379";
-const SANDBOX_PASSKEY =
-  "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
