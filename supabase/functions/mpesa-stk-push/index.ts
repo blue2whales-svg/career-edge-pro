@@ -62,32 +62,58 @@ async function requestStkPush(params: {
   const timestamp = getNairobiTimestamp();
   const password = toBase64(`${shortcode}${passkey}${timestamp}`);
 
-  const stkRes = await fetch(STK_PUSH_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      BusinessShortCode: shortcode,
-      Password: password,
-      Timestamp: timestamp,
-      TransactionType: "CustomerPayBillOnline",
-      Amount: Math.ceil(amount),
-      PartyA: formattedPhone,
-      PartyB: shortcode,
-      PhoneNumber: formattedPhone,
-      CallBackURL: callbackUrl,
-      AccountReference: orderId.slice(0, 12).toUpperCase(),
-      TransactionDesc: `Payment for order ${orderId.slice(0, 8)}`,
-    }),
-  });
+  let lastErrorText = "";
+  let lastStatus = 500;
 
-  const stkText = await stkRes.text();
-  const stkData = parseStkResponse(stkText, stkRes.status);
-  console.log(`STK push response status: ${stkRes.status}, body: ${stkText || "<empty>"}`);
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const stkRes = await fetch(STK_PUSH_URL, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          BusinessShortCode: shortcode,
+          Password: password,
+          Timestamp: timestamp,
+          TransactionType: "CustomerPayBillOnline",
+          Amount: Math.ceil(amount),
+          PartyA: formattedPhone,
+          PartyB: shortcode,
+          PhoneNumber: formattedPhone,
+          CallBackURL: callbackUrl,
+          AccountReference: orderId.slice(0, 12).toUpperCase(),
+          TransactionDesc: `Payment for order ${orderId.slice(0, 8)}`,
+        }),
+      });
 
-  return { stkRes, stkText, stkData };
+      const stkText = await stkRes.text();
+      const stkData = parseStkResponse(stkText, stkRes.status);
+      console.log(`STK push response status: ${stkRes.status}, body: ${stkText || "<empty>"}`);
+
+      const isTransientServerFailure = stkRes.status >= 500;
+      if (!isTransientServerFailure || attempt === 3) {
+        return { stkRes, stkData };
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, attempt * 700));
+      continue;
+    } catch (error: any) {
+      lastErrorText = error?.message || "Unknown network error";
+      if (attempt === 3) {
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, attempt * 700));
+    }
+  }
+
+  const fallbackText = lastErrorText || "STK request failed after retries";
+  const fallbackData = parseStkResponse(fallbackText, lastStatus);
+  return {
+    stkRes: new Response(fallbackText, { status: lastStatus }),
+    stkData: fallbackData,
+  };
 }
 
 async function getAccessToken(): Promise<string> {
