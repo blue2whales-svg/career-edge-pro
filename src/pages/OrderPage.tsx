@@ -184,16 +184,29 @@ export default function OrderPage() {
 
         if (stkError) {
           console.error("STK push error:", stkError);
-          toast({ title: "M-Pesa prompt could not be sent. Please use the manual payment option below.", variant: "destructive" });
+          setPaymentError("network");
+          toast({ title: "Could not reach the payment service. Use the manual M-Pesa option below.", variant: "destructive" });
         } else if (stkData?.ResponseCode === "0") {
           setStkSent(true);
+          setPaymentError(null);
           toast({ title: "Check your phone for the M-Pesa payment prompt 📱" });
         } else {
           console.error("STK response:", stkData);
-          toast({ title: "M-Pesa request failed. Please try again or pay manually.", variant: "destructive" });
+          const errorCode = stkData?.errorCode || "";
+          if (errorCode.includes("1001") || errorCode.includes("credentials")) {
+            setPaymentError("credentials");
+            toast({ title: "Payment service configuration issue. Please pay manually via M-Pesa below.", variant: "destructive" });
+          } else if (errorCode.includes("500.003") || errorCode.includes("busy")) {
+            setPaymentError("network");
+            toast({ title: "M-Pesa is busy right now. Please retry in a moment or pay manually.", variant: "destructive" });
+          } else {
+            setPaymentError("generic");
+            toast({ title: "M-Pesa request failed. Please try again or pay manually.", variant: "destructive" });
+          }
         }
       } catch (stkErr) {
         console.error("STK invoke error:", stkErr);
+        setPaymentError("network");
         toast({ title: "Could not reach payment service. Try the manual option below.", variant: "destructive" });
       }
 
