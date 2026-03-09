@@ -112,7 +112,7 @@ export default function PageLayout({ children }: PageLayoutProps) {
         className="hidden md:block fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 260, damping: 24, delay: 0.4 }}
+        transition={{ type: "spring", stiffness: 300, damping: 26, delay: 0.1 }}
       >
         <div className="flex items-center gap-1 px-3 py-2 rounded-2xl border border-border/40 bg-background/70 backdrop-blur-2xl shadow-[0_8px_40px_-12px_hsl(var(--primary)/0.25)]">
           {DOCK_LINKS.map((link, i) => {
