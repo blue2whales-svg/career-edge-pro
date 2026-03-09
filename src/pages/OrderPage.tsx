@@ -310,7 +310,7 @@ export default function OrderPage() {
                       {paymentChecking ? (
                         <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...</>
                       ) : (
-                        <>I've Paid — Confirm Payment <Check className="ml-2 h-4 w-4" /></>
+                        <>Confirm Payment Now <Check className="ml-2 h-4 w-4" /></>
                       )}
                     </Button>
                     <Link to="/">
