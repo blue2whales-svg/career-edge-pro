@@ -120,7 +120,19 @@ Deno.serve(async (req) => {
       }
     );
 
-    const stkData = await stkRes.json();
+    const stkText = await stkRes.text();
+    console.log(`STK push response status: ${stkRes.status}, body: ${stkText || "<empty>"}`);
+
+    if (!stkRes.ok) {
+      throw new Error(`STK push failed (${stkRes.status}): ${stkText || "Empty response"}`);
+    }
+
+    let stkData: any;
+    try {
+      stkData = JSON.parse(stkText);
+    } catch {
+      throw new Error(`STK push response not valid JSON: ${stkText.slice(0, 200)}`);
+    }
 
     if (stkData.ResponseCode === "0") {
       const supabase = createClient(
