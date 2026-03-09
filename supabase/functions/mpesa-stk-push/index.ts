@@ -1,12 +1,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const SAFARICOM_BASE_URL = "https://sandbox.safaricom.co.ke";
+const SAFARICOM_BASE_URL = "https://api.safaricom.co.ke";
 const OAUTH_TOKEN_URL = `${SAFARICOM_BASE_URL}/oauth/v1/generate?grant_type=client_credentials`;
 const STK_PUSH_URL = `${SAFARICOM_BASE_URL}/mpesa/stkpush/v1/processrequest`;
-
-const SANDBOX_SHORTCODE = "174379";
-const SANDBOX_PASSKEY =
-  "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -180,12 +176,8 @@ Deno.serve(async (req) => {
       formattedPhone = "254" + formattedPhone;
     }
 
-    const configuredShortcode = sanitizeSecret(Deno.env.get("VITE_MPESA_SHORTCODE"));
-    const configuredPasskey = sanitizeSecret(Deno.env.get("VITE_MPESA_PASSKEY"));
-
-    const isSandbox = STK_PUSH_URL.includes("sandbox.safaricom.co.ke");
-    const shortcode = configuredShortcode || (isSandbox ? SANDBOX_SHORTCODE : "");
-    const passkey = configuredPasskey || (isSandbox ? SANDBOX_PASSKEY : "");
+    const shortcode = sanitizeSecret(Deno.env.get("VITE_MPESA_SHORTCODE"));
+    const passkey = sanitizeSecret(Deno.env.get("VITE_MPESA_PASSKEY"));
 
     if (!shortcode || !passkey) {
       throw new Error("M-Pesa shortcode or passkey not configured");
@@ -205,29 +197,6 @@ Deno.serve(async (req) => {
       orderId,
       callbackUrl,
     });
-
-    const shouldRetryWithOfficialSandboxCredentials =
-      isSandbox &&
-      !stkRes.ok &&
-      stkData?.errorCode === "500.001.1001" &&
-      (shortcode !== SANDBOX_SHORTCODE || passkey !== SANDBOX_PASSKEY);
-
-    if (shouldRetryWithOfficialSandboxCredentials) {
-      console.warn("STK returned Wrong credentials. Retrying once with official sandbox shortcode/passkey.");
-
-      const fallbackAttempt = await requestStkPush({
-        token,
-        shortcode: SANDBOX_SHORTCODE,
-        passkey: SANDBOX_PASSKEY,
-        formattedPhone,
-        amount,
-        orderId,
-        callbackUrl,
-      });
-
-      stkRes = fallbackAttempt.stkRes;
-      stkData = fallbackAttempt.stkData;
-    }
 
     if (!stkRes.ok) {
       return new Response(
