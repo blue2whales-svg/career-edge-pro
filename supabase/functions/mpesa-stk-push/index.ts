@@ -18,6 +18,78 @@ function toBase64(value: string): string {
   return btoa(value);
 }
 
+function sanitizeSecret(value: string | undefined): string {
+  return (value ?? "").replace(/\s+/g, "").trim();
+}
+
+function getNairobiTimestamp(): string {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Africa/Nairobi",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  }).formatToParts(new Date());
+
+  const byType = (type: string) => parts.find((part) => part.type === type)?.value ?? "00";
+  return `${byType("year")}${byType("month")}${byType("day")}${byType("hour")}${byType("minute")}${byType("second")}`;
+}
+
+function parseStkResponse(rawText: string, status: number) {
+  try {
+    return JSON.parse(rawText);
+  } catch {
+    return {
+      errorCode: `HTTP_${status}`,
+      errorMessage: rawText?.slice(0, 200) || "STK push returned a non-JSON response",
+    };
+  }
+}
+
+async function requestStkPush(params: {
+  token: string;
+  shortcode: string;
+  passkey: string;
+  formattedPhone: string;
+  amount: number;
+  orderId: string;
+  callbackUrl: string;
+}) {
+  const { token, shortcode, passkey, formattedPhone, amount, orderId, callbackUrl } = params;
+  const timestamp = getNairobiTimestamp();
+  const password = toBase64(`${shortcode}${passkey}${timestamp}`);
+
+  const stkRes = await fetch(STK_PUSH_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      BusinessShortCode: shortcode,
+      Password: password,
+      Timestamp: timestamp,
+      TransactionType: "CustomerPayBillOnline",
+      Amount: Math.ceil(amount),
+      PartyA: formattedPhone,
+      PartyB: shortcode,
+      PhoneNumber: formattedPhone,
+      CallBackURL: callbackUrl,
+      AccountReference: orderId.slice(0, 12).toUpperCase(),
+      TransactionDesc: `Payment for order ${orderId.slice(0, 8)}`,
+    }),
+  });
+
+  const stkText = await stkRes.text();
+  const stkData = parseStkResponse(stkText, stkRes.status);
+  console.log(`STK push response status: ${stkRes.status}, body: ${stkText || "<empty>"}`);
+
+  return { stkRes, stkText, stkData };
+}
+
 async function getAccessToken(): Promise<string> {
   const consumerKey =
     (Deno.env.get("VITE_MPESA_CONSUMER_KEY") ?? "").trim().replace(/\s+/g, "");
