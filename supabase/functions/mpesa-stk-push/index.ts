@@ -154,60 +154,53 @@ Deno.serve(async (req) => {
       formattedPhone = "254" + formattedPhone;
     }
 
-    const shortcode = (Deno.env.get("VITE_MPESA_SHORTCODE") ?? "").trim();
-    const passkey = (Deno.env.get("VITE_MPESA_PASSKEY") ?? "").trim();
+    const configuredShortcode = sanitizeSecret(Deno.env.get("VITE_MPESA_SHORTCODE"));
+    const configuredPasskey = sanitizeSecret(Deno.env.get("VITE_MPESA_PASSKEY"));
+
+    const isSandbox = STK_PUSH_URL.includes("sandbox.safaricom.co.ke");
+    const shortcode = configuredShortcode || (isSandbox ? SANDBOX_SHORTCODE : "");
+    const passkey = configuredPasskey || (isSandbox ? SANDBOX_PASSKEY : "");
 
     if (!shortcode || !passkey) {
       throw new Error("M-Pesa shortcode or passkey not configured");
     }
-
-    const timestamp = new Date()
-      .toISOString()
-      .replace(/[-T:Z.]/g, "")
-      .slice(0, 14);
-
-    const password = toBase64(`${shortcode}${passkey}${timestamp}`);
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const callbackUrl = `${supabaseUrl}/functions/v1/mpesa-callback`;
 
     const token = await getAccessToken();
 
-    const stkRes = await fetch(
-      "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          BusinessShortCode: shortcode,
-          Password: password,
-          Timestamp: timestamp,
-          TransactionType: "CustomerPayBillOnline",
-          Amount: Math.ceil(amount),
-          PartyA: formattedPhone,
-          PartyB: shortcode,
-          PhoneNumber: formattedPhone,
-          CallBackURL: callbackUrl,
-          AccountReference: orderId.slice(0, 12).toUpperCase(),
-          TransactionDesc: `Payment for order ${orderId.slice(0, 8)}`,
-        }),
-      }
-    );
+    let { stkRes, stkData } = await requestStkPush({
+      token,
+      shortcode,
+      passkey,
+      formattedPhone,
+      amount,
+      orderId,
+      callbackUrl,
+    });
 
-    const stkText = await stkRes.text();
-    console.log(`STK push response status: ${stkRes.status}, body: ${stkText || "<empty>"}`);
+    const shouldRetryWithOfficialSandboxCredentials =
+      isSandbox &&
+      !stkRes.ok &&
+      stkData?.errorCode === "500.001.1001" &&
+      (shortcode !== SANDBOX_SHORTCODE || passkey !== SANDBOX_PASSKEY);
 
-    let stkData: any;
-    try {
-      stkData = JSON.parse(stkText);
-    } catch {
-      stkData = {
-        errorCode: `HTTP_${stkRes.status}`,
-        errorMessage: stkText?.slice(0, 200) || "STK push returned a non-JSON response",
-      };
+    if (shouldRetryWithOfficialSandboxCredentials) {
+      console.warn("STK returned Wrong credentials. Retrying once with official sandbox shortcode/passkey.");
+
+      const fallbackAttempt = await requestStkPush({
+        token,
+        shortcode: SANDBOX_SHORTCODE,
+        passkey: SANDBOX_PASSKEY,
+        formattedPhone,
+        amount,
+        orderId,
+        callbackUrl,
+      });
+
+      stkRes = fallbackAttempt.stkRes;
+      stkData = fallbackAttempt.stkData;
     }
 
     if (!stkRes.ok) {
