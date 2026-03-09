@@ -176,12 +176,8 @@ Deno.serve(async (req) => {
       formattedPhone = "254" + formattedPhone;
     }
 
-    const configuredShortcode = sanitizeSecret(Deno.env.get("VITE_MPESA_SHORTCODE"));
-    const configuredPasskey = sanitizeSecret(Deno.env.get("VITE_MPESA_PASSKEY"));
-
-    const isSandbox = STK_PUSH_URL.includes("sandbox.safaricom.co.ke");
-    const shortcode = configuredShortcode || (isSandbox ? SANDBOX_SHORTCODE : "");
-    const passkey = configuredPasskey || (isSandbox ? SANDBOX_PASSKEY : "");
+    const shortcode = sanitizeSecret(Deno.env.get("VITE_MPESA_SHORTCODE"));
+    const passkey = sanitizeSecret(Deno.env.get("VITE_MPESA_PASSKEY"));
 
     if (!shortcode || !passkey) {
       throw new Error("M-Pesa shortcode or passkey not configured");
