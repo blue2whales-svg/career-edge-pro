@@ -112,7 +112,7 @@ export default function PageLayout({ children }: PageLayoutProps) {
         className="hidden md:block fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 260, damping: 24, delay: 0.4 }}
+        transition={{ type: "spring", stiffness: 300, damping: 26, delay: 0.1 }}
       >
         <div className="flex items-center gap-1 px-3 py-2 rounded-2xl border border-border/40 bg-background/70 backdrop-blur-2xl shadow-[0_8px_40px_-12px_hsl(var(--primary)/0.25)]">
           {DOCK_LINKS.map((link, i) => {
@@ -122,7 +122,7 @@ export default function PageLayout({ children }: PageLayoutProps) {
                 key={link.to}
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.5 + i * 0.05, duration: 0.3 }}
+                transition={{ delay: 0.15 + i * 0.03, duration: 0.2 }}
               >
                 <Link
                   to={link.to}
@@ -153,7 +153,7 @@ export default function PageLayout({ children }: PageLayoutProps) {
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.85, type: "spring", stiffness: 300, damping: 20 }}
+            transition={{ delay: 0.35, type: "spring", stiffness: 300, damping: 20 }}
           >
             <Link to="/order">
               <Button size="sm" className="bg-gradient-brand border-0 font-semibold shadow-glow-sm gold-shimmer rounded-xl h-10 px-5">
