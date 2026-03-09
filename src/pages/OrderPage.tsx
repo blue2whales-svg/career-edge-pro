@@ -290,21 +290,89 @@ export default function OrderPage() {
                       ? "An M-Pesa payment prompt has been sent to your phone. Please enter your PIN to complete payment."
                       : "Complete your M-Pesa payment to unlock your documents."}
                   </p>
-                  <p className="text-sm font-mono text-primary mb-8">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
+                  <p className="text-sm font-mono text-primary mb-6">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
 
-                  <div className="rounded-xl border border-amber-500/20 bg-card p-6 text-left mb-6">
+                  {/* Contextual error banner */}
+                  {paymentError && (
+                    <div className={`rounded-xl border p-4 text-left mb-6 ${
+                      paymentError === "credentials"
+                        ? "border-destructive/30 bg-destructive/5"
+                        : paymentError === "network"
+                        ? "border-amber-500/30 bg-amber-500/5"
+                        : "border-muted bg-muted/30"
+                    }`}>
+                      <div className="flex items-start gap-3">
+                        {paymentError === "network" ? (
+                          <WifiOff className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+                        ) : (
+                          <AlertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                        )}
+                        <div>
+                          <p className="text-sm font-semibold text-foreground mb-1">
+                            {paymentError === "credentials"
+                              ? "Automatic payment unavailable"
+                              : paymentError === "network"
+                              ? "M-Pesa is temporarily busy"
+                              : "Payment prompt failed"}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {paymentError === "credentials"
+                              ? "The automatic M-Pesa prompt couldn't be sent due to a configuration issue. Please use the manual payment steps below — your order is safe."
+                              : paymentError === "network"
+                              ? "Safaricom's servers are experiencing high traffic. You can retry in a moment or pay manually below."
+                              : "Something went wrong sending the M-Pesa prompt. Please retry or use the manual payment option."}
+                          </p>
+                          {paymentError !== "credentials" && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="mt-3 border-primary/30 text-xs"
+                              disabled={retryingPayment}
+                              onClick={async () => {
+                                setRetryingPayment(true);
+                                try {
+                                  const { data: stkData, error: stkError } = await supabase.functions.invoke("mpesa-stk-push", {
+                                    body: { orderId, phone: phone.trim(), amount: total },
+                                  });
+                                  if (!stkError && stkData?.ResponseCode === "0") {
+                                    setStkSent(true);
+                                    setPaymentError(null);
+                                    toast({ title: "Check your phone for the M-Pesa prompt 📱" });
+                                  } else {
+                                    toast({ title: "Still unable to send prompt. Please pay manually.", variant: "destructive" });
+                                  }
+                                } catch {
+                                  toast({ title: "Could not reach payment service.", variant: "destructive" });
+                                } finally {
+                                  setRetryingPayment(false);
+                                }
+                              }}
+                            >
+                              {retryingPayment ? (
+                                <><Loader2 className="mr-1.5 h-3 w-3 animate-spin" /> Retrying…</>
+                              ) : (
+                                <><RefreshCw className="mr-1.5 h-3 w-3" /> Retry M-Pesa Prompt</>
+                              )}
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="rounded-xl border border-border bg-card p-6 text-left mb-6">
                     <h3 className="font-semibold mb-3 flex items-center gap-2">
                       <Phone className="h-4 w-4 text-primary" /> M-Pesa Payment
                     </h3>
                     <div className="space-y-3 text-sm text-muted-foreground">
-                      {stkSent ? (
+                      {stkSent && !paymentError ? (
                         <>
                           <p>📱 Check your phone for the M-Pesa prompt and enter your PIN.</p>
                           <p>Once payment is complete, click the button below to confirm.</p>
                         </>
                       ) : (
                         <>
-                          <p className="font-medium text-foreground">Manual Payment:</p>
+                          <p className="font-medium text-foreground">Pay manually via M-Pesa:</p>
                           <div className="space-y-1">
                             <p>1. Go to M-Pesa → Lipa na M-Pesa → Pay Bill</p>
                             <p>2. Business Number: <span className="font-mono text-primary">{import.meta.env.VITE_MPESA_SHORTCODE || "174379"}</span></p>
