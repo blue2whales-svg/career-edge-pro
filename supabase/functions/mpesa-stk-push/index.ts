@@ -198,29 +198,6 @@ Deno.serve(async (req) => {
       callbackUrl,
     });
 
-    const shouldRetryWithOfficialSandboxCredentials =
-      isSandbox &&
-      !stkRes.ok &&
-      stkData?.errorCode === "500.001.1001" &&
-      (shortcode !== SANDBOX_SHORTCODE || passkey !== SANDBOX_PASSKEY);
-
-    if (shouldRetryWithOfficialSandboxCredentials) {
-      console.warn("STK returned Wrong credentials. Retrying once with official sandbox shortcode/passkey.");
-
-      const fallbackAttempt = await requestStkPush({
-        token,
-        shortcode: SANDBOX_SHORTCODE,
-        passkey: SANDBOX_PASSKEY,
-        formattedPhone,
-        amount,
-        orderId,
-        callbackUrl,
-      });
-
-      stkRes = fallbackAttempt.stkRes;
-      stkData = fallbackAttempt.stkData;
-    }
-
     if (!stkRes.ok) {
       return new Response(
         JSON.stringify({
