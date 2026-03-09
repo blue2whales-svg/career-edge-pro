@@ -123,15 +123,25 @@ Deno.serve(async (req) => {
     const stkText = await stkRes.text();
     console.log(`STK push response status: ${stkRes.status}, body: ${stkText || "<empty>"}`);
 
-    if (!stkRes.ok) {
-      throw new Error(`STK push failed (${stkRes.status}): ${stkText || "Empty response"}`);
-    }
-
     let stkData: any;
     try {
       stkData = JSON.parse(stkText);
     } catch {
-      throw new Error(`STK push response not valid JSON: ${stkText.slice(0, 200)}`);
+      stkData = {
+        errorCode: `HTTP_${stkRes.status}`,
+        errorMessage: stkText?.slice(0, 200) || "STK push returned a non-JSON response",
+      };
+    }
+
+    if (!stkRes.ok) {
+      return new Response(
+        JSON.stringify({
+          ResponseCode: "1",
+          ResponseDescription: "STK push request failed",
+          ...stkData,
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     if (stkData.ResponseCode === "0") {
