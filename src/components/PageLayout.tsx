@@ -1,4 +1,5 @@
-import { ReactNode } from "react";
+import { ReactNode, useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Home, Briefcase, GraduationCap, CreditCard, Wrench, BookOpen, Phone } from "lucide-react";
@@ -107,41 +108,62 @@ export default function PageLayout({ children }: PageLayoutProps) {
       <MobileBottomNav />
 
       {/* Desktop Floating Bottom Dock */}
-      <div className="hidden md:block fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+      <motion.div
+        className="hidden md:block fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
+        initial={{ y: 80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 260, damping: 24, delay: 0.4 }}
+      >
         <div className="flex items-center gap-1 px-3 py-2 rounded-2xl border border-border/40 bg-background/70 backdrop-blur-2xl shadow-[0_8px_40px_-12px_hsl(var(--primary)/0.25)]">
-          {DOCK_LINKS.map((link) => {
+          {DOCK_LINKS.map((link, i) => {
             const isActive = link.to === "/" ? pathname === "/" : pathname.startsWith(link.to);
             return (
-              <Link
+              <motion.div
                 key={link.to}
-                to={link.to}
-                className={cn(
-                  "group relative flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-all duration-200",
-                  isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
-                )}
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5 + i * 0.05, duration: 0.3 }}
               >
-                <link.icon className={cn(
-                  "w-[18px] h-[18px] transition-transform duration-200 group-hover:scale-110",
-                  isActive && "scale-110"
-                )} />
-                <span className="text-[10px] font-medium leading-none">{link.label}</span>
-                {isActive && (
-                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
-                )}
-              </Link>
+                <Link
+                  to={link.to}
+                  className={cn(
+                    "group relative flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-all duration-200",
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                  )}
+                >
+                  <link.icon className={cn(
+                    "w-[18px] h-[18px] transition-transform duration-200 group-hover:scale-110",
+                    isActive && "scale-110"
+                  )} />
+                  <span className="text-[10px] font-medium leading-none">{link.label}</span>
+                  {isActive && (
+                    <motion.span
+                      layoutId="dock-indicator"
+                      className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
+                </Link>
+              </motion.div>
             );
           })}
           <div className="w-px h-8 bg-border/50 mx-1" />
-          <Link to="/order">
-            <Button size="sm" className="bg-gradient-brand border-0 font-semibold shadow-glow-sm gold-shimmer rounded-xl h-10 px-5">
-              Order
-              <ArrowRight className="ml-1 h-3.5 w-3.5" />
-            </Button>
-          </Link>
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.85, type: "spring", stiffness: 300, damping: 20 }}
+          >
+            <Link to="/order">
+              <Button size="sm" className="bg-gradient-brand border-0 font-semibold shadow-glow-sm gold-shimmer rounded-xl h-10 px-5">
+                Order
+                <ArrowRight className="ml-1 h-3.5 w-3.5" />
+              </Button>
+            </Link>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
       {/* WhatsApp — shift up on mobile to clear bottom nav, on desktop to clear dock */}
       <a
