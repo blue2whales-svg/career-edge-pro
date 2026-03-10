@@ -519,21 +519,21 @@ export default function OrderPage() {
                       <button
                         key={s.id}
                         onClick={() => toggleService(s.id)}
-                        className={`rounded-xl border p-4 flex items-center gap-3 text-left transition-all duration-200 ${
+                        className={`rounded-xl border p-3 sm:p-4 flex items-center gap-3 text-left transition-all duration-200 ${
                           selected
                             ? "border-primary bg-primary/10 shadow-glow-sm ring-2 ring-primary/30"
                             : "border-border bg-card hover:border-primary/30"
                         }`}
                       >
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0 ${
                           selected ? "bg-gradient-brand" : "bg-muted"
                         }`}>
-                          <s.icon className={`h-5 w-5 ${selected ? "text-primary-foreground" : "text-muted-foreground"}`} />
+                          <s.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${selected ? "text-primary-foreground" : "text-muted-foreground"}`} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-sm">{s.label}</div>
-                          <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">{s.desc}</div>
-                          <div className="text-xs text-primary font-bold mt-1">{formatKES(s.price)}</div>
+                          <div className="font-semibold text-xs sm:text-sm">{s.label}</div>
+                          <div className="text-[10px] sm:text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-2">{s.desc}</div>
+                          <div className="text-xs text-primary font-bold mt-0.5">{formatKES(s.price)}</div>
                         </div>
                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
                           selected
