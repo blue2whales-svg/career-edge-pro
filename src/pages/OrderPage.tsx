@@ -548,30 +548,60 @@ export default function OrderPage() {
 
                 <h2 className="text-xl font-bold mb-5">2. Your details</h2>
                 <div className="space-y-4 mb-6">
-                  <Input
-                    placeholder="Full name *"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="h-12 bg-card border-border"
-                  />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
                     <Input
-                      placeholder="Email address *"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="h-12 bg-card border-border"
+                      ref={nameRef}
+                      placeholder="Full name *"
+                      value={name}
+                      onChange={(e) => { setName(e.target.value); setValidationErrors(prev => ({ ...prev, name: false })); }}
+                      className={cn(
+                        "h-12 bg-card border-border transition-all",
+                        validationErrors.name && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle"
+                      )}
                     />
-                    <div className="flex gap-2">
-                      <div className="rounded-lg border border-border bg-card px-3 flex items-center text-sm text-muted-foreground shrink-0">
-                        +254
-                      </div>
+                    {validationErrors.name && (
+                      <p className="text-xs text-destructive mt-1 animate-pulse font-medium">⚠ Full name is required</p>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
                       <Input
-                        placeholder="M-Pesa number *"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="h-12 bg-card border-border"
+                        ref={emailRef}
+                        placeholder="Email address *"
+                        type="email"
+                        value={email}
+                        onChange={(e) => { setEmail(e.target.value); setValidationErrors(prev => ({ ...prev, email: false })); }}
+                        className={cn(
+                          "h-12 bg-card border-border transition-all",
+                          validationErrors.email && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle"
+                        )}
                       />
+                      {validationErrors.email && (
+                        <p className="text-xs text-destructive mt-1 animate-pulse font-medium">⚠ Email address is required</p>
+                      )}
+                    </div>
+                    <div>
+                      <div className="flex gap-2">
+                        <div className={cn(
+                          "rounded-lg border bg-card px-3 flex items-center text-sm text-muted-foreground shrink-0 transition-all",
+                          validationErrors.phone ? "border-destructive" : "border-border"
+                        )}>
+                          +254
+                        </div>
+                        <Input
+                          ref={phoneRef}
+                          placeholder="M-Pesa number *"
+                          value={phone}
+                          onChange={(e) => { setPhone(e.target.value); setValidationErrors(prev => ({ ...prev, phone: false })); }}
+                          className={cn(
+                            "h-12 bg-card border-border transition-all",
+                            validationErrors.phone && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle"
+                          )}
+                        />
+                      </div>
+                      {validationErrors.phone && (
+                        <p className="text-xs text-destructive mt-1 animate-pulse font-medium">⚠ M-Pesa number is required for payment</p>
+                      )}
                     </div>
                   </div>
                 </div>
