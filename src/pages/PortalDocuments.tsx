@@ -121,8 +121,11 @@ export default function PortalDocuments() {
                 <Link to={`/review/${doc.order_id}`}>
                   <Button variant="outline" size="sm" className="border-primary/30">Preview</Button>
                 </Link>
-                <Button size="sm" onClick={() => downloadDocument(doc)} className="bg-gradient-brand border-0">
-                  <Download className="h-4 w-4 mr-1" /> Download
+                <Button size="sm" onClick={() => downloadDocument(doc, "pdf")} className="bg-gradient-brand border-0">
+                  <Download className="h-4 w-4 mr-1" /> PDF
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => downloadDocument(doc, "docx")}>
+                  <Download className="h-4 w-4 mr-1" /> Word
                 </Button>
               </div>
             </div>
