@@ -732,16 +732,16 @@ export default function OrderPage() {
                         <span className="font-semibold">{formatKES(s.price)}</span>
                       </div>
                     ))}
-                    {hasInternationalBundle && (
+                    {isPackageMode && packageParam && (
                       <div className="flex items-center justify-between text-sm text-primary">
-                        <span className="font-medium">🌍 International Bundle Discount</span>
-                        <span className="font-semibold">-KES 1,000</span>
+                        <span className="font-medium">📦 Package Price</span>
+                        <span className="font-semibold">{formatKES(PACKAGE_MAP[packageParam].price)}</span>
                       </div>
                     )}
                     <div className="border-t border-border pt-3 flex items-center justify-between">
                       <span className="font-bold">Total</span>
                       <div className="text-right">
-                        {hasInternationalBundle && (
+                        {isPackageMode && subtotal > total && (
                           <span className="text-xs text-muted-foreground line-through block">{formatKES(subtotal)}</span>
                         )}
                         <span className="text-2xl font-bold text-primary">{formatKES(total)}</span>
