@@ -128,7 +128,7 @@ export default function PricingPage() {
       {/* Packages */}
       <section className="relative z-10 pb-24 px-4">
         <div className="container max-w-5xl mx-auto">
-          <div className="grid sm:grid-cols-3 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {PACKAGES.map((pkg, i) => (
               <motion.div
                 key={i}
