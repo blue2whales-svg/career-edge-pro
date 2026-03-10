@@ -42,6 +42,7 @@ const PACKAGE_MAP: Record<string, string[]> = {
   starter: ["cv"],
   professional: ["cv", "cover-letter", "linkedin"],
   executive: ["executive-cv", "cover-letter", "linkedin"],
+  international: ["international-cv", "ats-cv"],
 };
 
 export default function OrderPage() {
@@ -91,8 +92,10 @@ export default function OrderPage() {
     );
   };
 
-  const total = SERVICES.filter((s) => selectedServices.includes(s.id))
+  const hasInternationalBundle = selectedServices.includes("international-cv") && selectedServices.includes("ats-cv");
+  const subtotal = SERVICES.filter((s) => selectedServices.includes(s.id))
     .reduce((sum, s) => sum + s.price, 0);
+  const total = hasInternationalBundle ? subtotal - 1000 : subtotal;
 
   const handleFormChange = (key: string, value: string) => {
     setFormValues(prev => ({ ...prev, [key]: value }));
@@ -510,6 +513,46 @@ export default function OrderPage() {
                 </motion.div>
               )}
 
+              {/* International Bundle Promo */}
+              <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1.8}
+                className="rounded-xl border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-card to-accent/5 p-4 sm:p-5 mb-5 relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[9px] font-bold uppercase tracking-wider px-3 py-1 rounded-bl-lg">
+                  Save KES 1,000
+                </div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Globe className="h-5 w-5 text-primary shrink-0" />
+                  <h3 className="text-sm sm:text-base font-bold">✈️ Going Abroad?</h3>
+                </div>
+                <p className="text-xs sm:text-sm text-muted-foreground mb-3 leading-relaxed">
+                  Get our <span className="font-semibold text-foreground">International CV + ATS-Optimised CV</span> bundle — 
+                  formatted for Gulf, UK & EU markets, keyword-matched for online portals, and delivered in <span className="font-semibold text-foreground">2 professional pages</span>.
+                </p>
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-xs text-muted-foreground line-through">KES 6,500</span>
+                  <span className="text-lg font-bold text-primary">KES 5,500</span>
+                </div>
+                {selectedServices.includes("international-cv") && selectedServices.includes("ats-cv") ? (
+                  <div className="inline-flex items-center gap-1.5 rounded-lg border border-primary bg-primary/10 px-4 py-2 text-xs font-semibold text-primary">
+                    <Check className="h-3.5 w-3.5" /> Bundle Selected
+                  </div>
+                ) : (
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      const newServices = new Set(selectedServices);
+                      newServices.add("international-cv");
+                      newServices.add("ats-cv");
+                      setSelectedServices(Array.from(newServices));
+                      setFormValues(prev => ({ ...prev, cvPages: "2" }));
+                    }}
+                    className="bg-gradient-brand border-0 font-semibold text-xs gold-shimmer"
+                  >
+                    <Globe className="mr-1.5 h-3.5 w-3.5" /> Get International Bundle
+                  </Button>
+                )}
+              </motion.div>
+
               <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}>
                 <h2 className="text-lg sm:text-xl font-bold mb-4">1. Choose your CV type & services</h2>
                 <div className="grid grid-cols-1 gap-2 sm:gap-3 mb-6">
@@ -683,9 +726,20 @@ export default function OrderPage() {
                         <span className="font-semibold">{formatKES(s.price)}</span>
                       </div>
                     ))}
+                    {hasInternationalBundle && (
+                      <div className="flex items-center justify-between text-sm text-primary">
+                        <span className="font-medium">🌍 International Bundle Discount</span>
+                        <span className="font-semibold">-KES 1,000</span>
+                      </div>
+                    )}
                     <div className="border-t border-border pt-3 flex items-center justify-between">
                       <span className="font-bold">Total</span>
-                      <span className="text-2xl font-bold text-primary">{formatKES(total)}</span>
+                      <div className="text-right">
+                        {hasInternationalBundle && (
+                          <span className="text-xs text-muted-foreground line-through block">{formatKES(subtotal)}</span>
+                        )}
+                        <span className="text-2xl font-bold text-primary">{formatKES(total)}</span>
+                      </div>
                     </div>
                   </div>
                 )}
