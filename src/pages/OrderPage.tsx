@@ -431,15 +431,15 @@ export default function OrderPage() {
   return (
     <PageLayout>
       {/* Hero */}
-      <section className="relative z-10 pt-12 sm:pt-20 pb-10 px-4">
+      <section className="relative z-10 pt-8 sm:pt-16 pb-6 px-4">
         <div className="container max-w-4xl mx-auto text-center">
           <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={0}
-            className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold leading-[1.08] mb-4"
+            className="text-2xl sm:text-5xl lg:text-6xl font-serif font-bold leading-[1.08] mb-3"
           >
             Start your <span className="text-gradient">order</span>
           </motion.h1>
           <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={1}
-            className="text-base text-muted-foreground max-w-xl mx-auto"
+            className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto"
           >
             Select your services, fill in your details, and pay via M-Pesa. We'll get to work immediately.
           </motion.p>
@@ -455,15 +455,15 @@ export default function OrderPage() {
               {/* Job context banner */}
               {jobFromQuery && (
                 <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1}
-                  className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-4 mb-6 flex items-center gap-3"
+                  className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-3 sm:p-4 mb-4 flex items-start gap-3"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                    <FileText className="h-5 w-5 text-primary" />
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <FileText className="h-4 w-4 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold truncate">CV tailored for: {jobFromQuery}</p>
-                    {companyFromQuery && <p className="text-xs text-muted-foreground">at {companyFromQuery}</p>}
-                    <p className="text-xs text-muted-foreground mt-0.5">CV pre-selected · add more services below to boost your application</p>
+                    <p className="text-xs sm:text-sm font-semibold leading-snug">CV tailored for: {jobFromQuery}</p>
+                    {companyFromQuery && <p className="text-[11px] text-muted-foreground">at {companyFromQuery}</p>}
+                    <p className="text-[11px] text-muted-foreground mt-0.5">Choose your preferred CV type below</p>
                   </div>
                 </motion.div>
               )}
@@ -471,20 +471,20 @@ export default function OrderPage() {
               {/* Recommended bundle when coming from a job */}
               {jobFromQuery && (
                 <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1.5}
-                  className="rounded-xl border border-accent/40 bg-accent/5 p-4 mb-6"
+                  className="rounded-xl border border-accent/40 bg-accent/5 p-3 sm:p-4 mb-4"
                 >
-                  <div className="flex items-center gap-2 mb-2">
-                    <Sparkles className="h-4 w-4 text-primary" />
-                    <p className="text-sm font-semibold">Recommended Bundle</p>
-                    <span className="ml-auto text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary px-2 py-0.5 rounded-full">Most Popular</span>
+                  <div className="flex items-center gap-2 mb-2 flex-wrap">
+                    <Sparkles className="h-4 w-4 text-primary shrink-0" />
+                    <p className="text-xs sm:text-sm font-semibold">Recommended Bundle</p>
+                    <span className="text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary px-2 py-0.5 rounded-full">Most Popular</span>
                   </div>
-                  <p className="text-xs text-muted-foreground mb-3">
-                    Applicants who add a Cover Letter + LinkedIn see <span className="font-semibold text-foreground">3× more interview callbacks</span>.
+                  <p className="text-[11px] text-muted-foreground mb-3">
+                    Add a Cover Letter + LinkedIn for <span className="font-semibold text-foreground">3× more callbacks</span>.
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     {[
                       { id: "cover-letter", label: "Cover Letter", price: 1500 },
-                      { id: "linkedin", label: "LinkedIn Optimisation", price: 2000 },
+                      { id: "linkedin", label: "LinkedIn", price: 2000 },
                     ].map((item) => {
                       const alreadySelected = selectedServices.includes(item.id);
                       return (
@@ -511,29 +511,29 @@ export default function OrderPage() {
               )}
 
               <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}>
-                <h2 className="text-xl font-bold mb-5">1. Choose your services</h2>
-                <div className="grid grid-cols-1 gap-3 mb-8">
+                <h2 className="text-lg sm:text-xl font-bold mb-4">1. Choose your CV type & services</h2>
+                <div className="grid grid-cols-1 gap-2 sm:gap-3 mb-6">
                   {SERVICES.map((s) => {
                     const selected = selectedServices.includes(s.id);
                     return (
                       <button
                         key={s.id}
                         onClick={() => toggleService(s.id)}
-                        className={`rounded-xl border p-4 flex items-center gap-3 text-left transition-all duration-200 ${
+                        className={`rounded-xl border p-3 sm:p-4 flex items-center gap-3 text-left transition-all duration-200 ${
                           selected
                             ? "border-primary bg-primary/10 shadow-glow-sm ring-2 ring-primary/30"
                             : "border-border bg-card hover:border-primary/30"
                         }`}
                       >
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0 ${
                           selected ? "bg-gradient-brand" : "bg-muted"
                         }`}>
-                          <s.icon className={`h-5 w-5 ${selected ? "text-primary-foreground" : "text-muted-foreground"}`} />
+                          <s.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${selected ? "text-primary-foreground" : "text-muted-foreground"}`} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-sm">{s.label}</div>
-                          <div className="text-[11px] text-muted-foreground leading-tight mt-0.5">{s.desc}</div>
-                          <div className="text-xs text-primary font-bold mt-1">{formatKES(s.price)}</div>
+                          <div className="font-semibold text-xs sm:text-sm">{s.label}</div>
+                          <div className="text-[10px] sm:text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-2">{s.desc}</div>
+                          <div className="text-xs text-primary font-bold mt-0.5">{formatKES(s.price)}</div>
                         </div>
                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
                           selected
@@ -547,7 +547,7 @@ export default function OrderPage() {
                   })}
                 </div>
 
-                <h2 className="text-xl font-bold mb-5">2. Your details</h2>
+                <h2 className="text-lg sm:text-xl font-bold mb-4">2. Your details</h2>
                 <div className="space-y-4 mb-6">
                   <div>
                     <Input
@@ -609,7 +609,7 @@ export default function OrderPage() {
 
                 {selectedServices.length > 0 && (
                   <>
-                    <h2 className="text-xl font-bold mb-5">3. Service-specific details</h2>
+                    <h2 className="text-lg sm:text-xl font-bold mb-4">3. Service-specific details</h2>
                     <p className="text-sm text-muted-foreground mb-4">
                       The more detail you provide, the better your AI-generated documents will be.
                     </p>
@@ -623,8 +623,8 @@ export default function OrderPage() {
                   </>
                 )}
 
-                <h2 className="text-xl font-bold mb-3">
-                  {selectedServices.length > 0 ? "4" : "3"}. Upload existing documents
+                <h2 className="text-lg sm:text-xl font-bold mb-3">
+                  {selectedServices.length > 0 ? "4" : "3"}. Upload documents <span className="text-xs font-normal text-muted-foreground">(optional)</span>
                 </h2>
                 <div
                   onClick={() => fileInputRef.current?.click()}
