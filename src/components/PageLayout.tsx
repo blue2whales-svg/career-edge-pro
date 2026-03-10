@@ -39,17 +39,26 @@ export default function PageLayout({ children }: PageLayoutProps) {
             <img src={cvedgeLogo} alt="CVEdge Logo" className="w-10 h-10 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20" />
             <span className="font-bold text-lg tracking-tight">CVEdge</span>
           </Link>
-          <div className="hidden md:flex items-center gap-3">
-            <Link to="/login">
-              <Button variant="ghost" size="sm">Log in</Button>
-            </Link>
-            <Link to="/order">
-              <Button size="sm" className="bg-gradient-brand border-0 font-semibold shadow-glow-sm gold-shimmer">
-                Order Now
+          <div className="flex items-center gap-2">
+            <Link to="/jobs?industry=%F0%9F%94%A5+Hot+Abroad">
+              <Button size="sm" variant="outline" className="border-destructive/40 text-destructive hover:bg-destructive/10 font-semibold text-xs gap-1.5 rounded-full px-3">
+                <Flame className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Hot Jobs</span>
+                <span className="sm:hidden">Jobs</span>
               </Button>
             </Link>
+            <div className="hidden md:flex items-center gap-3">
+              <Link to="/login">
+                <Button variant="ghost" size="sm">Log in</Button>
+              </Link>
+              <Link to="/order">
+                <Button size="sm" className="bg-gradient-brand border-0 font-semibold shadow-glow-sm gold-shimmer">
+                  Order Now
+                </Button>
+              </Link>
+            </div>
+            <MobileNav />
           </div>
-          <MobileNav />
         </div>
       </nav>
 
