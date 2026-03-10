@@ -133,14 +133,24 @@ export default function OrderPage() {
       toast({ title: "Select at least one service", variant: "destructive" });
       return;
     }
-    if (!name.trim() || !email.trim()) {
-      toast({ title: "Name and email are required", variant: "destructive" });
+
+    const errors: Record<string, boolean> = {};
+    if (!name.trim()) errors.name = true;
+    if (!email.trim()) errors.email = true;
+    if (!phone.trim()) errors.phone = true;
+
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      // Scroll to first error
+      if (errors.name) nameRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      else if (errors.email) emailRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      else if (errors.phone) phoneRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      toast({ title: "Please fill in all required fields", variant: "destructive" });
+      // Clear errors after animation
+      setTimeout(() => setValidationErrors({}), 3000);
       return;
     }
-    if (!phone.trim()) {
-      toast({ title: "M-Pesa phone number is required for payment", variant: "destructive" });
-      return;
-    }
+    setValidationErrors({});
 
     setIsSubmitting(true);
 
