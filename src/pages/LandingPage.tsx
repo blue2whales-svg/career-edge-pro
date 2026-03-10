@@ -14,6 +14,7 @@ import { ScholarshipPreview } from "@/components/landing/ScholarshipPreview";
 import { PricingPreview } from "@/components/landing/PricingPreview";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { StatsBar } from "@/components/landing/StatsBar";
+import { JobsTeaser } from "@/components/landing/JobsTeaser";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -139,6 +140,9 @@ export default function LandingPage() {
 
       {/* Stats */}
       <StatsBar />
+
+      {/* Jobs Teaser — Big marketing section */}
+      <JobsTeaser />
 
       {/* Scholarship Preview */}
       <ScholarshipPreview />

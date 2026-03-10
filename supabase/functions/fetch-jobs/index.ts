@@ -11,6 +11,11 @@ const JSEARCH_QUERIES = [
   // Cruise & hospitality
   { query: "cruise ship jobs", market: "USA", industry: "Cruise & Hospitality", tag: "🚢 Cruise Line" },
   { query: "cruise line careers", market: "UK", industry: "Cruise & Hospitality", tag: "🚢 Cruise Line" },
+  // Domestic & Housekeeping
+  { query: "housemaid jobs Dubai UAE", market: "UAE", industry: "Domestic & Housekeeping", tag: "🔥 Gulf Hot" },
+  { query: "nanny jobs Saudi Arabia", market: "Saudi Arabia", industry: "Domestic & Housekeeping", tag: "🔥 Gulf Hot" },
+  { query: "housekeeper jobs Qatar", market: "Qatar", industry: "Domestic & Housekeeping", tag: "🔥 Gulf Hot" },
+  { query: "domestic worker jobs abroad", market: "UK", industry: "Domestic & Housekeeping", tag: null },
   // Gulf / Middle East
   { query: "jobs in Dubai UAE", market: "UAE", industry: null, tag: "🔥 Gulf Hot" },
   { query: "jobs in Qatar Doha", market: "Qatar", industry: null, tag: "🔥 Gulf Hot" },
@@ -47,6 +52,7 @@ function guessIndustry(title: string, employer: string): string {
   if (/teacher|lecturer|educat|school|tutor/i.test(t)) return "Education";
   if (/legal|lawyer|attorney|compliance/i.test(t)) return "Legal";
   if (/sales|retail|business develop/i.test(t)) return "Sales";
+  if (/housemaid|nanny|housekeeper|domestic|cleaner|maid|au pair|childcare|caregiver/i.test(t)) return "Domestic & Housekeeping";
   if (/hotel|restaurant|chef|cruise|hospitality|waiter|bartend|spa|cabin crew/i.test(t)) return "Cruise & Hospitality";
   if (/oil|gas|petrol|energy/i.test(t)) return "Oil & Gas";
   if (/ngo|unicef|world vision|red cross|amref/i.test(t)) return "NGO";
