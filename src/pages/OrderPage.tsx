@@ -431,15 +431,15 @@ export default function OrderPage() {
   return (
     <PageLayout>
       {/* Hero */}
-      <section className="relative z-10 pt-12 sm:pt-20 pb-10 px-4">
+      <section className="relative z-10 pt-8 sm:pt-16 pb-6 px-4">
         <div className="container max-w-4xl mx-auto text-center">
           <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={0}
-            className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold leading-[1.08] mb-4"
+            className="text-2xl sm:text-5xl lg:text-6xl font-serif font-bold leading-[1.08] mb-3"
           >
             Start your <span className="text-gradient">order</span>
           </motion.h1>
           <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={1}
-            className="text-base text-muted-foreground max-w-xl mx-auto"
+            className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto"
           >
             Select your services, fill in your details, and pay via M-Pesa. We'll get to work immediately.
           </motion.p>
