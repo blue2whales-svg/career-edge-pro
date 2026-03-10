@@ -3,14 +3,13 @@ import { motion } from "framer-motion";
 import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import { FeaturedJobs } from "@/components/jobs/FeaturedJobs";
 import { JobCard } from "@/components/jobs/JobCard";
 import { JobDetailModal } from "@/components/jobs/JobDetailModal";
 import { INDUSTRIES, MARKETS, type Job } from "@/data/jobs";
 import { useJobs, triggerJobsFetch } from "@/hooks/useJobs";
-
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
