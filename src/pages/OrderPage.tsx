@@ -447,7 +447,7 @@ export default function OrderPage() {
       </section>
 
       {/* Order Form */}
-      <section className="relative z-10 pb-24 px-4">
+      <section className="relative z-10 pb-32 md:pb-40 px-4">
         <div className="container max-w-4xl mx-auto">
           <div className="grid lg:grid-cols-5 gap-8">
             {/* Main Form */}
@@ -670,7 +670,7 @@ export default function OrderPage() {
             {/* Summary Sidebar */}
             <div className="lg:col-span-2">
               <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={3}
-                className="rounded-2xl border border-primary/20 bg-card p-6 sticky top-24"
+                className="rounded-2xl border border-primary/20 bg-card p-6 sticky top-24 z-[60]"
               >
                 <h3 className="font-bold text-lg mb-4">Order Summary</h3>
                 {selectedServices.length === 0 ? (
