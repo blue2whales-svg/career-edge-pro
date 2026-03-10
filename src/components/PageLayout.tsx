@@ -6,6 +6,7 @@ import { ArrowRight, Home, Briefcase, GraduationCap, CreditCard, Wrench, BookOpe
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 import { MobileNav } from "@/components/landing/MobileNav";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import ChatPrompt from "@/components/ChatPrompt";
 import { cn } from "@/lib/utils";
 
 interface PageLayoutProps {
@@ -115,6 +116,7 @@ export default function PageLayout({ children }: PageLayoutProps) {
 
       {/* Mobile Bottom Nav */}
       <MobileBottomNav />
+      <ChatPrompt />
 
       {/* Desktop Floating Bottom Dock */}
       <motion.div
