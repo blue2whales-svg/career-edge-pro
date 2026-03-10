@@ -116,6 +116,7 @@ export default function PageLayout({ children }: PageLayoutProps) {
 
       {/* Mobile Bottom Nav */}
       <MobileBottomNav />
+      <ChatPrompt />
 
       {/* Desktop Floating Bottom Dock */}
       <motion.div
