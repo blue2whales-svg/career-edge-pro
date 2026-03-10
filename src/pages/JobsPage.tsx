@@ -94,6 +94,21 @@ export default function JobsPage() {
         </div>
       </section>
 
+      {/* How to Apply Banner */}
+      <section className="relative z-10 px-4 -mt-2 mb-6">
+        <div className="container max-w-5xl mx-auto">
+          <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex items-start gap-3">
+            <Briefcase className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold">How to Apply</p>
+              <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                Pick a role → Order a tailored <strong className="text-foreground">CV + Cover Letter</strong> → Pay via M-Pesa → Download in <strong className="text-foreground">PDF or Word</strong> → The <strong className="text-foreground">direct apply link</strong> unlocks so you can submit straight to the employer.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Hot Jobs */}
       <FeaturedJobs />
 

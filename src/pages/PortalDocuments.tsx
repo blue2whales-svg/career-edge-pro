@@ -30,14 +30,42 @@ export default function PortalDocuments() {
     fetchDocs();
   }, []);
 
-  const downloadDocument = (doc: Doc) => {
-    const blob = new Blob([doc.content], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${doc.service_type.replace(/\s+/g, "_")}_${doc.id.slice(0, 8)}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const markdownToHtml = (md: string): string => {
+    return md
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/^- (.+)$/gm, '<li>$1</li>')
+      .replace(/(<li>.*<\/li>\n?)+/g, (m) => `<ul>${m}</ul>`)
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>');
+  };
+
+  const downloadDocument = (doc: Doc, format: "pdf" | "docx") => {
+    const label = doc.service_type.replace(/\s+/g, "_");
+    if (format === "docx") {
+      const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>${doc.service_type}</title>
+<style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.6;color:#222}</style>
+</head><body>${markdownToHtml(doc.content)}</body></html>`;
+      const blob = new Blob([html], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${label}.doc`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } else {
+      const printWindow = window.open("", "_blank");
+      if (!printWindow) return;
+      printWindow.document.write(`<!DOCTYPE html><html><head><title>${doc.service_type}</title>
+<style>@page{margin:1in}body{font-family:Georgia,serif;font-size:11pt;line-height:1.7;color:#111;max-width:700px;margin:0 auto;padding:40px}h1{font-size:18pt}h2{font-size:14pt;border-bottom:1px solid #ddd;padding-bottom:4px}</style>
+</head><body>${markdownToHtml(doc.content)}</body></html>`);
+      printWindow.document.close();
+      setTimeout(() => { printWindow.print(); }, 400);
+    }
   };
 
   if (loading) {
@@ -93,8 +121,11 @@ export default function PortalDocuments() {
                 <Link to={`/review/${doc.order_id}`}>
                   <Button variant="outline" size="sm" className="border-primary/30">Preview</Button>
                 </Link>
-                <Button size="sm" onClick={() => downloadDocument(doc)} className="bg-gradient-brand border-0">
-                  <Download className="h-4 w-4 mr-1" /> Download
+                <Button size="sm" onClick={() => downloadDocument(doc, "pdf")} className="bg-gradient-brand border-0">
+                  <Download className="h-4 w-4 mr-1" /> PDF
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => downloadDocument(doc, "docx")}>
+                  <Download className="h-4 w-4 mr-1" /> Word
                 </Button>
               </div>
             </div>

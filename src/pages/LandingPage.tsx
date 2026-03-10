@@ -51,8 +51,7 @@ export default function LandingPage() {
             <Link to="/jobs?industry=%F0%9F%94%A5+Hot+Abroad">
               <Button size="sm" variant="outline" className="border-destructive/40 text-destructive hover:bg-destructive/10 font-semibold text-xs gap-1.5 rounded-full px-3">
                 <Flame className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Hot Jobs</span>
-                <span className="sm:hidden">Hot</span>
+                Hot Jobs
               </Button>
             </Link>
             <div className="hidden md:flex items-center gap-3">
