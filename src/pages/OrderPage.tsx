@@ -71,12 +71,18 @@ export default function OrderPage() {
 
   const jobFromQuery = searchParams.get("job_title");
   const companyFromQuery = searchParams.get("company");
+  const packageParam = searchParams.get("package");
+  const isPackageMode = !!(packageParam && PACKAGE_MAP[packageParam]);
 
   useEffect(() => {
     const pkg = searchParams.get("package");
     const singleService = searchParams.get("service");
     if (pkg && PACKAGE_MAP[pkg]) {
-      setSelectedServices(PACKAGE_MAP[pkg]);
+      setSelectedServices(PACKAGE_MAP[pkg].services);
+      // Auto-set 2 pages for international package
+      if (pkg === "international") {
+        setFormValues((prev) => ({ ...prev, cvPages: "2" }));
+      }
     } else if (singleService) {
       setSelectedServices((prev) => prev.includes(singleService) ? prev : [...prev, singleService]);
     }
