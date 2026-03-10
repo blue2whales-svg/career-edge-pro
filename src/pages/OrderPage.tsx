@@ -634,7 +634,7 @@ export default function OrderPage() {
                   </>
                 )}
 
-                <h2 className="text-lg sm:text-xl font-bold mb-4">2. Your details</h2>
+                <h2 className="text-lg sm:text-xl font-bold mb-4">{isPackageMode ? "1" : "2"}. Your details</h2>
                 <div className="space-y-4 mb-6">
                   <div>
                     <Input
