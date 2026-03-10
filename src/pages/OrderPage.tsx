@@ -38,11 +38,11 @@ function formatKES(amount: number) {
   return `KES ${amount.toLocaleString()}`;
 }
 
-const PACKAGE_MAP: Record<string, string[]> = {
-  starter: ["cv"],
-  professional: ["cv", "cover-letter", "linkedin"],
-  executive: ["executive-cv", "cover-letter", "linkedin"],
-  international: ["international-cv", "ats-cv"],
+const PACKAGE_MAP: Record<string, { services: string[]; label: string; price: number }> = {
+  starter: { services: ["cv"], label: "Starter Package", price: 2500 },
+  professional: { services: ["cv", "cover-letter", "linkedin"], label: "Professional Package", price: 4500 },
+  executive: { services: ["executive-cv", "cover-letter", "linkedin"], label: "Executive Package", price: 7900 },
+  international: { services: ["ats-cv", "cover-letter", "linkedin"], label: "✈️ Going Abroad Package", price: 4500 },
 };
 
 export default function OrderPage() {
@@ -71,12 +71,18 @@ export default function OrderPage() {
 
   const jobFromQuery = searchParams.get("job_title");
   const companyFromQuery = searchParams.get("company");
+  const packageParam = searchParams.get("package");
+  const isPackageMode = !!(packageParam && PACKAGE_MAP[packageParam]);
 
   useEffect(() => {
     const pkg = searchParams.get("package");
     const singleService = searchParams.get("service");
     if (pkg && PACKAGE_MAP[pkg]) {
-      setSelectedServices(PACKAGE_MAP[pkg]);
+      setSelectedServices(PACKAGE_MAP[pkg].services);
+      // Auto-set 2 pages for international package
+      if (pkg === "international") {
+        setFormValues((prev) => ({ ...prev, cvPages: "2" }));
+      }
     } else if (singleService) {
       setSelectedServices((prev) => prev.includes(singleService) ? prev : [...prev, singleService]);
     }
@@ -92,10 +98,10 @@ export default function OrderPage() {
     );
   };
 
-  const hasInternationalBundle = selectedServices.includes("international-cv") && selectedServices.includes("ats-cv");
   const subtotal = SERVICES.filter((s) => selectedServices.includes(s.id))
     .reduce((sum, s) => sum + s.price, 0);
-  const total = hasInternationalBundle ? subtotal - 1000 : subtotal;
+  // If coming from a package, use the package price; otherwise use subtotal
+  const total = isPackageMode && packageParam ? PACKAGE_MAP[packageParam].price : subtotal;
 
   const handleFormChange = (key: string, value: string) => {
     setFormValues(prev => ({ ...prev, [key]: value }));
@@ -513,84 +519,122 @@ export default function OrderPage() {
                 </motion.div>
               )}
 
-              {/* International Bundle Promo */}
-              <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1.8}
-                className="rounded-xl border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-card to-accent/5 p-4 sm:p-5 mb-5 relative overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[9px] font-bold uppercase tracking-wider px-3 py-1 rounded-bl-lg">
-                  Save KES 1,000
-                </div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Globe className="h-5 w-5 text-primary shrink-0" />
-                  <h3 className="text-sm sm:text-base font-bold">✈️ Going Abroad?</h3>
-                </div>
-                <p className="text-xs sm:text-sm text-muted-foreground mb-3 leading-relaxed">
-                  Get our <span className="font-semibold text-foreground">International CV + ATS-Optimised CV</span> bundle — 
-                  formatted for Gulf, UK & EU markets, keyword-matched for online portals, and delivered in <span className="font-semibold text-foreground">2 professional pages</span>.
-                </p>
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-xs text-muted-foreground line-through">KES 6,500</span>
-                  <span className="text-lg font-bold text-primary">KES 5,500</span>
-                </div>
-                {selectedServices.includes("international-cv") && selectedServices.includes("ats-cv") ? (
-                  <div className="inline-flex items-center gap-1.5 rounded-lg border border-primary bg-primary/10 px-4 py-2 text-xs font-semibold text-primary">
-                    <Check className="h-3.5 w-3.5" /> Bundle Selected
+              {/* International Bundle Promo — only show when not in package mode */}
+              {!isPackageMode && (
+                <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1.8}
+                  className="rounded-xl border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-card to-accent/5 p-4 sm:p-5 mb-5 relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[9px] font-bold uppercase tracking-wider px-3 py-1 rounded-bl-lg">
+                    Save KES 2,000
                   </div>
-                ) : (
-                  <Button
-                    size="sm"
-                    onClick={() => {
-                      const newServices = new Set(selectedServices);
-                      newServices.add("international-cv");
-                      newServices.add("ats-cv");
-                      setSelectedServices(Array.from(newServices));
-                      setFormValues(prev => ({ ...prev, cvPages: "2" }));
-                    }}
-                    className="bg-gradient-brand border-0 font-semibold text-xs gold-shimmer"
-                  >
-                    <Globe className="mr-1.5 h-3.5 w-3.5" /> Get International Bundle
-                  </Button>
-                )}
-              </motion.div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Globe className="h-5 w-5 text-primary shrink-0" />
+                    <h3 className="text-sm sm:text-base font-bold">✈️ Going Abroad?</h3>
+                  </div>
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-3 leading-relaxed">
+                    Get our <span className="font-semibold text-foreground">ATS CV (international standard) + Cover Letter + LinkedIn Revamp</span> — 
+                    keyword-optimised for global portals, 2 professional pages, and a comprehensive LinkedIn makeover.
+                  </p>
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-xs text-muted-foreground line-through">KES 6,500</span>
+                    <span className="text-lg font-bold text-primary">KES 4,500</span>
+                  </div>
+                  {packageParam === "international" ? (
+                    <div className="inline-flex items-center gap-1.5 rounded-lg border border-primary bg-primary/10 px-4 py-2 text-xs font-semibold text-primary">
+                      <Check className="h-3.5 w-3.5" /> Bundle Selected
+                    </div>
+                  ) : (
+                    <Link to="/order?package=international">
+                      <Button
+                        size="sm"
+                        className="bg-gradient-brand border-0 font-semibold text-xs gold-shimmer"
+                      >
+                        <Globe className="mr-1.5 h-3.5 w-3.5" /> Get International Bundle
+                      </Button>
+                    </Link>
+                  )}
+                </motion.div>
+              )}
 
               <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}>
-                <h2 className="text-lg sm:text-xl font-bold mb-4">1. Choose your CV type & services</h2>
-                <div className="grid grid-cols-1 gap-2 sm:gap-3 mb-6">
-                  {SERVICES.map((s) => {
-                    const selected = selectedServices.includes(s.id);
-                    return (
-                      <button
-                        key={s.id}
-                        onClick={() => toggleService(s.id)}
-                        className={`rounded-xl border p-3 sm:p-4 flex items-center gap-3 text-left transition-all duration-200 ${
-                          selected
-                            ? "border-primary bg-primary/10 shadow-glow-sm ring-2 ring-primary/30"
-                            : "border-border bg-card hover:border-primary/30"
-                        }`}
-                      >
-                        <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                          selected ? "bg-gradient-brand" : "bg-muted"
-                        }`}>
-                          <s.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${selected ? "text-primary-foreground" : "text-muted-foreground"}`} />
+                {/* Package Mode: Show selected package summary instead of service list */}
+                {isPackageMode && packageParam ? (
+                  <div className="mb-6">
+                    <div className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-4 sm:p-5">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                          {packageParam === "international" ? <Globe className="h-4 w-4 text-primary" /> : <Award className="h-4 w-4 text-primary" />}
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-xs sm:text-sm">{s.label}</div>
-                          <div className="text-[10px] sm:text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-2">{s.desc}</div>
-                          <div className="text-xs text-primary font-bold mt-0.5">{formatKES(s.price)}</div>
+                        <div>
+                          <h2 className="text-base sm:text-lg font-bold">{PACKAGE_MAP[packageParam].label}</h2>
+                          <p className="text-lg font-bold text-primary">{formatKES(PACKAGE_MAP[packageParam].price)}</p>
                         </div>
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
-                          selected
-                            ? "border-primary bg-primary"
-                            : "border-muted-foreground/30 bg-transparent"
-                        }`}>
-                          {selected && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        {PACKAGE_MAP[packageParam].services.map((sId) => {
+                          const svc = SERVICES.find(s => s.id === sId);
+                          return svc ? (
+                            <div key={sId} className="flex items-center gap-2 text-sm">
+                              <Check className="h-3.5 w-3.5 text-primary shrink-0" />
+                              <span className="text-muted-foreground">{svc.label}</span>
+                            </div>
+                          ) : null;
+                        })}
+                        {packageParam === "international" && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Check className="h-3.5 w-3.5 text-primary shrink-0" />
+                            <span className="text-muted-foreground">2-page international standard format</span>
+                          </div>
+                        )}
+                      </div>
+                      <Link to="/order" className="inline-block mt-3">
+                        <button className="text-xs text-primary underline underline-offset-2 hover:text-primary/80">
+                          Change package / pick individual services
+                        </button>
+                      </Link>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <h2 className="text-lg sm:text-xl font-bold mb-4">1. Choose your CV type & services</h2>
+                    <div className="grid grid-cols-1 gap-2 sm:gap-3 mb-6">
+                      {SERVICES.map((s) => {
+                        const selected = selectedServices.includes(s.id);
+                        return (
+                          <button
+                            key={s.id}
+                            onClick={() => toggleService(s.id)}
+                            className={`rounded-xl border p-3 sm:p-4 flex items-center gap-3 text-left transition-all duration-200 ${
+                              selected
+                                ? "border-primary bg-primary/10 shadow-glow-sm ring-2 ring-primary/30"
+                                : "border-border bg-card hover:border-primary/30"
+                            }`}
+                          >
+                            <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                              selected ? "bg-gradient-brand" : "bg-muted"
+                            }`}>
+                              <s.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${selected ? "text-primary-foreground" : "text-muted-foreground"}`} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-semibold text-xs sm:text-sm">{s.label}</div>
+                              <div className="text-[10px] sm:text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-2">{s.desc}</div>
+                              <div className="text-xs text-primary font-bold mt-0.5">{formatKES(s.price)}</div>
+                            </div>
+                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                              selected
+                                ? "border-primary bg-primary"
+                                : "border-muted-foreground/30 bg-transparent"
+                            }`}>
+                              {selected && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </>
+                )}
 
-                <h2 className="text-lg sm:text-xl font-bold mb-4">2. Your details</h2>
+                <h2 className="text-lg sm:text-xl font-bold mb-4">{isPackageMode ? "1" : "2"}. Your details</h2>
                 <div className="space-y-4 mb-6">
                   <div>
                     <Input
@@ -652,7 +696,7 @@ export default function OrderPage() {
 
                 {selectedServices.length > 0 && (
                   <>
-                    <h2 className="text-lg sm:text-xl font-bold mb-4">3. Service-specific details</h2>
+                    <h2 className="text-lg sm:text-xl font-bold mb-4">{isPackageMode ? "2" : "3"}. Service-specific details</h2>
                     <p className="text-sm text-muted-foreground mb-4">
                       The more detail you provide, the better your AI-generated documents will be.
                     </p>
@@ -667,7 +711,7 @@ export default function OrderPage() {
                 )}
 
                 <h2 className="text-lg sm:text-xl font-bold mb-3">
-                  {selectedServices.length > 0 ? "4" : "3"}. Upload documents <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+                  {isPackageMode ? (selectedServices.length > 0 ? "3" : "2") : (selectedServices.length > 0 ? "4" : "3")}. Upload documents <span className="text-xs font-normal text-muted-foreground">(optional)</span>
                 </h2>
                 <div
                   onClick={() => fileInputRef.current?.click()}
@@ -726,16 +770,16 @@ export default function OrderPage() {
                         <span className="font-semibold">{formatKES(s.price)}</span>
                       </div>
                     ))}
-                    {hasInternationalBundle && (
+                    {isPackageMode && packageParam && (
                       <div className="flex items-center justify-between text-sm text-primary">
-                        <span className="font-medium">🌍 International Bundle Discount</span>
-                        <span className="font-semibold">-KES 1,000</span>
+                        <span className="font-medium">📦 Package Price</span>
+                        <span className="font-semibold">{formatKES(PACKAGE_MAP[packageParam].price)}</span>
                       </div>
                     )}
                     <div className="border-t border-border pt-3 flex items-center justify-between">
                       <span className="font-bold">Total</span>
                       <div className="text-right">
-                        {hasInternationalBundle && (
+                        {isPackageMode && subtotal > total && (
                           <span className="text-xs text-muted-foreground line-through block">{formatKES(subtotal)}</span>
                         )}
                         <span className="text-2xl font-bold text-primary">{formatKES(total)}</span>

@@ -246,7 +246,14 @@ export default function ServiceQuestions({ selectedServices, values, onChange }:
       {/* LinkedIn questions */}
       {hasLinkedIn && (
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">LinkedIn Profile Details</h3>
+          <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">LinkedIn Profile Revamp</h3>
+          <div className="rounded-lg border border-primary/10 bg-primary/5 p-3 mb-2">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              🚀 <span className="font-semibold text-foreground">Our LinkedIn service is comprehensive</span> — we'll craft a keyword-rich headline, 
+              compelling About section, detailed Experience entries, and optimised Skills section. You'll also receive 
+              <span className="font-semibold text-foreground"> actionable tips</span> on profile photo, banner, networking, and content strategy.
+            </p>
+          </div>
           <Input
             placeholder="Your current LinkedIn URL (if any)"
             value={values.linkedinUrl || ""}
@@ -254,16 +261,34 @@ export default function ServiceQuestions({ selectedServices, values, onChange }:
             className="h-12 bg-card border-border"
           />
           <Input
-            placeholder="Industry/field you want to be found for"
+            placeholder="Current job title & company"
+            value={values.linkedinCurrentRole || ""}
+            onChange={(e) => onChange("linkedinCurrentRole", e.target.value)}
+            className="h-12 bg-card border-border"
+          />
+          <Input
+            placeholder="Industry/field you want to be found for (e.g. Finance, Tech, Healthcare)"
             value={values.linkedinIndustry || ""}
             onChange={(e) => onChange("linkedinIndustry", e.target.value)}
             className="h-12 bg-card border-border"
           />
           <Textarea
-            placeholder="What do you want your LinkedIn to achieve? (e.g. attract recruiters, build thought leadership, network)"
+            placeholder="Top 3-5 career achievements you'd like highlighted on LinkedIn..."
+            value={values.linkedinAchievements || ""}
+            onChange={(e) => onChange("linkedinAchievements", e.target.value)}
+            className="min-h-[100px] bg-card border-border"
+          />
+          <Textarea
+            placeholder="What do you want LinkedIn to achieve? (e.g. attract recruiters in the Gulf, build thought leadership, transition to a new industry, get consulting clients)"
             value={values.linkedinGoals || ""}
             onChange={(e) => onChange("linkedinGoals", e.target.value)}
             className="min-h-[80px] bg-card border-border"
+          />
+          <Input
+            placeholder="Target audience (e.g. HR managers in Dubai, tech recruiters in London)"
+            value={values.linkedinTargetAudience || ""}
+            onChange={(e) => onChange("linkedinTargetAudience", e.target.value)}
+            className="h-12 bg-card border-border"
           />
         </div>
       )}

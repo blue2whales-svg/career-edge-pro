@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Check, Zap, Star, Crown } from "lucide-react";
+import { ArrowRight, Check, Zap, Star, Crown, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
@@ -48,6 +48,26 @@ const PACKAGES = [
     popular: true,
     accent: "border-primary shadow-glow",
     package: "professional",
+  },
+  {
+    name: "Going Abroad ✈️",
+    price: "KES 4,500",
+    oldPrice: "KES 6,500",
+    period: "one-time",
+    desc: "ATS CV + Cover Letter + LinkedIn Revamp — tailored for Gulf, UK & EU markets.",
+    icon: Globe,
+    features: [
+      "ATS CV (International Standard)",
+      "2-Page Professional Format",
+      "Tailored Cover Letter",
+      "Comprehensive LinkedIn Revamp",
+      "Quality English & Recruiter Tips",
+      "Keyword-Optimised for Portals",
+      "Delivered in < 3 Hours",
+    ],
+    popular: false,
+    accent: "border-primary/50",
+    package: "international",
   },
   {
     name: "Executive",
@@ -108,7 +128,7 @@ export default function PricingPage() {
       {/* Packages */}
       <section className="relative z-10 pb-24 px-4">
         <div className="container max-w-5xl mx-auto">
-          <div className="grid sm:grid-cols-3 gap-5">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {PACKAGES.map((pkg, i) => (
               <motion.div
                 key={i}
@@ -128,10 +148,13 @@ export default function PricingPage() {
                   <pkg.icon className="h-5 w-5 text-primary" />
                 </div>
                 <h3 className="text-xl font-bold mb-1">{pkg.name}</h3>
-                <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-3xl font-bold text-primary">{pkg.price}</span>
-                  <span className="text-sm text-muted-foreground">/{pkg.period}</span>
+                <div className="flex items-baseline gap-1 mb-1">
+                  <span className="text-2xl lg:text-3xl font-bold text-primary">{pkg.price}</span>
+                  <span className="text-xs text-muted-foreground">/{pkg.period}</span>
                 </div>
+                {"oldPrice" in pkg && pkg.oldPrice && (
+                  <p className="text-xs text-muted-foreground line-through mb-2">{pkg.oldPrice}</p>
+                )}
                 <p className="text-sm text-muted-foreground mb-6">{pkg.desc}</p>
                 <ul className="space-y-2.5 mb-8 flex-1">
                   {pkg.features.map((f, j) => (
