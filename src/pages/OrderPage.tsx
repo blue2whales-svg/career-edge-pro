@@ -42,6 +42,7 @@ const PACKAGE_MAP: Record<string, string[]> = {
   starter: ["cv"],
   professional: ["cv", "cover-letter", "linkedin"],
   executive: ["executive-cv", "cover-letter", "linkedin"],
+  international: ["international-cv", "ats-cv"],
 };
 
 export default function OrderPage() {
