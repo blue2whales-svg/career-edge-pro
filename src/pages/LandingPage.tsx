@@ -141,6 +141,9 @@ export default function LandingPage() {
       {/* Stats */}
       <StatsBar />
 
+      {/* Jobs Teaser — Big marketing section */}
+      <JobsTeaser />
+
       {/* Scholarship Preview */}
       <ScholarshipPreview />
 
