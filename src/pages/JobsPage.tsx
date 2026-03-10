@@ -19,9 +19,13 @@ const fadeUp = {
 };
 
 export default function JobsPage() {
+  const [searchParams] = useSearchParams();
+  const initialIndustry = searchParams.get("industry") || "All";
+  const initialMarket = searchParams.get("market") || "All Markets";
+
   const [search, setSearch] = useState("");
-  const [selectedIndustry, setSelectedIndustry] = useState("All");
-  const [selectedMarket, setSelectedMarket] = useState("All Markets");
+  const [selectedIndustry, setSelectedIndustry] = useState(initialIndustry);
+  const [selectedMarket, setSelectedMarket] = useState(initialMarket);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   const { data, isLoading, refetch } = useJobs();
