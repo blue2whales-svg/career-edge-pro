@@ -99,20 +99,70 @@ export default function DocumentReviewPage() {
     setSaving(false);
   };
 
-  const downloadAsText = () => {
+  const downloadDoc = useCallback((format: "pdf" | "docx" | "txt") => {
     if (!isPaid) {
       toast({ title: "Please complete payment to download", variant: "destructive" });
       return;
     }
     const doc = documents.find((d) => d.id === activeDoc);
     if (!doc) return;
-    const blob = new Blob([editContent], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${SERVICE_LABELS[doc.service_type] || doc.service_type}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+    const label = SERVICE_LABELS[doc.service_type] || doc.service_type;
+
+    if (format === "txt") {
+      const blob = new Blob([editContent], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${label}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+      return;
+    }
+
+    if (format === "docx") {
+      // Build a simple HTML → Word-compatible blob
+      const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>${label}</title>
+<style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.6;color:#222}h1,h2,h3{font-family:Calibri,Arial,sans-serif}h1{font-size:18pt}h2{font-size:14pt}h3{font-size:12pt}ul,ol{margin-left:20px}</style>
+</head><body>${markdownToHtml(editContent)}</body></html>`;
+      const blob = new Blob([html], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${label}.doc`;
+      a.click();
+      URL.revokeObjectURL(url);
+      return;
+    }
+
+    if (format === "pdf") {
+      // Open a print-friendly window for PDF
+      const printWindow = window.open("", "_blank");
+      if (!printWindow) return;
+      printWindow.document.write(`<!DOCTYPE html><html><head><title>${label}</title>
+<style>@page{margin:1in}body{font-family:Georgia,serif;font-size:11pt;line-height:1.7;color:#111;max-width:700px;margin:0 auto;padding:40px}h1{font-size:18pt;margin-bottom:6px}h2{font-size:14pt;border-bottom:1px solid #ddd;padding-bottom:4px}h3{font-size:12pt}ul,ol{margin-left:20px}p{margin:8px 0}</style>
+</head><body>${markdownToHtml(editContent)}</body></html>`);
+      printWindow.document.close();
+      setTimeout(() => { printWindow.print(); }, 400);
+    }
+  }, [isPaid, documents, activeDoc, editContent, toast]);
+
+  // Simple markdown → HTML converter for export
+  const markdownToHtml = (md: string): string => {
+    return md
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      .replace(/^- (.+)$/gm, '<li>$1</li>')
+      .replace(/(<li>.*<\/li>\n?)+/g, (m) => `<ul>${m}</ul>`)
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      .replace(/^(.+)$/gm, (line) => {
+        if (line.startsWith('<')) return line;
+        return `<p>${line}</p>`;
+      });
   };
 
   const [viewMode, setViewMode] = useState<"edit" | "preview" | "split">("split");
