@@ -11,6 +11,11 @@ const JSEARCH_QUERIES = [
   // Cruise & hospitality
   { query: "cruise ship jobs", market: "USA", industry: "Cruise & Hospitality", tag: "🚢 Cruise Line" },
   { query: "cruise line careers", market: "UK", industry: "Cruise & Hospitality", tag: "🚢 Cruise Line" },
+  // Domestic & Housekeeping
+  { query: "housemaid jobs Dubai UAE", market: "UAE", industry: "Domestic & Housekeeping", tag: "🔥 Gulf Hot" },
+  { query: "nanny jobs Saudi Arabia", market: "Saudi Arabia", industry: "Domestic & Housekeeping", tag: "🔥 Gulf Hot" },
+  { query: "housekeeper jobs Qatar", market: "Qatar", industry: "Domestic & Housekeeping", tag: "🔥 Gulf Hot" },
+  { query: "domestic worker jobs abroad", market: "UK", industry: "Domestic & Housekeeping", tag: null },
   // Gulf / Middle East
   { query: "jobs in Dubai UAE", market: "UAE", industry: null, tag: "🔥 Gulf Hot" },
   { query: "jobs in Qatar Doha", market: "Qatar", industry: null, tag: "🔥 Gulf Hot" },
