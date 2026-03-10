@@ -92,8 +92,10 @@ export default function OrderPage() {
     );
   };
 
-  const total = SERVICES.filter((s) => selectedServices.includes(s.id))
+  const hasInternationalBundle = selectedServices.includes("international-cv") && selectedServices.includes("ats-cv");
+  const subtotal = SERVICES.filter((s) => selectedServices.includes(s.id))
     .reduce((sum, s) => sum + s.price, 0);
+  const total = hasInternationalBundle ? subtotal - 1000 : subtotal;
 
   const handleFormChange = (key: string, value: string) => {
     setFormValues(prev => ({ ...prev, [key]: value }));
