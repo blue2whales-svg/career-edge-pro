@@ -13,7 +13,7 @@ import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
 import { ScholarshipPreview } from "@/components/landing/ScholarshipPreview";
 import { PricingPreview } from "@/components/landing/PricingPreview";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
-import { StatsBar } from "@/components/landing/StatsBar";
+import { JobsTeaser } from "@/components/landing/JobsTeaser";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
