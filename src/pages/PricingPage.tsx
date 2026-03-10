@@ -148,10 +148,13 @@ export default function PricingPage() {
                   <pkg.icon className="h-5 w-5 text-primary" />
                 </div>
                 <h3 className="text-xl font-bold mb-1">{pkg.name}</h3>
-                <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-3xl font-bold text-primary">{pkg.price}</span>
-                  <span className="text-sm text-muted-foreground">/{pkg.period}</span>
+                <div className="flex items-baseline gap-1 mb-1">
+                  <span className="text-2xl lg:text-3xl font-bold text-primary">{pkg.price}</span>
+                  <span className="text-xs text-muted-foreground">/{pkg.period}</span>
                 </div>
+                {"oldPrice" in pkg && pkg.oldPrice && (
+                  <p className="text-xs text-muted-foreground line-through mb-2">{pkg.oldPrice}</p>
+                )}
                 <p className="text-sm text-muted-foreground mb-6">{pkg.desc}</p>
                 <ul className="space-y-2.5 mb-8 flex-1">
                   {pkg.features.map((f, j) => (
