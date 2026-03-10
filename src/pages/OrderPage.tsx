@@ -711,7 +711,7 @@ export default function OrderPage() {
                 )}
 
                 <h2 className="text-lg sm:text-xl font-bold mb-3">
-                  {selectedServices.length > 0 ? "4" : "3"}. Upload documents <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+                  {isPackageMode ? (selectedServices.length > 0 ? "3" : "2") : (selectedServices.length > 0 ? "4" : "3")}. Upload documents <span className="text-xs font-normal text-muted-foreground">(optional)</span>
                 </h2>
                 <div
                   onClick={() => fileInputRef.current?.click()}
