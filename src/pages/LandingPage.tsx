@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Flame } from "lucide-react";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
