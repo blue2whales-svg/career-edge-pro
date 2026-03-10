@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Menu, ArrowRight, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
@@ -33,6 +33,16 @@ export function MobileNav() {
           <div className="flex items-center gap-2.5 p-5 border-b border-border/50">
             <img src={cvedgeLogo} alt="CVEdge" className="w-9 h-9 rounded-full shadow-glow-sm ring-1 ring-primary/20" />
             <span className="font-bold text-lg">CVEdge</span>
+          </div>
+
+          {/* Top Hot Jobs CTA */}
+          <div className="px-5 pt-4">
+            <Link to="/jobs?industry=%F0%9F%94%A5+Hot+Abroad" onClick={() => setOpen(false)}>
+              <Button size="sm" variant="outline" className="w-full border-destructive/40 text-destructive hover:bg-destructive/10 font-semibold gap-1.5">
+                <Flame className="h-4 w-4" />
+                View Hot Jobs
+              </Button>
+            </Link>
           </div>
 
           {/* Links */}
