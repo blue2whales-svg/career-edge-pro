@@ -447,7 +447,7 @@ export default function OrderPage() {
       </section>
 
       {/* Order Form */}
-      <section className="relative z-10 pb-24 px-4">
+      <section className="relative z-10 pb-32 md:pb-40 px-4">
         <div className="container max-w-4xl mx-auto">
           <div className="grid lg:grid-cols-5 gap-8">
             {/* Main Form */}
