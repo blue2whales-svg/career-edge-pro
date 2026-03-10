@@ -455,15 +455,15 @@ export default function OrderPage() {
               {/* Job context banner */}
               {jobFromQuery && (
                 <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1}
-                  className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-4 mb-6 flex items-center gap-3"
+                  className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-3 sm:p-4 mb-4 flex items-start gap-3"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                    <FileText className="h-5 w-5 text-primary" />
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <FileText className="h-4 w-4 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold truncate">CV tailored for: {jobFromQuery}</p>
-                    {companyFromQuery && <p className="text-xs text-muted-foreground">at {companyFromQuery}</p>}
-                    <p className="text-xs text-muted-foreground mt-0.5">CV pre-selected · add more services below to boost your application</p>
+                    <p className="text-xs sm:text-sm font-semibold leading-snug">CV tailored for: {jobFromQuery}</p>
+                    {companyFromQuery && <p className="text-[11px] text-muted-foreground">at {companyFromQuery}</p>}
+                    <p className="text-[11px] text-muted-foreground mt-0.5">Choose your preferred CV type below</p>
                   </div>
                 </motion.div>
               )}
@@ -471,20 +471,20 @@ export default function OrderPage() {
               {/* Recommended bundle when coming from a job */}
               {jobFromQuery && (
                 <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1.5}
-                  className="rounded-xl border border-accent/40 bg-accent/5 p-4 mb-6"
+                  className="rounded-xl border border-accent/40 bg-accent/5 p-3 sm:p-4 mb-4"
                 >
-                  <div className="flex items-center gap-2 mb-2">
-                    <Sparkles className="h-4 w-4 text-primary" />
-                    <p className="text-sm font-semibold">Recommended Bundle</p>
-                    <span className="ml-auto text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary px-2 py-0.5 rounded-full">Most Popular</span>
+                  <div className="flex items-center gap-2 mb-2 flex-wrap">
+                    <Sparkles className="h-4 w-4 text-primary shrink-0" />
+                    <p className="text-xs sm:text-sm font-semibold">Recommended Bundle</p>
+                    <span className="text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary px-2 py-0.5 rounded-full">Most Popular</span>
                   </div>
-                  <p className="text-xs text-muted-foreground mb-3">
-                    Applicants who add a Cover Letter + LinkedIn see <span className="font-semibold text-foreground">3× more interview callbacks</span>.
+                  <p className="text-[11px] text-muted-foreground mb-3">
+                    Add a Cover Letter + LinkedIn for <span className="font-semibold text-foreground">3× more callbacks</span>.
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     {[
                       { id: "cover-letter", label: "Cover Letter", price: 1500 },
-                      { id: "linkedin", label: "LinkedIn Optimisation", price: 2000 },
+                      { id: "linkedin", label: "LinkedIn", price: 2000 },
                     ].map((item) => {
                       const alreadySelected = selectedServices.includes(item.id);
                       return (
