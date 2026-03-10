@@ -511,8 +511,8 @@ export default function OrderPage() {
               )}
 
               <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}>
-                <h2 className="text-xl font-bold mb-5">1. Choose your services</h2>
-                <div className="grid grid-cols-1 gap-3 mb-8">
+                <h2 className="text-lg sm:text-xl font-bold mb-4">1. Choose your CV type & services</h2>
+                <div className="grid grid-cols-1 gap-2 sm:gap-3 mb-6">
                   {SERVICES.map((s) => {
                     const selected = selectedServices.includes(s.id);
                     return (
