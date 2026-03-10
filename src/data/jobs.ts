@@ -15,7 +15,7 @@ export interface Job {
 }
 
 export const INDUSTRIES = [
-  "All", "🔥 Hot Abroad", "Cruise & Hospitality", "Technology", "Finance", "Healthcare",
+  "All", "🔥 Hot Abroad", "Cruise & Hospitality", "Domestic & Housekeeping", "Technology", "Finance", "Healthcare",
   "Engineering", "Marketing", "Education", "Legal", "Sales", "Operations",
   "Consulting", "Oil & Gas", "NGO", "Government",
 ];
