@@ -286,10 +286,15 @@ export default function DocumentReviewPage() {
                           {saving ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Check className="h-3 w-3 mr-1" />}
                           Save
                         </Button>
-                        <Button onClick={downloadAsText} disabled={!isPaid} size="sm" className="bg-gradient-brand border-0">
-                          {isPaid ? <Download className="h-3 w-3 mr-1" /> : <Lock className="h-3 w-3 mr-1" />}
-                          Download
-                        </Button>
+                        <div className="flex gap-1">
+                          <Button onClick={() => downloadDoc("pdf")} disabled={!isPaid} size="sm" className="bg-gradient-brand border-0 text-xs px-2.5">
+                            {isPaid ? <Download className="h-3 w-3 mr-1" /> : <Lock className="h-3 w-3 mr-1" />}
+                            PDF
+                          </Button>
+                          <Button onClick={() => downloadDoc("docx")} disabled={!isPaid} size="sm" variant="outline" className="text-xs px-2.5">
+                            <Download className="h-3 w-3 mr-1" /> Word
+                          </Button>
+                        </div>
                       </div>
                     </div>
 
