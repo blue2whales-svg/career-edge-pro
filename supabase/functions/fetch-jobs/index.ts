@@ -52,6 +52,7 @@ function guessIndustry(title: string, employer: string): string {
   if (/teacher|lecturer|educat|school|tutor/i.test(t)) return "Education";
   if (/legal|lawyer|attorney|compliance/i.test(t)) return "Legal";
   if (/sales|retail|business develop/i.test(t)) return "Sales";
+  if (/housemaid|nanny|housekeeper|domestic|cleaner|maid|au pair|childcare|caregiver/i.test(t)) return "Domestic & Housekeeping";
   if (/hotel|restaurant|chef|cruise|hospitality|waiter|bartend|spa|cabin crew/i.test(t)) return "Cruise & Hospitality";
   if (/oil|gas|petrol|energy/i.test(t)) return "Oil & Gas";
   if (/ngo|unicef|world vision|red cross|amref/i.test(t)) return "NGO";

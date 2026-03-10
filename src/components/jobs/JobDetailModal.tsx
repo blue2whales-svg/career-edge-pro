@@ -203,14 +203,13 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
             </div>
           )}
 
-          {/* Apply direct link for live jobs */}
-          {(job as any).apply_url && (
-            <a href={(job as any).apply_url} target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" className="w-full mb-2">
-                Apply Directly on Company Site <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </a>
-          )}
+          {/* Apply - gated behind getting CV first */}
+          <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 text-center">
+            <p className="text-xs font-semibold text-amber-400 mb-1">⚠️ To apply, you need a professional CV</p>
+            <p className="text-[11px] text-muted-foreground">
+              Get your CV + Cover Letter tailored for this role, then download and submit directly to the employer.
+            </p>
+          </div>
 
           {/* Urgency + CTA */}
           <div className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-5 text-center space-y-3">

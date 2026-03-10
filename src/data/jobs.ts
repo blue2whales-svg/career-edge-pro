@@ -92,6 +92,28 @@ export const FEATURED_JOBS: Job[] = [
     posted: "15 min ago",
     featured: true, hot: true, tag: "🔥 Gulf Hot",
   },
+  {
+    title: "Live-in Housemaid — Urgent",
+    company: "Private Family",
+    location: "Dubai, UAE",
+    salary: "KES 65,000–120,000/mo + accommodation",
+    type: "Full-time",
+    industry: "Domestic & Housekeeping",
+    market: "UAE",
+    posted: "20 min ago",
+    featured: true, hot: true, tag: "🔥 Gulf Hot",
+  },
+  {
+    title: "Nanny — Immediate Start",
+    company: "Staffing Agency",
+    location: "Riyadh, Saudi Arabia",
+    salary: "KES 55,000–100,000/mo + flights",
+    type: "Full-time",
+    industry: "Domestic & Housekeeping",
+    market: "Saudi Arabia",
+    posted: "35 min ago",
+    featured: true, hot: true, tag: "🔥 Gulf Hot",
+  },
 ];
 
 export const JOBS: Job[] = [
