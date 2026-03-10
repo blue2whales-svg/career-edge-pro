@@ -609,7 +609,7 @@ export default function OrderPage() {
 
                 {selectedServices.length > 0 && (
                   <>
-                    <h2 className="text-xl font-bold mb-5">3. Service-specific details</h2>
+                    <h2 className="text-lg sm:text-xl font-bold mb-4">3. Service-specific details</h2>
                     <p className="text-sm text-muted-foreground mb-4">
                       The more detail you provide, the better your AI-generated documents will be.
                     </p>
