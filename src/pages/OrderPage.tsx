@@ -7,6 +7,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { cn } from "@/lib/utils";
 import PageLayout from "@/components/PageLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -59,7 +60,11 @@ export default function OrderPage() {
   const [paymentConfirmed, setPaymentConfirmed] = useState(false);
   const [paymentError, setPaymentError] = useState<"credentials" | "network" | "generic" | null>(null);
   const [retryingPayment, setRetryingPayment] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -129,14 +134,24 @@ export default function OrderPage() {
       toast({ title: "Select at least one service", variant: "destructive" });
       return;
     }
-    if (!name.trim() || !email.trim()) {
-      toast({ title: "Name and email are required", variant: "destructive" });
+
+    const errors: Record<string, boolean> = {};
+    if (!name.trim()) errors.name = true;
+    if (!email.trim()) errors.email = true;
+    if (!phone.trim()) errors.phone = true;
+
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      // Scroll to first error
+      if (errors.name) nameRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      else if (errors.email) emailRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      else if (errors.phone) phoneRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      toast({ title: "Please fill in all required fields", variant: "destructive" });
+      // Clear errors after animation
+      setTimeout(() => setValidationErrors({}), 3000);
       return;
     }
-    if (!phone.trim()) {
-      toast({ title: "M-Pesa phone number is required for payment", variant: "destructive" });
-      return;
-    }
+    setValidationErrors({});
 
     setIsSubmitting(true);
 
@@ -534,30 +549,60 @@ export default function OrderPage() {
 
                 <h2 className="text-xl font-bold mb-5">2. Your details</h2>
                 <div className="space-y-4 mb-6">
-                  <Input
-                    placeholder="Full name *"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="h-12 bg-card border-border"
-                  />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
                     <Input
-                      placeholder="Email address *"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="h-12 bg-card border-border"
+                      ref={nameRef}
+                      placeholder="Full name *"
+                      value={name}
+                      onChange={(e) => { setName(e.target.value); setValidationErrors(prev => ({ ...prev, name: false })); }}
+                      className={cn(
+                        "h-12 bg-card border-border transition-all",
+                        validationErrors.name && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle"
+                      )}
                     />
-                    <div className="flex gap-2">
-                      <div className="rounded-lg border border-border bg-card px-3 flex items-center text-sm text-muted-foreground shrink-0">
-                        +254
-                      </div>
+                    {validationErrors.name && (
+                      <p className="text-xs text-destructive mt-1 animate-pulse font-medium">⚠ Full name is required</p>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
                       <Input
-                        placeholder="M-Pesa number *"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="h-12 bg-card border-border"
+                        ref={emailRef}
+                        placeholder="Email address *"
+                        type="email"
+                        value={email}
+                        onChange={(e) => { setEmail(e.target.value); setValidationErrors(prev => ({ ...prev, email: false })); }}
+                        className={cn(
+                          "h-12 bg-card border-border transition-all",
+                          validationErrors.email && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle"
+                        )}
                       />
+                      {validationErrors.email && (
+                        <p className="text-xs text-destructive mt-1 animate-pulse font-medium">⚠ Email address is required</p>
+                      )}
+                    </div>
+                    <div>
+                      <div className="flex gap-2">
+                        <div className={cn(
+                          "rounded-lg border bg-card px-3 flex items-center text-sm text-muted-foreground shrink-0 transition-all",
+                          validationErrors.phone ? "border-destructive" : "border-border"
+                        )}>
+                          +254
+                        </div>
+                        <Input
+                          ref={phoneRef}
+                          placeholder="M-Pesa number *"
+                          value={phone}
+                          onChange={(e) => { setPhone(e.target.value); setValidationErrors(prev => ({ ...prev, phone: false })); }}
+                          className={cn(
+                            "h-12 bg-card border-border transition-all",
+                            validationErrors.phone && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle"
+                          )}
+                        />
+                      </div>
+                      {validationErrors.phone && (
+                        <p className="text-xs text-destructive mt-1 animate-pulse font-medium">⚠ M-Pesa number is required for payment</p>
+                      )}
                     </div>
                   </div>
                 </div>
