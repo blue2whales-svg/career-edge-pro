@@ -41,6 +41,12 @@ function generateRequirements(job: Job): string[] {
     reqs.push("Degree in Finance, Accounting, or Business Administration");
     reqs.push("CPA, ACCA, or CFA qualification preferred");
     reqs.push("3+ years experience in a financial role");
+  } else if (industry === "Domestic & Housekeeping") {
+    reqs.push("Previous experience in housekeeping, cleaning, or childcare");
+    reqs.push("Good communication skills");
+    reqs.push("Valid passport with 12+ months validity");
+    reqs.push("Willingness to live-in (for residential positions)");
+    reqs.push("Certificate of good conduct / police clearance");
   } else {
     reqs.push("Relevant degree or professional qualification");
     reqs.push("2+ years experience in a similar role");
