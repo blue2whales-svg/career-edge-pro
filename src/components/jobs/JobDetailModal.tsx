@@ -203,12 +203,15 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
             </div>
           )}
 
-          {/* Apply - gated behind getting CV first */}
-          <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 text-center">
-            <p className="text-xs font-semibold text-amber-400 mb-1">⚠️ To apply, you need a professional CV</p>
-            <p className="text-[11px] text-muted-foreground">
-              Get your CV + Cover Letter tailored for this role, then download and submit directly to the employer.
-            </p>
+          {/* How it works - apply flow */}
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-2.5">
+            <p className="text-xs font-semibold text-primary">📋 How to Apply for This Role</p>
+            <ol className="space-y-1.5 text-[11px] text-muted-foreground list-decimal list-inside">
+              <li>Order a <strong className="text-foreground">CV + Cover Letter</strong> tailored for this role</li>
+              <li>Complete M-Pesa payment — documents ready in 24hrs</li>
+              <li>Download your docs in <strong className="text-foreground">PDF or MS Word</strong></li>
+              <li>The <strong className="text-foreground">direct application link</strong> unlocks after payment — submit your winning docs straight to the employer</li>
+            </ol>
           </div>
 
           {/* Urgency + CTA */}
@@ -217,14 +220,14 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
               🔥 Employers are hiring <span className="text-primary">NOW</span> — don't miss this opportunity
             </p>
             <p className="text-xs text-muted-foreground">
-              A professionally crafted CV tailored to this exact role increases your chances by up to 3×. Our specialists know what {job.company} is looking for.
+              Get a professionally crafted CV tailored to this exact role — download in PDF or Word, then apply directly. Our specialists know what {job.company} is looking for.
             </p>
             <Link to={`/order?service=cv&job_title=${encodeURIComponent(job.title)}&company=${encodeURIComponent(job.company)}`} onClick={() => onOpenChange(false)}>
               <Button size="lg" className="w-full bg-gradient-brand border-0 font-semibold h-12 shadow-glow gold-shimmer mt-2">
                 Get My CV for This Role <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <p className="text-[10px] text-muted-foreground">Delivery in 24 hours · Unlimited revisions · ATS-optimised</p>
+            <p className="text-[10px] text-muted-foreground">PDF & Word download · Direct apply link unlocked · ATS-optimised</p>
           </div>
         </div>
       </DialogContent>
