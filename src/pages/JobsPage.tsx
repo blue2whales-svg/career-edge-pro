@@ -3,14 +3,13 @@ import { motion } from "framer-motion";
 import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import { FeaturedJobs } from "@/components/jobs/FeaturedJobs";
 import { JobCard } from "@/components/jobs/JobCard";
 import { JobDetailModal } from "@/components/jobs/JobDetailModal";
 import { INDUSTRIES, MARKETS, type Job } from "@/data/jobs";
 import { useJobs, triggerJobsFetch } from "@/hooks/useJobs";
-
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
@@ -20,9 +19,13 @@ const fadeUp = {
 };
 
 export default function JobsPage() {
+  const [searchParams] = useSearchParams();
+  const initialIndustry = searchParams.get("industry") || "All";
+  const initialMarket = searchParams.get("market") || "All Markets";
+
   const [search, setSearch] = useState("");
-  const [selectedIndustry, setSelectedIndustry] = useState("All");
-  const [selectedMarket, setSelectedMarket] = useState("All Markets");
+  const [selectedIndustry, setSelectedIndustry] = useState(initialIndustry);
+  const [selectedMarket, setSelectedMarket] = useState(initialMarket);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   const { data, isLoading, refetch } = useJobs();
