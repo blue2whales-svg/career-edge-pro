@@ -183,6 +183,11 @@ export default function JobsPage() {
       {/* Job Listings */}
       <section className="relative z-10 pb-24 px-4">
         <div className="container max-w-5xl mx-auto">
+          {/* Live Status Bar */}
+          <div className="mb-4">
+            <LiveStatusBar jobCount={filtered.length} isRefreshing={isManualRefreshing} onRefresh={handleRefresh} />
+          </div>
+
           {isLoading ? (
             <div className="text-center py-20">
               <RefreshCw className="h-6 w-6 animate-spin mx-auto text-muted-foreground mb-3" />
@@ -191,7 +196,12 @@ export default function JobsPage() {
           ) : (
             <div className="space-y-3">
               {filtered.map((job, i) => (
-                <JobCard key={i} job={job} index={i} onClick={() => setSelectedJob(job)} />
+                <React.Fragment key={i}>
+                  <JobCard job={job} index={i} onClick={() => setSelectedJob(job)} />
+                  {i > 0 && (i + 1) % 6 === 0 && (
+                    <UpsellStrip variant={Math.floor(i / 6) % 2 === 0 ? "ats" : "bundle"} />
+                  )}
+                </React.Fragment>
               ))}
             </div>
           )}
