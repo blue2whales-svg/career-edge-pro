@@ -78,5 +78,6 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
         </Button>
       </div>
     </motion.div>
+    </>
   );
 }
