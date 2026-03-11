@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin, DollarSign, Clock, Building2, ArrowRight, Ship, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Job } from "@/data/jobs";
+import { CVMatchBadge } from "./CVMatchBadge";
+import { CVMatchModal } from "./CVMatchModal";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -14,8 +17,12 @@ const fadeUp = {
 export function JobCard({ job, index, onClick }: { job: Job; index: number; onClick?: () => void }) {
   const isCruise = job.tag?.includes("Cruise");
   const isGulf = job.tag?.includes("Gulf");
+  const [matchModalOpen, setMatchModalOpen] = useState(false);
+  const jobKey = `${job.title}|${job.company}`;
 
   return (
+    <>
+    <CVMatchModal job={job} open={matchModalOpen} onClose={() => setMatchModalOpen(false)} />
     <motion.div
       initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={index % 4}
       className="group rounded-xl border border-border bg-card p-5 sm:p-6 hover:border-primary/30 hover:shadow-glow-sm transition-all duration-300 cursor-pointer"
@@ -60,6 +67,9 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
                   {job.industry}
                 </span>
               </div>
+              <div className="mt-2">
+                <CVMatchBadge jobKey={jobKey} onClick={(e) => { e.stopPropagation(); setMatchModalOpen(true); }} />
+              </div>
             </div>
           </div>
         </div>
@@ -68,5 +78,6 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
         </Button>
       </div>
     </motion.div>
+    </>
   );
 }

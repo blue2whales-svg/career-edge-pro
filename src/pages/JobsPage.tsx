@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,9 @@ import PageLayout from "@/components/PageLayout";
 import { FeaturedJobs } from "@/components/jobs/FeaturedJobs";
 import { JobCard } from "@/components/jobs/JobCard";
 import { JobDetailModal } from "@/components/jobs/JobDetailModal";
+import { LiveStatusBar } from "@/components/jobs/LiveStatusBar";
+import { FeaturedCategories } from "@/components/jobs/FeaturedCategories";
+import { UpsellStrip } from "@/components/jobs/UpsellStrip";
 import { INDUSTRIES, MARKETS, type Job } from "@/data/jobs";
 import { useJobs, triggerJobsFetch } from "@/hooks/useJobs";
 const fadeUp = {
@@ -27,9 +30,23 @@ export default function JobsPage() {
   const [selectedIndustry, setSelectedIndustry] = useState(initialIndustry);
   const [selectedMarket, setSelectedMarket] = useState(initialMarket);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [isManualRefreshing, setIsManualRefreshing] = useState(false);
 
   const { data, isLoading, refetch } = useJobs();
   const jobs = data?.jobs ?? [];
+
+  const handleRefresh = useCallback(() => {
+    setIsManualRefreshing(true);
+    triggerJobsFetch().then(() => refetch()).finally(() => {
+      setTimeout(() => setIsManualRefreshing(false), 2000);
+    });
+  }, [refetch]);
+
+  const handleFilterChange = useCallback((params: { search?: string; industry?: string; market?: string }) => {
+    if (params.search) setSearch(params.search);
+    if (params.industry) setSelectedIndustry(params.industry);
+    if (params.market) setSelectedMarket(params.market);
+  }, []);
 
   // Trigger a background refresh on first visit
   useEffect(() => {
@@ -112,6 +129,8 @@ export default function JobsPage() {
       {/* Featured Hot Jobs */}
       <FeaturedJobs />
 
+      {/* Featured Categories */}
+      <FeaturedCategories jobs={jobs} onFilterChange={handleFilterChange} />
       {/* Filters */}
       <section className="relative z-10 pb-6 px-4">
         <div className="container max-w-5xl mx-auto">
@@ -164,6 +183,11 @@ export default function JobsPage() {
       {/* Job Listings */}
       <section className="relative z-10 pb-24 px-4">
         <div className="container max-w-5xl mx-auto">
+          {/* Live Status Bar */}
+          <div className="mb-4">
+            <LiveStatusBar jobCount={filtered.length} isRefreshing={isManualRefreshing} onRefresh={handleRefresh} />
+          </div>
+
           {isLoading ? (
             <div className="text-center py-20">
               <RefreshCw className="h-6 w-6 animate-spin mx-auto text-muted-foreground mb-3" />
@@ -172,7 +196,12 @@ export default function JobsPage() {
           ) : (
             <div className="space-y-3">
               {filtered.map((job, i) => (
-                <JobCard key={i} job={job} index={i} onClick={() => setSelectedJob(job)} />
+                <React.Fragment key={i}>
+                  <JobCard job={job} index={i} onClick={() => setSelectedJob(job)} />
+                  {i > 0 && (i + 1) % 6 === 0 && (
+                    <UpsellStrip variant={Math.floor(i / 6) % 2 === 0 ? "ats" : "bundle"} />
+                  )}
+                </React.Fragment>
               ))}
             </div>
           )}
