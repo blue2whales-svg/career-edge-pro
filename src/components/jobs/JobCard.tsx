@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin, DollarSign, Clock, Building2, ArrowRight, Ship, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Job } from "@/data/jobs";
+import { CVMatchBadge } from "./CVMatchBadge";
+import { CVMatchModal } from "./CVMatchModal";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
