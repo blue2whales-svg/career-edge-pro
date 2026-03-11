@@ -67,6 +67,9 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
                   {job.industry}
                 </span>
               </div>
+              <div className="mt-2">
+                <CVMatchBadge jobKey={jobKey} onClick={(e) => { e.stopPropagation(); setMatchModalOpen(true); }} />
+              </div>
             </div>
           </div>
         </div>
