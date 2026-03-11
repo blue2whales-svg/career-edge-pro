@@ -30,8 +30,23 @@ export default function JobsPage() {
   const [selectedIndustry, setSelectedIndustry] = useState(initialIndustry);
   const [selectedMarket, setSelectedMarket] = useState(initialMarket);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [isManualRefreshing, setIsManualRefreshing] = useState(false);
 
   const { data, isLoading, refetch } = useJobs();
+  const jobs = data?.jobs ?? [];
+
+  const handleRefresh = useCallback(() => {
+    setIsManualRefreshing(true);
+    triggerJobsFetch().then(() => refetch()).finally(() => {
+      setTimeout(() => setIsManualRefreshing(false), 2000);
+    });
+  }, [refetch]);
+
+  const handleFilterChange = useCallback((params: { search?: string; industry?: string; market?: string }) => {
+    if (params.search) setSearch(params.search);
+    if (params.industry) setSelectedIndustry(params.industry);
+    if (params.market) setSelectedMarket(params.market);
+  }, []);
   const jobs = data?.jobs ?? [];
 
   // Trigger a background refresh on first visit
