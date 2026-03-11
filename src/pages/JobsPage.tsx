@@ -129,6 +129,8 @@ export default function JobsPage() {
       {/* Featured Hot Jobs */}
       <FeaturedJobs />
 
+      {/* Featured Categories */}
+      <FeaturedCategories jobs={jobs} onFilterChange={handleFilterChange} />
       {/* Filters */}
       <section className="relative z-10 pb-6 px-4">
         <div className="container max-w-5xl mx-auto">
