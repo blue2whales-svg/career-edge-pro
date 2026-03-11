@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,9 @@ import PageLayout from "@/components/PageLayout";
 import { FeaturedJobs } from "@/components/jobs/FeaturedJobs";
 import { JobCard } from "@/components/jobs/JobCard";
 import { JobDetailModal } from "@/components/jobs/JobDetailModal";
+import { LiveStatusBar } from "@/components/jobs/LiveStatusBar";
+import { FeaturedCategories } from "@/components/jobs/FeaturedCategories";
+import { UpsellStrip } from "@/components/jobs/UpsellStrip";
 import { INDUSTRIES, MARKETS, type Job } from "@/data/jobs";
 import { useJobs, triggerJobsFetch } from "@/hooks/useJobs";
 const fadeUp = {
