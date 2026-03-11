@@ -47,7 +47,6 @@ export default function JobsPage() {
     if (params.industry) setSelectedIndustry(params.industry);
     if (params.market) setSelectedMarket(params.market);
   }, []);
-  const jobs = data?.jobs ?? [];
 
   // Trigger a background refresh on first visit
   useEffect(() => {
