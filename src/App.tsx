@@ -18,6 +18,15 @@ import OrderPage from "./pages/OrderPage";
 import ContactPage from "./pages/ContactPage";
 import DocumentReviewPage from "./pages/DocumentReviewPage";
 import CVBuilderPage from "./pages/CVBuilderPage";
+import CoverLetterPage from "./pages/CoverLetterPage";
+import ATSCheckerPage from "./pages/ATSCheckerPage";
+import TrackerPage from "./pages/TrackerPage";
+import VaultPage from "./pages/VaultPage";
+import ProPage from "./pages/ProPage";
+import RecruitersPage from "./pages/RecruitersPage";
+import GlobalServicePage from "./pages/GlobalServicePage";
+import OptimizePage from "./pages/OptimizePage";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import PortalLayout from "./components/PortalLayout";
 import PortalDashboard from "./pages/PortalDashboard";
 import OrderDetailPage from "./pages/OrderDetailPage";
@@ -49,6 +58,15 @@ const App = () => (
           <Route path="/order" element={<OrderPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/cv-builder" element={<CVBuilderPage />} />
+          <Route path="/cover-letter" element={<CoverLetterPage />} />
+          <Route path="/ats-checker" element={<ATSCheckerPage />} />
+          <Route path="/tracker" element={<TrackerPage />} />
+          <Route path="/vault" element={<VaultPage />} />
+          <Route path="/pro" element={<ProPage />} />
+          <Route path="/recruiters" element={<RecruitersPage />} />
+          <Route path="/global-service" element={<GlobalServicePage />} />
+          <Route path="/optimize" element={<OptimizePage />} />
+          <Route path="/payment-success" element={<PaymentSuccessPage />} />
           <Route path="/review/:orderId" element={<DocumentReviewPage />} />
 
           {/* Client Portal (auth-protected) */}

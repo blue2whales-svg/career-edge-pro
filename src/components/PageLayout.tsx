@@ -15,12 +15,11 @@ interface PageLayoutProps {
 
 const DOCK_LINKS = [
   { to: "/", icon: Home, label: "Home" },
-  { to: "/services", icon: Wrench, label: "Services" },
-  { to: "/scholarships", icon: GraduationCap, label: "Scholarships" },
-  { to: "/pricing", icon: CreditCard, label: "Pricing" },
   { to: "/jobs", icon: Briefcase, label: "Jobs" },
-  { to: "/how-it-works", icon: BookOpen, label: "How It Works" },
-  { to: "/contact", icon: Phone, label: "Contact" },
+  { to: "/cv-builder", icon: FileText, label: "CV Builder" },
+  { to: "/cover-letter", icon: FileText, label: "Cover Letter" },
+  { to: "/ats-checker", icon: Target, label: "ATS Check" },
+  { to: "/pricing", icon: CreditCard, label: "Pricing" },
 ];
 
 export default function PageLayout({ children }: PageLayoutProps) {

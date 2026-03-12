@@ -6,11 +6,14 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 
 const NAV_LINKS = [
-  { label: "Services", to: "/services" },
-  { label: "Scholarships", to: "/scholarships" },
-  { label: "Pricing", to: "/pricing" },
   { label: "Jobs", to: "/jobs" },
-  { label: "How It Works", to: "/how-it-works" },
+  { label: "CV Builder", to: "/cv-builder" },
+  { label: "Cover Letter", to: "/cover-letter" },
+  { label: "ATS Checker", to: "/ats-checker" },
+  { label: "Pricing", to: "/pricing" },
+  { label: "Services", to: "/services" },
+  { label: "Tracker", to: "/tracker" },
+  { label: "Pro ⭐", to: "/pro" },
 ];
 
 export function MobileNav() {
