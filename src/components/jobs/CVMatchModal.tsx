@@ -76,13 +76,14 @@ function BreakdownBar({ label, value, delay, color }: { label: string; value: nu
 
 export function CVMatchModal({ job, open, onClose }: CVMatchModalProps) {
   const [paymentOpen, setPaymentOpen] = useState(false);
-  if (!job) return null;
 
-  const jobKey = `${job.title}|${job.company}`;
+  const jobKey = job ? `${job.title}|${job.company}` : "";
   const score = getCVMatchScore(jobKey);
   const config = getScoreConfig(score);
   const sub = getSubScores(score);
   const isLow = score < 75;
+
+  if (!job) return null;
 
   return (
     <>
