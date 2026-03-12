@@ -219,5 +219,6 @@ export function CVMatchModal({ job, open, onClose }: CVMatchModalProps) {
         </motion.div>
       )}
     </AnimatePresence>
+    </>
   );
 }
