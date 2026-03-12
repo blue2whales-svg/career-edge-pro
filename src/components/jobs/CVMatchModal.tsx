@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Check, AlertTriangle, Zap, PenLine, ArrowRight } from "lucide-react";
+import { X, Check, AlertTriangle, Zap, PenLine, ArrowRight, Target, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { getCVMatchScore, getScoreConfig, getSubScores } from "./cvMatchUtils";
+import PesapalPaymentModal from "@/components/PesapalPaymentModal";
 import type { Job } from "@/data/jobs";
 
 interface CVMatchModalProps {
