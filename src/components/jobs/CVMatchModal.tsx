@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Check, AlertTriangle, Zap, PenLine, ArrowRight } from "lucide-react";
+import { X, Check, AlertTriangle, Zap, PenLine, ArrowRight, Target, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { getCVMatchScore, getScoreConfig, getSubScores } from "./cvMatchUtils";
+import PesapalPaymentModal from "@/components/PesapalPaymentModal";
 import type { Job } from "@/data/jobs";
 
 interface CVMatchModalProps {
@@ -74,15 +75,19 @@ function BreakdownBar({ label, value, delay, color }: { label: string; value: nu
 }
 
 export function CVMatchModal({ job, open, onClose }: CVMatchModalProps) {
-  if (!job) return null;
+  const [paymentOpen, setPaymentOpen] = useState(false);
 
-  const jobKey = `${job.title}|${job.company}`;
+  const jobKey = job ? `${job.title}|${job.company}` : "";
   const score = getCVMatchScore(jobKey);
   const config = getScoreConfig(score);
   const sub = getSubScores(score);
   const isLow = score < 75;
 
+  if (!job) return null;
+
   return (
+    <>
+    <PesapalPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage="professional" />
     <AnimatePresence>
       {open && (
         <motion.div
@@ -125,6 +130,20 @@ export function CVMatchModal({ job, open, onClose }: CVMatchModalProps) {
               <BreakdownBar label="Document Quality" value={sub.documentQuality} delay={300} color={config.text} />
             </div>
 
+            {/* Action Buttons */}
+            <div className="flex gap-2 mb-6">
+              <Link to={`/optimize?job_title=${encodeURIComponent(job.title)}&company=${encodeURIComponent(job.company)}`} onClick={onClose} className="flex-1">
+                <Button variant="outline" className="w-full text-xs h-9 gap-1">
+                  <Target className="h-3 w-3" /> Optimize CV For This Job
+                </Button>
+              </Link>
+              <Link to="/ats-checker" onClick={onClose} className="flex-1">
+                <Button variant="outline" className="w-full text-xs h-9 gap-1">
+                  <BarChart3 className="h-3 w-3" /> Full ATS Analysis
+                </Button>
+              </Link>
+            </div>
+
             {/* Conditional CTA */}
             {isLow ? (
               <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-5 space-y-4">
@@ -153,7 +172,7 @@ export function CVMatchModal({ job, open, onClose }: CVMatchModalProps) {
                     to={`/order?service=professional&job_title=${encodeURIComponent(job.title)}&company=${encodeURIComponent(job.company)}`}
                     onClick={onClose}
                   >
-                    <Button className="w-full font-bold text-sm h-11 border-0" style={{ background: "linear-gradient(135deg, #3b82f6, #06b6d4)" }}>
+                    <Button onClick={() => { onClose(); setPaymentOpen(true); }} className="w-full font-bold text-sm h-11 border-0" style={{ background: "linear-gradient(135deg, #3b82f6, #06b6d4)" }}>
                       ⚡ Upgrade My CV Now — KSh 5,500
                     </Button>
                   </Link>
@@ -201,5 +220,6 @@ export function CVMatchModal({ job, open, onClose }: CVMatchModalProps) {
         </motion.div>
       )}
     </AnimatePresence>
+    </>
   );
 }

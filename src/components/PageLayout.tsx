@@ -2,7 +2,7 @@ import { ReactNode, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Home, Briefcase, GraduationCap, CreditCard, Wrench, BookOpen, Phone, Flame } from "lucide-react";
+import { ArrowRight, Home, Briefcase, GraduationCap, CreditCard, Wrench, BookOpen, Phone, Flame, FileText, Target, Star } from "lucide-react";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 import { MobileNav } from "@/components/landing/MobileNav";
 import MobileBottomNav from "@/components/MobileBottomNav";
@@ -15,12 +15,11 @@ interface PageLayoutProps {
 
 const DOCK_LINKS = [
   { to: "/", icon: Home, label: "Home" },
-  { to: "/services", icon: Wrench, label: "Services" },
-  { to: "/scholarships", icon: GraduationCap, label: "Scholarships" },
-  { to: "/pricing", icon: CreditCard, label: "Pricing" },
   { to: "/jobs", icon: Briefcase, label: "Jobs" },
-  { to: "/how-it-works", icon: BookOpen, label: "How It Works" },
-  { to: "/contact", icon: Phone, label: "Contact" },
+  { to: "/cv-builder", icon: FileText, label: "CV Builder" },
+  { to: "/cover-letter", icon: FileText, label: "Cover Letter" },
+  { to: "/ats-checker", icon: Target, label: "ATS Check" },
+  { to: "/pricing", icon: CreditCard, label: "Pricing" },
 ];
 
 export default function PageLayout({ children }: PageLayoutProps) {
@@ -79,29 +78,30 @@ export default function PageLayout({ children }: PageLayoutProps) {
               <a href="mailto:support@cvedge.live" className="text-xs text-primary hover:text-primary/80 transition-colors">support@cvedge.live</a>
             </div>
             <div>
-              <h4 className="font-semibold text-sm mb-3">Services</h4>
+              <h4 className="font-semibold text-sm mb-3">AI Tools</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/services" className="block text-primary hover:text-primary/80 transition-colors">CV Writing</Link>
-                <Link to="/services" className="block text-primary hover:text-primary/80 transition-colors">Cover Letters</Link>
-                <Link to="/services" className="block text-primary hover:text-primary/80 transition-colors">LinkedIn</Link>
-                <Link to="/scholarships" className="block text-primary hover:text-primary/80 transition-colors">Scholarships</Link>
+                <Link to="/cv-builder" className="block text-primary hover:text-primary/80 transition-colors">CV Builder</Link>
+                <Link to="/cover-letter" className="block text-primary hover:text-primary/80 transition-colors">Cover Letter</Link>
+                <Link to="/ats-checker" className="block text-primary hover:text-primary/80 transition-colors">ATS Checker</Link>
+                <Link to="/optimize" className="block text-primary hover:text-primary/80 transition-colors">CV Optimizer</Link>
               </div>
             </div>
             <div>
-              <h4 className="font-semibold text-sm mb-3">Company</h4>
+              <h4 className="font-semibold text-sm mb-3">Platform</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/about" className="block text-primary hover:text-primary/80 transition-colors">About</Link>
-                <Link to="/how-it-works" className="block text-primary hover:text-primary/80 transition-colors">How It Works</Link>
+                <Link to="/jobs" className="block text-primary hover:text-primary/80 transition-colors">Jobs</Link>
+                <Link to="/tracker" className="block text-primary hover:text-primary/80 transition-colors">Job Tracker</Link>
+                <Link to="/vault" className="block text-primary hover:text-primary/80 transition-colors">Document Vault</Link>
                 <Link to="/pricing" className="block text-primary hover:text-primary/80 transition-colors">Pricing</Link>
-                <Link to="/contact" className="block text-primary hover:text-primary/80 transition-colors">Contact Us</Link>
               </div>
             </div>
             <div>
-              <h4 className="font-semibold text-sm mb-3">Account</h4>
+              <h4 className="font-semibold text-sm mb-3">More</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/login" className="block text-primary hover:text-primary/80 transition-colors">Log in</Link>
-                <Link to="/signup" className="block text-primary hover:text-primary/80 transition-colors">Sign up</Link>
-                <Link to="/order" className="block text-primary hover:text-primary/80 transition-colors">Order Now</Link>
+                <Link to="/pro" className="block text-primary hover:text-primary/80 transition-colors">Pro ⭐</Link>
+                <Link to="/recruiters" className="block text-primary hover:text-primary/80 transition-colors">For Recruiters</Link>
+                <Link to="/global-service" className="block text-primary hover:text-primary/80 transition-colors">Global Service</Link>
+                <Link to="/contact" className="block text-primary hover:text-primary/80 transition-colors">Contact</Link>
               </div>
             </div>
           </div>
