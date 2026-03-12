@@ -129,6 +129,20 @@ export function CVMatchModal({ job, open, onClose }: CVMatchModalProps) {
               <BreakdownBar label="Document Quality" value={sub.documentQuality} delay={300} color={config.text} />
             </div>
 
+            {/* Action Buttons */}
+            <div className="flex gap-2 mb-6">
+              <Link to={`/optimize?job_title=${encodeURIComponent(job.title)}&company=${encodeURIComponent(job.company)}`} onClick={onClose} className="flex-1">
+                <Button variant="outline" className="w-full text-xs h-9 gap-1">
+                  <Target className="h-3 w-3" /> Optimize CV For This Job
+                </Button>
+              </Link>
+              <Link to="/ats-checker" onClick={onClose} className="flex-1">
+                <Button variant="outline" className="w-full text-xs h-9 gap-1">
+                  <BarChart3 className="h-3 w-3" /> Full ATS Analysis
+                </Button>
+              </Link>
+            </div>
+
             {/* Conditional CTA */}
             {isLow ? (
               <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-5 space-y-4">
