@@ -85,6 +85,8 @@ export function CVMatchModal({ job, open, onClose }: CVMatchModalProps) {
   const isLow = score < 75;
 
   return (
+    <>
+    <PesapalPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage="professional" />
     <AnimatePresence>
       {open && (
         <motion.div
