@@ -78,29 +78,30 @@ export default function PageLayout({ children }: PageLayoutProps) {
               <a href="mailto:support@cvedge.live" className="text-xs text-primary hover:text-primary/80 transition-colors">support@cvedge.live</a>
             </div>
             <div>
-              <h4 className="font-semibold text-sm mb-3">Services</h4>
+              <h4 className="font-semibold text-sm mb-3">AI Tools</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/services" className="block text-primary hover:text-primary/80 transition-colors">CV Writing</Link>
-                <Link to="/services" className="block text-primary hover:text-primary/80 transition-colors">Cover Letters</Link>
-                <Link to="/services" className="block text-primary hover:text-primary/80 transition-colors">LinkedIn</Link>
-                <Link to="/scholarships" className="block text-primary hover:text-primary/80 transition-colors">Scholarships</Link>
+                <Link to="/cv-builder" className="block text-primary hover:text-primary/80 transition-colors">CV Builder</Link>
+                <Link to="/cover-letter" className="block text-primary hover:text-primary/80 transition-colors">Cover Letter</Link>
+                <Link to="/ats-checker" className="block text-primary hover:text-primary/80 transition-colors">ATS Checker</Link>
+                <Link to="/optimize" className="block text-primary hover:text-primary/80 transition-colors">CV Optimizer</Link>
               </div>
             </div>
             <div>
-              <h4 className="font-semibold text-sm mb-3">Company</h4>
+              <h4 className="font-semibold text-sm mb-3">Platform</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/about" className="block text-primary hover:text-primary/80 transition-colors">About</Link>
-                <Link to="/how-it-works" className="block text-primary hover:text-primary/80 transition-colors">How It Works</Link>
+                <Link to="/jobs" className="block text-primary hover:text-primary/80 transition-colors">Jobs</Link>
+                <Link to="/tracker" className="block text-primary hover:text-primary/80 transition-colors">Job Tracker</Link>
+                <Link to="/vault" className="block text-primary hover:text-primary/80 transition-colors">Document Vault</Link>
                 <Link to="/pricing" className="block text-primary hover:text-primary/80 transition-colors">Pricing</Link>
-                <Link to="/contact" className="block text-primary hover:text-primary/80 transition-colors">Contact Us</Link>
               </div>
             </div>
             <div>
-              <h4 className="font-semibold text-sm mb-3">Account</h4>
+              <h4 className="font-semibold text-sm mb-3">More</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/login" className="block text-primary hover:text-primary/80 transition-colors">Log in</Link>
-                <Link to="/signup" className="block text-primary hover:text-primary/80 transition-colors">Sign up</Link>
-                <Link to="/order" className="block text-primary hover:text-primary/80 transition-colors">Order Now</Link>
+                <Link to="/pro" className="block text-primary hover:text-primary/80 transition-colors">Pro ⭐</Link>
+                <Link to="/recruiters" className="block text-primary hover:text-primary/80 transition-colors">For Recruiters</Link>
+                <Link to="/global-service" className="block text-primary hover:text-primary/80 transition-colors">Global Service</Link>
+                <Link to="/contact" className="block text-primary hover:text-primary/80 transition-colors">Contact</Link>
               </div>
             </div>
           </div>
