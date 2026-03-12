@@ -171,7 +171,7 @@ export function CVMatchModal({ job, open, onClose }: CVMatchModalProps) {
                     to={`/order?service=professional&job_title=${encodeURIComponent(job.title)}&company=${encodeURIComponent(job.company)}`}
                     onClick={onClose}
                   >
-                    <Button className="w-full font-bold text-sm h-11 border-0" style={{ background: "linear-gradient(135deg, #3b82f6, #06b6d4)" }}>
+                    <Button onClick={() => { onClose(); setPaymentOpen(true); }} className="w-full font-bold text-sm h-11 border-0" style={{ background: "linear-gradient(135deg, #3b82f6, #06b6d4)" }}>
                       ⚡ Upgrade My CV Now — KSh 5,500
                     </Button>
                   </Link>
