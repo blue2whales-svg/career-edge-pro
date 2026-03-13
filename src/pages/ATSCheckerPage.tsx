@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Upload, FileText, AlertTriangle, Check, Zap, Copy, Download, Search, ArrowRight } from "lucide-react";
+import { Upload, FileText, Check, Copy, Search, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Progress } from "@/components/ui/progress";
 import PageLayout from "@/components/PageLayout";
-import PesapalPaymentModal from "@/components/PesapalPaymentModal";
+import MpesaPaymentModal from "@/components/MpesaPaymentModal";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
@@ -92,7 +92,7 @@ export default function ATSCheckerPage() {
 
   return (
     <PageLayout>
-      <PesapalPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage="professional" />
+      <MpesaPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage="professional" />
       <section className="relative z-10 pt-16 sm:pt-24 pb-10 px-4">
         <div className="container max-w-4xl mx-auto">
           <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={0}
@@ -146,13 +146,11 @@ export default function ATSCheckerPage() {
 
           {result && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-              {/* Score */}
               <div className="rounded-2xl border border-border bg-card p-6 text-center">
                 <ScoreRing score={result.overallScore} />
                 <p className="text-sm text-muted-foreground mt-3">{result.verdict}</p>
               </div>
 
-              {/* Category Bars */}
               <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
                 <h3 className="font-semibold text-sm mb-3">Detailed Breakdown</h3>
                 {Object.values(result.categories as Record<string, any>).map((cat: any, i: number) => (
@@ -171,7 +169,6 @@ export default function ATSCheckerPage() {
                 ))}
               </div>
 
-              {/* 3-column */}
               <div className="grid sm:grid-cols-3 gap-4">
                 <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4">
                   <h4 className="text-sm font-semibold text-green-500 mb-2">✅ Strengths</h4>
@@ -193,7 +190,6 @@ export default function ATSCheckerPage() {
                 </div>
               </div>
 
-              {/* Keywords */}
               <div className="rounded-2xl border border-border bg-card p-6">
                 <h4 className="text-sm font-semibold mb-3">Missing Keywords</h4>
                 <div className="flex flex-wrap gap-2">
@@ -205,7 +201,6 @@ export default function ATSCheckerPage() {
                 </div>
               </div>
 
-              {/* Upsell */}
               {result.overallScore < 75 ? (
                 <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center">
                   <p className="text-sm mb-3">🚀 Score {result.overallScore}/100. We'll rewrite it to 90+</p>
@@ -217,12 +212,11 @@ export default function ATSCheckerPage() {
                 <div className="rounded-2xl border border-green-500/20 bg-green-500/5 p-6 text-center">
                   <p className="text-sm mb-3">✅ Strong! Complete with a cover letter.</p>
                   <Link to="/cover-letter">
-                    <Button className="bg-gradient-brand border-0 font-semibold">Generate AI Cover Letter → </Button>
+                    <Button className="bg-gradient-brand border-0 font-semibold">Generate AI Cover Letter →</Button>
                   </Link>
                 </div>
               )}
 
-              {/* Actions */}
               <div className="flex flex-wrap gap-2 justify-center">
                 <Button variant="outline" size="sm" onClick={() => { setResult(null); setCvText(""); }} className="text-xs gap-1">
                   <Search className="h-3 w-3" /> Analyze Another

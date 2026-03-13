@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, Star, ArrowRight, Zap } from "lucide-react";
+import { Check, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PageLayout from "@/components/PageLayout";
-import PesapalPaymentModal from "@/components/PesapalPaymentModal";
+import MpesaPaymentModal from "@/components/MpesaPaymentModal";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -27,7 +27,7 @@ export default function ProPage() {
 
   return (
     <PageLayout>
-      <PesapalPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage="pro-monthly" />
+      <MpesaPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage="pro-monthly" />
       <section className="relative z-10 pt-16 sm:pt-24 pb-24 px-4">
         <div className="container max-w-3xl mx-auto text-center">
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}
@@ -57,7 +57,7 @@ export default function ProPage() {
               <span className="font-bold text-lg">CVEdge Pro</span>
             </div>
             <div className="flex items-baseline justify-center gap-1 mb-6">
-              <span className="text-4xl font-bold text-primary">KSh 1,000</span>
+              <span className="text-4xl font-bold text-primary">KSh 2,000</span>
               <span className="text-muted-foreground text-sm">/ month</span>
             </div>
 
@@ -76,7 +76,7 @@ export default function ProPage() {
               </div>
             ) : (
               <Button onClick={() => setPaymentOpen(true)} className="w-full h-12 font-bold text-base border-0 bg-gradient-brand gold-shimmer">
-                <Zap className="h-4 w-4 mr-2" /> Upgrade to Pro — KSh 1,000/month
+                <Zap className="h-4 w-4 mr-2" /> Upgrade to Pro — KSh 2,000/month
               </Button>
             )}
 

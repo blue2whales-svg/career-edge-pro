@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, Star, Users, ArrowRight, Briefcase } from "lucide-react";
+import { Check, Star, Users, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PageLayout from "@/components/PageLayout";
-import PesapalPaymentModal from "@/components/PesapalPaymentModal";
+import MpesaPaymentModal from "@/components/MpesaPaymentModal";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -40,7 +40,7 @@ export default function RecruitersPage() {
 
   return (
     <PageLayout>
-      <PesapalPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage={selectedPkg} />
+      <MpesaPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage={selectedPkg} />
       <section className="relative z-10 pt-16 sm:pt-24 pb-16 px-4">
         <div className="container max-w-5xl mx-auto text-center">
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}

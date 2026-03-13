@@ -79,21 +79,22 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
     pollRef.current = setInterval(async () => {
       try {
         const { data } = await supabase
-          .from("orders" as any)
+          .from("orders")
           .select("status, mpesa_receipt")
           .eq("mpesa_checkout_request_id", crId)
           .maybeSingle();
 
-        if (data?.status === "paid") {
+        const row = data as { status: string; mpesa_receipt: string | null } | null;
+        if (row?.status === "paid") {
           clearInterval(pollRef.current!);
           clearTimeout(timeoutRef.current!);
-          setMpesaCode(data.mpesa_receipt || "");
+          setMpesaCode(row.mpesa_receipt || "");
           setConfirmedAmount(pkg.amount);
           if (selectedPackage === "pro-monthly" || selectedPackage === "pro-plus") {
             localStorage.setItem("cvedge_pro", "true");
           }
           setStep("success");
-        } else if (data?.status === "failed") {
+        } else if (row?.status === "failed") {
           clearInterval(pollRef.current!);
           clearTimeout(timeoutRef.current!);
           setStep("failed");
