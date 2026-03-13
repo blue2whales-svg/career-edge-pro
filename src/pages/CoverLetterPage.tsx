@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import PageLayout from "@/components/PageLayout";
-import PesapalPaymentModal from "@/components/PesapalPaymentModal";
+import MpesaPaymentModal from "@/components/MpesaPaymentModal";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useSearchParams } from "react-router-dom";
@@ -72,7 +72,7 @@ export default function CoverLetterPage() {
 
   return (
     <PageLayout>
-      <PesapalPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage="professional" />
+      <MpesaPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage="professional" />
       <section className="relative z-10 pt-16 sm:pt-24 pb-10 px-4">
         <div className="container max-w-6xl mx-auto">
           <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={0}
@@ -85,24 +85,11 @@ export default function CoverLetterPage() {
           </motion.p>
 
           <div className="grid lg:grid-cols-5 gap-6">
-            {/* Form */}
             <div className="lg:col-span-2 rounded-2xl border border-border bg-card p-5 sm:p-6 space-y-4">
-              <div>
-                <Label>Job Title *</Label>
-                <Input value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="Software Engineer" className="mt-1" />
-              </div>
-              <div>
-                <Label>Company Name *</Label>
-                <Input value={company} onChange={(e) => setCompany(e.target.value)} placeholder="Google" className="mt-1" />
-              </div>
-              <div>
-                <Label>Location</Label>
-                <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Dubai, UAE" className="mt-1" />
-              </div>
-              <div>
-                <Label>Your Name *</Label>
-                <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Jane Doe" className="mt-1" />
-              </div>
+              <div><Label>Job Title *</Label><Input value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="Software Engineer" className="mt-1" /></div>
+              <div><Label>Company Name *</Label><Input value={company} onChange={(e) => setCompany(e.target.value)} placeholder="Google" className="mt-1" /></div>
+              <div><Label>Location</Label><Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Dubai, UAE" className="mt-1" /></div>
+              <div><Label>Your Name *</Label><Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Jane Doe" className="mt-1" /></div>
               <div>
                 <Label>Tone</Label>
                 <Select value={tone} onValueChange={setTone}>
@@ -134,7 +121,6 @@ export default function CoverLetterPage() {
               </Button>
             </div>
 
-            {/* Output */}
             <div className="lg:col-span-3 rounded-2xl border border-border bg-card p-5 sm:p-6 min-h-[400px]">
               {!letter && !loading && (
                 <div className="flex flex-col items-center justify-center h-full text-center py-20 border-2 border-dashed border-border/50 rounded-xl">
@@ -154,34 +140,25 @@ export default function CoverLetterPage() {
                   <div className="flex items-center gap-2 mb-4 flex-wrap">
                     <span className="text-xs bg-green-500/15 text-green-500 border border-green-500/30 px-2 py-0.5 rounded-full">✅ Generated</span>
                     <div className="flex gap-1.5 ml-auto">
-                      <Button size="sm" variant="outline" onClick={() => { setEditing(!editing); }} className="text-xs gap-1">
+                      <Button size="sm" variant="outline" onClick={() => setEditing(!editing)} className="text-xs gap-1">
                         {editing ? <Save className="h-3 w-3" /> : <Edit3 className="h-3 w-3" />}
                         {editing ? "Save" : "Edit"}
                       </Button>
-                      <Button size="sm" variant="outline" onClick={copyToClipboard} className="text-xs gap-1">
-                        <Copy className="h-3 w-3" /> Copy
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={downloadPDF} className="text-xs gap-1">
-                        <Download className="h-3 w-3" /> Download
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={generate} className="text-xs gap-1">
-                        <RefreshCw className="h-3 w-3" /> Regenerate
-                      </Button>
+                      <Button size="sm" variant="outline" onClick={copyToClipboard} className="text-xs gap-1"><Copy className="h-3 w-3" /> Copy</Button>
+                      <Button size="sm" variant="outline" onClick={downloadPDF} className="text-xs gap-1"><Download className="h-3 w-3" /> Download</Button>
+                      <Button size="sm" variant="outline" onClick={generate} className="text-xs gap-1"><RefreshCw className="h-3 w-3" /> Regenerate</Button>
                     </div>
                   </div>
                   {editing ? (
                     <Textarea value={editedLetter} onChange={(e) => setEditedLetter(e.target.value)} rows={20} className="font-serif text-sm leading-relaxed" />
                   ) : (
-                    <div className="bg-white/5 rounded-xl p-6 font-serif text-sm leading-relaxed whitespace-pre-wrap">
-                      {letter}
-                    </div>
+                    <div className="bg-white/5 rounded-xl p-6 font-serif text-sm leading-relaxed whitespace-pre-wrap">{letter}</div>
                   )}
                 </div>
               )}
             </div>
           </div>
 
-          {/* Upsell */}
           {letter && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center">
               <p className="text-sm text-muted-foreground mb-3">Want a human expert to perfect this?</p>

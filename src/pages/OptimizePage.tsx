@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Target, FileText, Download, Save, Edit3, ArrowRight, Loader2 } from "lucide-react";
+import { Target, Download, Save, Edit3, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import PageLayout from "@/components/PageLayout";
-import PesapalPaymentModal from "@/components/PesapalPaymentModal";
+import MpesaPaymentModal from "@/components/MpesaPaymentModal";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useSearchParams, Link } from "react-router-dom";
@@ -37,7 +37,6 @@ export default function OptimizePage() {
   const [editedCV, setEditedCV] = useState("");
   const [paymentOpen, setPaymentOpen] = useState(false);
 
-  // Extract keywords from job description
   const stopWords = new Set(["the", "and", "for", "with", "that", "this", "have", "from", "will", "been", "were", "are", "was", "has", "had", "not", "but", "what", "all", "can", "her", "one", "our", "out", "you", "your"]);
   const keywords = jobDescription ? [...new Set(
     jobDescription.split(/[\s,;.()]+/)
@@ -53,11 +52,9 @@ export default function OptimizePage() {
     }
     setLoading(true);
     setLoadingStep(0);
-
     const stepInterval = setInterval(() => {
       setLoadingStep(prev => Math.min(prev + 1, LOADING_STEPS.length - 1));
     }, 3000);
-
     try {
       const { data, error } = await supabase.functions.invoke("ai-generate", {
         body: { type: "optimize-cv", data: { jobTitle, company, jobDescription, currentCV } },
@@ -106,7 +103,7 @@ export default function OptimizePage() {
 
   return (
     <PageLayout>
-      <PesapalPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage="professional" />
+      <MpesaPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage="professional" />
       <section className="relative z-10 pt-16 sm:pt-24 pb-24 px-4">
         <div className="container max-w-5xl mx-auto">
           <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={0}
@@ -138,16 +135,12 @@ export default function OptimizePage() {
                   ))}
                 </div>
               )}
-
               <h3 className="font-semibold pt-2">Step 2 — Your CV</h3>
               <div className="flex gap-2 mb-3">
                 <Button size="sm" variant={cvSource === "paste" ? "default" : "outline"} onClick={() => setCvSource("paste")} className="text-xs">✏️ Paste CV</Button>
-                <Link to="/cv-builder">
-                  <Button size="sm" variant="outline" className="text-xs">📝 Build New CV</Button>
-                </Link>
+                <Link to="/cv-builder"><Button size="sm" variant="outline" className="text-xs">📝 Build New CV</Button></Link>
               </div>
               <Textarea value={currentCV} onChange={e => setCurrentCV(e.target.value)} rows={10} placeholder="Paste your current CV text..." />
-
               <Button onClick={optimize} disabled={!jobTitle || !company || !jobDescription || !currentCV}
                 className="w-full h-14 font-bold text-base border-0 bg-gradient-brand gold-shimmer">
                 🎯 Optimize My CV For This Job
@@ -176,7 +169,6 @@ export default function OptimizePage() {
                 <h2 className="text-2xl font-serif font-bold">✅ CV Optimized for {jobTitle}</h2>
                 <p className="text-sm text-muted-foreground">Tailored specifically for {company}</p>
               </div>
-
               <div className="grid lg:grid-cols-2 gap-4">
                 <div className="rounded-2xl border border-border bg-card p-5">
                   <h3 className="text-sm font-semibold text-muted-foreground mb-3">📄 Original CV</h3>
@@ -197,7 +189,6 @@ export default function OptimizePage() {
                   )}
                 </div>
               </div>
-
               <div className="flex flex-wrap gap-2 justify-center">
                 <Button onClick={downloadCV} className="bg-gradient-brand border-0 font-semibold gap-1.5">
                   <Download className="h-4 w-4" /> Download Optimized CV
@@ -206,11 +197,10 @@ export default function OptimizePage() {
                   <Save className="h-4 w-4" /> Save to Vault
                 </Button>
               </div>
-
               <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center">
                 <p className="text-sm text-muted-foreground mb-3">Want a human expert to perfect this?</p>
                 <div className="flex flex-wrap gap-2 justify-center">
-                  <Button variant="outline" onClick={() => { setPaymentOpen(true); }} className="text-xs">Starter — KSh 2,500</Button>
+                  <Button variant="outline" onClick={() => setPaymentOpen(true)} className="text-xs">Starter — KSh 2,500</Button>
                   <Button onClick={() => setPaymentOpen(true)} className="bg-gradient-brand border-0 font-semibold gold-shimmer">
                     Professional — KSh 5,500 ← Popular
                   </Button>

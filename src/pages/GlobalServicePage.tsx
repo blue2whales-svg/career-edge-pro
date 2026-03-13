@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Check, Globe, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PageLayout from "@/components/PageLayout";
-import PesapalPaymentModal from "@/components/PesapalPaymentModal";
+import MpesaPaymentModal from "@/components/MpesaPaymentModal";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -25,7 +25,7 @@ export default function GlobalServicePage() {
 
   return (
     <PageLayout>
-      <PesapalPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage="global" />
+      <MpesaPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage="global" />
       <section className="relative z-10 pt-16 sm:pt-24 pb-24 px-4">
         <div className="container max-w-3xl mx-auto text-center">
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}
