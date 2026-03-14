@@ -413,7 +413,7 @@ export default function OrderPage() {
                           <p className="font-medium text-foreground">Pay manually via M-Pesa:</p>
                           <div className="space-y-1">
                             <p>1. Go to M-Pesa → Lipa na M-Pesa → Pay Bill</p>
-                            <p>2. Business Number: <span className="font-mono text-primary">{import.meta.env.VITE_MPESA_SHORTCODE || "174379"}</span></p>
+                            <p>2. Business Number: <span className="font-mono text-primary">4561075</span></p>
                             <p>3. Account Number: <span className="font-mono text-primary">{orderId.slice(0, 12).toUpperCase()}</span></p>
                             <p>4. Amount: <span className="font-semibold text-primary">{formatKES(total)}</span></p>
                           </div>
