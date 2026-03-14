@@ -94,7 +94,7 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
             localStorage.setItem("cvedge_pro", "true");
           }
           setStep("success");
-        } else if (row?.status === "failed") {
+        } else if (row?.status === "failed" || row?.status === "payment_failed") {
           clearInterval(pollRef.current!);
           clearTimeout(timeoutRef.current!);
           setStep("failed");
@@ -106,7 +106,7 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
 
     timeoutRef.current = setTimeout(() => {
       if (pollRef.current) clearInterval(pollRef.current);
-      // Don't auto-fail, stay on waiting screen
+      setStep("failed");
     }, 120000);
   };
 
@@ -140,6 +140,8 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
           amount: pkg.amount,
           packageName: pkg.label,
           orderId: generatedOrderId,
+          fullName: fullName.trim(),
+          email: email.trim(),
         }),
       });
 

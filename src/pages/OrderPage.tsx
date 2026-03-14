@@ -203,7 +203,14 @@ export default function OrderPage() {
       // Trigger M-Pesa STK Push
       try {
         const { data: stkData, error: stkError } = await supabase.functions.invoke("mpesa-stk-push", {
-          body: { orderId: order.id, phone: phone.trim(), amount: total },
+          body: {
+            orderId: order.id,
+            phone: phone.trim(),
+            amount: total,
+            packageName: isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", "),
+            fullName: name.trim(),
+            email: email.trim(),
+          },
         });
 
         if (stkError) {
@@ -356,7 +363,14 @@ export default function OrderPage() {
                                 setRetryingPayment(true);
                                 try {
                                   const { data: stkData, error: stkError } = await supabase.functions.invoke("mpesa-stk-push", {
-                                    body: { orderId, phone: phone.trim(), amount: total },
+                                    body: {
+                                      orderId,
+                                      phone: phone.trim(),
+                                      amount: total,
+                                      packageName: isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", "),
+                                      fullName: name.trim(),
+                                      email: email.trim(),
+                                    },
                                   });
                                   if (!stkError && stkData?.ResponseCode === "0") {
                                     setStkSent(true);
