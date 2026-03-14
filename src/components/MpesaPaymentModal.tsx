@@ -140,6 +140,8 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
           amount: pkg.amount,
           packageName: pkg.label,
           orderId: generatedOrderId,
+          fullName: fullName.trim(),
+          email: email.trim(),
         }),
       });
 

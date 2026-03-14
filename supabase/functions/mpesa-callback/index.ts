@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
     } else {
       console.log(`Payment failed. ResultCode: ${ResultCode}`);
       await supabase.from("orders").update({
-        status: "payment_failed",
+        status: "failed",
       }).eq("mpesa_checkout_request_id" as any, CheckoutRequestID);
     }
 
