@@ -44,6 +44,29 @@
   })();
   </script>
   <!--End of Tawk.to Script-->
+    <!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9NRGTZPQGK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-9NRGTZPQGK');
+</script>
+```
+
+---
+
+## So it should look like:
+```
+45  })();
+46  </script>
+47  <!--End of Tawk.to Script-->
+48  <!-- Google Analytics -->         ← NEW
+49  <script async src="...">          ← NEW
+50  <script>                          ← NEW
+51    gtag code here...               ← NEW
+52  </script>                         ← NEW
+53  </head>                           ← moves down
   </head>
   <body>
     <div id="root"></div>
