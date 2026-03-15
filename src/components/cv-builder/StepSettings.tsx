@@ -14,11 +14,14 @@ const FORMATS = [
 ];
 
 const MARKETS = [
-  { id: "kenya", label: "🇰🇪 Kenya Local", desc: "Photo, DOB, marital status, nationality included" },
-  { id: "gulf", label: "🇶🇦 Gulf (Qatar/UAE/Saudi)", desc: "Photo, DOB, religion, passport, nationality required" },
-  { id: "uk-europe", label: "🇬🇧 UK / Europe", desc: "No photo, no DOB, no religion — anti-discrimination laws" },
-  { id: "australia-canada", label: "🇦🇺 Australia / Canada", desc: "No personal details, LinkedIn, 2-page max" },
-  { id: "usa", label: "🇺🇸 USA", desc: "No photo, 1-page preferred, called 'Resume'" },
+  { id: "kenya", label: "🇰🇪 Kenya", desc: "Photo, DOB, marital status, nationality, references included" },
+  { id: "uae", label: "🇦🇪 UAE / Dubai", desc: "Photo, DOB, visa status, nationality — Gulf recruiter standards" },
+  { id: "qatar", label: "🇶🇦 Qatar / Gulf", desc: "Structured format with personal details, religion, passport info" },
+  { id: "europe", label: "🇪🇺 Europe", desc: "No photo, no DOB — privacy-first, Europass-compatible" },
+  { id: "australia", label: "🇦🇺 Australia", desc: "Achievement-driven, no personal details, results-focused" },
+  { id: "uk", label: "🇬🇧 United Kingdom", desc: "Concise, achievement-focused, max 2 pages, British English" },
+  { id: "usa", label: "🇺🇸 United States", desc: "Metrics-driven resume, 1-2 pages, American English" },
+  { id: "africa", label: "🌍 Africa (Pan-African)", desc: "References, multilingual skills, cross-border experience" },
 ];
 
 const TIER_ICONS: Record<string, React.ElementType> = {
@@ -92,15 +95,15 @@ export default function StepSettings({ data, onChange }: Props) {
 
       {/* Target Market */}
       <div className="space-y-3">
-        <Label>Target Market</Label>
-        <p className="text-xs text-muted-foreground">This auto-adjusts which personal details appear on your CV.</p>
-        <div className="space-y-2">
+        <Label>Target Job Market</Label>
+        <p className="text-xs text-muted-foreground">Your CV will be automatically adapted to match regional recruiter expectations.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {MARKETS.map((m) => (
             <button
               key={m.id}
               onClick={() => onChange({ targetMarket: m.id })}
-              className={`w-full text-left rounded-xl border p-3 sm:p-4 transition-all ${
-                data.targetMarket === m.id ? "border-primary bg-primary/10" : "border-border bg-card hover:border-primary/30"
+              className={`text-left rounded-xl border p-3 sm:p-4 transition-all ${
+                data.targetMarket === m.id ? "border-primary bg-primary/10 ring-1 ring-primary/30" : "border-border bg-card hover:border-primary/30"
               }`}
             >
               <span className="text-sm font-semibold">{m.label}</span>
