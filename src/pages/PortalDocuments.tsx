@@ -43,13 +43,69 @@ export default function PortalDocuments() {
       .replace(/\n/g, '<br>');
   };
 
+  const execDocStyles = `
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    @page { margin: 0.75in; }
+    body {
+      font-family: 'Inter', 'Helvetica', 'Arial', sans-serif;
+      font-size: 11pt;
+      line-height: 1.65;
+      color: #1a1a1a;
+      max-width: 750px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+    h1 {
+      font-size: 22pt;
+      font-weight: 700;
+      color: #0f1b2d;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      border-bottom: 3px solid #c9a94e;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+    h2 {
+      font-size: 12pt;
+      font-weight: 700;
+      color: #0f1b2d;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-bottom: 2px solid #c9a94e;
+      padding-bottom: 4px;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    h3 {
+      font-size: 11pt;
+      font-weight: 600;
+      color: #0f1b2d;
+      margin-bottom: 4px;
+    }
+    strong { color: #0f1b2d; }
+    ul { padding-left: 16px; margin: 6px 0; }
+    li { margin-bottom: 3px; }
+    li::marker { color: #c9a94e; }
+    p { margin-bottom: 8px; }
+  `;
+
   const downloadDocument = (doc: Doc, format: "pdf" | "docx") => {
     const label = doc.service_type.replace(/\s+/g, "_");
+    const htmlContent = markdownToHtml(doc.content);
+
     if (format === "docx") {
       const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
 <head><meta charset="utf-8"><title>${doc.service_type}</title>
-<style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.6;color:#222}</style>
-</head><body>${markdownToHtml(doc.content)}</body></html>`;
+<style>
+body{font-family:'Calibri','Helvetica',sans-serif;font-size:11pt;line-height:1.65;color:#1a1a1a}
+h1{font-size:22pt;font-weight:bold;color:#0f1b2d;text-transform:uppercase;letter-spacing:0.03em;border-bottom:3px solid #c9a94e;padding-bottom:8px}
+h2{font-size:12pt;font-weight:bold;color:#0f1b2d;text-transform:uppercase;letter-spacing:0.1em;border-bottom:2px solid #c9a94e;padding-bottom:4px;margin-top:18px}
+h3{font-size:11pt;font-weight:600;color:#0f1b2d}
+strong{color:#0f1b2d}
+ul{padding-left:16px}
+li{margin-bottom:3px}
+</style>
+</head><body>${htmlContent}</body></html>`;
       const blob = new Blob([html], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -61,10 +117,10 @@ export default function PortalDocuments() {
       const printWindow = window.open("", "_blank");
       if (!printWindow) return;
       printWindow.document.write(`<!DOCTYPE html><html><head><title>${doc.service_type}</title>
-<style>@page{margin:1in}body{font-family:Georgia,serif;font-size:11pt;line-height:1.7;color:#111;max-width:700px;margin:0 auto;padding:40px}h1{font-size:18pt}h2{font-size:14pt;border-bottom:1px solid #ddd;padding-bottom:4px}</style>
-</head><body>${markdownToHtml(doc.content)}</body></html>`);
+<style>${execDocStyles}</style>
+</head><body>${htmlContent}</body></html>`);
       printWindow.document.close();
-      setTimeout(() => { printWindow.print(); }, 400);
+      setTimeout(() => { printWindow.print(); }, 500);
     }
   };
 
