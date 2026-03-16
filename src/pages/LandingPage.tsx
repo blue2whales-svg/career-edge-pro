@@ -257,6 +257,9 @@ export default function LandingPage() {
         </div>
       </footer>
 
+      {/* Live Activity Popup */}
+      <LiveActivityPopup />
+
       {/* Fixed WhatsApp Button */}
       <a
         href="https://wa.me/254793919962"

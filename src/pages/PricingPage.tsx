@@ -234,6 +234,10 @@ export default function PricingPage() {
                 Get Started Now <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
+            <div className="mt-6 flex justify-center">
+              <GuaranteeBadge />
+            </div>
+            <SecurityBadges className="mt-4" />
           </motion.div>
         </div>
       </section>
