@@ -124,6 +124,9 @@ export default function PricingPage() {
           >
             📱 Pay instantly via M-Pesa
           </motion.p>
+          <div className="mt-6 flex justify-center">
+            <SecurityBadges />
+          </div>
         </div>
       </section>
 
