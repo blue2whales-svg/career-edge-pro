@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FileText, Copy, Download, RefreshCw, Edit3, Save, ArrowRight } from "lucide-react";
+import { FileText, Copy, Download, RefreshCw, Edit3, Save, ArrowRight, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,6 +31,7 @@ export default function CoverLetterPage() {
   const [editing, setEditing] = useState(false);
   const [editedLetter, setEditedLetter] = useState("");
   const [paymentOpen, setPaymentOpen] = useState(false);
+  const [isPaid, setIsPaid] = useState(false);
 
   const generate = async () => {
     if (!jobTitle || !company || !name || !experience) {
@@ -54,11 +55,13 @@ export default function CoverLetterPage() {
   };
 
   const copyToClipboard = () => {
+    if (!isPaid) { setPaymentOpen(true); return; }
     navigator.clipboard.writeText(editing ? editedLetter : letter);
     toast.success("Copied to clipboard!");
   };
 
-  const downloadPDF = () => {
+  const downloadFile = () => {
+    if (!isPaid) { setPaymentOpen(true); return; }
     const content = editing ? editedLetter : letter;
     const blob = new Blob([content], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
@@ -70,9 +73,16 @@ export default function CoverLetterPage() {
     toast.success("Downloaded!");
   };
 
+  // Get preview of letter (first 2 paragraphs)
+  const getLetterPreview = (text: string) => {
+    if (isPaid) return text;
+    const paragraphs = text.split("\n\n");
+    return paragraphs.slice(0, 2).join("\n\n");
+  };
+
   return (
     <PageLayout>
-      <MpesaPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage="professional" />
+      <MpesaPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage="cover-letter" />
       <section className="relative z-10 pt-16 sm:pt-24 pb-10 px-4">
         <div className="container max-w-6xl mx-auto">
           <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={0}
@@ -85,6 +95,7 @@ export default function CoverLetterPage() {
           </motion.p>
 
           <div className="grid lg:grid-cols-5 gap-6">
+            {/* Form - fully editable */}
             <div className="lg:col-span-2 rounded-2xl border border-border bg-card p-5 sm:p-6 space-y-4">
               <div><Label>Job Title *</Label><Input value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} placeholder="Software Engineer" className="mt-1" /></div>
               <div><Label>Company Name *</Label><Input value={company} onChange={(e) => setCompany(e.target.value)} placeholder="Google" className="mt-1" /></div>
@@ -121,52 +132,108 @@ export default function CoverLetterPage() {
               </Button>
             </div>
 
-            <div className="lg:col-span-3 rounded-2xl border border-border bg-card p-5 sm:p-6 min-h-[400px]">
-              {!letter && !loading && (
-                <div className="flex flex-col items-center justify-center h-full text-center py-20 border-2 border-dashed border-border/50 rounded-xl">
-                  <FileText className="h-12 w-12 text-muted-foreground/30 mb-4" />
-                  <p className="text-muted-foreground text-sm">Your cover letter will appear here</p>
-                </div>
-              )}
-              {loading && (
-                <div className="space-y-3 animate-pulse">
-                  {[...Array(12)].map((_, i) => (
-                    <div key={i} className="h-4 bg-muted rounded" style={{ width: `${60 + Math.random() * 40}%` }} />
-                  ))}
-                </div>
-              )}
-              {letter && !loading && (
-                <div>
-                  <div className="flex items-center gap-2 mb-4 flex-wrap">
-                    <span className="text-xs bg-green-500/15 text-green-500 border border-green-500/30 px-2 py-0.5 rounded-full">✅ Generated</span>
-                    <div className="flex gap-1.5 ml-auto">
-                      <Button size="sm" variant="outline" onClick={() => setEditing(!editing)} className="text-xs gap-1">
-                        {editing ? <Save className="h-3 w-3" /> : <Edit3 className="h-3 w-3" />}
-                        {editing ? "Save" : "Edit"}
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={copyToClipboard} className="text-xs gap-1"><Copy className="h-3 w-3" /> Copy</Button>
-                      <Button size="sm" variant="outline" onClick={downloadPDF} className="text-xs gap-1"><Download className="h-3 w-3" /> Download</Button>
-                      <Button size="sm" variant="outline" onClick={generate} className="text-xs gap-1"><RefreshCw className="h-3 w-3" /> Regenerate</Button>
-                    </div>
+            {/* Preview panel with payment gate */}
+            <div className="lg:col-span-3 space-y-4">
+              <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 min-h-[400px]">
+                {!letter && !loading && (
+                  <div className="flex flex-col items-center justify-center h-full text-center py-20 border-2 border-dashed border-border/50 rounded-xl">
+                    <FileText className="h-12 w-12 text-muted-foreground/30 mb-4" />
+                    <p className="text-muted-foreground text-sm">Your cover letter will appear here</p>
                   </div>
-                  {editing ? (
-                    <Textarea value={editedLetter} onChange={(e) => setEditedLetter(e.target.value)} rows={20} className="font-serif text-sm leading-relaxed" />
-                  ) : (
-                    <div className="bg-white/5 rounded-xl p-6 font-serif text-sm leading-relaxed whitespace-pre-wrap">{letter}</div>
-                  )}
-                </div>
+                )}
+                {loading && (
+                  <div className="space-y-3 animate-pulse">
+                    {[...Array(12)].map((_, i) => (
+                      <div key={i} className="h-4 bg-muted rounded" style={{ width: `${60 + Math.random() * 40}%` }} />
+                    ))}
+                  </div>
+                )}
+                {letter && !loading && (
+                  <div>
+                    <div className="flex items-center gap-2 mb-4 flex-wrap">
+                      <span className="text-xs bg-green-500/15 text-green-500 border border-green-500/30 px-2 py-0.5 rounded-full">✅ Generated</span>
+                      {!isPaid && (
+                        <span className="text-xs bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full flex items-center gap-1">
+                          <Lock className="h-3 w-3" /> Preview
+                        </span>
+                      )}
+                      <div className="flex gap-1.5 ml-auto">
+                        {isPaid && (
+                          <Button size="sm" variant="outline" onClick={() => setEditing(!editing)} className="text-xs gap-1">
+                            {editing ? <Save className="h-3 w-3" /> : <Edit3 className="h-3 w-3" />}
+                            {editing ? "Save" : "Edit"}
+                          </Button>
+                        )}
+                        <Button size="sm" variant="outline" onClick={copyToClipboard} className="text-xs gap-1">
+                          {!isPaid && <Lock className="h-3 w-3" />}
+                          <Copy className="h-3 w-3" /> Copy
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={downloadFile} className="text-xs gap-1">
+                          {!isPaid && <Lock className="h-3 w-3" />}
+                          <Download className="h-3 w-3" /> Download
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={generate} className="text-xs gap-1"><RefreshCw className="h-3 w-3" /> Regenerate</Button>
+                      </div>
+                    </div>
+
+                    {isPaid ? (
+                      editing ? (
+                        <Textarea value={editedLetter} onChange={(e) => setEditedLetter(e.target.value)} rows={20} className="font-serif text-sm leading-relaxed" />
+                      ) : (
+                        <div className="bg-white/5 rounded-xl p-6 font-serif text-sm leading-relaxed whitespace-pre-wrap">{letter}</div>
+                      )
+                    ) : (
+                      /* Gated preview */
+                      <div
+                        className="relative"
+                        style={{ userSelect: "none", WebkitUserSelect: "none" }}
+                        onContextMenu={(e) => e.preventDefault()}
+                      >
+                        <div className="bg-white/5 rounded-xl p-6 font-serif text-sm leading-relaxed whitespace-pre-wrap">
+                          {getLetterPreview(letter)}
+                        </div>
+                        {/* Blur fade */}
+                        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-card via-card/80 to-transparent rounded-b-xl" />
+                        <div className="absolute bottom-4 left-0 right-0 flex justify-center">
+                          <div className="flex items-center gap-2 bg-muted/80 border border-border text-xs px-4 py-2 rounded-full">
+                            <Lock className="h-3.5 w-3.5 text-primary" />
+                            <span className="text-muted-foreground">Unlock full cover letter after payment</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Unlock CTA (unpaid) */}
+              {letter && !isPaid && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="rounded-2xl border border-primary/20 p-6"
+                  style={{ background: "linear-gradient(135deg, hsl(222 47% 6%), hsl(222 40% 9%))" }}
+                >
+                  <h3 className="font-serif font-bold text-base mb-2">Unlock Your Full Cover Letter</h3>
+                  <p className="text-xs text-muted-foreground mb-4">Get the complete letter with all sections, plus download as PDF and editable DOCX.</p>
+                  <Button onClick={() => setPaymentOpen(true)} className="w-full h-11 font-bold border-0 bg-gradient-brand gold-shimmer text-sm">
+                    Unlock Now — Pay via M-Pesa <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                  <p className="text-[10px] text-muted-foreground text-center mt-3">Paybill 4561075 · Instant delivery</p>
+                </motion.div>
+              )}
+
+              {/* Upsell after payment */}
+              {letter && isPaid && (
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-4 rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center">
+                  <p className="text-sm text-muted-foreground mb-3">Want a human expert to perfect this?</p>
+                  <Button onClick={() => setPaymentOpen(true)} className="bg-gradient-brand border-0 font-semibold gold-shimmer">
+                    Upgrade to Professional — KSh 5,500 <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </motion.div>
               )}
             </div>
           </div>
-
-          {letter && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center">
-              <p className="text-sm text-muted-foreground mb-3">Want a human expert to perfect this?</p>
-              <Button onClick={() => setPaymentOpen(true)} className="bg-gradient-brand border-0 font-semibold gold-shimmer">
-                Upgrade to Professional — KSh 5,500 <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </motion.div>
-          )}
         </div>
       </section>
     </PageLayout>

@@ -15,6 +15,8 @@ import StepLanguages from "@/components/cv-builder/StepLanguages";
 import StepAdditional from "@/components/cv-builder/StepAdditional";
 import StepSettings from "@/components/cv-builder/StepSettings";
 import CVPreview from "@/components/cv-builder/CVPreview";
+import { PremiumUnlockCard } from "@/components/cv-builder/PremiumUnlockCard";
+import MpesaPaymentModal from "@/components/MpesaPaymentModal";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const STEPS = [
@@ -36,10 +38,13 @@ export default function CVBuilderPage() {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<CVData>(initialCVData);
   const [showPreview, setShowPreview] = useState(false);
+  const [isPaid, setIsPaid] = useState(false);
+  const [paymentOpen, setPaymentOpen] = useState(false);
   const isMobile = useIsMobile();
 
   const progress = ((step + 1) / STEPS.length) * 100;
   const selectedTier = data.experienceLevel ? PRICING_TIERS[data.experienceLevel] : null;
+  const defaultPackage = data.experienceLevel === "executive" ? "executive" : data.experienceLevel === "mid" ? "professional" : "starter";
 
   const update = (updates: Partial<CVData>) => setData((prev) => ({ ...prev, ...updates }));
 
@@ -59,6 +64,12 @@ export default function CVBuilderPage() {
 
   return (
     <PageLayout>
+      <MpesaPaymentModal
+        open={paymentOpen}
+        onClose={() => setPaymentOpen(false)}
+        defaultPackage={defaultPackage}
+      />
+
       <section className="relative z-10 pt-4 sm:pt-6 pb-32 sm:pb-24 px-3 sm:px-4">
         <div className="container max-w-7xl mx-auto">
           {/* Header */}
@@ -96,7 +107,7 @@ export default function CVBuilderPage() {
           {/* Progress */}
           <Progress value={progress} className="h-1 sm:h-1.5 mb-3 sm:mb-4" />
 
-          {/* Step indicators - horizontal scroll on mobile */}
+          {/* Step indicators */}
           <div className="flex gap-1 mb-4 sm:mb-6 overflow-x-auto pb-1 -mx-3 px-3 sm:mx-0 sm:px-0 scrollbar-hide">
             {STEPS.map((s, i) => {
               const Icon = s.icon;
@@ -120,7 +131,7 @@ export default function CVBuilderPage() {
             })}
           </div>
 
-          {/* Main content - responsive grid */}
+          {/* Main content */}
           <div className="grid lg:grid-cols-5 xl:grid-cols-2 gap-4 sm:gap-6">
             {/* Form panel */}
             {(!isMobile || !showPreview) && (
@@ -156,8 +167,13 @@ export default function CVBuilderPage() {
                       Next <ArrowRight className="h-4 w-4 ml-1" />
                     </Button>
                   ) : (
-                    <Button className="bg-gradient-brand border-0" size={isMobile ? "sm" : "default"}>
-                      Generate CV {selectedTier && <span className="ml-1">• {formatKES(selectedTier.price)}</span>}
+                    <Button
+                      onClick={() => setPaymentOpen(true)}
+                      className="bg-gradient-brand border-0"
+                      size={isMobile ? "sm" : "default"}
+                    >
+                      {isPaid ? "Download CV" : "Generate CV"}
+                      {selectedTier && !isPaid && <span className="ml-1">• {formatKES(selectedTier.price)}</span>}
                       <ArrowRight className="h-4 w-4 ml-1" />
                     </Button>
                   )}
@@ -165,15 +181,20 @@ export default function CVBuilderPage() {
               </div>
             )}
 
-            {/* Preview panel */}
+            {/* Preview panel + Unlock card */}
             {(!isMobile || showPreview) && (
-              <div className="lg:col-span-2 xl:col-span-1 rounded-2xl border border-border bg-muted/30 p-3 sm:p-4 lg:sticky lg:top-4 lg:max-h-[calc(100vh-100px)] overflow-y-auto">
-                <p className="text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3 text-center font-medium uppercase tracking-wider">
-                  Live Preview
-                </p>
-                <div className="transform-gpu origin-top scale-[0.85] sm:scale-90 lg:scale-100">
-                  <CVPreview data={data} />
+              <div className="lg:col-span-2 xl:col-span-1 space-y-4 lg:sticky lg:top-4 lg:max-h-[calc(100vh-100px)] overflow-y-auto">
+                <div className="rounded-2xl border border-border bg-muted/30 p-3 sm:p-4">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3 text-center font-medium uppercase tracking-wider">
+                    Live Preview {!isPaid && <span className="text-primary">· Protected</span>}
+                  </p>
+                  <div className="transform-gpu origin-top scale-[0.85] sm:scale-90 lg:scale-100">
+                    <CVPreview data={data} isPaid={isPaid} />
+                  </div>
                 </div>
+
+                {/* Premium unlock card */}
+                <PremiumUnlockCard isPaid={isPaid} onUnlock={() => setPaymentOpen(true)} />
               </div>
             )}
           </div>
@@ -204,8 +225,8 @@ export default function CVBuilderPage() {
                   Next <ArrowRight className="h-3.5 w-3.5 ml-1" />
                 </Button>
               ) : (
-                <Button className="bg-gradient-brand border-0" size="sm">
-                  Generate CV <ArrowRight className="h-3.5 w-3.5 ml-1" />
+                <Button onClick={() => setPaymentOpen(true)} className="bg-gradient-brand border-0" size="sm">
+                  {isPaid ? "Download" : "Generate CV"} <ArrowRight className="h-3.5 w-3.5 ml-1" />
                 </Button>
               )}
             </div>
