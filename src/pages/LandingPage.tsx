@@ -170,8 +170,14 @@ export default function LandingPage() {
       {/* Pricing Preview */}
       <PricingPreview />
 
+      {/* Before & After */}
+      <BeforeAfterSection />
+
       {/* Testimonials */}
-      <TestimonialsSection />
+      <TrustTestimonials />
+
+      {/* Countries Served */}
+      <CountriesServed />
 
       {/* Final CTA */}
       <section className="relative z-10 py-24 px-4">
