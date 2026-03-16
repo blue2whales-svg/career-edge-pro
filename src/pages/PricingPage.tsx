@@ -3,6 +3,8 @@ import { ArrowRight, Check, Zap, Star, Crown, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
+import { GuaranteeBadge } from "@/components/landing/GuaranteeBadge";
+import { SecurityBadges } from "@/components/landing/SecurityBadges";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
