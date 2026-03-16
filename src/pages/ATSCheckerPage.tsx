@@ -1,234 +1,192 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { Upload, FileText, Check, Copy, Search, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Progress } from "@/components/ui/progress";
-import PageLayout from "@/components/PageLayout";
-import MpesaPaymentModal from "@/components/MpesaPaymentModal";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { Link } from "react-router-dom";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.5 } }),
+const SUPABASE_URL = "https://wspugvdwodqdlyamxzxj.supabase.co/functions/v1/ats-checker";
+
+const gradeColor = (grade) => {
+  if (grade === "A") return "text-green-500";
+  if (grade === "B") return "text-blue-500";
+  if (grade === "C") return "text-yellow-500";
+  return "text-red-500";
 };
 
-function ScoreRing({ score }: { score: number }) {
-  const [animated, setAnimated] = useState(0);
-  const radius = 70;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (animated / 100) * circumference;
-  const color = score >= 90 ? "#22c55e" : score >= 75 ? "#3b82f6" : score >= 50 ? "#eab308" : "#ef4444";
-  const label = score >= 90 ? "🏆 Excellent CV" : score >= 75 ? "✅ Good — Minor Tweaks" : score >= 50 ? "🔶 Room for Improvement" : "⚠️ Needs Significant Work";
+const statusColor = (status) => {
+  if (status === "good") return "bg-green-500";
+  if (status === "warning") return "bg-yellow-500";
+  return "bg-red-500";
+};
 
-  useState(() => { setTimeout(() => setAnimated(score), 200); });
-
-  return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="relative w-[160px] h-[160px]">
-        <svg width="160" height="160" viewBox="0 0 160 160">
-          <circle cx="80" cy="80" r={radius} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="10" />
-          <circle cx="80" cy="80" r={radius} fill="none" stroke={color} strokeWidth="10" strokeLinecap="round"
-            strokeDasharray={circumference} strokeDashoffset={offset} transform="rotate(-90 80 80)"
-            style={{ transition: "stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1)" }} />
-        </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-4xl font-bold" style={{ color }}>{animated}</span>
-          <span className="text-xs text-muted-foreground">/100</span>
-        </div>
-      </div>
-      <p className="text-sm font-semibold">{label}</p>
-    </div>
-  );
-}
-
-export default function ATSCheckerPage() {
+export default function ATSChecker() {
   const [cvText, setCvText] = useState("");
   const [jobDescription, setJobDescription] = useState("");
-  const [showJobDesc, setShowJobDesc] = useState(false);
-  const [fileName, setFileName] = useState("");
+  const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
-  const [paymentOpen, setPaymentOpen] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (!file.name.match(/\.(pdf|docx|txt)$/i)) {
-      toast.error("Please upload PDF, DOCX, or TXT files only");
-      return;
-    }
-    setFileName(file.name);
-    const text = await file.text();
-    setCvText(text);
-    toast.success(`${file.name} loaded`);
-  };
-
-  const analyze = async () => {
-    if (cvText.length < 100) {
-      toast.error("Please provide more CV content (at least 100 characters)");
+  const handleAnalyze = async () => {
+    if (!cvText.trim() || cvText.trim().length < 50) {
+      setError("Please paste at least 50 characters of your CV.");
       return;
     }
     setLoading(true);
+    setError("");
     setResult(null);
+
     try {
-      const { data, error } = await supabase.functions.invoke("ai-generate", {
-        body: { type: "ats-scan", data: { cvText, jobDescription: showJobDesc ? jobDescription : "" } },
+      const res = await fetch(SUPABASE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cvText, jobDescription }),
       });
-      if (error) throw error;
-      const parsed = JSON.parse(data.content);
-      setResult(parsed);
-      toast.success("Analysis complete!");
-    } catch (e: any) {
-      toast.error(e.message || "Analysis failed. Please try again.");
+
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setResult(data);
+    } catch (err) {
+      setError(err.message || "Something went wrong. Try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <PageLayout>
-      <MpesaPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage="professional" />
-      <section className="relative z-10 pt-16 sm:pt-24 pb-10 px-4">
-        <div className="container max-w-4xl mx-auto">
-          <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={0}
-            className="text-3xl sm:text-5xl font-serif font-bold mb-3 text-center">
-            ATS Resume <span className="text-gradient">Score Checker</span>
-          </motion.h1>
-          <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1}
-            className="rounded-xl p-3 mb-8 text-center text-sm" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)" }}>
-            📊 75% of CVs are rejected by ATS before a human sees them
-          </motion.div>
+    <div className="min-h-screen bg-background p-6 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold mb-1">ATS Checker</h1>
+      <p className="text-muted-foreground mb-6">
+        Get an instant AI-powered ATS score for your CV — free, powered by Gemini.
+      </p>
 
-          {!result && (
-            <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2} className="rounded-2xl border border-border bg-card p-6">
-              <Tabs defaultValue="paste">
-                <TabsList className="mb-4">
-                  <TabsTrigger value="upload">📄 Upload File</TabsTrigger>
-                  <TabsTrigger value="paste">✏️ Paste Text</TabsTrigger>
-                </TabsList>
-                <TabsContent value="upload">
-                  <label className="flex flex-col items-center justify-center border-2 border-dashed border-border/50 rounded-xl p-12 cursor-pointer hover:border-primary/30 transition-colors">
-                    <Upload className="h-10 w-10 text-muted-foreground/40 mb-3" />
-                    <p className="text-sm text-muted-foreground mb-1">Drag & drop or click to upload</p>
-                    <p className="text-xs text-muted-foreground">PDF, DOCX, TXT</p>
-                    {fileName && <p className="text-xs text-green-500 mt-2">✅ {fileName}</p>}
-                    <input type="file" accept=".pdf,.docx,.txt" onChange={handleFileUpload} className="hidden" />
-                  </label>
-                </TabsContent>
-                <TabsContent value="paste">
-                  <Textarea value={cvText} onChange={(e) => setCvText(e.target.value)} rows={16} placeholder="Paste your CV text here..." />
-                  <p className={`text-xs mt-1 ${cvText.length >= 400 ? "text-green-500" : "text-muted-foreground"}`}>
-                    {cvText.length} characters {cvText.length >= 400 && "✅"}
-                  </p>
-                </TabsContent>
-              </Tabs>
+      <textarea
+        className="w-full h-48 p-3 border rounded-lg mb-3 bg-background text-foreground text-sm"
+        placeholder="Paste your full CV text here (minimum 50 characters)..."
+        value={cvText}
+        onChange={(e) => setCvText(e.target.value)}
+      />
 
-              <Collapsible open={showJobDesc} onOpenChange={setShowJobDesc} className="mt-4">
-                <CollapsibleTrigger className="text-sm text-primary hover:underline">
-                  🎯 Add target job description (improves accuracy)
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <Textarea value={jobDescription} onChange={(e) => setJobDescription(e.target.value)} rows={6} placeholder="Paste the job description..." className="mt-2" />
-                </CollapsibleContent>
-              </Collapsible>
+      <textarea
+        className="w-full h-20 p-3 border rounded-lg mb-4 bg-background text-foreground text-sm"
+        placeholder="(Optional) Paste the job description for a tailored match score..."
+        value={jobDescription}
+        onChange={(e) => setJobDescription(e.target.value)}
+      />
 
-              <Button onClick={analyze} disabled={loading || cvText.length < 100} className="w-full h-12 mt-6 font-bold border-0 bg-gradient-brand gold-shimmer">
-                {loading ? "Analyzing..." : "🔍 Analyze My CV"}
-              </Button>
-              {loading && <Progress value={65} className="mt-3 h-1.5" />}
-            </motion.div>
-          )}
+      <button
+        onClick={handleAnalyze}
+        disabled={loading}
+        className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold text-lg hover:opacity-90 disabled:opacity-50 transition-opacity"
+      >
+        {loading ? "Analyzing your CV..." : "Analyze My CV ✅"}
+      </button>
 
-          {result && (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-              <div className="rounded-2xl border border-border bg-card p-6 text-center">
-                <ScoreRing score={result.overallScore} />
-                <p className="text-sm text-muted-foreground mt-3">{result.verdict}</p>
-              </div>
+      {error && (
+        <div className="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-500 text-sm">{error}</div>
+      )}
 
-              <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
-                <h3 className="font-semibold text-sm mb-3">Detailed Breakdown</h3>
-                {Object.values(result.categories as Record<string, any>).map((cat: any, i: number) => (
-                  <div key={i} className="space-y-1">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-muted-foreground">{cat.label}</span>
-                      <span className="font-mono font-bold">{cat.score}%</span>
-                    </div>
-                    <div className="h-2 rounded-full" style={{ background: "rgba(255,255,255,0.08)" }}>
-                      <motion.div initial={{ width: 0 }} animate={{ width: `${cat.score}%` }}
-                        transition={{ delay: i * 0.1, duration: 0.8 }}
-                        className="h-full rounded-full" style={{ background: cat.score >= 75 ? "#22c55e" : cat.score >= 50 ? "#eab308" : "#ef4444" }} />
-                    </div>
-                    <p className="text-xs text-muted-foreground">{cat.feedback}</p>
+      {result && (
+        <div className="mt-8 space-y-6">
+          {/* Score Header */}
+          <div className="p-6 border rounded-xl flex items-center gap-6">
+            <div className="text-center">
+              <div className="text-6xl font-black">{result.score}</div>
+              <div className="text-sm text-muted-foreground">/100</div>
+            </div>
+            <div className="text-center">
+              <div className={`text-5xl font-black ${gradeColor(result.grade)}`}>{result.grade}</div>
+              <div className="text-sm text-muted-foreground">Grade</div>
+            </div>
+            <div className="flex-1">
+              <p className="text-muted-foreground">{result.verdict}</p>
+            </div>
+          </div>
+
+          {/* Metrics */}
+          <div className="p-6 border rounded-xl">
+            <h2 className="font-bold text-lg mb-4">Score Breakdown</h2>
+            <div className="space-y-3">
+              {result.metrics?.map((m, i) => (
+                <div key={i}>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>{m.name}</span>
+                    <span className="font-semibold">{m.score}/100</span>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div className={`h-2 rounded-full ${statusColor(m.status)}`} style={{ width: `${m.score}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Critical Issues */}
+          {result.critical?.length > 0 && (
+            <div className="p-6 border border-red-500/30 rounded-xl">
+              <h2 className="font-bold text-lg mb-3 text-red-500">⚠️ Critical Issues</h2>
+              <div className="space-y-3">
+                {result.critical.map((c, i) => (
+                  <div key={i}>
+                    <div className="font-semibold text-sm">{c.title}</div>
+                    <div className="text-muted-foreground text-sm">{c.detail}</div>
                   </div>
                 ))}
               </div>
-
-              <div className="grid sm:grid-cols-3 gap-4">
-                <div className="rounded-xl border border-green-500/20 bg-green-500/5 p-4">
-                  <h4 className="text-sm font-semibold text-green-500 mb-2">✅ Strengths</h4>
-                  <ul className="space-y-1.5 text-xs text-muted-foreground">
-                    {result.topStrengths?.map((s: string, i: number) => <li key={i}>• {s}</li>)}
-                  </ul>
-                </div>
-                <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4">
-                  <h4 className="text-sm font-semibold text-red-500 mb-2">⚠️ Issues</h4>
-                  <ul className="space-y-1.5 text-xs text-muted-foreground">
-                    {result.criticalIssues?.map((s: string, i: number) => <li key={i}>• {s}</li>)}
-                  </ul>
-                </div>
-                <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4">
-                  <h4 className="text-sm font-semibold text-blue-500 mb-2">⚡ Quick Wins</h4>
-                  <ul className="space-y-1.5 text-xs text-muted-foreground">
-                    {result.quickWins?.map((s: string, i: number) => <li key={i}>• {s}</li>)}
-                  </ul>
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-border bg-card p-6">
-                <h4 className="text-sm font-semibold mb-3">Missing Keywords</h4>
-                <div className="flex flex-wrap gap-2">
-                  {result.missingKeywords?.map((kw: string, i: number) => (
-                    <span key={i} className="text-xs px-2.5 py-1 rounded-full font-mono" style={{ background: "rgba(245,158,11,0.15)", border: "1px solid rgba(245,158,11,0.3)", color: "#f59e0b" }}>
-                      + {kw}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {result.overallScore < 75 ? (
-                <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center">
-                  <p className="text-sm mb-3">🚀 Score {result.overallScore}/100. We'll rewrite it to 90+</p>
-                  <Button onClick={() => setPaymentOpen(true)} className="bg-gradient-brand border-0 font-semibold gold-shimmer">
-                    Get CV Professionally Rewritten — KSh 5,500
-                  </Button>
-                </div>
-              ) : (
-                <div className="rounded-2xl border border-green-500/20 bg-green-500/5 p-6 text-center">
-                  <p className="text-sm mb-3">✅ Strong! Complete with a cover letter.</p>
-                  <Link to="/cover-letter">
-                    <Button className="bg-gradient-brand border-0 font-semibold">Generate AI Cover Letter →</Button>
-                  </Link>
-                </div>
-              )}
-
-              <div className="flex flex-wrap gap-2 justify-center">
-                <Button variant="outline" size="sm" onClick={() => { setResult(null); setCvText(""); }} className="text-xs gap-1">
-                  <Search className="h-3 w-3" /> Analyze Another
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => { navigator.clipboard.writeText(JSON.stringify(result, null, 2)); toast.success("Report copied!"); }} className="text-xs gap-1">
-                  <Copy className="h-3 w-3" /> Copy Report
-                </Button>
-              </div>
-            </motion.div>
+            </div>
           )}
+
+          {/* Improvements */}
+          {result.improvements?.length > 0 && (
+            <div className="p-6 border border-yellow-500/30 rounded-xl">
+              <h2 className="font-bold text-lg mb-3 text-yellow-500">💡 Improvements</h2>
+              <div className="space-y-3">
+                {result.improvements.map((item, i) => (
+                  <div key={i}>
+                    <div className="font-semibold text-sm">{item.title}</div>
+                    <div className="text-muted-foreground text-sm">{item.detail}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Strengths */}
+          {result.strengths?.length > 0 && (
+            <div className="p-6 border border-green-500/30 rounded-xl">
+              <h2 className="font-bold text-lg mb-3 text-green-500">✅ Strengths</h2>
+              <div className="space-y-3">
+                {result.strengths.map((s, i) => (
+                  <div key={i}>
+                    <div className="font-semibold text-sm">{s.title}</div>
+                    <div className="text-muted-foreground text-sm">{s.detail}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Keywords */}
+          <div className="p-6 border rounded-xl">
+            <h2 className="font-bold text-lg mb-3">🔑 Keywords</h2>
+            <div className="mb-3">
+              <div className="text-sm text-green-500 font-semibold mb-1">Found</div>
+              <div className="flex flex-wrap gap-2">
+                {result.keywords_found?.map((k, i) => (
+                  <span key={i} className="px-2 py-1 bg-green-500/10 text-green-500 rounded text-xs">
+                    {k}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div className="text-sm text-red-500 font-semibold mb-1">Missing</div>
+              <div className="flex flex-wrap gap-2">
+                {result.keywords_missing?.map((k, i) => (
+                  <span key={i} className="px-2 py-1 bg-red-500/10 text-red-500 rounded text-xs">
+                    {k}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-      </section>
-    </PageLayout>
+      )}
+    </div>
   );
 }
