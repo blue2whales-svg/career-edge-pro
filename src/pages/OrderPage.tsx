@@ -37,6 +37,19 @@ const SERVICES = [
 function formatKES(amount: number) {
   return `KES ${amount.toLocaleString()}`;
 }
+function formatPhone(phone: string): string {
+  const cleaned = phone.replace(/\D/g, "");
+  if (cleaned.startsWith("254") && cleaned.length === 12) {
+    return cleaned;
+  }
+  if (cleaned.startsWith("0") && cleaned.length === 10) {
+    return "254" + cleaned.slice(1);
+  }
+  if ((cleaned.startsWith("7") || cleaned.startsWith("1")) && cleaned.length === 9) {
+    return "254" + cleaned;
+  }
+  return cleaned;
+}
 
 const PACKAGE_MAP: Record<string, { services: string[]; label: string; price: number }> = {
   starter: { services: ["cv"], label: "Starter Package", price: 2500 },
@@ -174,7 +187,7 @@ export default function OrderPage() {
         user_id: user?.id || null,
         name: name.trim(),
         email: email.trim(),
-        phone: phone.trim() || null,
+        phone: formatPhone(phone.trim()) || null,
         services: selectedServices,
         details: allDetails,
         total_amount: total,
@@ -205,7 +218,7 @@ export default function OrderPage() {
         const { data: stkData, error: stkError } = await supabase.functions.invoke("mpesa-stk-push", {
           body: {
             orderId: order.id,
-            phone: phone.trim(),
+            phone: formatPhone(phone.trim()),
             amount: total,
             packageName: isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", "),
             fullName: name.trim(),
@@ -365,7 +378,7 @@ export default function OrderPage() {
                                   const { data: stkData, error: stkError } = await supabase.functions.invoke("mpesa-stk-push", {
                                     body: {
                                       orderId,
-                                      phone: phone.trim(),
+                                      phone: formatPhone(phone.trim()),
                                       amount: total,
                                       packageName: isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", "),
                                       fullName: name.trim(),
