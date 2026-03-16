@@ -15,6 +15,12 @@ import { PricingPreview } from "@/components/landing/PricingPreview";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { StatsBar } from "@/components/landing/StatsBar";
 import { JobsTeaser } from "@/components/landing/JobsTeaser";
+import { AnimatedStatsBar } from "@/components/landing/AnimatedStatsBar";
+import { TrustTestimonials } from "@/components/landing/TrustTestimonials";
+import { GuaranteeBadge } from "@/components/landing/GuaranteeBadge";
+import { BeforeAfterSection } from "@/components/landing/BeforeAfterSection";
+import { CountriesServed } from "@/components/landing/CountriesServed";
+import { LiveActivityPopup } from "@/components/landing/LiveActivityPopup";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -134,6 +140,9 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Animated Stats Bar */}
+      <AnimatedStatsBar />
+
       {/* Trust Bar */}
       <TrustBar />
 
@@ -161,8 +170,14 @@ export default function LandingPage() {
       {/* Pricing Preview */}
       <PricingPreview />
 
+      {/* Before & After */}
+      <BeforeAfterSection />
+
       {/* Testimonials */}
-      <TestimonialsSection />
+      <TrustTestimonials />
+
+      {/* Countries Served */}
+      <CountriesServed />
 
       {/* Final CTA */}
       <section className="relative z-10 py-24 px-4">
@@ -189,6 +204,9 @@ export default function LandingPage() {
               </Link>
             </div>
             <p className="text-xs text-muted-foreground mt-4 font-mono">Pay via M-Pesa · Satisfaction guaranteed</p>
+            <div className="mt-4 flex justify-center">
+              <GuaranteeBadge />
+            </div>
           </motion.div>
         </div>
       </section>
@@ -238,6 +256,9 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Live Activity Popup */}
+      <LiveActivityPopup />
 
       {/* Fixed WhatsApp Button */}
       <a
