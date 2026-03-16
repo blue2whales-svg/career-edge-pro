@@ -140,6 +140,9 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Animated Stats Bar */}
+      <AnimatedStatsBar />
+
       {/* Trust Bar */}
       <TrustBar />
 
