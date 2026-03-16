@@ -332,8 +332,12 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                     <Lock className="h-3 w-3" />
                     <span>Secured by Safaricom M-Pesa</span>
                   </div>
+                  <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1"><Lock className="h-3 w-3 text-primary" /> Secure M-Pesa</span>
+                    <span className="flex items-center gap-1"><ShieldCheck className="h-3 w-3 text-primary" /> SSL Protected</span>
+                    <span className="flex items-center gap-1"><Users className="h-3 w-3 text-primary" /> 2,400+ Clients</span>
+                  </div>
                   <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1"><Smartphone className="h-3 w-3" /> M-Pesa</span>
                     <span>Paybill: {PAYBILL}</span>
                   </div>
                 </div>
