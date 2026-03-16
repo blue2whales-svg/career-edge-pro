@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Lock, Smartphone, Phone, CheckCircle, AlertTriangle, Loader2, MessageCircle, Circle, Send, Clock } from "lucide-react";
+import { X, Lock, Smartphone, Phone, CheckCircle, AlertTriangle, Loader2, MessageCircle, Circle, Send, Clock, ShieldCheck, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
