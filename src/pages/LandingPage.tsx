@@ -204,6 +204,9 @@ export default function LandingPage() {
               </Link>
             </div>
             <p className="text-xs text-muted-foreground mt-4 font-mono">Pay via M-Pesa · Satisfaction guaranteed</p>
+            <div className="mt-4 flex justify-center">
+              <GuaranteeBadge />
+            </div>
           </motion.div>
         </div>
       </section>
