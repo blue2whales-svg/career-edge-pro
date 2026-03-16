@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 const SUPABASE_URL = "https://wspugvdwodqdlyamxzxj.supabase.co/functions/v1/ats-checker";
+const SUPABASE_ANON_KEY = "sb_publishable_nhGjJgV7MxzzyZLkStxzIA_DXY-lMFS";
 
 const gradeColor = (grade) => {
   if (grade === "A") return "text-green-500";
@@ -15,7 +16,7 @@ const statusColor = (status) => {
   return "bg-red-500";
 };
 
-export default function ATSChecker() {
+export default function ATSCheckerPage() {
   const [cvText, setCvText] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [result, setResult] = useState(null);
@@ -34,7 +35,10 @@ export default function ATSChecker() {
     try {
       const res = await fetch(SUPABASE_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
         body: JSON.stringify({ cvText, jobDescription }),
       });
 
@@ -83,7 +87,6 @@ export default function ATSChecker() {
 
       {result && (
         <div className="mt-8 space-y-6">
-          {/* Score Header */}
           <div className="p-6 border rounded-xl flex items-center gap-6">
             <div className="text-center">
               <div className="text-6xl font-black">{result.score}</div>
@@ -98,7 +101,6 @@ export default function ATSChecker() {
             </div>
           </div>
 
-          {/* Metrics */}
           <div className="p-6 border rounded-xl">
             <h2 className="font-bold text-lg mb-4">Score Breakdown</h2>
             <div className="space-y-3">
@@ -116,7 +118,6 @@ export default function ATSChecker() {
             </div>
           </div>
 
-          {/* Critical Issues */}
           {result.critical?.length > 0 && (
             <div className="p-6 border border-red-500/30 rounded-xl">
               <h2 className="font-bold text-lg mb-3 text-red-500">⚠️ Critical Issues</h2>
@@ -131,7 +132,6 @@ export default function ATSChecker() {
             </div>
           )}
 
-          {/* Improvements */}
           {result.improvements?.length > 0 && (
             <div className="p-6 border border-yellow-500/30 rounded-xl">
               <h2 className="font-bold text-lg mb-3 text-yellow-500">💡 Improvements</h2>
@@ -146,7 +146,6 @@ export default function ATSChecker() {
             </div>
           )}
 
-          {/* Strengths */}
           {result.strengths?.length > 0 && (
             <div className="p-6 border border-green-500/30 rounded-xl">
               <h2 className="font-bold text-lg mb-3 text-green-500">✅ Strengths</h2>
@@ -161,7 +160,6 @@ export default function ATSChecker() {
             </div>
           )}
 
-          {/* Keywords */}
           <div className="p-6 border rounded-xl">
             <h2 className="font-bold text-lg mb-3">🔑 Keywords</h2>
             <div className="mb-3">
