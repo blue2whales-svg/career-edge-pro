@@ -15,6 +15,12 @@ import { PricingPreview } from "@/components/landing/PricingPreview";
 import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { StatsBar } from "@/components/landing/StatsBar";
 import { JobsTeaser } from "@/components/landing/JobsTeaser";
+import { AnimatedStatsBar } from "@/components/landing/AnimatedStatsBar";
+import { TrustTestimonials } from "@/components/landing/TrustTestimonials";
+import { GuaranteeBadge } from "@/components/landing/GuaranteeBadge";
+import { BeforeAfterSection } from "@/components/landing/BeforeAfterSection";
+import { CountriesServed } from "@/components/landing/CountriesServed";
+import { LiveActivityPopup } from "@/components/landing/LiveActivityPopup";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
