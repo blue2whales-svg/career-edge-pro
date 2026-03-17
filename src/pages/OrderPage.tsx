@@ -1,8 +1,26 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
-  ArrowRight, Upload, FileText, Pen, Linkedin, GraduationCap,
-  Shield, Globe, Award, BookOpen, Users, Check, Loader2, X, Clock, Phone, Sparkles, RefreshCw, AlertTriangle, WifiOff
+  ArrowRight,
+  Upload,
+  FileText,
+  Pen,
+  Linkedin,
+  GraduationCap,
+  Shield,
+  Globe,
+  Award,
+  BookOpen,
+  Users,
+  Check,
+  Loader2,
+  X,
+  Clock,
+  Phone,
+  Sparkles,
+  RefreshCw,
+  AlertTriangle,
+  WifiOff,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,26 +34,98 @@ import ServiceQuestions from "@/components/order/ServiceQuestions";
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
-    opacity: 1, y: 0,
+    opacity: 1,
+    y: 0,
     transition: { delay: i * 0.08, duration: 0.5, ease: [0, 0, 0.2, 1] as const },
   }),
 };
 
 const SERVICES = [
-  { id: "cv", icon: FileText, label: "Professional CV", price: 2500, desc: "Corporate standard — clean layout trusted by HR managers" },
-  { id: "executive-cv", icon: Award, label: "Executive CV", price: 4500, desc: "C-suite ready — highlights leadership, P&L, and board experience" },
-  { id: "cover-letter", icon: Pen, label: "Cover Letter", price: 1500, desc: "Tailored to the role — compelling story that gets you shortlisted" },
-  { id: "linkedin", icon: Linkedin, label: "LinkedIn Optimisation", price: 2000, desc: "Keyword-rich profile that attracts recruiters and opportunities" },
-  { id: "personal-statement", icon: BookOpen, label: "Personal Statement", price: 3500, desc: "UCAS & postgrad ready — showcases your academic passion" },
-  { id: "scholarship", icon: GraduationCap, label: "Scholarship Essay", price: 4000, desc: "Chevening, Mastercard, DAAD — winning narratives that fund dreams" },
-  { id: "reference", icon: Users, label: "Reference Letter", price: 2000, desc: "Professional draft your referee can sign with confidence" },
-  { id: "ats-cv", icon: Shield, label: "ATS-Optimised CV", price: 3000, desc: "Beats applicant tracking systems — keyword-matched for online portals" },
-  { id: "modern-cv", icon: FileText, label: "Modern CV", price: 3000, desc: "Visual impact — contemporary design for tech, creative & startups" },
-  { id: "international-cv", icon: Globe, label: "International CV", price: 3500, desc: "Formatted for Gulf, UK, EU — adapts photo, layout & conventions" },
+  {
+    id: "cv",
+    icon: FileText,
+    label: "Professional CV",
+    price: 2500,
+    desc: "Corporate standard — clean layout trusted by HR managers",
+  },
+  {
+    id: "executive-cv",
+    icon: Award,
+    label: "Executive CV",
+    price: 4500,
+    desc: "C-suite ready — highlights leadership, P&L, and board experience",
+  },
+  {
+    id: "cover-letter",
+    icon: Pen,
+    label: "Cover Letter",
+    price: 1500,
+    desc: "Tailored to the role — compelling story that gets you shortlisted",
+  },
+  {
+    id: "linkedin",
+    icon: Linkedin,
+    label: "LinkedIn Optimisation",
+    price: 2000,
+    desc: "Keyword-rich profile that attracts recruiters and opportunities",
+  },
+  {
+    id: "personal-statement",
+    icon: BookOpen,
+    label: "Personal Statement",
+    price: 3500,
+    desc: "UCAS & postgrad ready — showcases your academic passion",
+  },
+  {
+    id: "scholarship",
+    icon: GraduationCap,
+    label: "Scholarship Essay",
+    price: 4000,
+    desc: "Chevening, Mastercard, DAAD — winning narratives that fund dreams",
+  },
+  {
+    id: "reference",
+    icon: Users,
+    label: "Reference Letter",
+    price: 2000,
+    desc: "Professional draft your referee can sign with confidence",
+  },
+  {
+    id: "ats-cv",
+    icon: Shield,
+    label: "ATS-Optimised CV",
+    price: 3000,
+    desc: "Beats applicant tracking systems — keyword-matched for online portals",
+  },
+  {
+    id: "modern-cv",
+    icon: FileText,
+    label: "Modern CV",
+    price: 3000,
+    desc: "Visual impact — contemporary design for tech, creative & startups",
+  },
+  {
+    id: "international-cv",
+    icon: Globe,
+    label: "International CV",
+    price: 3500,
+    desc: "Formatted for Gulf, UK, EU — adapts photo, layout & conventions",
+  },
+  {
+    id: "europass-cv",
+    icon: Globe,
+    label: "Europass CV",
+    price: 3000,
+    desc: "Professional Europass CV designed to European job market standards. Perfect for EU, UK and international applications.",
+  },
+  {
+    id: "europass-cover-letter",
+    icon: Globe,
+    label: "Europass Cover Letter",
+    price: 1500,
+    desc: "Professionally written Europass Cover Letter tailored to European employer expectations.",
+  },
 ];
-{ id: "europass-cv", icon: Globe, label: "Europass CV", price: 3000, desc: "Professional Europass CV designed to European job market standards. Perfect for EU, UK and international applications." },
-  { id: "europass-cover-letter", icon: Globe, label: "Europass Cover Letter", price: 1500, desc: "Professionally written Europass Cover Letter tailored to European employer expectations." },
-
 function formatKES(amount: number) {
   return `KES ${amount.toLocaleString()}`;
 }
@@ -99,7 +189,7 @@ export default function OrderPage() {
         setFormValues((prev) => ({ ...prev, cvPages: "2" }));
       }
     } else if (singleService) {
-      setSelectedServices((prev) => prev.includes(singleService) ? prev : [...prev, singleService]);
+      setSelectedServices((prev) => (prev.includes(singleService) ? prev : [...prev, singleService]));
     }
     // Pre-fill job title if coming from jobs board
     if (jobFromQuery) {
@@ -108,41 +198,34 @@ export default function OrderPage() {
   }, [searchParams]);
 
   const toggleService = (id: string) => {
-    setSelectedServices((prev) =>
-      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
-    );
+    setSelectedServices((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]));
   };
 
-  const subtotal = SERVICES.filter((s) => selectedServices.includes(s.id))
-    .reduce((sum, s) => sum + s.price, 0);
+  const subtotal = SERVICES.filter((s) => selectedServices.includes(s.id)).reduce((sum, s) => sum + s.price, 0);
   // If coming from a package, use the package price; otherwise use subtotal
   const total = isPackageMode && packageParam ? PACKAGE_MAP[packageParam].price : subtotal;
 
   const handleFormChange = (key: string, value: string) => {
-    setFormValues(prev => ({ ...prev, [key]: value }));
+    setFormValues((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files || []);
-    const valid = selected.filter(f => f.size <= 10 * 1024 * 1024);
+    const valid = selected.filter((f) => f.size <= 10 * 1024 * 1024);
     if (valid.length < selected.length) {
       toast({ title: "Some files exceed 10MB and were skipped", variant: "destructive" });
     }
-    setFiles(prev => [...prev, ...valid]);
+    setFiles((prev) => [...prev, ...valid]);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const removeFile = (index: number) => {
-    setFiles(prev => prev.filter((_, i) => i !== index));
+    setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const checkPaymentStatus = async (id: string) => {
     setPaymentChecking(true);
-    const { data } = await supabase
-      .from("orders")
-      .select("status")
-      .eq("id", id)
-      .maybeSingle();
+    const { data } = await supabase.from("orders").select("status").eq("id", id).maybeSingle();
 
     if (data?.status === "paid") {
       setPaymentConfirmed(true);
@@ -180,34 +263,38 @@ export default function OrderPage() {
     setIsSubmitting(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       // Combine all form values into details JSON
       const allDetails = JSON.stringify(formValues);
 
-      const { data: order, error } = await supabase.from("orders").insert({
-        user_id: user?.id || null,
-        name: name.trim(),
-        email: email.trim(),
-        phone: formatPhone(phone.trim()) || null,
-        services: selectedServices,
-        details: allDetails,
-        total_amount: total,
-        status: "pending",
-        job_title: formValues.jobTitle?.trim() || formValues.coverLetterRole?.trim() || null,
-        experience: formValues.experience?.trim() || null,
-        skills: formValues.skills?.trim() || null,
-        education: formValues.education?.trim() || null,
-      } as any).select().single();
+      const { data: order, error } = await supabase
+        .from("orders")
+        .insert({
+          user_id: user?.id || null,
+          name: name.trim(),
+          email: email.trim(),
+          phone: formatPhone(phone.trim()) || null,
+          services: selectedServices,
+          details: allDetails,
+          total_amount: total,
+          status: "pending",
+          job_title: formValues.jobTitle?.trim() || formValues.coverLetterRole?.trim() || null,
+          experience: formValues.experience?.trim() || null,
+          skills: formValues.skills?.trim() || null,
+          education: formValues.education?.trim() || null,
+        } as any)
+        .select()
+        .single();
 
       if (error) throw error;
 
       if (files.length > 0) {
         for (const file of files) {
           const filePath = `${order.id}/${Date.now()}-${file.name}`;
-          const { error: uploadError } = await supabase.storage
-            .from("order-documents")
-            .upload(filePath, file);
+          const { error: uploadError } = await supabase.storage.from("order-documents").upload(filePath, file);
           if (uploadError) console.error("Upload error:", uploadError);
         }
       }
@@ -231,7 +318,10 @@ export default function OrderPage() {
         if (stkError) {
           console.error("STK push error:", stkError);
           setPaymentError("network");
-          toast({ title: "Could not reach the payment service. Use the manual M-Pesa option below.", variant: "destructive" });
+          toast({
+            title: "Could not reach the payment service. Use the manual M-Pesa option below.",
+            variant: "destructive",
+          });
         } else if (stkData?.ResponseCode === "0") {
           setStkSent(true);
           setPaymentError(null);
@@ -241,10 +331,16 @@ export default function OrderPage() {
           const errorCode = stkData?.errorCode || "";
           if (errorCode.includes("1001") || errorCode.includes("credentials")) {
             setPaymentError("credentials");
-            toast({ title: "Payment service configuration issue. Please pay manually via M-Pesa below.", variant: "destructive" });
+            toast({
+              title: "Payment service configuration issue. Please pay manually via M-Pesa below.",
+              variant: "destructive",
+            });
           } else if (errorCode.includes("500.003") || errorCode.includes("busy")) {
             setPaymentError("network");
-            toast({ title: "M-Pesa is busy right now. Please retry in a moment or pay manually.", variant: "destructive" });
+            toast({
+              title: "M-Pesa is busy right now. Please retry in a moment or pay manually.",
+              variant: "destructive",
+            });
           } else {
             setPaymentError("generic");
             toast({ title: "M-Pesa request failed. Please try again or pay manually.", variant: "destructive" });
@@ -261,7 +357,6 @@ export default function OrderPage() {
 
       // Trigger AI document generation (background)
       supabase.functions.invoke("generate-cv", { body: { orderId: order.id } }).catch(console.error);
-
     } catch (error: any) {
       console.error("Order error:", error);
       toast({ title: "Something went wrong", description: error.message, variant: "destructive" });
@@ -284,7 +379,9 @@ export default function OrderPage() {
                   <h1 className="text-3xl sm:text-5xl font-serif font-bold mb-4">
                     Payment <span className="text-gradient">Confirmed!</span>
                   </h1>
-                  <p className="text-sm text-muted-foreground mb-2">Your AI-powered documents are being generated now!</p>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Your AI-powered documents are being generated now!
+                  </p>
                   <p className="text-sm font-mono text-primary mb-8">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
 
                   <div className="rounded-xl border border-border bg-card p-6 text-left mb-8">
@@ -307,7 +404,9 @@ export default function OrderPage() {
 
                   <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 mb-6 text-left">
                     <h3 className="font-semibold text-sm mb-1">🚀 Your CV is ready — now put it to work!</h3>
-                    <p className="text-xs text-muted-foreground">Browse open roles and apply instantly with your new professional CV.</p>
+                    <p className="text-xs text-muted-foreground">
+                      Browse open roles and apply instantly with your new professional CV.
+                    </p>
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -340,13 +439,15 @@ export default function OrderPage() {
 
                   {/* Contextual error banner */}
                   {paymentError && (
-                    <div className={`rounded-xl border p-4 text-left mb-6 ${
-                      paymentError === "credentials"
-                        ? "border-destructive/30 bg-destructive/5"
-                        : paymentError === "network"
-                        ? "border-amber-500/30 bg-amber-500/5"
-                        : "border-muted bg-muted/30"
-                    }`}>
+                    <div
+                      className={`rounded-xl border p-4 text-left mb-6 ${
+                        paymentError === "credentials"
+                          ? "border-destructive/30 bg-destructive/5"
+                          : paymentError === "network"
+                            ? "border-amber-500/30 bg-amber-500/5"
+                            : "border-muted bg-muted/30"
+                      }`}
+                    >
                       <div className="flex items-start gap-3">
                         {paymentError === "network" ? (
                           <WifiOff className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
@@ -358,15 +459,15 @@ export default function OrderPage() {
                             {paymentError === "credentials"
                               ? "Automatic payment unavailable"
                               : paymentError === "network"
-                              ? "M-Pesa is temporarily busy"
-                              : "Payment prompt failed"}
+                                ? "M-Pesa is temporarily busy"
+                                : "Payment prompt failed"}
                           </p>
                           <p className="text-xs text-muted-foreground">
                             {paymentError === "credentials"
                               ? "The automatic M-Pesa prompt couldn't be sent due to a configuration issue. Please use the manual payment steps below — your order is safe."
                               : paymentError === "network"
-                              ? "Safaricom's servers are experiencing high traffic. You can retry in a moment or pay manually below."
-                              : "Something went wrong sending the M-Pesa prompt. Please retry or use the manual payment option."}
+                                ? "Safaricom's servers are experiencing high traffic. You can retry in a moment or pay manually below."
+                                : "Something went wrong sending the M-Pesa prompt. Please retry or use the manual payment option."}
                           </p>
                           {paymentError !== "credentials" && (
                             <Button
@@ -377,22 +478,31 @@ export default function OrderPage() {
                               onClick={async () => {
                                 setRetryingPayment(true);
                                 try {
-                                  const { data: stkData, error: stkError } = await supabase.functions.invoke("mpesa-stk-push", {
-                                    body: {
-                                      orderId,
-                                      phone: formatPhone(phone.trim()),
-                                      amount: total,
-                                      packageName: isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", "),
-                                      fullName: name.trim(),
-                                      email: email.trim(),
+                                  const { data: stkData, error: stkError } = await supabase.functions.invoke(
+                                    "mpesa-stk-push",
+                                    {
+                                      body: {
+                                        orderId,
+                                        phone: formatPhone(phone.trim()),
+                                        amount: total,
+                                        packageName:
+                                          isPackageMode && packageParam
+                                            ? PACKAGE_MAP[packageParam].label
+                                            : selectedServices.join(", "),
+                                        fullName: name.trim(),
+                                        email: email.trim(),
+                                      },
                                     },
-                                  });
+                                  );
                                   if (!stkError && stkData?.ResponseCode === "0") {
                                     setStkSent(true);
                                     setPaymentError(null);
                                     toast({ title: "Check your phone for the M-Pesa prompt 📱" });
                                   } else {
-                                    toast({ title: "Still unable to send prompt. Please pay manually.", variant: "destructive" });
+                                    toast({
+                                      title: "Still unable to send prompt. Please pay manually.",
+                                      variant: "destructive",
+                                    });
                                   }
                                 } catch {
                                   toast({ title: "Could not reach payment service.", variant: "destructive" });
@@ -402,9 +512,13 @@ export default function OrderPage() {
                               }}
                             >
                               {retryingPayment ? (
-                                <><Loader2 className="mr-1.5 h-3 w-3 animate-spin" /> Retrying…</>
+                                <>
+                                  <Loader2 className="mr-1.5 h-3 w-3 animate-spin" /> Retrying…
+                                </>
                               ) : (
-                                <><RefreshCw className="mr-1.5 h-3 w-3" /> Retry M-Pesa Prompt</>
+                                <>
+                                  <RefreshCw className="mr-1.5 h-3 w-3" /> Retry M-Pesa Prompt
+                                </>
                               )}
                             </Button>
                           )}
@@ -428,9 +542,16 @@ export default function OrderPage() {
                           <p className="font-medium text-foreground">Pay manually via M-Pesa:</p>
                           <div className="space-y-1">
                             <p>1. Go to M-Pesa → Lipa na M-Pesa → Pay Bill</p>
-                            <p>2. Business Number: <span className="font-mono text-primary">4561075</span></p>
-                            <p>3. Account Number: <span className="font-mono text-primary">{orderId.slice(0, 12).toUpperCase()}</span></p>
-                            <p>4. Amount: <span className="font-semibold text-primary">{formatKES(total)}</span></p>
+                            <p>
+                              2. Business Number: <span className="font-mono text-primary">4561075</span>
+                            </p>
+                            <p>
+                              3. Account Number:{" "}
+                              <span className="font-mono text-primary">{orderId.slice(0, 12).toUpperCase()}</span>
+                            </p>
+                            <p>
+                              4. Amount: <span className="font-semibold text-primary">{formatKES(total)}</span>
+                            </p>
                           </div>
                         </>
                       )}
@@ -444,18 +565,25 @@ export default function OrderPage() {
                       className="bg-gradient-brand border-0 font-semibold gold-shimmer"
                     >
                       {paymentChecking ? (
-                        <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...</>
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...
+                        </>
                       ) : (
-                        <>Confirm Payment Now <Check className="ml-2 h-4 w-4" /></>
+                        <>
+                          Confirm Payment Now <Check className="ml-2 h-4 w-4" />
+                        </>
                       )}
                     </Button>
                     <Link to="/">
-                      <Button variant="outline" className="border-primary/30">Back to Home</Button>
+                      <Button variant="outline" className="border-primary/30">
+                        Back to Home
+                      </Button>
                     </Link>
                   </div>
 
                   <p className="text-xs text-muted-foreground mt-4">
-                    Your documents are being generated in the background. Once payment is confirmed, you'll get full access to edit and download them.
+                    Your documents are being generated in the background. Once payment is confirmed, you'll get full
+                    access to edit and download them.
                   </p>
                 </>
               )}
@@ -471,12 +599,20 @@ export default function OrderPage() {
       {/* Hero */}
       <section className="relative z-10 pt-8 sm:pt-16 pb-6 px-4">
         <div className="container max-w-4xl mx-auto text-center">
-          <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={0}
+          <motion.h1
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={0}
             className="text-2xl sm:text-5xl lg:text-6xl font-serif font-bold leading-[1.08] mb-3"
           >
             Start your <span className="text-gradient">order</span>
           </motion.h1>
-          <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={1}
+          <motion.p
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={1}
             className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto"
           >
             Select your services, fill in your details, and pay via M-Pesa. We'll get to work immediately.
@@ -492,7 +628,11 @@ export default function OrderPage() {
             <div className="lg:col-span-3">
               {/* Job context banner */}
               {jobFromQuery && (
-                <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1}
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={fadeUp}
+                  custom={1}
                   className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-3 sm:p-4 mb-4 flex items-start gap-3"
                 >
                   <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
@@ -508,16 +648,23 @@ export default function OrderPage() {
 
               {/* Recommended bundle when coming from a job */}
               {jobFromQuery && (
-                <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1.5}
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={fadeUp}
+                  custom={1.5}
                   className="rounded-xl border border-accent/40 bg-accent/5 p-3 sm:p-4 mb-4"
                 >
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
                     <Sparkles className="h-4 w-4 text-primary shrink-0" />
                     <p className="text-xs sm:text-sm font-semibold">Recommended Bundle</p>
-                    <span className="text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary px-2 py-0.5 rounded-full">Most Popular</span>
+                    <span className="text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                      Most Popular
+                    </span>
                   </div>
                   <p className="text-[11px] text-muted-foreground mb-3">
-                    Add a Cover Letter + LinkedIn for <span className="font-semibold text-foreground">3× more callbacks</span>.
+                    Add a Cover Letter + LinkedIn for{" "}
+                    <span className="font-semibold text-foreground">3× more callbacks</span>.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-2">
                     {[
@@ -535,11 +682,7 @@ export default function OrderPage() {
                               : "border-border bg-card hover:border-primary/40 hover:bg-primary/5"
                           }`}
                         >
-                          {alreadySelected ? (
-                            <Check className="h-3 w-3" />
-                          ) : (
-                            <span className="text-primary">+</span>
-                          )}
+                          {alreadySelected ? <Check className="h-3 w-3" /> : <span className="text-primary">+</span>}
                           {item.label} · {formatKES(item.price)}
                         </button>
                       );
@@ -550,7 +693,11 @@ export default function OrderPage() {
 
               {/* International Bundle Promo — only show when not in package mode */}
               {!isPackageMode && (
-                <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1.8}
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={fadeUp}
+                  custom={1.8}
                   className="rounded-xl border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-card to-accent/5 p-4 sm:p-5 mb-5 relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[9px] font-bold uppercase tracking-wider px-3 py-1 rounded-bl-lg">
@@ -561,8 +708,11 @@ export default function OrderPage() {
                     <h3 className="text-sm sm:text-base font-bold">✈️ Going Abroad?</h3>
                   </div>
                   <p className="text-xs sm:text-sm text-muted-foreground mb-3 leading-relaxed">
-                    Get our <span className="font-semibold text-foreground">ATS CV (international standard) + Cover Letter + LinkedIn Revamp</span> — 
-                    keyword-optimised for global portals, 2 professional pages, and a comprehensive LinkedIn makeover.
+                    Get our{" "}
+                    <span className="font-semibold text-foreground">
+                      ATS CV (international standard) + Cover Letter + LinkedIn Revamp
+                    </span>{" "}
+                    — keyword-optimised for global portals, 2 professional pages, and a comprehensive LinkedIn makeover.
                   </p>
                   <div className="flex items-center gap-3 mb-3">
                     <span className="text-xs text-muted-foreground line-through">KES 6,500</span>
@@ -574,10 +724,7 @@ export default function OrderPage() {
                     </div>
                   ) : (
                     <Link to="/order?package=international">
-                      <Button
-                        size="sm"
-                        className="bg-gradient-brand border-0 font-semibold text-xs gold-shimmer"
-                      >
+                      <Button size="sm" className="bg-gradient-brand border-0 font-semibold text-xs gold-shimmer">
                         <Globe className="mr-1.5 h-3.5 w-3.5" /> Get International Bundle
                       </Button>
                     </Link>
@@ -592,7 +739,11 @@ export default function OrderPage() {
                     <div className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-4 sm:p-5">
                       <div className="flex items-center gap-2 mb-3">
                         <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                          {packageParam === "international" ? <Globe className="h-4 w-4 text-primary" /> : <Award className="h-4 w-4 text-primary" />}
+                          {packageParam === "international" ? (
+                            <Globe className="h-4 w-4 text-primary" />
+                          ) : (
+                            <Award className="h-4 w-4 text-primary" />
+                          )}
                         </div>
                         <div>
                           <h2 className="text-base sm:text-lg font-bold">{PACKAGE_MAP[packageParam].label}</h2>
@@ -601,7 +752,7 @@ export default function OrderPage() {
                       </div>
                       <div className="space-y-1.5">
                         {PACKAGE_MAP[packageParam].services.map((sId) => {
-                          const svc = SERVICES.find(s => s.id === sId);
+                          const svc = SERVICES.find((s) => s.id === sId);
                           return svc ? (
                             <div key={sId} className="flex items-center gap-2 text-sm">
                               <Check className="h-3.5 w-3.5 text-primary shrink-0" />
@@ -639,21 +790,27 @@ export default function OrderPage() {
                                 : "border-border bg-card hover:border-primary/30"
                             }`}
                           >
-                            <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                              selected ? "bg-gradient-brand" : "bg-muted"
-                            }`}>
-                              <s.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${selected ? "text-primary-foreground" : "text-muted-foreground"}`} />
+                            <div
+                              className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                                selected ? "bg-gradient-brand" : "bg-muted"
+                              }`}
+                            >
+                              <s.icon
+                                className={`h-4 w-4 sm:h-5 sm:w-5 ${selected ? "text-primary-foreground" : "text-muted-foreground"}`}
+                              />
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="font-semibold text-xs sm:text-sm">{s.label}</div>
-                              <div className="text-[10px] sm:text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-2">{s.desc}</div>
+                              <div className="text-[10px] sm:text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-2">
+                                {s.desc}
+                              </div>
                               <div className="text-xs text-primary font-bold mt-0.5">{formatKES(s.price)}</div>
                             </div>
-                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
-                              selected
-                                ? "border-primary bg-primary"
-                                : "border-muted-foreground/30 bg-transparent"
-                            }`}>
+                            <div
+                              className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                                selected ? "border-primary bg-primary" : "border-muted-foreground/30 bg-transparent"
+                              }`}
+                            >
                               {selected && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
                             </div>
                           </button>
@@ -670,10 +827,13 @@ export default function OrderPage() {
                       ref={nameRef}
                       placeholder="Full name *"
                       value={name}
-                      onChange={(e) => { setName(e.target.value); setValidationErrors(prev => ({ ...prev, name: false })); }}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                        setValidationErrors((prev) => ({ ...prev, name: false }));
+                      }}
                       className={cn(
                         "h-12 bg-card border-border transition-all",
-                        validationErrors.name && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle"
+                        validationErrors.name && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
                       )}
                     />
                     {validationErrors.name && (
@@ -687,37 +847,51 @@ export default function OrderPage() {
                         placeholder="Email address *"
                         type="email"
                         value={email}
-                        onChange={(e) => { setEmail(e.target.value); setValidationErrors(prev => ({ ...prev, email: false })); }}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          setValidationErrors((prev) => ({ ...prev, email: false }));
+                        }}
                         className={cn(
                           "h-12 bg-card border-border transition-all",
-                          validationErrors.email && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle"
+                          validationErrors.email &&
+                            "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
                         )}
                       />
                       {validationErrors.email && (
-                        <p className="text-xs text-destructive mt-1 animate-pulse font-medium">⚠ Email address is required</p>
+                        <p className="text-xs text-destructive mt-1 animate-pulse font-medium">
+                          ⚠ Email address is required
+                        </p>
                       )}
                     </div>
                     <div>
                       <div className="flex gap-2">
-                        <div className={cn(
-                          "rounded-lg border bg-card px-3 flex items-center text-sm text-muted-foreground shrink-0 transition-all",
-                          validationErrors.phone ? "border-destructive" : "border-border"
-                        )}>
+                        <div
+                          className={cn(
+                            "rounded-lg border bg-card px-3 flex items-center text-sm text-muted-foreground shrink-0 transition-all",
+                            validationErrors.phone ? "border-destructive" : "border-border",
+                          )}
+                        >
                           +254
                         </div>
                         <Input
                           ref={phoneRef}
                           placeholder="M-Pesa number *"
                           value={phone}
-                          onChange={(e) => { setPhone(e.target.value); setValidationErrors(prev => ({ ...prev, phone: false })); }}
+                          onChange={(e) => {
+                            setPhone(e.target.value);
+                            setValidationErrors((prev) => ({ ...prev, phone: false }));
+                          }}
                           className={cn(
                             "h-12 bg-card border-border transition-all",
-                            validationErrors.phone && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle"
+                            validationErrors.phone &&
+                              "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
                           )}
                         />
                       </div>
                       {validationErrors.phone && (
-                        <p className="text-xs text-destructive mt-1 animate-pulse font-medium">⚠ M-Pesa number is required for payment</p>
+                        <p className="text-xs text-destructive mt-1 animate-pulse font-medium">
+                          ⚠ M-Pesa number is required for payment
+                        </p>
                       )}
                     </div>
                   </div>
@@ -725,7 +899,9 @@ export default function OrderPage() {
 
                 {selectedServices.length > 0 && (
                   <>
-                    <h2 className="text-lg sm:text-xl font-bold mb-4">{isPackageMode ? "2" : "3"}. Service-specific details</h2>
+                    <h2 className="text-lg sm:text-xl font-bold mb-4">
+                      {isPackageMode ? "2" : "3"}. Service-specific details
+                    </h2>
                     <p className="text-sm text-muted-foreground mb-4">
                       The more detail you provide, the better your AI-generated documents will be.
                     </p>
@@ -740,17 +916,21 @@ export default function OrderPage() {
                 )}
 
                 <h2 className="text-lg sm:text-xl font-bold mb-3">
-                  {isPackageMode ? (selectedServices.length > 0 ? "3" : "2") : (selectedServices.length > 0 ? "4" : "3")}. Upload documents <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+                  {isPackageMode ? (selectedServices.length > 0 ? "3" : "2") : selectedServices.length > 0 ? "4" : "3"}.
+                  Upload documents <span className="text-xs font-normal text-muted-foreground">(optional)</span>
                 </h2>
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
                   onDrop={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     const droppedFiles = Array.from(e.dataTransfer.files);
-                    const valid = droppedFiles.filter(f => f.size <= 10 * 1024 * 1024);
-                    setFiles(prev => [...prev, ...valid]);
+                    const valid = droppedFiles.filter((f) => f.size <= 10 * 1024 * 1024);
+                    setFiles((prev) => [...prev, ...valid]);
                   }}
                   className="rounded-xl border-2 border-dashed border-border bg-card/50 p-8 text-center cursor-pointer hover:border-primary/40 transition-colors"
                 >
@@ -769,11 +949,22 @@ export default function OrderPage() {
                 {files.length > 0 && (
                   <div className="mt-3 space-y-2">
                     {files.map((f, i) => (
-                      <div key={i} className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm">
+                      <div
+                        key={i}
+                        className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm"
+                      >
                         <FileText className="h-4 w-4 text-primary shrink-0" />
                         <span className="truncate flex-1">{f.name}</span>
-                        <span className="text-xs text-muted-foreground shrink-0">{(f.size / 1024 / 1024).toFixed(1)}MB</span>
-                        <button onClick={(e) => { e.stopPropagation(); removeFile(i); }} className="text-muted-foreground hover:text-destructive">
+                        <span className="text-xs text-muted-foreground shrink-0">
+                          {(f.size / 1024 / 1024).toFixed(1)}MB
+                        </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeFile(i);
+                          }}
+                          className="text-muted-foreground hover:text-destructive"
+                        >
                           <X className="h-4 w-4" />
                         </button>
                       </div>
@@ -785,7 +976,11 @@ export default function OrderPage() {
 
             {/* Summary Sidebar */}
             <div className="lg:col-span-2">
-              <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={3}
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={fadeUp}
+                custom={3}
                 className="rounded-2xl border border-primary/20 bg-card p-6 sticky top-24 z-[60]"
               >
                 <h3 className="font-bold text-lg mb-4">Order Summary</h3>
@@ -809,7 +1004,9 @@ export default function OrderPage() {
                       <span className="font-bold">Total</span>
                       <div className="text-right">
                         {isPackageMode && subtotal > total && (
-                          <span className="text-xs text-muted-foreground line-through block">{formatKES(subtotal)}</span>
+                          <span className="text-xs text-muted-foreground line-through block">
+                            {formatKES(subtotal)}
+                          </span>
                         )}
                         <span className="text-2xl font-bold text-primary">{formatKES(total)}</span>
                       </div>
@@ -819,7 +1016,9 @@ export default function OrderPage() {
 
                 <Button
                   onClick={handleSubmit}
-                  disabled={selectedServices.length === 0 || !name.trim() || !email.trim() || !phone.trim() || isSubmitting}
+                  disabled={
+                    selectedServices.length === 0 || !name.trim() || !email.trim() || !phone.trim() || isSubmitting
+                  }
                   className="w-full h-12 bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer text-base"
                 >
                   {isSubmitting ? (
@@ -889,7 +1088,9 @@ export default function OrderPage() {
             {isSubmitting ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <>Pay Now <ArrowRight className="ml-1 h-4 w-4" /></>
+              <>
+                Pay Now <ArrowRight className="ml-1 h-4 w-4" />
+              </>
             )}
           </Button>
         </div>
