@@ -33,6 +33,8 @@ const SERVICES = [
   { id: "modern-cv", icon: FileText, label: "Modern CV", price: 3000, desc: "Visual impact — contemporary design for tech, creative & startups" },
   { id: "international-cv", icon: Globe, label: "International CV", price: 3500, desc: "Formatted for Gulf, UK, EU — adapts photo, layout & conventions" },
 ];
+{ id: "europass-cv", icon: Globe, label: "Europass CV", price: 3000, desc: "Professional Europass CV designed to European job market standards. Perfect for EU, UK and international applications." },
+  { id: "europass-cover-letter", icon: Globe, label: "Europass Cover Letter", price: 1500, desc: "Professionally written Europass Cover Letter tailored to European employer expectations." },
 
 function formatKES(amount: number) {
   return `KES ${amount.toLocaleString()}`;
