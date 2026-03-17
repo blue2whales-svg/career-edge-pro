@@ -22,7 +22,7 @@ export function LiveActivityPopup() {
 
   useEffect(() => {
     // Show first popup after 5s
-    const initial = setTimeout(() => setVisible(true), 5000);
+    const initial = setTimeout(() => setVisible(true), 99999999);
     return () => clearTimeout(initial);
   }, []);
 
