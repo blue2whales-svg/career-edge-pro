@@ -29,6 +29,7 @@ const STEPS = [
   { label: "Languages", icon: Globe },
   { label: "Additional", icon: ListPlus },
   { label: "Settings", icon: Settings },
+  { label: "Job Match", icon: Target },
 ];
 
 function formatKES(amount: number) {
