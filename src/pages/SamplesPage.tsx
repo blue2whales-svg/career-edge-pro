@@ -131,9 +131,9 @@ const CATEGORIES = [
       name: "Faith Akinyi Odhiambo",
       title: "Application for Senior HR Manager — Safaricom PLC",
       sections: [
-        { heading: "", lines: ["Dear Hiring Manager,", "I am writing to express my strong interest in the Senior HR Manager position at Safaricom PLC. With 8 years of progressive experience in human resource management across the telecommunications and banking sectors, I bring a proven track record of building high-performing teams and driving organizational culture transformation."] },
-        { heading: "", lines: ["In my current role at KCB Group, I spearheaded a talent acquisition strategy that reduced time-to-hire by 40% and improved retention rates by 25%. I also designed and launched an employee wellness programme that was recognized as a best practice by the Kenya Institute of Human Resource Management."] },
-        { heading: "", lines: ["I am particularly drawn to Safaricom's mission of transforming lives through technology, and I am confident that my expertise in strategic HR, labour relations, and change management would make an immediate and lasting impact on your team."] },
+        { heading: "", lines: ["Dear Hiring Manager,", "I am writing to express my strong interest in the Senior HR Manager position at Safaricom PLC. With 8 years of progressive experience in human resource management across the telecommunications and banking sectors, I bring a proven track record of building high-performing teams."] },
+        { heading: "", lines: ["In my current role at KCB Group, I spearheaded a talent acquisition strategy that reduced time-to-hire by 40% and improved retention rates by 25%. I also designed an employee wellness programme recognized by KIHRM."] },
+        { heading: "", lines: ["I am particularly drawn to Safaricom's mission of transforming lives through technology, and I am confident my expertise in strategic HR and change management would make an immediate impact."] },
         { heading: "", lines: ["I look forward to discussing how I can contribute to Safaricom's continued success.", "Warm regards,", "Faith Akinyi Odhiambo"] },
       ],
     },
@@ -152,10 +152,7 @@ export default function SamplesPage() {
   const [previewItem, setPreviewItem] = useState<typeof CATEGORIES[0] | null>(null);
 
   return (
-    <PageLayout
-      title="CV Samples & Cover Letter Examples"
-      description="Browse professionally crafted CV templates and cover letter examples. See the quality before you order."
-    >
+    <PageLayout>
       <div className="container max-w-6xl mx-auto px-4 py-12">
         {/* Header */}
         <div className="text-center mb-12">
@@ -189,7 +186,6 @@ export default function SamplesPage() {
               variants={fadeUp} custom={i}
             >
               <Card className="group relative border-border/40 bg-card/60 backdrop-blur-sm hover:border-primary/40 transition-all duration-300 h-full flex flex-col overflow-hidden">
-                {/* Icon header strip */}
                 <div className="h-1.5 bg-gradient-brand w-full" />
                 <CardContent className="p-6 flex flex-col flex-1">
                   <div className="flex items-start gap-3 mb-3">
@@ -202,7 +198,7 @@ export default function SamplesPage() {
                     </div>
                   </div>
 
-                  {/* Preview snippet */}
+                  {/* Mini preview snippet */}
                   <div className="flex-1 rounded-lg border border-border/30 bg-background/50 p-3 mb-4 relative overflow-hidden">
                     <p className="text-[10px] font-semibold text-foreground/80 truncate">{cat.preview.name}</p>
                     <p className="text-[9px] text-primary truncate">{cat.preview.title}</p>
@@ -211,7 +207,6 @@ export default function SamplesPage() {
                         <p key={si} className="text-[8px] text-muted-foreground truncate">{s.lines[0]?.slice(0, 60)}…</p>
                       ))}
                     </div>
-                    {/* Fade overlay */}
                     <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-background/90 to-transparent flex items-end justify-center pb-1">
                       <Lock className="w-3 h-3 text-muted-foreground/50" />
                     </div>
@@ -266,18 +261,11 @@ export default function SamplesPage() {
           </Link>
         </motion.div>
       </div>
-    </PageLayout>
-  );
 
-  // Modal rendered via state
-  return (
-    <>
-      <PageLayout title="CV Samples" description="Browse CV samples">
-        {/* content above */}
-      </PageLayout>
+      {/* Preview Modal */}
       {previewItem && (
         <SamplePreviewModal item={previewItem} onClose={() => setPreviewItem(null)} />
       )}
-    </>
+    </PageLayout>
   );
 }
