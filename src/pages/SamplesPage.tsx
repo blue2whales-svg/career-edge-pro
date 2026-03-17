@@ -150,6 +150,431 @@ export default function SamplesPage() {
 </style>
 </head>
 <body>`;
+  <nav>
+  <a class="nav-logo" href="#">CV<span style="color:#fff">Edge</span></a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/cv-builder">CV Builder</a>
+    <a href="/samples" class="active">Templates</a>
+    <a href="/pricing">Pricing</a>
+    <a href="/cv-builder" class="nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">✦ Premium CV Library</div>
+  <h1>Pick a Template.<br><span>Land the Interview.</span></h1>
+  <p>Browse our professionally crafted CV and cover letter templates. Select one and your personalised document is ready in minutes.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num">18+</div><div class="label">Templates Available</div></div>
+    <div class="hero-stat"><div class="num">ATS</div><div class="label">Optimised by Default</div></div>
+    <div class="hero-stat"><div class="num">EU</div><div class="label">Europass Compliant</div></div>
+    <div class="hero-stat"><div class="num">2min</div><div class="label">Average Edit Time</div></div>
+  </div>
+</div>
+
+<div class="filters-wrap">
+  <button class="filter-btn active" onclick="filterCards('all', this)">All Templates</button>
+  <button class="filter-btn" onclick="filterCards('executive', this)">Executive CV</button>
+  <button class="filter-btn" onclick="filterCards('ats', this)">ATS-Optimized</button>
+  <button class="filter-btn" onclick="filterCards('modern', this)">Modern Professional</button>
+  <button class="filter-btn" onclick="filterCards('creative', this)">Creative</button>
+  <button class="filter-btn" onclick="filterCards('minimal', this)">Minimalist</button>
+  <button class="filter-btn" onclick="filterCards('cover', this)">Cover Letters</button>
+</div>
+
+<div class="section-title"><span>👔</span> Executive CV Templates</div>
+<div class="grid">
+  <div class="card" data-cat="executive">
+    <div class="card-preview">
+      <div class="preview-inner">
+        <div class="cv-executive">
+          <div class="cv-exec-header">
+            <div class="cv-exec-name">JONATHAN ASHFORD</div>
+            <div class="cv-exec-title">Chief Executive Officer · Strategic Leadership</div>
+            <div class="cv-exec-contact"><span>📧 j.ashford@email.com</span><span>📞 +44 7700 900123</span><span>📍 London, UK</span></div>
+          </div>
+          <div class="cv-exec-body">
+            <div class="cv-exec-section">
+              <div class="cv-exec-section-title">Executive Summary</div>
+              <div class="cv-exec-summary">Visionary CEO with 18+ years driving multi-million pound transformations across FTSE 250 organisations. Proven record of scaling teams from 50 to 2,000+, orchestrating three successful IPOs, and delivering sustained double-digit revenue growth.</div>
+            </div>
+            <div class="cv-exec-section">
+              <div class="cv-exec-section-title">Career Progression</div>
+              <div class="cv-exec-job">
+                <div class="cv-exec-job-header">
+                  <div><div class="cv-exec-job-title">Chief Executive Officer</div><div class="cv-exec-job-company">GlobalNex Holdings Plc</div></div>
+                  <div class="cv-exec-job-date">2018 – Present</div>
+                </div>
+                <ul class="cv-exec-bullets">
+                  <li>Spearheaded £240M digital transformation programme, improving margin by 18%</li>
+                  <li>Led acquisition of three strategic assets, expanding to 14 countries</li>
+                </ul>
+              </div>
+            </div>
+            <div class="cv-exec-two-col">
+              <div class="cv-exec-section">
+                <div class="cv-exec-section-title">Core Competencies</div>
+                <div class="cv-exec-skill-item">P&L Management (£500M+)</div>
+                <div class="cv-exec-skill-item">M&A Strategy & Integration</div>
+                <div class="cv-exec-skill-item">Board-Level Communication</div>
+              </div>
+              <div class="cv-exec-section">
+                <div class="cv-exec-section-title">Education</div>
+                <div>MBA, Finance & Strategy</div>
+                <div style="font-size:11px;color:#666">London Business School · 2005</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-preview-overlay"></div>
+    </div>
+    <div class="card-badge">EXECUTIVE</div>
+    <div class="card-body">
+      <div class="card-cat"><span>👔</span><span class="card-cat-name">Executive CV</span></div>
+      <div class="card-title">Executive Classic — Dark Navy</div>
+      <div class="card-desc">Bold dark header with gold accents. Ideal for C-suite and Director-level roles.</div>
+      <div class="card-actions">
+        <button class="btn-preview" onclick="openModal('exec-classic')">👁 Preview</button>
+        <button class="btn-use" onclick="window.top.location.href='/cv-builder'">✦ Select & Edit</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-cat="executive">
+    <div class="card-preview">
+      <div class="preview-inner">
+        <div class="cv-executive">
+          <div class="cv-exec-header" style="background:#2c1810;border-color:#b8860b">
+            <div class="cv-exec-name">MARGARET WORTHINGTON</div>
+            <div class="cv-exec-title" style="color:#b8860b">Non-Executive Director · Corporate Governance</div>
+            <div class="cv-exec-contact"><span>📧 m.worthington@email.com</span><span>📍 Edinburgh, UK</span></div>
+          </div>
+          <div class="cv-exec-body">
+            <div class="cv-exec-section">
+              <div class="cv-exec-section-title" style="border-color:#2c1810">Board Profile</div>
+              <div class="cv-exec-summary">Distinguished NED with 22 years of board-level experience across financial services, healthcare, and technology sectors. Championed governance reforms that reduced regulatory risk exposure by £180M.</div>
+            </div>
+            <div class="cv-exec-two-col">
+              <div class="cv-exec-section">
+                <div class="cv-exec-section-title" style="border-color:#2c1810">Expertise</div>
+                <div class="cv-exec-skill-item" style="border-color:#b8860b">Corporate Governance</div>
+                <div class="cv-exec-skill-item" style="border-color:#b8860b">Risk & Compliance</div>
+              </div>
+              <div class="cv-exec-section">
+                <div class="cv-exec-section-title" style="border-color:#2c1810">Qualifications</div>
+                <div>FCA, Institute of Chartered Accountants</div>
+                <div style="font-size:11px;color:#666">Edinburgh · 2001</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-preview-overlay"></div>
+    </div>
+    <div class="card-badge">EXECUTIVE</div>
+    <div class="card-body">
+      <div class="card-cat"><span>👔</span><span class="card-cat-name">Executive CV</span></div>
+      <div class="card-title">Boardroom Edition — Deep Brown</div>
+      <div class="card-desc">Rich deep-brown header with antique gold. For NED and board-level appointments.</div>
+      <div class="card-actions">
+        <button class="btn-preview" onclick="openModal('exec-boardroom')">👁 Preview</button>
+        <button class="btn-use" onclick="window.top.location.href='/cv-builder'">✦ Select & Edit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+<div class="section-title"><span>🤖</span> ATS-Optimised CV Templates</div>
+<div class="grid">
+  <div class="card" data-cat="ats">
+    <div class="card-preview">
+      <div class="preview-inner">
+        <div class="cv-ats">
+          <div class="cv-ats-header">
+            <div class="cv-ats-name">SARAH OKEKE</div>
+            <div class="cv-ats-contact">sarah@email.com · +44 7900 112233 · Manchester, UK</div>
+            <div class="cv-ats-score">✅ ATS Score: 97/100</div>
+            <div class="cv-ats-keywords">
+              <span class="cv-ats-kw">Project Management</span><span class="cv-ats-kw">Agile</span>
+              <span class="cv-ats-kw">Stakeholder Engagement</span><span class="cv-ats-kw">PMP Certified</span>
+            </div>
+          </div>
+          <div class="cv-ats-body">
+            <div class="cv-ats-section">
+              <div class="cv-ats-section-title">Professional Summary</div>
+              <p class="cv-ats-p">Results-driven Project Manager with 10 years delivering complex technology programmes. PMP and Prince2 certified. 98% client satisfaction score across 40+ enterprise projects.</p>
+            </div>
+            <div class="cv-ats-section">
+              <div class="cv-ats-section-title">Work Experience</div>
+              <div class="cv-ats-job">
+                <div class="cv-ats-jrow"><div class="cv-ats-jname">Senior Project Manager</div><div class="cv-ats-jdate">Jan 2020 – Present</div></div>
+                <div class="cv-ats-jco">Barclays Bank Plc · Manchester</div>
+                <ul style="padding-left:14px;margin-top:5px">
+                  <li class="cv-ats-li">Managed £12M core banking migration; delivered 3 months ahead of schedule</li>
+                  <li class="cv-ats-li">Implemented Agile framework reducing time-to-market by 40%</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-preview-overlay"></div>
+    </div>
+    <div class="card-badge">ATS 97%</div>
+    <div class="card-body">
+      <div class="card-cat"><span>🤖</span><span class="card-cat-name">ATS-Optimised</span></div>
+      <div class="card-title">ATS Pro — Clean Blue</div>
+      <div class="card-desc">Keyword-rich, machine-readable layout proven to pass applicant tracking systems.</div>
+      <div class="card-actions">
+        <button class="btn-preview" onclick="openModal('ats-pro')">👁 Preview</button>
+        <button class="btn-use" onclick="window.top.location.href='/cv-builder'">✦ Select & Edit</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-cat="ats">
+    <div class="card-preview">
+      <div class="preview-inner">
+        <div class="cv-ats">
+          <div class="cv-ats-header" style="border-color:#059669">
+            <div class="cv-ats-name">DANIEL MWANGI</div>
+            <div class="cv-ats-contact">daniel@email.com · +254 722 000111 · Nairobi, KE</div>
+            <div class="cv-ats-score" style="background:#f0fdf4;border-color:#86efac;color:#15803d">✅ ATS Score: 94/100</div>
+            <div class="cv-ats-keywords">
+              <span class="cv-ats-kw" style="background:#f0fdf4;color:#15803d;border-color:#86efac">KYC/AML</span>
+              <span class="cv-ats-kw" style="background:#f0fdf4;color:#15803d;border-color:#86efac">Credit Analysis</span>
+              <span class="cv-ats-kw" style="background:#f0fdf4;color:#15803d;border-color:#86efac">Retail Banking</span>
+            </div>
+          </div>
+          <div class="cv-ats-body">
+            <div class="cv-ats-section">
+              <div class="cv-ats-section-title" style="color:#059669">Professional Summary</div>
+              <p class="cv-ats-p">Dedicated banking professional with 8 years across retail and corporate banking. Proven track record of exceeding sales targets by 120%+ while maintaining full regulatory compliance.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-preview-overlay"></div>
+    </div>
+    <div class="card-badge">ATS 94%</div>
+    <div class="card-body">
+      <div class="card-cat"><span>🤖</span><span class="card-cat-name">ATS-Optimised</span></div>
+      <div class="card-title">ATS Banking & Finance</div>
+      <div class="card-desc">Finance-sector keywords and compliance-ready layout. Green accent variant.</div>
+      <div class="card-actions">
+        <button class="btn-preview" onclick="openModal('ats-banking')">👁 Preview</button>
+        <button class="btn-use" onclick="window.top.location.href='/cv-builder'">✦ Select & Edit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+<div class="section-title"><span>💼</span> Modern Professional CV Templates</div>
+<div class="grid">
+  <div class="card" data-cat="modern">
+    <div class="card-preview">
+      <div class="preview-inner">
+        <div class="cv-modern">
+          <div class="cv-mod-sidebar">
+            <div><div class="cv-mod-photo">👤</div><div><div class="cv-mod-name">PRIYA SHARMA</div><div class="cv-mod-title">Marketing Director</div></div></div>
+            <div><div class="cv-mod-side-title">Contact</div>
+              <div class="cv-mod-contact-item">📧 priya@email.com</div>
+              <div class="cv-mod-contact-item">📍 Mumbai, India</div>
+            </div>
+            <div><div class="cv-mod-side-title">Key Skills</div>
+              <div class="cv-mod-skill-bar"><div class="cv-mod-skill-name">Brand Strategy</div><div class="cv-mod-bar-bg"><div class="cv-mod-bar-fill" style="width:95%"></div></div></div>
+              <div class="cv-mod-skill-bar"><div class="cv-mod-skill-name">Digital Marketing</div><div class="cv-mod-bar-bg"><div class="cv-mod-bar-fill" style="width:88%"></div></div></div>
+              <div class="cv-mod-skill-bar"><div class="cv-mod-skill-name">Data Analytics</div><div class="cv-mod-bar-bg"><div class="cv-mod-bar-fill" style="width:75%"></div></div></div>
+            </div>
+          </div>
+          <div class="cv-mod-main">
+            <div style="margin-bottom:18px"><div class="cv-mod-section-title">Profile</div><div style="font-size:11px;color:#444;line-height:1.65">Creative marketing leader with 12 years driving brand growth. Expert in integrated campaigns generating £45M+ in incremental revenue.</div></div>
+            <div><div class="cv-mod-section-title">Experience</div>
+              <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div class="cv-mod-job-title">Marketing Director — APAC</div><div class="cv-mod-job-co">Unilever</div></div><div class="cv-mod-job-date">2020–Now</div></div><ul style="padding-left:14px;margin-top:6px"><li class="cv-mod-li">Led rebranding of 4 core product lines; brand equity up 34%</li></ul></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-preview-overlay"></div>
+    </div>
+    <div class="card-badge">MODERN</div>
+    <div class="card-body">
+      <div class="card-cat"><span>💼</span><span class="card-cat-name">Modern Professional</span></div>
+      <div class="card-title">Modern Pro — Dark Sidebar</div>
+      <div class="card-desc">Two-column layout with skill bars and dark sidebar. Elegant and distinctive.</div>
+      <div class="card-actions">
+        <button class="btn-preview" onclick="openModal('modern-pro')">👁 Preview</button>
+        <button class="btn-use" onclick="window.top.location.href='/cv-builder'">✦ Select & Edit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+<div class="section-title"><span>🎨</span> Creative & Minimalist CV Templates</div>
+<div class="grid">
+  <div class="card" data-cat="creative">
+    <div class="card-preview">
+      <div class="preview-inner">
+        <div class="cv-creative" style="font-family:Georgia,sans-serif;color:#1a0a2e;background:#fff">
+          <div style="background:linear-gradient(135deg,#1a0a2e,#3d1080,#7c3aed);padding:36px 40px 28px;text-align:center">
+            <div style="display:inline-block;background:rgba(255,255,255,0.15);color:#e9d5ff;font-size:10px;font-weight:600;padding:3px 12px;border-radius:100px;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px">Creative Portfolio</div>
+            <div style="font-size:32px;font-weight:900;color:#fff;margin-bottom:4px;letter-spacing:0.06em;text-transform:uppercase">ZARA FONTAINE</div>
+            <div style="font-size:13px;color:#c4b5fd;margin-bottom:16px">Brand Designer & Creative Director</div>
+            <div style="display:flex;gap:14px;font-size:10px;color:#ddd6fe;justify-content:center;flex-wrap:wrap"><span>✉️ zara@zarafontaine.design</span><span>📍 Paris, France</span></div>
+          </div>
+          <div style="display:grid;grid-template-columns:200px 1fr">
+            <div style="background:#f5f0ff;padding:20px 16px;border-right:2px solid #e9d5ff">
+              <div style="font-size:9px;font-weight:900;letter-spacing:0.16em;text-transform:uppercase;color:#7c3aed;margin-bottom:8px">Design Skills</div>
+              <div><span style="background:linear-gradient(90deg,#7c3aed,#a855f7);color:#fff;font-size:9.5px;padding:3px 10px;border-radius:100px;margin-bottom:4px;display:inline-block">Figma</span></div>
+              <div style="margin-top:4px"><span style="background:linear-gradient(90deg,#7c3aed,#a855f7);color:#fff;font-size:9.5px;padding:3px 10px;border-radius:100px;display:inline-block">Adobe Suite</span></div>
+              <div style="margin-top:4px"><span style="background:linear-gradient(90deg,#7c3aed,#a855f7);color:#fff;font-size:9.5px;padding:3px 10px;border-radius:100px;display:inline-block">Brand Identity</span></div>
+            </div>
+            <div style="padding:20px 22px">
+              <div style="font-size:11px;font-weight:900;letter-spacing:0.14em;text-transform:uppercase;color:#7c3aed;margin-bottom:8px">About</div>
+              <div style="font-size:11px;color:#333;line-height:1.65">Award-winning creative director with 10 years building unforgettable brands. Clients include Chanel, LVMH, and Spotify.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-preview-overlay"></div>
+    </div>
+    <div class="card-badge">CREATIVE</div>
+    <div class="card-body">
+      <div class="card-cat"><span>🎨</span><span class="card-cat-name">Creative CV</span></div>
+      <div class="card-title">Creative Purple Gradient</div>
+      <div class="card-desc">Bold gradient header with portfolio sidebar. Built for designers and creatives.</div>
+      <div class="card-actions">
+        <button class="btn-preview" onclick="openModal('creative-purple')">👁 Preview</button>
+        <button class="btn-use" onclick="window.top.location.href='/cv-builder'">✦ Select & Edit</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-cat="minimal">
+    <div class="card-preview">
+      <div class="preview-inner">
+        <div class="cv-minimal">
+          <div class="cv-min-name">OLIVER HAYES</div>
+          <div class="cv-min-title">Strategic Consultant</div>
+          <div class="cv-min-divider"></div>
+          <div class="cv-min-contact"><span>oliver@email.com</span><span>London, UK</span></div>
+          <div style="margin-bottom:22px"><div class="cv-min-section-title">Profile</div><p style="font-size:11px;color:#444;line-height:1.7">Management consultant with 11 years advising FTSE 100 and Fortune 500 on strategy, operations, and digital transformation. Oxford-educated. McKinsey alumni.</p></div>
+          <div><div class="cv-min-section-title">Experience</div>
+            <div class="cv-min-job"><div class="cv-min-date">2019–Now</div><div><div class="cv-min-job-title">Associate Partner</div><div class="cv-min-job-co">McKinsey & Company · London</div><ul style="padding-left:0;margin-top:6px;list-style:none"><li class="cv-min-li">Led 14-week operating model redesign; delivered £95M savings</li></ul></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-preview-overlay"></div>
+    </div>
+    <div class="card-badge">MINIMAL</div>
+    <div class="card-body">
+      <div class="card-cat"><span>⬜</span><span class="card-cat-name">Minimalist CV</span></div>
+      <div class="card-title">Pure Minimalist — White Space</div>
+      <div class="card-desc">Typography-first design. Whisper-quiet layout that lets your career speak.</div>
+      <div class="card-actions">
+        <button class="btn-preview" onclick="openModal('minimal-pure')">👁 Preview</button>
+        <button class="btn-use" onclick="window.top.location.href='/cv-builder'">✦ Select & Edit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+<div class="section-title"><span>✉️</span> Cover Letter Examples</div>
+<div class="grid">
+  <div class="card" data-cat="cover">
+    <div class="card-preview">
+      <div class="preview-inner">
+        <div class="cl-sales">
+          <div style="text-align:center;font-family:Arial,sans-serif;font-size:20px;font-weight:900;color:#1a1a2e;margin-bottom:6px;letter-spacing:0.06em">CV<span style="color:#c9a84c">Edge</span></div>
+          <div style="width:40px;height:3px;background:#c9a84c;margin:0 auto 24px;border-radius:2px"></div>
+          <div style="font-size:11px;color:#555;margin-bottom:20px;line-height:1.6">James Adebayo<br>Lagos, Nigeria · james@email.com</div>
+          <div style="font-size:14px;font-weight:900;color:#1a1a2e;margin-bottom:18px;padding:10px 14px;background:#fdf9ee;border-left:4px solid #c9a84c;border-radius:0 4px 4px 0">Re: <span style="color:#c9a84c">Senior Relationship Manager — Corporate Banking</span></div>
+          <p style="font-size:11px;color:#333;line-height:1.75;margin-bottom:14px">Dear Hiring Manager,</p>
+          <p style="font-size:11px;color:#333;line-height:1.75;margin-bottom:14px">I am writing to express my strong interest in the <span class="cl-highlight">Senior Relationship Manager</span> role at Standard Chartered Bank. With <span class="cl-highlight">nine years of progressive experience</span> in corporate banking and a consistent record of exceeding portfolio growth targets, I am confident in my ability to contribute meaningfully to your Lagos Corporate division.</p>
+          <p style="font-size:11px;color:#333;line-height:1.75">In my current role at Zenith Bank, I manage a <span class="cl-highlight">KES 3.8B corporate portfolio</span> and have delivered <span class="cl-highlight">131% of my annual lending target</span> for three consecutive years.</p>
+        </div>
+      </div>
+      <div class="card-preview-overlay"></div>
+    </div>
+    <div class="card-badge">COVER LETTER</div>
+    <div class="card-body">
+      <div class="card-cat"><span>✉️</span><span class="card-cat-name">Cover Letter</span></div>
+      <div class="card-title">Banking & Finance — Executive Tone</div>
+      <div class="card-desc">Formal, achievement-led cover letter. Ideal for banking and corporate finance applications.</div>
+      <div class="card-actions">
+        <button class="btn-preview" onclick="openModal('cl-banking')">👁 Preview</button>
+        <button class="btn-use" onclick="window.top.location.href='/cover-letter'">✦ Select & Edit</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-cat="cover">
+    <div class="card-preview">
+      <div class="preview-inner">
+        <div class="cl-tech">
+          <div class="cl-tech-header">
+            <div><div class="cl-tech-header-name">AMARA DIALLO</div><div class="cl-tech-header-role">Full-Stack Software Engineer</div></div>
+            <div style="text-align:right;font-size:10px;color:#94a3b8;line-height:1.6">amara@email.com<br>Paris, France</div>
+          </div>
+          <div class="cl-tech-accent"></div>
+          <div class="cl-tech-body">
+            <div style="font-size:13px;font-weight:700;margin-bottom:18px">Application: Senior Software Engineer — Payments Infrastructure</div>
+            <p class="cl-tech-p">I am applying for the Senior Software Engineer position on your Payments Infrastructure team. With six years of backend engineering experience and a deep focus on high-availability distributed systems, I am drawn to Stripe's mission.</p>
+            <div style="margin:12px 0">
+              <div class="cl-tech-bitem">Built payment processing engine handling 2.4M transactions/day at 99.98% uptime</div>
+              <div class="cl-tech-bitem">Reduced API latency by 65% through async processing and Redis caching</div>
+              <div class="cl-tech-bitem">Designed fault-tolerant microservices on AWS ECS; zero downtime in 18 months</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-preview-overlay"></div>
+    </div>
+    <div class="card-badge">COVER LETTER</div>
+    <div class="card-body">
+      <div class="card-cat"><span>✉️</span><span class="card-cat-name">Cover Letter</span></div>
+      <div class="card-title">Tech & Engineering — Achievement Focus</div>
+      <div class="card-desc">Bulleted achievement format with blue accent. Perfect for technical and engineering roles.</div>
+      <div class="card-actions">
+        <button class="btn-preview" onclick="openModal('cl-tech')">👁 Preview</button>
+        <button class="btn-use" onclick="window.top.location.href='/cover-letter'">✦ Select & Edit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--gold);margin-bottom:8px">CVEdge</div>
+  <p>© 2026 CVEdge · Professional CV & Cover Letter Services · All templates copy-protected.</p>
+  <p style="margin-top:4px">Built with <span>♥</span> for job seekers worldwide.</p>
+</footer>
+
+<div class="modal-bg" id="modalBg" onclick="closeModalIfBg(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div><div class="modal-title" id="modalTitle">Template Preview</div><div class="modal-subtitle" id="modalSubtitle">Protected Preview — CVEdge</div></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-preview" id="modalPreview">
+      <div class="modal-watermark">CVEdge</div>
+      <div class="modal-preview-doc" id="modalDoc"></div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-copy-notice">🔒 Preview protected. No copying or downloading.</div>
+      <button class="btn-preview" onclick="closeModal()">Close</button>
+      <button class="btn-use" onclick="window.top.location.href='/cv-builder'">✦ Select & Edit This Template</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>`;
 
   return (
     <div style={{ width: "100%", height: "100vh" }}>
@@ -162,3 +587,4 @@ export default function SamplesPage() {
     </div>
   );
 }
+
