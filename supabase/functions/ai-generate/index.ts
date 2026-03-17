@@ -220,6 +220,26 @@ Return ONLY valid JSON, no markdown:
   "verdict": "one bold summary sentence"
 }`,
 
+  "job-match": (d) => `You are an ATS keyword analyst. Compare this CV against the job description and return a match analysis.
+
+JOB DESCRIPTION:
+${d.jobDescription}
+
+CV CONTENT:
+${d.cvText}
+
+Return ONLY valid JSON, no markdown:
+{
+  "matchScore": number 0-100,
+  "matchedKeywords": ["keyword1", "keyword2", ...],
+  "missingKeywords": ["keyword1", "keyword2", ...],
+  "matchedSkills": ["skill1", "skill2", ...],
+  "missingSkills": ["skill1", "skill2", ...],
+  "potentialScore": number (projected score after optimization, always 85-96),
+  "summary": "one sentence verdict",
+  "recommendations": ["rec1", "rec2", "rec3"]
+}`,
+
   "optimize-cv": (d) => `You are an elite CV writer specializing in job-tailored optimization.
 
 JOB TITLE: ${d.jobTitle}
