@@ -52,6 +52,7 @@ export default function LandingPage() {
             <Link to="/pricing" className="hover:text-foreground transition-colors">Pricing</Link>
             <Link to="/jobs" className="hover:text-foreground transition-colors">Jobs</Link>
             <Link to="/how-it-works" className="hover:text-foreground transition-colors">How It Works</Link>
+            <Link to="/samples" className="hover:text-foreground transition-colors">Templates</Link>
           </div>
           <div className="flex items-center gap-2">
             <Link to="/jobs?industry=%F0%9F%94%A5+Hot+Abroad">

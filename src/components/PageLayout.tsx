@@ -2,7 +2,7 @@ import { ReactNode, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Home, Briefcase, GraduationCap, CreditCard, Wrench, BookOpen, Phone, Flame, FileText, Target, Star } from "lucide-react";
+import { ArrowRight, Home, Briefcase, GraduationCap, CreditCard, Wrench, BookOpen, Phone, Flame, FileText, Target, Star, Layout } from "lucide-react";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 import { MobileNav } from "@/components/landing/MobileNav";
 import MobileBottomNav from "@/components/MobileBottomNav";
@@ -17,6 +17,7 @@ const DOCK_LINKS = [
   { to: "/", icon: Home, label: "Home" },
   { to: "/jobs", icon: Briefcase, label: "Jobs" },
   { to: "/cv-builder", icon: FileText, label: "CV Builder" },
+  { to: "/samples", icon: Layout, label: "Templates" },
   { to: "/cover-letter", icon: FileText, label: "Cover Letter" },
   { to: "/ats-checker", icon: Target, label: "ATS Check" },
   { to: "/pricing", icon: CreditCard, label: "Pricing" },

@@ -26,6 +26,7 @@ import ProPage from "./pages/ProPage";
 import RecruitersPage from "./pages/RecruitersPage";
 import GlobalServicePage from "./pages/GlobalServicePage";
 import OptimizePage from "./pages/OptimizePage";
+import SamplesPage from "./pages/SamplesPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import PortalLayout from "./components/PortalLayout";
 import PortalDashboard from "./pages/PortalDashboard";
@@ -66,6 +67,7 @@ const App = () => (
           <Route path="/recruiters" element={<RecruitersPage />} />
           <Route path="/global-service" element={<GlobalServicePage />} />
           <Route path="/optimize" element={<OptimizePage />} />
+          <Route path="/samples" element={<SamplesPage />} />
           <Route path="/payment-success" element={<PaymentSuccessPage />} />
           <Route path="/review/:orderId" element={<DocumentReviewPage />} />
 
