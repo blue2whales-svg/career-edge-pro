@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, User, FileText, Briefcase, GraduationCap, Wrench, Globe, ListPlus, Settings, Eye, Edit3 } from "lucide-react";
+import { ArrowLeft, ArrowRight, User, FileText, Briefcase, GraduationCap, Wrench, Globe, ListPlus, Settings, Eye, Edit3, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
@@ -16,6 +16,7 @@ import StepAdditional from "@/components/cv-builder/StepAdditional";
 import StepSettings from "@/components/cv-builder/StepSettings";
 import CVPreview from "@/components/cv-builder/CVPreview";
 import { PremiumUnlockCard } from "@/components/cv-builder/PremiumUnlockCard";
+import JobMatchScore from "@/components/cv-builder/JobMatchScore";
 import MpesaPaymentModal from "@/components/MpesaPaymentModal";
 import { useIsMobile } from "@/hooks/use-mobile";
 
