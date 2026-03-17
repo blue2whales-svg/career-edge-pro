@@ -17,6 +17,7 @@ const DOCK_LINKS = [
   { to: "/", icon: Home, label: "Home" },
   { to: "/jobs", icon: Briefcase, label: "Jobs" },
   { to: "/cv-builder", icon: FileText, label: "CV Builder" },
+  { to: "/samples", icon: Layout, label: "Templates" },
   { to: "/cover-letter", icon: FileText, label: "Cover Letter" },
   { to: "/ats-checker", icon: Target, label: "ATS Check" },
   { to: "/pricing", icon: CreditCard, label: "Pricing" },
