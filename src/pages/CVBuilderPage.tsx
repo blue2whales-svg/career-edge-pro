@@ -60,6 +60,7 @@ export default function CVBuilderPage() {
       case 5: return <StepLanguages data={data} onChange={update} />;
       case 6: return <StepAdditional data={data} onChange={update} />;
       case 7: return <StepSettings data={data} onChange={update} />;
+      case 8: return <JobMatchScore data={data} onOptimize={() => setPaymentOpen(true)} />;
       default: return null;
     }
   };
