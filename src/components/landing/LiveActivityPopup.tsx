@@ -45,33 +45,5 @@ export function LiveActivityPopup() {
 
   const activity = ACTIVITIES[current];
 
-  return (
-    <div className="fixed bottom-6 left-6 z-50 max-w-xs pointer-events-none">
-      <AnimatePresence>
-        {visible && (
-          <motion.div
-            initial={{ opacity: 0, y: 20, x: -10 }}
-            animate={{ opacity: 1, y: 0, x: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="rounded-xl border border-border bg-card p-3.5 shadow-lg pointer-events-auto"
-            style={{ background: "hsl(222 40% 7%)" }}
-          >
-            <div className="flex items-start gap-3">
-              <span className="relative mt-1 shrink-0">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 block" />
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 block absolute inset-0 animate-ping opacity-75" />
-              </span>
-              <div>
-                <p className="text-sm text-foreground leading-snug">
-                  <strong>{activity.name}</strong> from {activity.city} {activity.action}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">{getTimeAgo()}</p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
+  return null;
 }
