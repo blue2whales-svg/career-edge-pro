@@ -125,6 +125,13 @@ const SERVICES = [
     price: 1500,
     desc: "Professionally written Europass Cover Letter tailored to European employer expectations.",
   },
+  {
+    id: "cv-review",
+    icon: Check,
+    label: "CV Review & Critique",
+    price: 1000,
+    desc: "Expert feedback on your current CV — detailed critique with actionable improvements.",
+  },
 ];
 function formatKES(amount: number) {
   return `KES ${amount.toLocaleString()}`;
