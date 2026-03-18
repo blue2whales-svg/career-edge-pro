@@ -97,8 +97,36 @@ export default function ATSCheckerPage() {
               <div className="text-sm text-muted-foreground">Grade</div>
             </div>
             <div className="flex-1">
-              <p className="text-muted-foreground">{result.verdict}</p>
-            </div>
+  <p className="text-muted-foreground mb-4">{result.verdict}</p>
+  
+  {result.score >= 90 ? (
+    <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+      <p className="text-green-500 font-bold text-lg">🎉 Congratulations!</p>
+      <p className="text-green-400 text-sm mt-1">
+        Your CV is ATS-optimized and ready to impress recruiters. You're in the top tier!
+      </p>
+    </div>
+  ) : (
+    <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+      <p className="text-yellow-500 font-bold text-lg">
+        {result.score >= 70 ? "⚠️ Almost There!" : "❗ Needs Improvement"}
+      </p>
+      <p className="text-yellow-400 text-sm mt-2">
+        {result.score >= 70
+          ? "Your CV is good but missing some key elements. Fix these to stand out:"
+          : "Your CV needs work before it passes ATS filters. Key issues:"}
+      </p>
+      <ul className="mt-2 space-y-1">
+        {result.critical?.slice(0, 3).map((c, i) => (
+          <li key={i} className="text-sm text-muted-foreground flex gap-2">
+            <span className="text-yellow-500">→</span>
+            {c.title}
+          </li>
+        ))}
+      </ul>
+      
+        href="https://cvedge.live/optimize"
+        className="mt-4 inline-block w-full text-center bg-primary text-primary-foreground px-6 py-3 rounded-lg font-s
           </div>
 
           <div className="p-6 border rounded-xl">
