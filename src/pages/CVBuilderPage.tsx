@@ -210,31 +210,82 @@ export default function CVBuilderPage() {
 
             {/* Template Switcher */}
             {(!isMobile || showPreview) && (
-              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", padding: "8px", marginBottom: "8px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  flexWrap: "wrap",
+                  padding: "12px 8px",
+                  marginBottom: "8px",
+                  alignItems: "flex-end",
+                }}
+              >
                 {[
-                  { id: "executive", label: "Executive Dark", color: "#1a1a2e" },
-                  { id: "clean", label: "Clean White", color: "#2563eb" },
-                  { id: "sidebar", label: "Modern Sidebar", color: "#1e293b" },
-                  { id: "minimal", label: "Minimalist", color: "#111" },
-                  { id: "creative", label: "Creative Purple", color: "#7c3aed" },
-                  { id: "corporate", label: "Corporate Green", color: "#14532d" },
+                  {
+                    id: "executive",
+                    label: "Executive",
+                    color: "#1a1a2e",
+                    accent: "#c9a84c",
+                    bg: "#1a1a2e",
+                    headerH: 28,
+                  },
+                  { id: "clean", label: "Clean", color: "#fff", accent: "#2563eb", bg: "#fff", headerH: 24 },
+                  { id: "sidebar", label: "Sidebar", color: "#1e293b", accent: "#38bdf8", bg: "#f8fafc", headerH: 0 },
+                  { id: "minimal", label: "Minimal", color: "#fff", accent: "#111", bg: "#fff", headerH: 0 },
+                  { id: "creative", label: "Creative", color: "#7c3aed", accent: "#a78bfa", bg: "#fff", headerH: 32 },
+                  { id: "corporate", label: "Corporate", color: "#14532d", accent: "#86efac", bg: "#fff", headerH: 26 },
                 ].map((t) => (
                   <button
                     key={t.id}
                     onClick={() => setTemplate(t.id as any)}
                     style={{
-                      background: template === t.id ? t.color : "transparent",
-                      color: template === t.id ? "#fff" : t.color,
-                      border: `2px solid ${t.color}`,
-                      borderRadius: "20px",
-                      padding: "4px 12px",
-                      fontSize: "11px",
-                      fontWeight: 600,
+                      width: "52px",
+                      height: "68px",
+                      borderRadius: "4px",
+                      border: template === t.id ? `2px solid #c9a84c` : "2px solid transparent",
+                      padding: 0,
                       cursor: "pointer",
+                      background: t.bg,
+                      boxShadow: template === t.id ? "0 0 0 2px #c9a84c" : "0 2px 8px rgba(0,0,0,0.3)",
+                      overflow: "hidden",
+                      display: "flex",
+                      flexDirection: "column",
                       transition: "all 0.2s",
+                      position: "relative",
                     }}
                   >
-                    {t.label}
+                    {t.headerH > 0 && <div style={{ background: t.color, height: `${t.headerH}px`, width: "100%" }} />}
+                    {t.id === "sidebar" && (
+                      <div style={{ display: "flex", flex: 1, width: "100%" }}>
+                        <div style={{ background: "#1e293b", width: "35%", height: "100%" }} />
+                        <div style={{ background: "#f8fafc", flex: 1 }} />
+                      </div>
+                    )}
+                    {t.id === "minimal" && (
+                      <div style={{ padding: "6px 4px", display: "flex", flexDirection: "column", gap: "3px" }}>
+                        <div style={{ height: "2px", background: "#111", width: "60%" }} />
+                        <div style={{ height: "1px", background: "#ddd", width: "100%" }} />
+                        <div style={{ height: "1px", background: "#ddd", width: "80%" }} />
+                        <div style={{ height: "1px", background: "#ddd", width: "90%" }} />
+                      </div>
+                    )}
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        background: "rgba(0,0,0,0.55)",
+                        color: "#fff",
+                        fontSize: "7px",
+                        fontWeight: 700,
+                        textAlign: "center",
+                        padding: "2px 0",
+                        letterSpacing: "0.03em",
+                      }}
+                    >
+                      {t.label}
+                    </div>
                   </button>
                 ))}
               </div>
