@@ -1,6 +1,20 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, User, FileText, Briefcase, GraduationCap, Wrench, Globe, ListPlus, Settings, Eye, Edit3, Target } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  User,
+  FileText,
+  Briefcase,
+  GraduationCap,
+  Wrench,
+  Globe,
+  ListPlus,
+  Settings,
+  Eye,
+  Edit3,
+  Target,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
@@ -41,37 +55,47 @@ export default function CVBuilderPage() {
   const [data, setData] = useState<CVData>(initialCVData);
   const [showPreview, setShowPreview] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
+  const [template, setTemplate] = useState<"executive" | "clean" | "sidebar" | "minimal" | "creative" | "corporate">(
+    "executive",
+  );
   const [paymentOpen, setPaymentOpen] = useState(false);
   const isMobile = useIsMobile();
 
   const progress = ((step + 1) / STEPS.length) * 100;
   const selectedTier = data.experienceLevel ? PRICING_TIERS[data.experienceLevel] : null;
-  const defaultPackage = data.experienceLevel === "executive" ? "executive" : data.experienceLevel === "mid" ? "professional" : "starter";
+  const defaultPackage =
+    data.experienceLevel === "executive" ? "executive" : data.experienceLevel === "mid" ? "professional" : "starter";
 
   const update = (updates: Partial<CVData>) => setData((prev) => ({ ...prev, ...updates }));
 
   const renderStep = () => {
     switch (step) {
-      case 0: return <StepPersonalDetails data={data} onChange={update} />;
-      case 1: return <StepSummary data={data} onChange={update} />;
-      case 2: return <StepWorkExperience data={data} onChange={update} />;
-      case 3: return <StepEducation data={data} onChange={update} />;
-      case 4: return <StepSkills data={data} onChange={update} />;
-      case 5: return <StepLanguages data={data} onChange={update} />;
-      case 6: return <StepAdditional data={data} onChange={update} />;
-      case 7: return <StepSettings data={data} onChange={update} />;
-      case 8: return <JobMatchScore data={data} onOptimize={() => setPaymentOpen(true)} />;
-      default: return null;
+      case 0:
+        return <StepPersonalDetails data={data} onChange={update} />;
+      case 1:
+        return <StepSummary data={data} onChange={update} />;
+      case 2:
+        return <StepWorkExperience data={data} onChange={update} />;
+      case 3:
+        return <StepEducation data={data} onChange={update} />;
+      case 4:
+        return <StepSkills data={data} onChange={update} />;
+      case 5:
+        return <StepLanguages data={data} onChange={update} />;
+      case 6:
+        return <StepAdditional data={data} onChange={update} />;
+      case 7:
+        return <StepSettings data={data} onChange={update} />;
+      case 8:
+        return <JobMatchScore data={data} onOptimize={() => setPaymentOpen(true)} />;
+      default:
+        return null;
     }
   };
 
   return (
     <PageLayout>
-      <MpesaPaymentModal
-        open={paymentOpen}
-        onClose={() => setPaymentOpen(false)}
-        defaultPackage={defaultPackage}
-      />
+      <MpesaPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage={defaultPackage} />
 
       <section className="relative z-10 pt-4 sm:pt-6 pb-32 sm:pb-24 px-3 sm:px-4">
         <div className="container max-w-7xl mx-auto">
@@ -122,8 +146,8 @@ export default function CVBuilderPage() {
                     i === step
                       ? "bg-primary text-primary-foreground shadow-sm"
                       : i < step
-                      ? "bg-primary/20 text-primary"
-                      : "bg-muted text-muted-foreground"
+                        ? "bg-primary/20 text-primary"
+                        : "bg-muted text-muted-foreground"
                   }`}
                 >
                   <Icon className="h-3 w-3" />
@@ -184,6 +208,38 @@ export default function CVBuilderPage() {
               </div>
             )}
 
+            {/* Template Switcher */}
+            {(!isMobile || showPreview) && (
+              <div className="flex gap-2 flex-wrap px-2 mb-2">
+                {[
+                  { id: "executive", label: "Executive Dark", color: "#1a1a2e" },
+                  { id: "clean", label: "Clean White", color: "#2563eb" },
+                  { id: "sidebar", label: "Modern Sidebar", color: "#1e293b" },
+                  { id: "minimal", label: "Minimalist", color: "#111" },
+                  { id: "creative", label: "Creative Purple", color: "#7c3aed" },
+                  { id: "corporate", label: "Corporate Green", color: "#14532d" },
+                ].map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => setTemplate(t.id as any)}
+                    style={{
+                      background: template === t.id ? t.color : "transparent",
+                      color: template === t.id ? "#fff" : t.color,
+                      border: `2px solid ${t.color}`,
+                      borderRadius: "20px",
+                      padding: "4px 12px",
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                    }}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {/* Preview panel + Unlock card */}
             {(!isMobile || showPreview) && (
               <div className="lg:col-span-2 xl:col-span-1 space-y-4 lg:sticky lg:top-4 lg:max-h-[calc(100vh-100px)] overflow-y-auto">
@@ -192,7 +248,7 @@ export default function CVBuilderPage() {
                     Live Preview {!isPaid && <span className="text-primary">· Protected</span>}
                   </p>
                   <div className="transform-gpu origin-top scale-[0.85] sm:scale-90 lg:scale-100">
-                    <CVPreview data={data} isPaid={isPaid} />
+                    <CVPreview data={data} isPaid={isPaid} template={template} />
                   </div>
                 </div>
 
@@ -209,18 +265,13 @@ export default function CVBuilderPage() {
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-t border-border px-4 py-3 safe-area-pb">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Step {step + 1}/{STEPS.length}</p>
-              {selectedTier && (
-                <p className="text-sm font-bold text-primary">{formatKES(selectedTier.price)}</p>
-              )}
+              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
+                Step {step + 1}/{STEPS.length}
+              </p>
+              {selectedTier && <p className="text-sm font-bold text-primary">{formatKES(selectedTier.price)}</p>}
             </div>
             <div className="flex gap-2">
-              <Button
-                onClick={() => setStep(Math.max(0, step - 1))}
-                disabled={step === 0}
-                variant="outline"
-                size="sm"
-              >
+              <Button onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0} variant="outline" size="sm">
                 <ArrowLeft className="h-3.5 w-3.5" />
               </Button>
               {step < STEPS.length - 1 ? (
