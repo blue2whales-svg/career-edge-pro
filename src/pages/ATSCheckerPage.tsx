@@ -19,13 +19,20 @@ const statusColor = (status) => {
 export default function ATSCheckerPage() {
   const [cvText, setCvText] = useState("");
   const [jobDescription, setJobDescription] = useState("");
+  const [email, setEmail] = useState("");
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [shared, setShared] = useState(false);
 
   const handleAnalyze = async () => {
     if (!cvText.trim() || cvText.trim().length < 50) {
       setError("Please paste at least 50 characters of your CV.");
+      return;
+    }
+    if (!emailSubmitted) {
+      setError("Please enter your email to unlock your results.");
       return;
     }
     setLoading(true);
@@ -39,7 +46,7 @@ export default function ATSCheckerPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
         },
-        body: JSON.stringify({ cvText, jobDescription }),
+        body: JSON.stringify({ cvText, jobDescription, email }),
       });
 
       const data = await res.json();
@@ -52,11 +59,38 @@ export default function ATSCheckerPage() {
     }
   };
 
+  const handleEmailSubmit = () => {
+    if (!email.trim() || !email.includes("@")) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    setError("");
+    setEmailSubmitted(true);
+  };
+
+  const handleShare = async () => {
+    if (!result) return;
+    const text = `I just scored ${result.score}/100 (Grade ${result.grade}) on my ATS Check! 🎯\nSee how your CV scores at https://cvedge.live/ats-checker`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "My ATS Score — CVEdge", text });
+      } else {
+        await navigator.clipboard.writeText(text);
+        setShared(true);
+        setTimeout(() => setShared(false), 3000);
+      }
+    } catch {
+      await navigator.clipboard.writeText(text);
+      setShared(true);
+      setTimeout(() => setShared(false), 3000);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background p-6 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-1">ATS Checker</h1>
       <p className="text-muted-foreground mb-6">
-        Get an instant AI-powered ATS score for your CV — free, powered by Groq.
+        Get an instant AI-powered ATS score for your CV — free, powered by AI.
       </p>
 
       <textarea
@@ -72,6 +106,36 @@ export default function ATSCheckerPage() {
         value={jobDescription}
         onChange={(e) => setJobDescription(e.target.value)}
       />
+
+      {/* Email capture before results */}
+      {!emailSubmitted ? (
+        <div className="mb-4 p-4 border border-primary/30 rounded-lg bg-primary/5">
+          <p className="text-sm font-semibold mb-1">📧 Where should we send your results?</p>
+          <p className="text-xs text-muted-foreground mb-3">
+            Enter your email to unlock your full ATS report. No spam, ever.
+          </p>
+          <div className="flex gap-2">
+            <input
+              type="email"
+              className="flex-1 p-2 border rounded-lg bg-background text-foreground text-sm"
+              placeholder="your@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()}
+            />
+            <button
+              onClick={handleEmailSubmit}
+              className="bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity"
+            >
+              Unlock Results
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-500 text-sm">
+          ✅ Email saved — results will be sent to <strong>{email}</strong>
+        </div>
+      )}
 
       <button
         onClick={handleAnalyze}
@@ -99,7 +163,6 @@ export default function ATSCheckerPage() {
             </div>
             <div className="flex-1">
               <p className="text-muted-foreground mb-4">{result.verdict}</p>
-
               {result.score >= 90 ? (
                 <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
                   <p className="text-green-500 font-bold text-lg">🎉 Congratulations!</p>
@@ -134,6 +197,16 @@ export default function ATSCheckerPage() {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Share button */}
+          <div className="flex justify-end">
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-2 px-4 py-2 border rounded-lg text-sm font-semibold hover:bg-muted transition-colors"
+            >
+              {shared ? "✅ Copied to clipboard!" : "📤 Share My Score"}
+            </button>
           </div>
 
           {/* Score Breakdown */}
