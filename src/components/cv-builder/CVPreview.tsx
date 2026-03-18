@@ -330,7 +330,10 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
           )}
 
           {/* Skills */}
-          {data.hardSkills.map((s, i) => (
+        {data.softSkills && data.softSkills.map((s, i) => (
+          <Section title="Skills">
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
+            {data.hardSkills.map((s, i) => (
                     <span
                       key={i}
                       style={{
@@ -346,7 +349,7 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
                       {s}
                     </span>
                   ))}
-                {data.softSkills && <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>{data.softSkills.map((s, i) => (
+        {data.softSkills && data.softSkills.map((s, i) => ( display: "flex", flexWrap: "wrap", gap: "5px" }}>{data.softSkills.map((s, i) => (
                       <span
                         key={i}
                         style={{
@@ -361,9 +364,10 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
                       >
                         {s}
                       </span>
-                    ))}</div>}
-        </Section>
-          )}
+                    ))}
+            </div>
+          </Section>
+        )}
 
           {/* Languages */}
           {data.languages && data.languages.filter((l) => l.name).length > 0 && (
