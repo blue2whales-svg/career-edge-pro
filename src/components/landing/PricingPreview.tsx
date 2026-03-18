@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
@@ -17,19 +17,37 @@ const PACKAGES = [
     name: "Starter",
     price: "KES 1,490",
     originalPrice: "KES 5,000",
-    ...
+    desc: "Entry-level, fast delivery",
+    features: ["Professional CV Writing", "ATS-Optimised Format", "Same-Day Delivery", "1 Revision"],
+    popular: false,
   },
   {
     name: "Professional",
     price: "KES 2,490",
     originalPrice: "KES 9,000",
-    ...
+    desc: "Most Popular — full package",
+    features: [
+      "CV + Cover Letter + LinkedIn",
+      "ATS-Optimised",
+      "Delivered < 3 Hours",
+      "2 Revisions",
+      "Dedicated Specialist",
+    ],
+    popular: true,
   },
   {
     name: "Executive",
     price: "KES 5,490",
     originalPrice: "KES 15,000",
-    ...
+    desc: "Premium — human-reviewed",
+    features: [
+      "Executive CV + Cover Letter",
+      "LinkedIn + Executive Bio",
+      "Human Editor Review",
+      "Delivered < 6 Hours",
+      "Unlimited Revisions",
+    ],
+    popular: false,
   },
 ];
 
@@ -38,13 +56,21 @@ export function PricingPreview() {
     <section className="relative z-10 py-24 px-4">
       <div className="container max-w-5xl mx-auto">
         <motion.p
-          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUp}
+          custom={0}
           className="text-primary font-mono text-sm text-center mb-3 tracking-wider uppercase"
         >
           Pricing
         </motion.p>
         <motion.h2
-          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUp}
+          custom={1}
           className="text-3xl sm:text-5xl font-serif font-bold text-center mb-16"
         >
           Invest in your <span className="text-gradient">career</span>.
@@ -53,11 +79,13 @@ export function PricingPreview() {
           {PACKAGES.map((pkg, i) => (
             <motion.div
               key={i}
-              initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i + 2}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              custom={i + 2}
               className={`rounded-xl border p-6 ${
-                pkg.popular
-                  ? "border-primary bg-gradient-brand-subtle shadow-glow"
-                  : "border-border bg-card"
+                pkg.popular ? "border-primary bg-gradient-brand-subtle shadow-glow" : "border-border bg-card"
               }`}
             >
               {pkg.popular && (
@@ -70,8 +98,12 @@ export function PricingPreview() {
                 <span className="text-base text-muted-foreground line-through opacity-60">{pkg.originalPrice}</span>
               </div>
               <div className="font-semibold mb-1">{pkg.name}</div>
-              <div className="inline-block rounded-full bg-brand-red/10 border border-brand-red/20 px-2 py-0.5 text-[10px] font-mono text-brand-red mb-1">
-                Save {Math.round((1 - parseInt(pkg.price.replace(/\D/g, '')) / parseInt(pkg.originalPrice.replace(/\D/g, ''))) * 100)}%
+              <div className="inline-block rounded-full bg-brand-red/10 border border-brand-red/20 px-2 py-0.5 text-[10px] font-mono text-brand-red mb-3">
+                Save{" "}
+                {Math.round(
+                  (1 - parseInt(pkg.price.replace(/\D/g, "")) / parseInt(pkg.originalPrice.replace(/\D/g, ""))) * 100,
+                )}
+                %
               </div>
               <ul className="space-y-2 mb-6">
                 {pkg.features.map((f, j) => (
@@ -97,7 +129,11 @@ export function PricingPreview() {
           ))}
         </div>
         <motion.div
-          initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={5}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUp}
+          custom={5}
           className="text-center mt-8"
         >
           <Link to="/pricing" className="text-sm text-primary hover:underline font-medium">
