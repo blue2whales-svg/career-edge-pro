@@ -361,7 +361,7 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
                       >
                         {s}
                       </span>
-                    ))}</div>
+                    ))}</div>}
           </div>
         </Section>
           )}
