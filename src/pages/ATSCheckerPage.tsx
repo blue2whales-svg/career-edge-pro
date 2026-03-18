@@ -56,7 +56,7 @@ export default function ATSCheckerPage() {
     <div className="min-h-screen bg-background p-6 max-w-4xl mx-auto">
       <h1 className="text-3xl font-bold mb-1">ATS Checker</h1>
       <p className="text-muted-foreground mb-6">
-        Get an instant AI-powered ATS score for your CV — free, powered by Gemini.
+        Get an instant AI-powered ATS score for your CV — free, powered by Groq.
       </p>
 
       <textarea
@@ -87,6 +87,7 @@ export default function ATSCheckerPage() {
 
       {result && (
         <div className="mt-8 space-y-6">
+          {/* Score + Grade + Verdict */}
           <div className="p-6 border rounded-xl flex items-center gap-6">
             <div className="text-center">
               <div className="text-6xl font-black">{result.score}</div>
@@ -97,38 +98,45 @@ export default function ATSCheckerPage() {
               <div className="text-sm text-muted-foreground">Grade</div>
             </div>
             <div className="flex-1">
-  <p className="text-muted-foreground mb-4">{result.verdict}</p>
-  
-  {result.score >= 90 ? (
-    <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
-      <p className="text-green-500 font-bold text-lg">🎉 Congratulations!</p>
-      <p className="text-green-400 text-sm mt-1">
-        Your CV is ATS-optimized and ready to impress recruiters. You're in the top tier!
-      </p>
-    </div>
-  ) : (
-    <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
-      <p className="text-yellow-500 font-bold text-lg">
-        {result.score >= 70 ? "⚠️ Almost There!" : "❗ Needs Improvement"}
-      </p>
-      <p className="text-yellow-400 text-sm mt-2">
-        {result.score >= 70
-          ? "Your CV is good but missing some key elements. Fix these to stand out:"
-          : "Your CV needs work before it passes ATS filters. Key issues:"}
-      </p>
-      <ul className="mt-2 space-y-1">
-        {result.critical?.slice(0, 3).map((c, i) => (
-          <li key={i} className="text-sm text-muted-foreground flex gap-2">
-            <span className="text-yellow-500">→</span>
-            {c.title}
-          </li>
-        ))}
-      </ul>
-      
-        href="https://cvedge.live/optimize"
-        className="mt-4 inline-block w-full text-center bg-primary text-primary-foreground px-6 py-3 rounded-lg font-s
+              <p className="text-muted-foreground mb-4">{result.verdict}</p>
+
+              {result.score >= 90 ? (
+                <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                  <p className="text-green-500 font-bold text-lg">🎉 Congratulations!</p>
+                  <p className="text-green-400 text-sm mt-1">
+                    Your CV is ATS-optimized and ready to impress recruiters. You're in the top tier!
+                  </p>
+                </div>
+              ) : (
+                <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                  <p className="text-yellow-500 font-bold text-lg">
+                    {result.score >= 70 ? "⚠️ Almost There!" : "❗ Needs Improvement"}
+                  </p>
+                  <p className="text-yellow-400 text-sm mt-2">
+                    {result.score >= 70
+                      ? "Your CV is good but missing some key elements. Fix these to stand out:"
+                      : "Your CV needs work before it passes ATS filters. Key issues:"}
+                  </p>
+                  <ul className="mt-2 space-y-1">
+                    {result.critical?.slice(0, 3).map((c, i) => (
+                      <li key={i} className="text-sm text-muted-foreground flex gap-2">
+                        <span className="text-yellow-500">→</span>
+                        {c.title}
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href="https://cvedge.live/optimize"
+                    className="mt-4 inline-block w-full text-center bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+                  >
+                    🚀 Optimize My CV Now
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
 
+          {/* Score Breakdown */}
           <div className="p-6 border rounded-xl">
             <h2 className="font-bold text-lg mb-4">Score Breakdown</h2>
             <div className="space-y-3">
@@ -146,6 +154,7 @@ export default function ATSCheckerPage() {
             </div>
           </div>
 
+          {/* Critical Issues */}
           {result.critical?.length > 0 && (
             <div className="p-6 border border-red-500/30 rounded-xl">
               <h2 className="font-bold text-lg mb-3 text-red-500">⚠️ Critical Issues</h2>
@@ -160,6 +169,7 @@ export default function ATSCheckerPage() {
             </div>
           )}
 
+          {/* Improvements */}
           {result.improvements?.length > 0 && (
             <div className="p-6 border border-yellow-500/30 rounded-xl">
               <h2 className="font-bold text-lg mb-3 text-yellow-500">💡 Improvements</h2>
@@ -174,6 +184,7 @@ export default function ATSCheckerPage() {
             </div>
           )}
 
+          {/* Strengths */}
           {result.strengths?.length > 0 && (
             <div className="p-6 border border-green-500/30 rounded-xl">
               <h2 className="font-bold text-lg mb-3 text-green-500">✅ Strengths</h2>
@@ -188,6 +199,7 @@ export default function ATSCheckerPage() {
             </div>
           )}
 
+          {/* Keywords */}
           <div className="p-6 border rounded-xl">
             <h2 className="font-bold text-lg mb-3">🔑 Keywords</h2>
             <div className="mb-3">
