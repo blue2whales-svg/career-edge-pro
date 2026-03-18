@@ -210,7 +210,7 @@ export default function CVBuilderPage() {
 
             {/* Template Switcher */}
             {(!isMobile || showPreview) && (
-              <div className="flex gap-2 flex-wrap px-2 mb-2">
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", padding: "8px", marginBottom: "8px" }}>
                 {[
                   { id: "executive", label: "Executive Dark", color: "#1a1a2e" },
                   { id: "clean", label: "Clean White", color: "#2563eb" },
