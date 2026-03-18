@@ -261,10 +261,9 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
           )}
 
           {/* Work Experience */}
-          {data.workExperience && data.workExperience.filter((j) => j.title).length > 0 ? (
+          {data.workExperience && data.workExperience.filter((j) => j.jobTitle).length > 0 ? (
             <Section title="Work Experience">
               {data.workExperience
-                .filter((j) => j.title)
                 .filter((j) => j.jobTitle)
                   <div key={i} style={{ marginBottom: "14px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
