@@ -282,17 +282,14 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
                     </div>
                     {job.responsibilities && (
                       <ul style={{ marginTop: "5px", paddingLeft: "14px" }}>
-                        {job.responsibilities
-                          .split("\n")
-                          .filter(Boolean)
-                          .map((line, j) => (
-                            <li
-                              key={j}
-                              style={{ fontSize: "10px", color: "#444", lineHeight: 1.6, marginBottom: "2px" }}
-                            >
-                              {line.replace(/^[-•]\s*/, "")}
-                            </li>
-                          ))}
+                        {job.responsibilities.map((line, j) => (
+                  <li
+                    key={j}
+                    style={{ fontSize: "10px", color: "#444", lineHeight: 1.6 }}
+                  >
+                    {line}
+                  </li>
+                ))}
                       </ul>
                     )}
                   </div>
@@ -333,12 +330,7 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
           )}
 
           {/* Skills */}
-          {data.skills && data.skills.hardSkills && data.skills.hardSkills.length > 0 && (
-            <Section title="Skills">
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
-                {data.skills.hardSkills
-                  .filter((s) => s.name)
-                  .map((s, i) => (
+          {data.hardSkills.map((s, i) => (
                     <span
                       key={i}
                       style={{
@@ -351,13 +343,10 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
                         borderRadius: "100px",
                       }}
                     >
-                      {s.name}
+                      {s}
                     </span>
                   ))}
-                {data.skills.softSkills &&
-                  data.skills.softSkills
-                    .filter((s) => s.name)
-                    .map((s, i) => (
+                {data.softSkills && data.softSkills.map((s, i) => (
                       <span
                         key={i}
                         style={{
@@ -370,7 +359,7 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
                           borderRadius: "100px",
                         }}
                       >
-                        {s.name}
+                        {s}
                       </span>
                     ))}
               </div>
