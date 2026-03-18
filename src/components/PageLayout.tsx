@@ -2,7 +2,21 @@ import { ReactNode, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Home, Briefcase, GraduationCap, CreditCard, Wrench, BookOpen, Phone, Flame, FileText, Target, Star, Layout } from "lucide-react";
+import {
+  ArrowRight,
+  Home,
+  Briefcase,
+  GraduationCap,
+  CreditCard,
+  Wrench,
+  BookOpen,
+  Phone,
+  Flame,
+  FileText,
+  Target,
+  Star,
+  Layout,
+} from "lucide-react";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 import { MobileNav } from "@/components/landing/MobileNav";
 import MobileBottomNav from "@/components/MobileBottomNav";
@@ -17,7 +31,7 @@ const DOCK_LINKS = [
   { to: "/", icon: Home, label: "Home" },
   { to: "/jobs", icon: Briefcase, label: "Jobs" },
   { to: "/cv-builder", icon: FileText, label: "CV Builder" },
-  { to: "/samples", icon: Layout, label: "Templates" },
+  { to: "https://gilded-cucurucho-b8e6c9.netlify.app", icon: Layout, label: "Templates" },
   { to: "/cover-letter", icon: FileText, label: "Cover Letter" },
   { to: "/ats-checker", icon: Target, label: "ATS Check" },
   { to: "/pricing", icon: CreditCard, label: "Pricing" },
@@ -31,18 +45,29 @@ export default function PageLayout({ children }: PageLayoutProps) {
       {/* Background effects */}
       <div className="fixed inset-0 bg-grid opacity-20 pointer-events-none" />
       <div className="fixed top-[-300px] left-[-200px] w-[700px] h-[700px] rounded-full bg-primary/5 blur-[150px] animate-orb pointer-events-none" />
-      <div className="fixed bottom-[-200px] right-[-200px] w-[500px] h-[500px] rounded-full bg-secondary/3 blur-[120px] animate-orb pointer-events-none" style={{ animationDelay: "-4s" }} />
+      <div
+        className="fixed bottom-[-200px] right-[-200px] w-[500px] h-[500px] rounded-full bg-secondary/3 blur-[120px] animate-orb pointer-events-none"
+        style={{ animationDelay: "-4s" }}
+      />
 
       {/* Minimal Top Bar */}
       <nav className="relative z-10 border-b border-border/30 surface-glass sticky top-0">
         <div className="container max-w-6xl mx-auto flex items-center justify-between h-16 px-4">
           <Link to="/" className="flex items-center gap-2.5">
-            <img src={cvedgeLogo} alt="CVEdge Logo" className="w-10 h-10 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20" />
+            <img
+              src={cvedgeLogo}
+              alt="CVEdge Logo"
+              className="w-10 h-10 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20"
+            />
             <span className="font-bold text-lg tracking-tight">CVEdge</span>
           </Link>
           <div className="flex items-center gap-2">
             <Link to="/jobs?industry=%F0%9F%94%A5+Hot+Abroad">
-              <Button size="sm" variant="outline" className="border-destructive/40 text-destructive hover:bg-destructive/10 font-semibold text-xs gap-1.5 rounded-full px-3">
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-destructive/40 text-destructive hover:bg-destructive/10 font-semibold text-xs gap-1.5 rounded-full px-3"
+              >
                 <Flame className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Hot Jobs</span>
                 <span className="sm:hidden">Jobs</span>
@@ -50,7 +75,9 @@ export default function PageLayout({ children }: PageLayoutProps) {
             </Link>
             <div className="hidden md:flex items-center gap-3">
               <Link to="/login">
-                <Button variant="ghost" size="sm">Log in</Button>
+                <Button variant="ghost" size="sm">
+                  Log in
+                </Button>
               </Link>
               <Link to="/order">
                 <Button size="sm" className="bg-gradient-brand border-0 font-semibold shadow-glow-sm gold-shimmer">
@@ -72,37 +99,70 @@ export default function PageLayout({ children }: PageLayoutProps) {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-8">
             <div className="col-span-2 sm:col-span-1">
               <Link to="/" className="flex items-center gap-2.5 mb-3">
-                <img src={cvedgeLogo} alt="CVEdge Logo" className="w-9 h-9 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20" />
+                <img
+                  src={cvedgeLogo}
+                  alt="CVEdge Logo"
+                  className="w-9 h-9 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20"
+                />
                 <span className="font-bold">CVEdge</span>
               </Link>
               <p className="text-xs text-muted-foreground mb-2">Your Career's Secret Weapon</p>
-              <a href="mailto:support@cvedge.live" className="text-xs text-primary hover:text-primary/80 transition-colors">support@cvedge.live</a>
+              <a
+                href="mailto:support@cvedge.live"
+                className="text-xs text-primary hover:text-primary/80 transition-colors"
+              >
+                support@cvedge.live
+              </a>
             </div>
             <div>
               <h4 className="font-semibold text-sm mb-3">AI Tools</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/cv-builder" className="block text-primary hover:text-primary/80 transition-colors">CV Builder</Link>
-                <Link to="/cover-letter" className="block text-primary hover:text-primary/80 transition-colors">Cover Letter</Link>
-                <Link to="/ats-checker" className="block text-primary hover:text-primary/80 transition-colors">ATS Checker</Link>
-                <Link to="/optimize" className="block text-primary hover:text-primary/80 transition-colors">CV Optimizer</Link>
+                <Link to="/cv-builder" className="block text-primary hover:text-primary/80 transition-colors">
+                  CV Builder
+                </Link>
+                <Link to="/cover-letter" className="block text-primary hover:text-primary/80 transition-colors">
+                  Cover Letter
+                </Link>
+                <Link to="/ats-checker" className="block text-primary hover:text-primary/80 transition-colors">
+                  ATS Checker
+                </Link>
+                <Link to="/optimize" className="block text-primary hover:text-primary/80 transition-colors">
+                  CV Optimizer
+                </Link>
               </div>
             </div>
             <div>
               <h4 className="font-semibold text-sm mb-3">Platform</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/jobs" className="block text-primary hover:text-primary/80 transition-colors">Jobs</Link>
-                <Link to="/tracker" className="block text-primary hover:text-primary/80 transition-colors">Job Tracker</Link>
-                <Link to="/vault" className="block text-primary hover:text-primary/80 transition-colors">Document Vault</Link>
-                <Link to="/pricing" className="block text-primary hover:text-primary/80 transition-colors">Pricing</Link>
+                <Link to="/jobs" className="block text-primary hover:text-primary/80 transition-colors">
+                  Jobs
+                </Link>
+                <Link to="/tracker" className="block text-primary hover:text-primary/80 transition-colors">
+                  Job Tracker
+                </Link>
+                <Link to="/vault" className="block text-primary hover:text-primary/80 transition-colors">
+                  Document Vault
+                </Link>
+                <Link to="/pricing" className="block text-primary hover:text-primary/80 transition-colors">
+                  Pricing
+                </Link>
               </div>
             </div>
             <div>
               <h4 className="font-semibold text-sm mb-3">More</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/pro" className="block text-primary hover:text-primary/80 transition-colors">Pro ⭐</Link>
-                <Link to="/recruiters" className="block text-primary hover:text-primary/80 transition-colors">For Recruiters</Link>
-                <Link to="/global-service" className="block text-primary hover:text-primary/80 transition-colors">Global Service</Link>
-                <Link to="/contact" className="block text-primary hover:text-primary/80 transition-colors">Contact</Link>
+                <Link to="/pro" className="block text-primary hover:text-primary/80 transition-colors">
+                  Pro ⭐
+                </Link>
+                <Link to="/recruiters" className="block text-primary hover:text-primary/80 transition-colors">
+                  For Recruiters
+                </Link>
+                <Link to="/global-service" className="block text-primary hover:text-primary/80 transition-colors">
+                  Global Service
+                </Link>
+                <Link to="/contact" className="block text-primary hover:text-primary/80 transition-colors">
+                  Contact
+                </Link>
               </div>
             </div>
           </div>
@@ -142,13 +202,15 @@ export default function PageLayout({ children }: PageLayoutProps) {
                     "group relative flex flex-col items-center gap-0.5 px-3 py-2 rounded-xl transition-all duration-200",
                     isActive
                       ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent/50",
                   )}
                 >
-                  <link.icon className={cn(
-                    "w-[18px] h-[18px] transition-transform duration-200 group-hover:scale-110",
-                    isActive && "scale-110"
-                  )} />
+                  <link.icon
+                    className={cn(
+                      "w-[18px] h-[18px] transition-transform duration-200 group-hover:scale-110",
+                      isActive && "scale-110",
+                    )}
+                  />
                   <span className="text-[10px] font-medium leading-none">{link.label}</span>
                   {isActive && (
                     <motion.span
@@ -168,7 +230,10 @@ export default function PageLayout({ children }: PageLayoutProps) {
             transition={{ delay: 0.35, type: "spring", stiffness: 300, damping: 20 }}
           >
             <Link to="/order">
-              <Button size="sm" className="bg-gradient-brand border-0 font-semibold shadow-glow-sm gold-shimmer rounded-xl h-10 px-5">
+              <Button
+                size="sm"
+                className="bg-gradient-brand border-0 font-semibold shadow-glow-sm gold-shimmer rounded-xl h-10 px-5"
+              >
                 Order
                 <ArrowRight className="ml-1 h-3.5 w-3.5" />
               </Button>
@@ -176,7 +241,6 @@ export default function PageLayout({ children }: PageLayoutProps) {
           </motion.div>
         </div>
       </motion.div>
-
     </div>
   );
 }
