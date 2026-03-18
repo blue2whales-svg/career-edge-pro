@@ -9,7 +9,8 @@ import { SecurityBadges } from "@/components/landing/SecurityBadges";
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
-    opacity: 1, y: 0,
+    opacity: 1,
+    y: 0,
     transition: { delay: i * 0.08, duration: 0.5, ease: [0, 0, 0.2, 1] as const },
   }),
 };
@@ -17,7 +18,7 @@ const fadeUp = {
 const PACKAGES = [
   {
     name: "Starter",
-    price: "KES 2,500",
+    price: "KES 1,490",
     period: "one-time",
     desc: "Perfect for entry-level professionals needing a strong foundation.",
     icon: Zap,
@@ -34,7 +35,7 @@ const PACKAGES = [
   },
   {
     name: "Professional",
-    price: "KES 4,500",
+    price: "KES 2,490",
     period: "one-time",
     desc: "Our most popular package — everything you need to land interviews.",
     icon: Star,
@@ -53,7 +54,7 @@ const PACKAGES = [
   },
   {
     name: "Going Abroad ✈️",
-    price: "KES 4,500",
+    price: "KES 4,490",
     oldPrice: "KES 6,500",
     period: "one-time",
     desc: "ATS CV + Cover Letter + LinkedIn Revamp — tailored for Gulf, UK & EU markets.",
@@ -73,7 +74,7 @@ const PACKAGES = [
   },
   {
     name: "Executive",
-    price: "KES 7,900",
+    price: "KES 5,490",
     period: "one-time",
     desc: "For senior leaders who need documents that command boardroom attention.",
     icon: Crown,
@@ -108,18 +109,29 @@ export default function PricingPage() {
       {/* Hero */}
       <section className="relative z-10 pt-16 sm:pt-24 pb-16 px-4">
         <div className="container max-w-5xl mx-auto text-center">
-          <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={0}
+          <motion.h1
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={0}
             className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold leading-[1.08] mb-5"
           >
-            Transparent pricing.{" "}
-            <span className="text-gradient">No surprises.</span>
+            Transparent pricing. <span className="text-gradient">No surprises.</span>
           </motion.h1>
-          <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={1}
+          <motion.p
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={1}
             className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-4"
           >
             One-time payment. No subscriptions. Pay for what you need, when you need it.
           </motion.p>
-          <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={2}
+          <motion.p
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={2}
             className="text-sm font-mono text-primary"
           >
             📱 Pay instantly via M-Pesa
@@ -137,7 +149,11 @@ export default function PricingPage() {
             {PACKAGES.map((pkg, i) => (
               <motion.div
                 key={i}
-                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeUp}
+                custom={i}
                 className={`rounded-2xl border p-6 sm:p-8 flex flex-col relative ${
                   pkg.popular ? "bg-gradient-brand-subtle " + pkg.accent : "bg-card " + pkg.accent
                 }`}
@@ -188,7 +204,12 @@ export default function PricingPage() {
       {/* Add-ons */}
       <section className="relative z-10 pb-24 px-4">
         <div className="container max-w-3xl mx-auto">
-          <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
+          <motion.h2
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            custom={0}
             className="text-2xl sm:text-4xl font-serif font-bold text-center mb-10"
           >
             Add-on <span className="text-gradient">services</span>
@@ -197,7 +218,11 @@ export default function PricingPage() {
             {ADD_ONS.map((addon, i) => (
               <motion.div
                 key={i}
-                initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeUp}
+                custom={i}
                 className={`flex items-center justify-between p-5 ${
                   i < ADD_ONS.length - 1 ? "border-b border-border/50" : ""
                 }`}
@@ -220,17 +245,26 @@ export default function PricingPage() {
       {/* Guarantee */}
       <section className="relative z-10 py-20 px-4">
         <div className="container max-w-3xl mx-auto text-center">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            custom={0}
             className="rounded-2xl border border-primary/20 bg-gradient-brand-subtle p-10 sm:p-14"
           >
             <h2 className="text-3xl sm:text-4xl font-serif font-bold mb-4">
               100% <span className="text-gradient">Satisfaction Guarantee</span>
             </h2>
             <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-              Not happy with the result? We'll revise it until you are. If you're still not satisfied, we'll refund you. No questions asked.
+              Not happy with the result? We'll revise it until you are. If you're still not satisfied, we'll refund you.
+              No questions asked.
             </p>
             <Link to="/order">
-              <Button size="lg" className="w-full sm:w-auto bg-gradient-brand border-0 font-semibold h-13 px-10 shadow-glow gold-shimmer">
+              <Button
+                size="lg"
+                className="w-full sm:w-auto bg-gradient-brand border-0 font-semibold h-13 px-10 shadow-glow gold-shimmer"
+              >
                 Get Started Now <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
