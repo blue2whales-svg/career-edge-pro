@@ -241,8 +241,8 @@ export default function CVBuilderPage() {
                     key={t.id}
                     onClick={() => setTemplate(t.id as any)}
                     style={{
-                      width: "80px",
-                      height: "104px",
+                      width: "104px",
+                      height: "156px",
                       borderRadius: "4px",
                       border: template === t.id ? `2px solid #c9a84c` : "2px solid transparent",
                       padding: 0,
