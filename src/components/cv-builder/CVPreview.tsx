@@ -346,7 +346,7 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
                       {s}
                     </span>
                   ))}
-                {data.softSkills && data.softSkills.map((s, i) => (
+                {data.softSkills && <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>{data.softSkills.map((s, i) => (
                       <span
                         key={i}
                         style={{
@@ -361,9 +361,9 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
                       >
                         {s}
                       </span>
-                    ))}
-              </div>
-            </Section>
+                    ))}</div>
+          </div>
+        </Section>
           )}
 
           {/* Languages */}
