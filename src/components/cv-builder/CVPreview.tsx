@@ -283,13 +283,10 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
                     {job.responsibilities && (
                       <ul style={{ marginTop: "5px", paddingLeft: "14px" }}>
                         {job.responsibilities.map((line, j) => (
-                  <li
-                    key={j}
-                    style={{ fontSize: "10px", color: "#444", lineHeight: 1.6 }}
-                  >
-                    {line}
-                  </li>
-                ))}
+                          <li key={j} style={{ fontSize: "10px", color: "#444", lineHeight: 1.6 }}>
+                            {line}
+                          </li>
+                        ))}
                       </ul>
                     )}
                   </div>
@@ -330,44 +327,44 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
           )}
 
           {/* Skills */}
-        {data.softSkills && data.softSkills.map((s, i) => (
-          <Section title="Skills">
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
-            {data.hardSkills.map((s, i) => (
-                    <span
-                      key={i}
-                      style={{
-                        background: "rgba(201,168,76,0.1)",
-                        border: "1px solid rgba(201,168,76,0.4)",
-                        color: "#1a1a2e",
-                        fontSize: "9px",
-                        fontWeight: 600,
-                        padding: "2px 10px",
-                        borderRadius: "100px",
-                      }}
-                    >
-                      {s}
-                    </span>
-                  ))}
-        {data.softSkills && data.softSkills.map((s, i) => ( display: "flex", flexWrap: "wrap", gap: "5px" }}>{data.softSkills.map((s, i) => (
-                      <span
-                        key={i}
-                        style={{
-                          background: "rgba(26,26,46,0.06)",
-                          border: "1px solid rgba(26,26,46,0.15)",
-                          color: "#555",
-                          fontSize: "9px",
-                          fontWeight: 600,
-                          padding: "2px 10px",
-                          borderRadius: "100px",
-                        }}
-                      >
-                        {s}
-                      </span>
-                    ))}
-            </div>
-          </Section>
-        )}
+          {(data.hardSkills?.length > 0 || data.softSkills?.length > 0) && (
+            <Section title="Skills">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
+                {data.hardSkills?.map((s, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      background: "rgba(201,168,76,0.1)",
+                      border: "1px solid rgba(201,168,76,0.4)",
+                      color: "#1a1a2e",
+                      fontSize: "9px",
+                      fontWeight: 600,
+                      padding: "2px 10px",
+                      borderRadius: "100px",
+                    }}
+                  >
+                    {s}
+                  </span>
+                ))}
+                {data.softSkills?.map((s, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      background: "rgba(26,26,46,0.06)",
+                      border: "1px solid rgba(26,26,46,0.15)",
+                      color: "#555",
+                      fontSize: "9px",
+                      fontWeight: 600,
+                      padding: "2px 10px",
+                      borderRadius: "100px",
+                    }}
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </Section>
+          )}
 
           {/* Languages */}
           {data.languages && data.languages.filter((l) => l.name).length > 0 && (
