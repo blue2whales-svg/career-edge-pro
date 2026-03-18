@@ -217,8 +217,9 @@ export default function CVBuilderPage() {
                   gap: "12px",
                   padding: "12px 8px",
                   marginBottom: "8px",
-                  alignItems: "flex-end",
-                  justifyContent: "center",
+                  alignItems: "start",
+            justifyContent: "start",
+          }}
                 }}
               >
                 {[
@@ -240,8 +241,8 @@ export default function CVBuilderPage() {
                     key={t.id}
                     onClick={() => setTemplate(t.id as any)}
                     style={{
-                      width: "72px",
-                      height: "94px",
+                      width: "80px",
+                      height: "104px",
                       borderRadius: "4px",
                       border: template === t.id ? `2px solid #c9a84c` : "2px solid transparent",
                       padding: 0,
