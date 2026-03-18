@@ -265,6 +265,7 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
             <Section title="Work Experience">
               {data.workExperience
                 .filter((j) => j.jobTitle)
+                .map((job, i) => (
                   <div key={i} style={{ marginBottom: "14px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                       <div>
