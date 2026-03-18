@@ -112,7 +112,7 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
               {data.phone && <span>📞 {data.phone}</span>}
               {data.email && <span>✉️ {data.email}</span>}
               {data.location && <span>📍 {data.location}</span>}
-              {data.linkedInUrl && <span>🔗 {data.linkedInUrl}</span>}
+              {data.linkedinUrl && <span>🔗 {data.linkedinUrl}</span>}
               {!data.phone && !data.email && (
                 <span style={{ color: "rgba(170,180,204,0.35)" }}>
                   your@email.com · +254 700 000000 · Nairobi, Kenya
@@ -265,11 +265,11 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
             <Section title="Work Experience">
               {data.workExperience
                 .filter((j) => j.title)
-                .map((job, i) => (
+                .filter((j) => j.jobTitle)
                   <div key={i} style={{ marginBottom: "14px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                       <div>
-                        <div style={{ fontSize: "12px", fontWeight: 700, color: "#1a1a2e" }}>{job.title}</div>
+                        <div style={{ fontSize: "12px", fontWeight: 700, color: "#1a1a2e" }}>{job.jobTitle}</div>
                         <div style={{ fontSize: "11px", color: "#c9a84c", fontWeight: 600 }}>
                           {job.company}
                           {job.location ? ` · ${job.location}` : ""}
@@ -277,12 +277,12 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
                       </div>
                       <div style={{ fontSize: "10px", color: "#999", whiteSpace: "nowrap", marginLeft: "8px" }}>
                         {job.startDate}
-                        {job.endDate ? ` – ${job.endDate}` : job.current ? " – Present" : ""}
+                        {job.endDate ? ` – ${job.endDate}` : job.isPresent ? " – Present" : ""}
                       </div>
                     </div>
-                    {job.description && (
+                    {job.responsibilities && (
                       <ul style={{ marginTop: "5px", paddingLeft: "14px" }}>
-                        {job.description
+                        {job.responsibilities
                           .split("\n")
                           .filter(Boolean)
                           .map((line, j) => (
@@ -307,14 +307,14 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
           )}
 
           {/* Education */}
-          {data.education && data.education.filter((e) => e.degree).length > 0 ? (
+          {data.education && data.education.filter((e) => e.qualification).length > 0 ? (
             <Section title="Education">
               {data.education
-                .filter((e) => e.degree)
+                .filter((e) => e.qualification)
                 .map((edu, i) => (
                   <div key={i} style={{ marginBottom: "10px", display: "flex", justifyContent: "space-between" }}>
                     <div>
-                      <div style={{ fontSize: "12px", fontWeight: 700, color: "#1a1a2e" }}>{edu.degree}</div>
+                      <div style={{ fontSize: "12px", fontWeight: 700, color: "#1a1a2e" }}>{edu.qualification}</div>
                       <div style={{ fontSize: "11px", color: "#666" }}>{edu.institution}</div>
                     </div>
                     <div style={{ fontSize: "10px", color: "#999", whiteSpace: "nowrap", marginLeft: "8px" }}>
