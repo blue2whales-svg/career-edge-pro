@@ -212,9 +212,9 @@ export default function CVBuilderPage() {
             {(!isMobile || showPreview) && (
               <div
                 style={{
-                  display: "flex",
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, 1fr)",
                   gap: "12px",
-                  flexWrap: "wrap",
                   padding: "12px 8px",
                   marginBottom: "8px",
                   alignItems: "flex-end",
