@@ -5,9 +5,9 @@ import { useEffect, useCallback } from "react";
 interface Props {
   data: CVData;
   isPaid?: boolean;
+  template?: "executive" | "clean" | "sidebar" | "minimal" | "creative" | "corporate";
 }
-
-export default function CVPreview({ data, isPaid = false }: Props) {
+export default function CVPreview({ data, isPaid = false, template = "executive" }: Props) {
   const market = data.targetMarket || "kenya";
   const showPersonalDetails = market === "kenya";
   const showDOB = data.showDOB && showPersonalDetails;
