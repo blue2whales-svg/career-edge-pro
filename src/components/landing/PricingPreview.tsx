@@ -15,27 +15,21 @@ const fadeUp = {
 const PACKAGES = [
   {
     name: "Starter",
-    price: "KES 2,500",
+    price: "KES 1,490",
     originalPrice: "KES 5,000",
-    desc: "Entry-level, fast delivery",
-    features: ["Professional CV Writing", "ATS-Optimised Format", "Same-Day Delivery", "1 Revision"],
-    popular: false,
+    ...
   },
   {
     name: "Professional",
-    price: "KES 4,500",
+    price: "KES 2,490",
     originalPrice: "KES 9,000",
-    desc: "Most Popular — full package",
-    features: ["CV + Cover Letter + LinkedIn", "ATS-Optimised", "Delivered < 3 Hours", "2 Revisions", "Dedicated Specialist"],
-    popular: true,
+    ...
   },
   {
     name: "Executive",
-    price: "KES 7,900",
+    price: "KES 5,490",
     originalPrice: "KES 15,000",
-    desc: "Premium — human-reviewed",
-    features: ["Executive CV + Cover Letter", "LinkedIn + Executive Bio", "Human Editor Review", "Delivered < 6 Hours", "Unlimited Revisions"],
-    popular: false,
+    ...
   },
 ];
 
