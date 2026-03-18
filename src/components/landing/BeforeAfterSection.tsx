@@ -1,5 +1,3 @@
-import React from "react";
-
 const missingItems = [
   "No professional summary",
   "No quantified achievements",
@@ -18,211 +16,123 @@ const addedItems = [
   "Clean two-column visual layout",
 ];
 
+const skills = ["B2B Sales", "CRM Tools", "Negotiation", "Team Leadership", "Data Analysis", "Revenue Growth"];
+
 export default function BeforeAfterSection() {
   return (
-    <section style={{ background: "#0d0d0d", padding: "72px 24px", fontFamily: "'DM Sans', sans-serif" }}>
+    <section className="cvba-wrap">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=EB+Garamond:wght@400;500&display=swap');
-        .cvbefore-doc { background: #f8f7f4; padding: 24px 22px; font-family: 'Times New Roman', serif; border-radius: 10px; overflow: hidden; }
-        .cvafter-doc { background: #fff; display: grid; grid-template-columns: 110px 1fr; border-radius: 10px; overflow: hidden; }
-        .cvafter-sidebar { background: #1a2a3a; padding: 20px 12px; }
-        .cvafter-main { padding: 20px 20px; }
-        .cv-m-bullet { font-size: 8.5px; color: #555; margin: 0 0 3px; padding-left: 12px; position: relative; line-height: 1.5; }
-        .cv-m-bullet::before { content: '▸'; position: absolute; left: 0; color: #c9a84c; font-size: 8px; }
-        .cv-b-bullet { font-size: 8.5px; color: #888; margin: 0 0 2px; padding-left: 10px; line-height: 1.5; }
-        .cv-missing-item { display: flex; align-items: center; gap: 6px; font-size: 8.5px; color: #c0392b; margin-bottom: 3px; font-family: 'DM Sans', sans-serif; }
-        .cv-missing-item::before { content: '✕'; font-size: 9px; flex-shrink: 0; }
-        .cv-added-item { display: flex; align-items: center; gap: 6px; font-size: 8.5px; color: #1a7a40; margin-bottom: 3px; font-family: 'DM Sans', sans-serif; }
-        .cv-added-item::before { content: '✓'; font-size: 9px; font-weight: 700; flex-shrink: 0; }
+        .cvba-wrap { background: #0d0d0d; padding: 72px 24px; font-family: 'DM Sans', sans-serif; }
+        .cvba-headline { text-align: center; margin-bottom: 48px; }
+        .cvba-headline h2 { font-family: 'Playfair Display', serif; font-size: clamp(24px, 3.5vw, 42px); color: #f0ead8; font-weight: 400; margin: 0 0 10px; }
+        .cvba-headline h2 em { color: #c9a84c; font-style: italic; }
+        .cvba-headline p { color: #666; font-size: 14px; font-weight: 300; margin: 0; letter-spacing: 0.03em; }
+        .cvba-stage { display: grid; grid-template-columns: 1fr 1.55fr; gap: 28px; max-width: 980px; margin: 0 auto; align-items: start; }
+        .cvba-col { display: flex; flex-direction: column; gap: 12px; }
+        .cvba-tag { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; padding: 5px 14px; border-radius: 20px; width: fit-content; }
+        .cvba-tag-before { background: #1e1e1e; color: #888; border: 1px solid #2a2a2a; }
+        .cvba-tag-after { background: #1c160a; color: #c9a84c; border: 1px solid #c9a84c55; }
+        .cvba-tag-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; display: inline-block; }
+        .cvba-outer { position: relative; border-radius: 10px; }
+        .cvba-outer-before { box-shadow: 0 20px 60px rgba(200,50,50,0.2), 0 8px 24px rgba(0,0,0,0.7); }
+        .cvba-outer-after { box-shadow: 0 20px 80px rgba(201,168,76,0.24), 0 8px 32px rgba(0,0,0,0.7); }
+        .cvba-badge { position: absolute; top: -14px; right: -14px; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; z-index: 10; border: 2.5px solid #0d0d0d; }
+        .cvba-badge-x { background: #c0392b; color: #fff; }
+        .cvba-badge-check { background: #27ae60; color: #fff; }
+        .cvba-before-doc { background: #f8f7f4; padding: 24px 22px; font-family: 'Times New Roman', serif; border-radius: 10px; overflow: hidden; }
+        .cvba-b-name { font-size: 15px; font-weight: bold; color: #222; text-align: center; margin: 0 0 2px; }
+        .cvba-b-contact { text-align: center; font-size: 9px; color: #888; margin: 0 0 12px; }
+        .cvba-b-hr { border: none; border-top: 1.5px solid #ccc; margin: 0 0 9px; }
+        .cvba-b-sec { font-size: 9.5px; font-weight: bold; color: #222; text-transform: uppercase; letter-spacing: 0.07em; margin: 0 0 4px; }
+        .cvba-b-body { font-size: 8.5px; color: #777; line-height: 1.6; margin: 0 0 9px; }
+        .cvba-b-job { font-size: 9px; font-weight: bold; color: #555; margin: 0 0 2px; }
+        .cvba-b-bullet { font-size: 8.5px; color: #888; margin: 0 0 2px; padding-left: 10px; line-height: 1.5; }
+        .cvba-b-skills { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
+        .cvba-b-skill { font-size: 8px; color: #999; background: #eee; padding: 2px 6px; border-radius: 2px; }
+        .cvba-missing-box { padding: 10px 12px; background: #fff0f0; border-radius: 6px; border: 1px solid #f5c0c0; }
+        .cvba-missing-title { font-size: 9px; font-weight: 700; color: #c0392b; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 6px; font-family: 'DM Sans', sans-serif; }
+        .cvba-missing-item { display: flex; align-items: center; gap: 6px; font-size: 8.5px; color: #c0392b; margin-bottom: 3px; font-family: 'DM Sans', sans-serif; }
+        .cvba-missing-item::before { content: '✕'; font-size: 9px; flex-shrink: 0; }
+        .cvba-after-doc { background: #fff; display: grid; grid-template-columns: 110px 1fr; border-radius: 10px; overflow: hidden; }
+        .cvba-sidebar { background: #1a2a3a; padding: 20px 12px; }
+        .cvba-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #c9a84c, #e8c96a); margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 18px; color: #fff; font-weight: 600; }
+        .cvba-s-sec { font-size: 8px; text-transform: uppercase; letter-spacing: 0.12em; color: #c9a84c; font-family: 'DM Sans', sans-serif; font-weight: 500; margin: 0 0 6px; padding-bottom: 3px; border-bottom: 1px solid #c9a84c44; }
+        .cvba-s-gap { margin-bottom: 14px; }
+        .cvba-s-item { font-size: 8px; color: #aab8c5; line-height: 1.7; font-family: 'DM Sans', sans-serif; margin: 0; }
+        .cvba-s-item-gold { font-size: 8px; color: #c9a84c; line-height: 1.7; font-family: 'DM Sans', sans-serif; margin: 0; }
+        .cvba-s-item-light { font-size: 8px; color: #dde6ed; font-weight: 500; line-height: 1.7; font-family: 'DM Sans', sans-serif; margin: 0; }
+        .cvba-s-skill { font-size: 7.5px; color: #c9a84c; background: #c9a84c15; border: 1px solid #c9a84c33; padding: 2px 6px; border-radius: 2px; margin: 2px 2px 0 0; display: inline-block; font-family: 'DM Sans', sans-serif; }
+        .cvba-main { padding: 20px; }
+        .cvba-m-name { font-family: 'Playfair Display', serif; font-size: 19px; color: #1a2a3a; font-weight: 700; margin: 0 0 2px; }
+        .cvba-m-title { font-size: 9px; color: #c9a84c; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; margin: 0 0 10px; }
+        .cvba-m-contacts { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1.5px solid #1a2a3a18; }
+        .cvba-m-contact { font-size: 8px; color: #888; }
+        .cvba-m-sec { font-size: 8px; text-transform: uppercase; letter-spacing: 0.12em; color: #1a2a3a; font-weight: 700; margin: 10px 0 5px; padding-bottom: 3px; border-bottom: 1.5px solid #1a2a3a22; }
+        .cvba-m-summary { font-family: 'EB Garamond', serif; font-size: 10px; color: #555; line-height: 1.7; margin: 0 0 2px; }
+        .cvba-m-jobrow { display: flex; justify-content: space-between; margin-bottom: 1px; }
+        .cvba-m-jobtitle { font-size: 9px; font-weight: 600; color: #1a2a3a; }
+        .cvba-m-jobdate { font-size: 8px; color: #c9a84c; font-weight: 500; }
+        .cvba-m-jobco { font-size: 8px; color: #888; margin: 0 0 4px; font-style: italic; }
+        .cvba-m-bullet { font-size: 8.5px; color: #555; margin: 0 0 3px; padding-left: 12px; position: relative; line-height: 1.5; }
+        .cvba-m-bullet::before { content: '▸'; position: absolute; left: 0; color: #c9a84c; font-size: 8px; }
+        .cvba-m-hl { color: #1a2a3a; font-weight: 600; }
+        .cvba-added-box { padding: 10px 12px; background: #f0fff5; border-radius: 6px; border: 1px solid #a8e6c0; margin-top: 10px; }
+        .cvba-added-title { font-size: 9px; font-weight: 700; color: #1a7a40; text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 6px; font-family: 'DM Sans', sans-serif; }
+        .cvba-added-item { display: flex; align-items: center; gap: 6px; font-size: 8.5px; color: #1a7a40; margin-bottom: 3px; font-family: 'DM Sans', sans-serif; }
+        .cvba-added-item::before { content: '✓'; font-size: 9px; font-weight: 700; flex-shrink: 0; }
         @media (max-width: 640px) {
-          .cvafter-doc { grid-template-columns: 90px 1fr !important; }
-          .cv-stage { grid-template-columns: 1fr !important; }
+          .cvba-stage { grid-template-columns: 1fr; }
+          .cvba-after-doc { grid-template-columns: 90px 1fr; }
         }
       `}</style>
 
-      {/* Headline */}
-      <div style={{ textAlign: "center", marginBottom: 48 }}>
-        <h2
-          style={{
-            fontFamily: "'Playfair Display', serif",
-            fontSize: "clamp(24px, 3.5vw, 42px)",
-            color: "#f0ead8",
-            fontWeight: 400,
-            margin: "0 0 10px",
-          }}
-        >
-          See the difference a <em style={{ color: "#c9a84c" }}>professional CV</em> makes
+      <div className="cvba-headline">
+        <h2>
+          See the difference a <em>professional CV</em> makes
         </h2>
-        <p style={{ color: "#666", fontSize: 14, fontWeight: 300, margin: 0, letterSpacing: "0.03em" }}>
-          Our experts transform ordinary CVs into interview-winning documents
-        </p>
+        <p>Our experts transform ordinary CVs into interview-winning documents</p>
       </div>
 
-      {/* Cards Grid */}
-      <div
-        className="cv-stage"
-        style={{ display: "grid", gridTemplateColumns: "1fr 1.55fr", gap: 28, maxWidth: 980, margin: "0 auto" }}
-      >
-        {/* ── BEFORE ── */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 7,
-              fontSize: 11,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              fontWeight: 500,
-              padding: "5px 14px",
-              borderRadius: 20,
-              width: "fit-content",
-              background: "#1e1e1e",
-              color: "#888",
-              border: "1px solid #2a2a2a",
-            }}
-          >
-            <span
-              style={{ width: 5, height: 5, borderRadius: "50%", background: "currentColor", display: "inline-block" }}
-            />
+      <div className="cvba-stage">
+        {/* BEFORE */}
+        <div className="cvba-col">
+          <span className="cvba-tag cvba-tag-before">
+            <span className="cvba-tag-dot" />
             Before CVEdge
           </span>
-          <div
-            style={{
-              position: "relative",
-              borderRadius: 10,
-              boxShadow: "0 20px 60px rgba(200,50,50,0.18), 0 8px 24px rgba(0,0,0,0.7)",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                top: -14,
-                right: -14,
-                width: 34,
-                height: 34,
-                borderRadius: "50%",
-                background: "#c0392b",
-                color: "#fff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 15,
-                fontWeight: 700,
-                zIndex: 10,
-                border: "2.5px solid #0d0d0d",
-              }}
-            >
-              ✕
-            </div>
-            <div className="cvbefore-doc">
-              <p style={{ fontSize: 15, fontWeight: "bold", color: "#222", textAlign: "center", margin: "0 0 2px" }}>
-                John Kamau
-              </p>
-              <p style={{ textAlign: "center", fontSize: 9, color: "#888", margin: "0 0 12px" }}>
-                johnkamau@gmail.com | 0712 345 678 | Nairobi
-              </p>
-              <hr style={{ border: "none", borderTop: "1.5px solid #ccc", margin: "0 0 9px" }} />
-              <p
-                style={{
-                  fontSize: 9.5,
-                  fontWeight: "bold",
-                  color: "#222",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.07em",
-                  margin: "0 0 4px",
-                }}
-              >
-                Objective
-              </p>
-              <p style={{ fontSize: 8.5, color: "#777", lineHeight: 1.6, margin: "0 0 9px" }}>
+          <div className="cvba-outer cvba-outer-before">
+            <div className="cvba-badge cvba-badge-x">✕</div>
+            <div className="cvba-before-doc">
+              <p className="cvba-b-name">John Kamau</p>
+              <p className="cvba-b-contact">johnkamau@gmail.com | 0712 345 678 | Nairobi</p>
+              <hr className="cvba-b-hr" />
+              <p className="cvba-b-sec">Objective</p>
+              <p className="cvba-b-body">
                 I am looking for a job where I can use my skills and grow in a company that values hard work and
                 dedication.
               </p>
-              <hr style={{ border: "none", borderTop: "1.5px solid #ccc", margin: "0 0 9px" }} />
-              <p
-                style={{
-                  fontSize: 9.5,
-                  fontWeight: "bold",
-                  color: "#222",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.07em",
-                  margin: "0 0 4px",
-                }}
-              >
-                Work Experience
-              </p>
-              <p style={{ fontSize: 9, fontWeight: "bold", color: "#555", margin: "0 0 2px" }}>
-                Sales Executive – ABC Company (2020–2023)
-              </p>
-              {[
-                "Did sales and marketing",
-                "Helped grow the business",
-                "Worked with the team on tasks",
-                "Was responsible for customer service",
-              ].map((b) => (
-                <p key={b} className="cv-b-bullet">
-                  • {b}
-                </p>
-              ))}
-              <hr style={{ border: "none", borderTop: "1.5px solid #ccc", margin: "9px 0" }} />
-              <p
-                style={{
-                  fontSize: 9.5,
-                  fontWeight: "bold",
-                  color: "#222",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.07em",
-                  margin: "0 0 4px",
-                }}
-              >
-                Education
-              </p>
-              <p style={{ fontSize: 8.5, color: "#777", margin: "0 0 9px" }}>
-                Bachelor of Commerce – University of Nairobi (2019)
-              </p>
-              <hr style={{ border: "none", borderTop: "1.5px solid #ccc", margin: "0 0 9px" }} />
-              <p
-                style={{
-                  fontSize: 9.5,
-                  fontWeight: "bold",
-                  color: "#222",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.07em",
-                  margin: "0 0 6px",
-                }}
-              >
-                Skills
-              </p>
-              <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 12 }}>
-                {["Communication", "Teamwork", "Microsoft Office"].map((s) => (
-                  <span
-                    key={s}
-                    style={{ fontSize: 8, color: "#999", background: "#eee", padding: "2px 6px", borderRadius: 2 }}
-                  >
-                    {s}
-                  </span>
-                ))}
+              <hr className="cvba-b-hr" />
+              <p className="cvba-b-sec">Work Experience</p>
+              <p className="cvba-b-job">Sales Executive – ABC Company (2020–2023)</p>
+              <p className="cvba-b-bullet">• Did sales and marketing</p>
+              <p className="cvba-b-bullet">• Helped grow the business</p>
+              <p className="cvba-b-bullet">• Worked with the team on tasks</p>
+              <p className="cvba-b-bullet">• Was responsible for customer service</p>
+              <hr className="cvba-b-hr" />
+              <p className="cvba-b-sec">Education</p>
+              <p className="cvba-b-body">Bachelor of Commerce – University of Nairobi (2019)</p>
+              <hr className="cvba-b-hr" />
+              <p className="cvba-b-sec">Skills</p>
+              <div className="cvba-b-skills">
+                <span className="cvba-b-skill">Communication</span>
+                <span className="cvba-b-skill">Teamwork</span>
+                <span className="cvba-b-skill">Microsoft Office</span>
               </div>
-              {/* Missing list */}
-              <div
-                style={{ padding: "10px 12px", background: "#fff0f0", borderRadius: 6, border: "1px solid #f5c0c0" }}
-              >
-                <p
-                  style={{
-                    fontSize: 9,
-                    fontWeight: 700,
-                    color: "#c0392b",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                    margin: "0 0 6px",
-                    fontFamily: "'DM Sans', sans-serif",
-                  }}
-                >
-                  Missing elements
-                </p>
+              <div className="cvba-missing-box">
+                <p className="cvba-missing-title">Missing elements</p>
                 {missingItems.map((item) => (
-                  <div key={item} className="cv-missing-item">
+                  <div key={item} className="cvba-missing-item">
                     {item}
                   </div>
                 ))}
@@ -231,379 +141,93 @@ export default function BeforeAfterSection() {
           </div>
         </div>
 
-        {/* ── AFTER ── */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 7,
-              fontSize: 11,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              fontWeight: 500,
-              padding: "5px 14px",
-              borderRadius: 20,
-              width: "fit-content",
-              background: "#1c160a",
-              color: "#c9a84c",
-              border: "1px solid #c9a84c55",
-            }}
-          >
-            <span
-              style={{ width: 5, height: 5, borderRadius: "50%", background: "currentColor", display: "inline-block" }}
-            />
+        {/* AFTER */}
+        <div className="cvba-col">
+          <span className="cvba-tag cvba-tag-after">
+            <span className="cvba-tag-dot" />
             After CVEdge ✓
           </span>
-          <div
-            style={{
-              position: "relative",
-              borderRadius: 10,
-              boxShadow: "0 20px 80px rgba(201,168,76,0.22), 0 8px 32px rgba(0,0,0,0.7)",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                top: -14,
-                right: -14,
-                width: 34,
-                height: 34,
-                borderRadius: "50%",
-                background: "#27ae60",
-                color: "#fff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 15,
-                fontWeight: 700,
-                zIndex: 10,
-                border: "2.5px solid #0d0d0d",
-              }}
-            >
-              ✓
-            </div>
-            <div className="cvafter-doc">
-              {/* Sidebar */}
-              <div className="cvafter-sidebar">
-                <div
-                  style={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: "50%",
-                    background: "linear-gradient(135deg,#c9a84c,#e8c96a)",
-                    margin: "0 auto 14px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontFamily: "'Playfair Display', serif",
-                    fontSize: 18,
-                    color: "#fff",
-                    fontWeight: 600,
-                  }}
-                >
-                  JK
+          <div className="cvba-outer cvba-outer-after">
+            <div className="cvba-badge cvba-badge-check">✓</div>
+            <div className="cvba-after-doc">
+              <div className="cvba-sidebar">
+                <div className="cvba-avatar">JK</div>
+                <div className="cvba-s-gap">
+                  <div className="cvba-s-sec">Contact</div>
+                  <p className="cvba-s-item">john.kamau@email.com</p>
+                  <p className="cvba-s-item">+254 712 345 678</p>
+                  <p className="cvba-s-item">Nairobi, Kenya</p>
+                  <p className="cvba-s-item-gold">linkedin.com/in/johnkamau</p>
                 </div>
-                {[
-                  {
-                    title: "Contact",
-                    items: ["john.kamau@email.com", "+254 712 345 678", "Nairobi, Kenya"],
-                    extra: { "linkedin.com/in/johnkamau": "#c9a84c" },
-                  },
-                ].map((sec) => (
-                  <div key={sec.title} style={{ marginBottom: 14 }}>
-                    <div
-                      style={{
-                        fontSize: 8,
-                        textTransform: "uppercase" as const,
-                        letterSpacing: "0.12em",
-                        color: "#c9a84c",
-                        fontFamily: "'DM Sans', sans-serif",
-                        fontWeight: 500,
-                        marginBottom: 6,
-                        paddingBottom: 3,
-                        borderBottom: "1px solid #c9a84c44",
-                      }}
-                    >
-                      {sec.title}
-                    </div>
-                    {sec.items.map((i) => (
-                      <p
-                        key={i}
-                        style={{ fontSize: 8, color: "#aab8c5", lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}
-                      >
-                        {i}
-                      </p>
-                    ))}
-                    {Object.entries(sec.extra || {}).map(([k, v]) => (
-                      <p
-                        key={k}
-                        style={{
-                          fontSize: 8,
-                          color: v as string,
-                          lineHeight: 1.7,
-                          fontFamily: "'DM Sans', sans-serif",
-                        }}
-                      >
-                        {k}
-                      </p>
-                    ))}
-                  </div>
-                ))}
-                <div style={{ marginBottom: 14 }}>
-                  <div
-                    style={{
-                      fontSize: 8,
-                      textTransform: "uppercase" as const,
-                      letterSpacing: "0.12em",
-                      color: "#c9a84c",
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontWeight: 500,
-                      marginBottom: 6,
-                      paddingBottom: 3,
-                      borderBottom: "1px solid #c9a84c44",
-                    }}
-                  >
-                    Core Skills
-                  </div>
-                  {["B2B Sales", "CRM Tools", "Negotiation", "Team Leadership", "Data Analysis", "Revenue Growth"].map(
-                    (s) => (
-                      <span
-                        key={s}
-                        style={{
-                          fontSize: 7.5,
-                          color: "#c9a84c",
-                          background: "#c9a84c15",
-                          border: "1px solid #c9a84c33",
-                          padding: "2px 6px",
-                          borderRadius: 2,
-                          margin: "2px 2px 0 0",
-                          display: "inline-block",
-                          fontFamily: "'DM Sans', sans-serif",
-                        }}
-                      >
-                        {s}
-                      </span>
-                    ),
-                  )}
-                </div>
-                <div style={{ marginBottom: 14 }}>
-                  <div
-                    style={{
-                      fontSize: 8,
-                      textTransform: "uppercase" as const,
-                      letterSpacing: "0.12em",
-                      color: "#c9a84c",
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontWeight: 500,
-                      marginBottom: 6,
-                      paddingBottom: 3,
-                      borderBottom: "1px solid #c9a84c44",
-                    }}
-                  >
-                    Certifications
-                  </div>
-                  <p
-                    style={{
-                      fontSize: 8,
-                      color: "#dde6ed",
-                      fontWeight: 500,
-                      fontFamily: "'DM Sans', sans-serif",
-                      lineHeight: 1.7,
-                    }}
-                  >
-                    HubSpot Sales Certified
-                  </p>
-                  <p style={{ fontSize: 8, color: "#aab8c5", fontFamily: "'DM Sans', sans-serif", lineHeight: 1.7 }}>
-                    Google Analytics
-                  </p>
-                  <p style={{ fontSize: 8, color: "#aab8c5", fontFamily: "'DM Sans', sans-serif", lineHeight: 1.7 }}>
-                    CIM Diploma
-                  </p>
-                </div>
-                <div>
-                  <div
-                    style={{
-                      fontSize: 8,
-                      textTransform: "uppercase" as const,
-                      letterSpacing: "0.12em",
-                      color: "#c9a84c",
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontWeight: 500,
-                      marginBottom: 6,
-                      paddingBottom: 3,
-                      borderBottom: "1px solid #c9a84c44",
-                    }}
-                  >
-                    Languages
-                  </div>
-                  <p style={{ fontSize: 8, color: "#aab8c5", fontFamily: "'DM Sans', sans-serif", lineHeight: 1.7 }}>
-                    English – Fluent
-                  </p>
-                  <p style={{ fontSize: 8, color: "#aab8c5", fontFamily: "'DM Sans', sans-serif", lineHeight: 1.7 }}>
-                    Kiswahili – Native
-                  </p>
-                </div>
-              </div>
-              {/* Main */}
-              <div className="cvafter-main">
-                <p
-                  style={{
-                    fontFamily: "'Playfair Display', serif",
-                    fontSize: 19,
-                    color: "#1a2a3a",
-                    fontWeight: 700,
-                    margin: "0 0 2px",
-                    letterSpacing: "-0.01em",
-                  }}
-                >
-                  John Kamau
-                </p>
-                <p
-                  style={{
-                    fontSize: 9,
-                    color: "#c9a84c",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.1em",
-                    fontWeight: 500,
-                    margin: "0 0 10px",
-                  }}
-                >
-                  Senior Sales Executive · B2B Growth Specialist
-                </p>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 12,
-                    flexWrap: "wrap" as const,
-                    marginBottom: 10,
-                    paddingBottom: 10,
-                    borderBottom: "1.5px solid #1a2a3a18",
-                  }}
-                >
-                  {["📍 Nairobi, Kenya", "✉ john.kamau@email.com", "🔗 linkedin.com/in/johnkamau"].map((c) => (
-                    <span key={c} style={{ fontSize: 8, color: "#888" }}>
-                      {c}
+                <div className="cvba-s-gap">
+                  <div className="cvba-s-sec">Core Skills</div>
+                  {skills.map((s) => (
+                    <span key={s} className="cvba-s-skill">
+                      {s}
                     </span>
                   ))}
                 </div>
-                <p
-                  style={{
-                    fontSize: 8,
-                    textTransform: "uppercase" as const,
-                    letterSpacing: "0.12em",
-                    color: "#1a2a3a",
-                    fontWeight: 700,
-                    margin: "10px 0 5px",
-                    paddingBottom: 3,
-                    borderBottom: "1.5px solid #1a2a3a22",
-                  }}
-                >
-                  Professional Summary
-                </p>
-                <p
-                  style={{
-                    fontFamily: "'EB Garamond', serif",
-                    fontSize: 10,
-                    color: "#555",
-                    lineHeight: 1.7,
-                    margin: "0 0 2px",
-                  }}
-                >
+                <div className="cvba-s-gap">
+                  <div className="cvba-s-sec">Certifications</div>
+                  <p className="cvba-s-item-light">HubSpot Sales Certified</p>
+                  <p className="cvba-s-item">Google Analytics</p>
+                  <p className="cvba-s-item">CIM Diploma</p>
+                </div>
+                <div>
+                  <div className="cvba-s-sec">Languages</div>
+                  <p className="cvba-s-item">English – Fluent</p>
+                  <p className="cvba-s-item">Kiswahili – Native</p>
+                </div>
+              </div>
+
+              <div className="cvba-main">
+                <p className="cvba-m-name">John Kamau</p>
+                <p className="cvba-m-title">Senior Sales Executive · B2B Growth Specialist</p>
+                <div className="cvba-m-contacts">
+                  <span className="cvba-m-contact">Nairobi, Kenya</span>
+                  <span className="cvba-m-contact">john.kamau@email.com</span>
+                  <span className="cvba-m-contact">linkedin.com/in/johnkamau</span>
+                </div>
+                <p className="cvba-m-sec">Professional Summary</p>
+                <p className="cvba-m-summary">
                   Results-driven sales professional with 4+ years driving B2B revenue across East African markets.
                   Consistent record of exceeding targets by 35%+ and managing client portfolios worth KES 120M annually.
                 </p>
-                <p
-                  style={{
-                    fontSize: 8,
-                    textTransform: "uppercase" as const,
-                    letterSpacing: "0.12em",
-                    color: "#1a2a3a",
-                    fontWeight: 700,
-                    margin: "10px 0 5px",
-                    paddingBottom: 3,
-                    borderBottom: "1.5px solid #1a2a3a22",
-                  }}
-                >
-                  Experience
-                </p>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 1 }}>
-                  <span style={{ fontSize: 9, fontWeight: 600, color: "#1a2a3a" }}>Senior Sales Executive</span>
-                  <span style={{ fontSize: 8, color: "#c9a84c", fontWeight: 500 }}>2020 – 2023</span>
+                <p className="cvba-m-sec">Experience</p>
+                <div className="cvba-m-jobrow">
+                  <span className="cvba-m-jobtitle">Senior Sales Executive</span>
+                  <span className="cvba-m-jobdate">2020 – 2023</span>
                 </div>
-                <p style={{ fontSize: 8, color: "#888", margin: "0 0 4px", fontStyle: "italic" }}>
-                  ABC Company · Nairobi, Kenya
+                <p className="cvba-m-jobco">ABC Company · Nairobi, Kenya</p>
+                <p className="cvba-m-bullet">
+                  Grew regional revenue by <strong className="cvba-m-hl">38%</strong> in 18 months through targeted B2B
+                  campaigns
                 </p>
-                {[
-                  <>
-                    Grew regional revenue by <strong style={{ color: "#1a2a3a" }}>38%</strong> in 18 months through
-                    targeted B2B campaigns
-                  </>,
-                  <>
-                    Managed <strong style={{ color: "#1a2a3a" }}>45+ enterprise clients</strong> worth KES 120M annually
-                  </>,
-                  <>
-                    Mentored <strong style={{ color: "#1a2a3a" }}>6 sales reps</strong> across 3 counties, hitting 110%
-                    of team quota
-                  </>,
-                ].map((b, i) => (
-                  <p key={i} className="cv-m-bullet">
-                    {b}
-                  </p>
-                ))}
-                <div style={{ display: "flex", justifyContent: "space-between", margin: "8px 0 1px" }}>
-                  <span style={{ fontSize: 9, fontWeight: 600, color: "#1a2a3a" }}>Sales Intern</span>
-                  <span style={{ fontSize: 8, color: "#c9a84c", fontWeight: 500 }}>2019 – 2020</span>
+                <p className="cvba-m-bullet">
+                  Managed <strong className="cvba-m-hl">45+ enterprise clients</strong> worth KES 120M annually
+                </p>
+                <p className="cvba-m-bullet">
+                  Mentored <strong className="cvba-m-hl">6 sales reps</strong> across 3 counties, hitting 110% of team
+                  quota
+                </p>
+                <div className="cvba-m-jobrow" style={{ marginTop: 8 }}>
+                  <span className="cvba-m-jobtitle">Sales Intern</span>
+                  <span className="cvba-m-jobdate">2019 – 2020</span>
                 </div>
-                <p style={{ fontSize: 8, color: "#888", margin: "0 0 4px", fontStyle: "italic" }}>
-                  XYZ Ltd · Nairobi, Kenya
+                <p className="cvba-m-jobco">XYZ Ltd · Nairobi, Kenya</p>
+                <p className="cvba-m-bullet">
+                  Exceeded KPIs by <strong className="cvba-m-hl">52%</strong>, converted to full-time ahead of schedule
                 </p>
-                <p className="cv-m-bullet">
-                  Exceeded KPIs by <strong style={{ color: "#1a2a3a" }}>52%</strong>, converted to full-time ahead of
-                  schedule
-                </p>
-                <p
-                  style={{
-                    fontSize: 8,
-                    textTransform: "uppercase" as const,
-                    letterSpacing: "0.12em",
-                    color: "#1a2a3a",
-                    fontWeight: 700,
-                    margin: "10px 0 5px",
-                    paddingBottom: 3,
-                    borderBottom: "1.5px solid #1a2a3a22",
-                  }}
-                >
-                  Education
-                </p>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ fontSize: 9, fontWeight: 600, color: "#1a2a3a" }}>
-                    B.Com Finance – First Class Honours
-                  </span>
-                  <span style={{ fontSize: 8, color: "#c9a84c", fontWeight: 500 }}>2019</span>
+                <p className="cvba-m-sec">Education</p>
+                <div className="cvba-m-jobrow">
+                  <span className="cvba-m-jobtitle">B.Com Finance – First Class Honours</span>
+                  <span className="cvba-m-jobdate">2019</span>
                 </div>
-                <p style={{ fontSize: 8, color: "#888", margin: "0 0 10px", fontStyle: "italic" }}>
-                  University of Nairobi
-                </p>
-                {/* Added list */}
-                <div
-                  style={{ padding: "10px 12px", background: "#f0fff5", borderRadius: 6, border: "1px solid #a8e6c0" }}
-                >
-                  <p
-                    style={{
-                      fontSize: 9,
-                      fontWeight: 700,
-                      color: "#1a7a40",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.08em",
-                      margin: "0 0 6px",
-                      fontFamily: "'DM Sans', sans-serif",
-                    }}
-                  >
-                    What CVEdge added
-                  </p>
+                <p className="cvba-m-jobco">University of Nairobi</p>
+                <div className="cvba-added-box">
+                  <p className="cvba-added-title">What CVEdge added</p>
                   {addedItems.map((item) => (
-                    <div key={item} className="cv-added-item">
+                    <div key={item} className="cvba-added-item">
                       {item}
                     </div>
                   ))}
