@@ -213,7 +213,7 @@ export default function CVBuilderPage() {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(2, 1fr)",
+                  gridTemplateColumns: "repeat(2, 120px)",
                   gap: "12px",
                   padding: "12px 8px",
                   marginBottom: "8px",
