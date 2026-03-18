@@ -312,8 +312,8 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
                       <div style={{ fontSize: "11px", color: "#666" }}>{edu.institution}</div>
                     </div>
                     <div style={{ fontSize: "10px", color: "#999", whiteSpace: "nowrap", marginLeft: "8px" }}>
-                      {edu.startDate}
-                      {edu.endDate ? ` – ${edu.endDate}` : ""}
+                      {edu.graduationYear}
+                      {""}
                     </div>
                   </div>
                 ))}
