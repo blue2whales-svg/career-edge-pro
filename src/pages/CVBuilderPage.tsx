@@ -208,331 +208,41 @@ export default function CVBuilderPage() {
               </div>
             )}
 
-            {/* Template Switcher */}
-            {
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(2, 120px)",
-                  gap: "12px",
-                  padding: "12px 8px",
-                  marginBottom: "8px",
-                  alignItems: "start",
-                  justifyContent: "start",
-                }}
-              >
-                {[
-                  {
-                    id: "executive",
-                    label: "Executive",
-                    color: "#1a1a2e",
-                    accent: "#c9a84c",
-                    bg: "#1a1a2e",
-                    headerH: 28,
-                  },
-                  { id: "clean", label: "Clean", color: "#fff", accent: "#2563eb", bg: "#fff", headerH: 24 },
-                  { id: "sidebar", label: "Sidebar", color: "#1e293b", accent: "#38bdf8", bg: "#f8fafc", headerH: 0 },
-                  { id: "minimal", label: "Minimal", color: "#fff", accent: "#111", bg: "#fff", headerH: 0 },
-                  { id: "creative", label: "Creative", color: "#7c3aed", accent: "#a78bfa", bg: "#fff", headerH: 32 },
-                  { id: "corporate", label: "Corporate", color: "#14532d", accent: "#86efac", bg: "#fff", headerH: 26 },
-                ].map((t) => (
-                  <button
-                    key={t.id}
-                    onClick={() => {
-                      setTemplate(t.id as any);
-                      if (isMobile) setShowPreview(true);
-                    }}
-                    style={{
-                      width: "100%",
-                      height: "140px",
-                      borderRadius: "4px",
-                      border: template === t.id ? `2px solid #c9a84c` : "2px solid transparent",
-                      padding: 0,
-                      cursor: "pointer",
-                      background: t.bg,
-                      boxShadow: template === t.id ? "0 0 0 2px #c9a84c" : "0 2px 8px rgba(0,0,0,0.3)",
-                      overflow: "hidden",
-                      display: "flex",
-                      flexDirection: "column",
-                      transition: "all 0.2s",
-                      position: "relative",
-                    }}
-                  >
-                    {t.id === "executive" && (
-                      <>
-                        <div
-                          style={{
-                            background: "#1a1a2e",
-                            height: "45px",
-                            width: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: "3px",
-                          }}
-                        >
-                          <div style={{ width: "50px", height: "4px", background: "#c9a84c", borderRadius: "2px" }} />
-                          <div
-                            style={{
-                              width: "35px",
-                              height: "2px",
-                              background: "rgba(255,255,255,0.4)",
-                              borderRadius: "2px",
-                            }}
-                          />
-                        </div>
-                        <div
-                          style={{ padding: "5px 6px", display: "flex", flexDirection: "column", gap: "2px", flex: 1 }}
-                        >
-                          <div style={{ height: "2px", background: "#c9a84c", width: "100%", marginBottom: "2px" }} />
-                          <div style={{ height: "1.5px", background: "#ddd", width: "90%" }} />
-                          <div style={{ height: "1.5px", background: "#ddd", width: "75%" }} />
-                          <div style={{ height: "1.5px", background: "#ddd", width: "85%" }} />
-                          <div
-                            style={{
-                              height: "2px",
-                              background: "#c9a84c",
-                              width: "100%",
-                              marginTop: "2px",
-                              marginBottom: "2px",
-                            }}
-                          />
-                          <div style={{ height: "1.5px", background: "#ddd", width: "80%" }} />
-                          <div style={{ height: "1.5px", background: "#ddd", width: "70%" }} />
-                        </div>
-                      </>
-                    )}
-                    {t.id === "clean" && (
-                      <>
-                        <div
-                          style={{
-                            background: "#fff",
-                            height: "40px",
-                            width: "100%",
-                            borderBottom: "3px solid #2563eb",
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "flex-start",
-                            justifyContent: "center",
-                            padding: "0 6px",
-                          }}
-                        >
-                          <div style={{ width: "55px", height: "4px", background: "#111", borderRadius: "2px" }} />
-                          <div
-                            style={{
-                              width: "40px",
-                              height: "2px",
-                              background: "#999",
-                              borderRadius: "2px",
-                              marginTop: "3px",
-                            }}
-                          />
-                        </div>
-                        <div
-                          style={{
-                            padding: "5px 6px",
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "2px",
-                            flex: 1,
-                            background: "#fff",
-                          }}
-                        >
-                          <div style={{ height: "1.5px", background: "#e5e7eb", width: "90%" }} />
-                          <div style={{ height: "1.5px", background: "#e5e7eb", width: "75%" }} />
-                          <div style={{ height: "1.5px", background: "#2563eb", width: "40%", marginTop: "2px" }} />
-                          <div style={{ height: "1.5px", background: "#e5e7eb", width: "85%" }} />
-                          <div style={{ height: "1.5px", background: "#e5e7eb", width: "70%" }} />
-                        </div>
-                      </>
-                    )}
-                    {t.id === "sidebar" && (
-                      <div style={{ display: "flex", flex: 1, width: "100%", height: "100%" }}>
-                        <div
-                          style={{
-                            background: "#1e293b",
-                            width: "38%",
-                            padding: "6px 4px",
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "3px",
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: "20px",
-                              height: "20px",
-                              borderRadius: "50%",
-                              background: "#38bdf8",
-                              marginBottom: "3px",
-                            }}
-                          />
-                          <div style={{ height: "1.5px", background: "rgba(255,255,255,0.3)", width: "100%" }} />
-                          <div style={{ height: "1.5px", background: "rgba(255,255,255,0.3)", width: "80%" }} />
-                          <div style={{ height: "1.5px", background: "rgba(255,255,255,0.3)", width: "90%" }} />
-                        </div>
-                        <div
-                          style={{
-                            background: "#f8fafc",
-                            flex: 1,
-                            padding: "6px 4px",
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "2px",
-                          }}
-                        >
-                          <div style={{ height: "3px", background: "#1e293b", width: "70%", borderRadius: "2px" }} />
-                          <div style={{ height: "1.5px", background: "#ddd", width: "90%" }} />
-                          <div style={{ height: "1.5px", background: "#ddd", width: "75%" }} />
-                          <div style={{ height: "1.5px", background: "#ddd", width: "85%" }} />
-                        </div>
-                      </div>
-                    )}
-                    {t.id === "minimal" && (
-                      <div
-                        style={{
-                          padding: "8px 6px",
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "3px",
-                          flex: 1,
-                          background: "#fff",
-                        }}
-                      >
-                        <div style={{ height: "4px", background: "#111", width: "60%", borderRadius: "2px" }} />
-                        <div style={{ height: "1px", background: "#111", width: "100%", marginBottom: "3px" }} />
-                        <div style={{ height: "1.5px", background: "#ddd", width: "90%" }} />
-                        <div style={{ height: "1.5px", background: "#ddd", width: "80%" }} />
-                        <div style={{ height: "1.5px", background: "#ddd", width: "85%" }} />
-                        <div
-                          style={{
-                            height: "1px",
-                            background: "#111",
-                            width: "100%",
-                            marginTop: "3px",
-                            marginBottom: "3px",
-                          }}
-                        />
-                        <div style={{ height: "1.5px", background: "#ddd", width: "75%" }} />
-                        <div style={{ height: "1.5px", background: "#ddd", width: "70%" }} />
-                      </div>
-                    )}
-                    {t.id === "creative" && (
-                      <>
-                        <div
-                          style={{
-                            background: "linear-gradient(135deg, #7c3aed, #a78bfa)",
-                            height: "45px",
-                            width: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: "3px",
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: "50px",
-                              height: "4px",
-                              background: "#fff",
-                              borderRadius: "2px",
-                              opacity: 0.9,
-                            }}
-                          />
-                          <div
-                            style={{
-                              width: "35px",
-                              height: "2px",
-                              background: "rgba(255,255,255,0.5)",
-                              borderRadius: "2px",
-                            }}
-                          />
-                        </div>
-                        <div
-                          style={{
-                            padding: "5px 6px",
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "2px",
-                            flex: 1,
-                            background: "#fff",
-                          }}
-                        >
-                          <div style={{ height: "1.5px", background: "#e9d5ff", width: "90%" }} />
-                          <div style={{ height: "1.5px", background: "#e9d5ff", width: "75%" }} />
-                          <div style={{ height: "2px", background: "#7c3aed", width: "40%", marginTop: "2px" }} />
-                          <div style={{ height: "1.5px", background: "#e9d5ff", width: "85%" }} />
-                          <div style={{ height: "1.5px", background: "#e9d5ff", width: "70%" }} />
-                        </div>
-                      </>
-                    )}
-                    {t.id === "corporate" && (
-                      <>
-                        <div
-                          style={{
-                            background: "#14532d",
-                            height: "45px",
-                            width: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: "3px",
-                          }}
-                        >
-                          <div style={{ width: "50px", height: "4px", background: "#86efac", borderRadius: "2px" }} />
-                          <div
-                            style={{
-                              width: "35px",
-                              height: "2px",
-                              background: "rgba(255,255,255,0.4)",
-                              borderRadius: "2px",
-                            }}
-                          />
-                        </div>
-                        <div
-                          style={{
-                            padding: "5px 6px",
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "2px",
-                            flex: 1,
-                            background: "#fff",
-                          }}
-                        >
-                          <div style={{ height: "1.5px", background: "#dcfce7", width: "90%" }} />
-                          <div style={{ height: "1.5px", background: "#dcfce7", width: "75%" }} />
-                          <div style={{ height: "2px", background: "#14532d", width: "40%", marginTop: "2px" }} />
-                          <div style={{ height: "1.5px", background: "#dcfce7", width: "85%" }} />
-                          <div style={{ height: "1.5px", background: "#dcfce7", width: "70%" }} />
-                        </div>
-                      </>
-                    )}
-                    <div
-                      style={{
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        background: "rgba(0,0,0,0.55)",
-                        color: "#fff",
-                        fontSize: "9px",
-                        fontWeight: 700,
-                        textAlign: "center",
-                        padding: "2px 0",
-                        letterSpacing: "0.03em",
-                      }}
-                    >
-                      {t.label}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            }
 
-            {/* Preview panel + Unlock card */}
+            )}
+      </div>
+    </div>
+
+{/* Template Switcher - always visible on mobile */}
+{isMobile && (
+  <div className="px-4 py-3 overflow-x-auto">
+    <p className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wide">Template</p>
+    <div className="flex gap-2">
+      {(["executive", "clean", "sidebar", "minimal", "creative", "corporate"] as const).map((t) => (
+        <button
+          key={t}
+          onClick={() => setTemplate(t)}
+          className={`flex-shrink-0 flex flex-col items-center gap-1 px-3 py-2 rounded-lg border text-xs capitalize transition-colors ${
+            template === t
+              ? "border-primary bg-primary/10 text-primary font-semibold"
+              : "border-border bg-background text-muted-foreground"
+          }`}
+        >
+          <div
+            className={`w-8 h-10 rounded-sm border ${
+              template === t ? "border-primary bg-primary/20" : "border-border bg-muted"
+            }`}
+          />
+          {t}
+        </button>
+      ))}
+    </div>
+  </div>
+)}
+
+{/* Preview panel + Unlock card */}
+{(!isMobile || showPreview) && (
+  {/* Preview panel + Unlock card */}
             {(!isMobile || showPreview) && (
               <div className="lg:col-span-2 xl:col-span-1 space-y-4 lg:sticky lg:top-4 lg:max-h-[calc(100vh-100px)] overflow-y-auto">
                 <div className="rounded-2xl border border-border bg-muted/30 p-3 sm:p-4">
