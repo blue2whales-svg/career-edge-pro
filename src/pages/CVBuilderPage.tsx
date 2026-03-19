@@ -209,7 +209,7 @@ export default function CVBuilderPage() {
             )}
 
             {/* Template Switcher */}
-            {(!isMobile || showPreview) && (
+            {
               <div
                 style={{
                   display: "grid",
@@ -527,7 +527,7 @@ export default function CVBuilderPage() {
                   </button>
                 ))}
               </div>
-            )}
+            }
 
             {/* Preview panel + Unlock card */}
             {(!isMobile || showPreview) && (
