@@ -1042,7 +1042,7 @@ function TemplateCard({ template }: { template: TemplateData }) {
             zIndex: 3,
           }}
         >
-          <Link to="/cv-builder">
+          <Link to={`/cv-builder?template=${template.name.toLowerCase().replace(/ /g, "-")}`}>
             <button
               style={{
                 padding: "10px 22px",
