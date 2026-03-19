@@ -255,20 +255,257 @@ export default function CVBuilderPage() {
                       position: "relative",
                     }}
                   >
-                    {t.headerH > 0 && <div style={{ background: t.color, height: `${t.headerH}px`, width: "100%" }} />}
+                    {t.id === "executive" && (
+                      <>
+                        <div
+                          style={{
+                            background: "#1a1a2e",
+                            height: "45px",
+                            width: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "3px",
+                          }}
+                        >
+                          <div style={{ width: "50px", height: "4px", background: "#c9a84c", borderRadius: "2px" }} />
+                          <div
+                            style={{
+                              width: "35px",
+                              height: "2px",
+                              background: "rgba(255,255,255,0.4)",
+                              borderRadius: "2px",
+                            }}
+                          />
+                        </div>
+                        <div
+                          style={{ padding: "5px 6px", display: "flex", flexDirection: "column", gap: "2px", flex: 1 }}
+                        >
+                          <div style={{ height: "2px", background: "#c9a84c", width: "100%", marginBottom: "2px" }} />
+                          <div style={{ height: "1.5px", background: "#ddd", width: "90%" }} />
+                          <div style={{ height: "1.5px", background: "#ddd", width: "75%" }} />
+                          <div style={{ height: "1.5px", background: "#ddd", width: "85%" }} />
+                          <div
+                            style={{
+                              height: "2px",
+                              background: "#c9a84c",
+                              width: "100%",
+                              marginTop: "2px",
+                              marginBottom: "2px",
+                            }}
+                          />
+                          <div style={{ height: "1.5px", background: "#ddd", width: "80%" }} />
+                          <div style={{ height: "1.5px", background: "#ddd", width: "70%" }} />
+                        </div>
+                      </>
+                    )}
+                    {t.id === "clean" && (
+                      <>
+                        <div
+                          style={{
+                            background: "#fff",
+                            height: "40px",
+                            width: "100%",
+                            borderBottom: "3px solid #2563eb",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "flex-start",
+                            justifyContent: "center",
+                            padding: "0 6px",
+                          }}
+                        >
+                          <div style={{ width: "55px", height: "4px", background: "#111", borderRadius: "2px" }} />
+                          <div
+                            style={{
+                              width: "40px",
+                              height: "2px",
+                              background: "#999",
+                              borderRadius: "2px",
+                              marginTop: "3px",
+                            }}
+                          />
+                        </div>
+                        <div
+                          style={{
+                            padding: "5px 6px",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "2px",
+                            flex: 1,
+                            background: "#fff",
+                          }}
+                        >
+                          <div style={{ height: "1.5px", background: "#e5e7eb", width: "90%" }} />
+                          <div style={{ height: "1.5px", background: "#e5e7eb", width: "75%" }} />
+                          <div style={{ height: "1.5px", background: "#2563eb", width: "40%", marginTop: "2px" }} />
+                          <div style={{ height: "1.5px", background: "#e5e7eb", width: "85%" }} />
+                          <div style={{ height: "1.5px", background: "#e5e7eb", width: "70%" }} />
+                        </div>
+                      </>
+                    )}
                     {t.id === "sidebar" && (
-                      <div style={{ display: "flex", flex: 1, width: "100%" }}>
-                        <div style={{ background: "#1e293b", width: "35%", height: "100%" }} />
-                        <div style={{ background: "#f8fafc", flex: 1 }} />
+                      <div style={{ display: "flex", flex: 1, width: "100%", height: "100%" }}>
+                        <div
+                          style={{
+                            background: "#1e293b",
+                            width: "38%",
+                            padding: "6px 4px",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "3px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "20px",
+                              height: "20px",
+                              borderRadius: "50%",
+                              background: "#38bdf8",
+                              marginBottom: "3px",
+                            }}
+                          />
+                          <div style={{ height: "1.5px", background: "rgba(255,255,255,0.3)", width: "100%" }} />
+                          <div style={{ height: "1.5px", background: "rgba(255,255,255,0.3)", width: "80%" }} />
+                          <div style={{ height: "1.5px", background: "rgba(255,255,255,0.3)", width: "90%" }} />
+                        </div>
+                        <div
+                          style={{
+                            background: "#f8fafc",
+                            flex: 1,
+                            padding: "6px 4px",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "2px",
+                          }}
+                        >
+                          <div style={{ height: "3px", background: "#1e293b", width: "70%", borderRadius: "2px" }} />
+                          <div style={{ height: "1.5px", background: "#ddd", width: "90%" }} />
+                          <div style={{ height: "1.5px", background: "#ddd", width: "75%" }} />
+                          <div style={{ height: "1.5px", background: "#ddd", width: "85%" }} />
+                        </div>
                       </div>
                     )}
                     {t.id === "minimal" && (
-                      <div style={{ padding: "6px 4px", display: "flex", flexDirection: "column", gap: "3px" }}>
-                        <div style={{ height: "2px", background: "#111", width: "60%" }} />
-                        <div style={{ height: "1px", background: "#ddd", width: "100%" }} />
-                        <div style={{ height: "1px", background: "#ddd", width: "80%" }} />
-                        <div style={{ height: "1px", background: "#ddd", width: "90%" }} />
+                      <div
+                        style={{
+                          padding: "8px 6px",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "3px",
+                          flex: 1,
+                          background: "#fff",
+                        }}
+                      >
+                        <div style={{ height: "4px", background: "#111", width: "60%", borderRadius: "2px" }} />
+                        <div style={{ height: "1px", background: "#111", width: "100%", marginBottom: "3px" }} />
+                        <div style={{ height: "1.5px", background: "#ddd", width: "90%" }} />
+                        <div style={{ height: "1.5px", background: "#ddd", width: "80%" }} />
+                        <div style={{ height: "1.5px", background: "#ddd", width: "85%" }} />
+                        <div
+                          style={{
+                            height: "1px",
+                            background: "#111",
+                            width: "100%",
+                            marginTop: "3px",
+                            marginBottom: "3px",
+                          }}
+                        />
+                        <div style={{ height: "1.5px", background: "#ddd", width: "75%" }} />
+                        <div style={{ height: "1.5px", background: "#ddd", width: "70%" }} />
                       </div>
+                    )}
+                    {t.id === "creative" && (
+                      <>
+                        <div
+                          style={{
+                            background: "linear-gradient(135deg, #7c3aed, #a78bfa)",
+                            height: "45px",
+                            width: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "3px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "50px",
+                              height: "4px",
+                              background: "#fff",
+                              borderRadius: "2px",
+                              opacity: 0.9,
+                            }}
+                          />
+                          <div
+                            style={{
+                              width: "35px",
+                              height: "2px",
+                              background: "rgba(255,255,255,0.5)",
+                              borderRadius: "2px",
+                            }}
+                          />
+                        </div>
+                        <div
+                          style={{
+                            padding: "5px 6px",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "2px",
+                            flex: 1,
+                            background: "#fff",
+                          }}
+                        >
+                          <div style={{ height: "1.5px", background: "#e9d5ff", width: "90%" }} />
+                          <div style={{ height: "1.5px", background: "#e9d5ff", width: "75%" }} />
+                          <div style={{ height: "2px", background: "#7c3aed", width: "40%", marginTop: "2px" }} />
+                          <div style={{ height: "1.5px", background: "#e9d5ff", width: "85%" }} />
+                          <div style={{ height: "1.5px", background: "#e9d5ff", width: "70%" }} />
+                        </div>
+                      </>
+                    )}
+                    {t.id === "corporate" && (
+                      <>
+                        <div
+                          style={{
+                            background: "#14532d",
+                            height: "45px",
+                            width: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "3px",
+                          }}
+                        >
+                          <div style={{ width: "50px", height: "4px", background: "#86efac", borderRadius: "2px" }} />
+                          <div
+                            style={{
+                              width: "35px",
+                              height: "2px",
+                              background: "rgba(255,255,255,0.4)",
+                              borderRadius: "2px",
+                            }}
+                          />
+                        </div>
+                        <div
+                          style={{
+                            padding: "5px 6px",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "2px",
+                            flex: 1,
+                            background: "#fff",
+                          }}
+                        >
+                          <div style={{ height: "1.5px", background: "#dcfce7", width: "90%" }} />
+                          <div style={{ height: "1.5px", background: "#dcfce7", width: "75%" }} />
+                          <div style={{ height: "2px", background: "#14532d", width: "40%", marginTop: "2px" }} />
+                          <div style={{ height: "1.5px", background: "#dcfce7", width: "85%" }} />
+                          <div style={{ height: "1.5px", background: "#dcfce7", width: "70%" }} />
+                        </div>
+                      </>
                     )}
                     <div
                       style={{
