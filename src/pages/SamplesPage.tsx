@@ -1043,7 +1043,7 @@ function TemplateCard({ template }: { template: TemplateData }) {
           }}
         >
           <Link
-            to={`/cv-builder?template=${template.name.toLowerCase().replace(/ /g, "-")}&category=${template.category}`}
+            to={`/cv-builder?t=${{ Simple: "clean", ATS: "clean", "Two-Column": "sidebar", Picture: "executive", Executive: "executive", Creative: "creative", Minimalist: "minimal" }[template.category] || "executive"}`}
           >
             <button
               style={{
