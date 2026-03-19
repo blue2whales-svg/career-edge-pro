@@ -5,6 +5,19 @@ import { Link } from "react-router-dom";
 import type { CVTemplate } from "@/data/cv-templates";
 import { MiniCVPreview } from "./MiniCVPreview";
 
+function mapStyleToBuilderTemplate(style: string, layout: string): string {
+  if (layout === "sidebar" || layout === "two-column") return "sidebar";
+  switch (style) {
+    case "executive": return "executive";
+    case "creative": return "creative";
+    case "minimal": return "minimal";
+    case "modern": return "clean";
+    case "ats": return "corporate";
+    case "classic":
+    default: return "executive";
+  }
+}
+
 interface TemplateCardProps {
   template: CVTemplate;
   index: number;
