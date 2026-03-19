@@ -208,41 +208,34 @@ export default function CVBuilderPage() {
               </div>
             )}
 
-
+            {/* Template Switcher - always visible on mobile */}
+            {isMobile && (
+              <div className="px-4 py-3 overflow-x-auto">
+                <p className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wide">Template</p>
+                <div className="flex gap-2">
+                  {(["executive", "clean", "sidebar", "minimal", "creative", "corporate"] as const).map((t) => (
+                    <button
+                      key={t}
+                      onClick={() => setTemplate(t)}
+                      className={`flex-shrink-0 flex flex-col items-center gap-1 px-3 py-2 rounded-lg border text-xs capitalize transition-colors ${
+                        template === t
+                          ? "border-primary bg-primary/10 text-primary font-semibold"
+                          : "border-border bg-background text-muted-foreground"
+                      }`}
+                    >
+                      <div
+                        className={`w-8 h-10 rounded-sm border ${
+                          template === t ? "border-primary bg-primary/20" : "border-border bg-muted"
+                        }`}
+                      />
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
             )}
-      </div>
-    </div>
 
-{/* Template Switcher - always visible on mobile */}
-{isMobile && (
-  <div className="px-4 py-3 overflow-x-auto">
-    <p className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wide">Template</p>
-    <div className="flex gap-2">
-      {(["executive", "clean", "sidebar", "minimal", "creative", "corporate"] as const).map((t) => (
-        <button
-          key={t}
-          onClick={() => setTemplate(t)}
-          className={`flex-shrink-0 flex flex-col items-center gap-1 px-3 py-2 rounded-lg border text-xs capitalize transition-colors ${
-            template === t
-              ? "border-primary bg-primary/10 text-primary font-semibold"
-              : "border-border bg-background text-muted-foreground"
-          }`}
-        >
-          <div
-            className={`w-8 h-10 rounded-sm border ${
-              template === t ? "border-primary bg-primary/20" : "border-border bg-muted"
-            }`}
-          />
-          {t}
-        </button>
-      ))}
-    </div>
-  </div>
-)}
-
-{/* Preview panel + Unlock card */}
-{(!isMobile || showPreview) && (
-  {/* Preview panel + Unlock card */}
+            {/* Preview panel + Unlock card */}
             {(!isMobile || showPreview) && (
               <div className="lg:col-span-2 xl:col-span-1 space-y-4 lg:sticky lg:top-4 lg:max-h-[calc(100vh-100px)] overflow-y-auto">
                 <div className="rounded-2xl border border-border bg-muted/30 p-3 sm:p-4">
