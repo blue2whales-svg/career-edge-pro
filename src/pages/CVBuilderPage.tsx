@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import { CVData, initialCVData, PRICING_TIERS } from "@/components/cv-builder/types";
 import StepPersonalDetails from "@/components/cv-builder/StepPersonalDetails";
@@ -56,18 +56,21 @@ export default function CVBuilderPage() {
   const [showPreview, setShowPreview] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
   const [template, setTemplate] = useState<"executive" | "clean" | "sidebar" | "minimal" | "creative" | "corporate">(
-    "executive",
+    () => {
+      const params = new URLSearchParams(window.location.search);
+      const t = params.get("t");
+      const valid = ["executive", "clean", "sidebar", "minimal", "creative", "corporate"];
+      return (t && valid.includes(t) ? t : "executive") as
+        | "executive"
+        | "clean"
+        | "sidebar"
+        | "minimal"
+        | "creative"
+        | "corporate";
+    },
   );
   const [paymentOpen, setPaymentOpen] = useState(false);
-  const [searchParams] = useSearchParams();
 
-  useEffect(() => {
-    const t = searchParams.get("t");
-    const valid = ["executive", "clean", "sidebar", "minimal", "creative", "corporate"];
-    if (t && valid.includes(t)) {
-      setTemplate(t as "executive" | "clean" | "sidebar" | "minimal" | "creative" | "corporate");
-    }
-  }, []);
   const isMobile = useIsMobile();
 
   const progress = ((step + 1) / STEPS.length) * 100;
