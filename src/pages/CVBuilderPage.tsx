@@ -181,14 +181,13 @@ export default function CVBuilderPage() {
                         <div style={{ height: "0.5px", background: "linear-gradient(90deg, #c9a84c, transparent)", marginTop: "5px" }} />
                       </div>
                       <div style={{ padding: "5px 8px" }}>
-                        {[["SUMMARY","Results-driven executive with 15+ years leading brand transformation across Fortune 500 companies."],["EXPERIENCE","Chief Marketing Officer · Safaricom PLC · 2020–Present
-Delivered 156% revenue growth · Built 45-person team"],["EDUCATION","MBA Marketing · University of Nairobi · 2018"],["SKILLS","P&L Management · Brand Strategy · Board Relations"]].map(([title, body]) => (
+                        {[["SUMMARY","Results-driven executive with 15+ years leading brand transformation across Fortune 500 companies."],["EXPERIENCE","Chief Marketing Officer · Safaricom PLC · 2020–Present · Delivered 156% revenue growth · Built 45-person team"],["EDUCATION","MBA Marketing · University of Nairobi · 2018"],["SKILLS","P&L Management · Brand Strategy · Board Relations"]].map(([title, body]) => (
                           <div key={title} style={{ marginBottom: "4px" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "3px", marginBottom: "2px" }}>
                               <span style={{ fontSize: "3px", fontWeight: 900, color: "#1a1a2e", letterSpacing: "0.8px", textTransform: "uppercase" as const, whiteSpace: "nowrap" as const }}>{title}</span>
                               <div style={{ flex: 1, height: "0.5px", background: "linear-gradient(90deg, #c9a84c, transparent)" }} />
                             </div>
-                            <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5, whiteSpace: "pre-line" as const }}>{body}</div>
+                            <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5, whiteSpace: "normal" as const }}>{body}</div>
                           </div>
                         ))}
                       </div>
@@ -201,11 +200,10 @@ Delivered 156% revenue growth · Built 45-person team"],["EDUCATION","MBA Market
                         <div style={{ fontSize: "3.5px", color: "#2563eb", fontWeight: 600, marginTop: "1px" }}>Senior Marketing Manager</div>
                         <div style={{ fontSize: "3px", color: "#555", marginTop: "2px" }}>james@email.com | +254 722 000 000 | Nairobi</div>
                       </div>
-                      {[["PROFESSIONAL SUMMARY","Marketing professional with 8+ years experience in digital marketing, brand management and team leadership."],["WORK EXPERIENCE","Marketing Director · Safaricom PLC · 2021–Present
-• Increased engagement by 43% · Led team of 12"],["EDUCATION","MBA Marketing · University of Nairobi · 2018"],["SKILLS","Brand Strategy | Digital Marketing | SEO/SEM | Analytics"]].map(([title, body]) => (
+                      {[["PROFESSIONAL SUMMARY","Marketing professional with 8+ years experience in digital marketing, brand management and team leadership."],["WORK EXPERIENCE","Marketing Director · Safaricom PLC · 2021–Present · Increased engagement by 43% · Led team of 12"],["EDUCATION","MBA Marketing · University of Nairobi · 2018"],["SKILLS","Brand Strategy | Digital Marketing | SEO/SEM | Analytics"]].map(([title, body]) => (
                         <div key={title} style={{ marginBottom: "4px" }}>
                           <div style={{ fontSize: "3px", fontWeight: 700, color: "#111", textTransform: "uppercase" as const, marginBottom: "1.5px" }}>{title}</div>
-                          <div style={{ fontSize: "3px", color: "#333", lineHeight: 1.5, whiteSpace: "pre-line" as const }}>{body}</div>
+                          <div style={{ fontSize: "3px", color: "#333", lineHeight: 1.5, whiteSpace: "normal" as const }}>{body}</div>
                         </div>
                       ))}
                     </div>
@@ -219,9 +217,7 @@ Delivered 156% revenue growth · Built 45-person team"],["EDUCATION","MBA Market
                         <div style={{ fontSize: "3.5px", fontWeight: 700, color: "#fff", textAlign: "center" as const, marginBottom: "1px" }}>JAMES MITCHELL</div>
                         <div style={{ fontSize: "3px", color: "#38bdf8", textAlign: "center" as const, marginBottom: "4px" }}>Marketing Director</div>
                         <div style={{ height: "0.5px", background: "rgba(56,189,248,0.3)", marginBottom: "4px" }} />
-                        <div style={{ fontSize: "2.8px", color: "#94a3b8", lineHeight: 1.8 }}>james@email.com{"
-"}+254 722 000 000{"
-"}Nairobi, Kenya</div>
+                        <div style={{ fontSize: "2.8px", color: "#94a3b8", lineHeight: 1.8 }}>james@email.com · +254 722 000 000 · Nairobi</div>
                         <div style={{ marginTop: "4px" }}>
                           <div style={{ fontSize: "3px", fontWeight: 700, color: "#38bdf8", textTransform: "uppercase" as const, marginBottom: "2px" }}>Skills</div>
                           {["Brand Strategy","Digital Mktg","Analytics","Leadership"].map(s => (
@@ -230,13 +226,10 @@ Delivered 156% revenue growth · Built 45-person team"],["EDUCATION","MBA Market
                         </div>
                       </div>
                       <div style={{ flex: 1, padding: "8px 6px" }}>
-                        {[["Summary","Results-driven professional with 8+ years across East Africa."],["Experience","Marketing Director
-Safaricom PLC · 2021–Present
-• Grew brand 43%"],["Education","MBA Marketing
-Univ. of Nairobi · 2018"]].map(([title, body]) => (
+                        {[["Summary","Results-driven professional with 8+ years across East Africa."],["Experience","Marketing Director · Safaricom PLC · 2021–Present · Grew brand 43%"],["Education","MBA Marketing · Univ. of Nairobi · 2018"]].map(([title, body]) => (
                           <div key={title} style={{ marginBottom: "4px" }}>
                             <div style={{ fontSize: "3px", fontWeight: 700, color: "#1e293b", textTransform: "uppercase" as const, borderBottom: "0.5px solid #38bdf8", paddingBottom: "1px", marginBottom: "2px" }}>{title}</div>
-                            <div style={{ fontSize: "2.8px", color: "#444", lineHeight: 1.5, whiteSpace: "pre-line" as const }}>{body}</div>
+                            <div style={{ fontSize: "2.8px", color: "#444", lineHeight: 1.5, whiteSpace: "normal" as const }}>{body}</div>
                           </div>
                         ))}
                       </div>
@@ -257,7 +250,7 @@ Brand Manager · Equity Bank
 2018–2021"],["Education","MBA Marketing · University of Nairobi · 2018"],["Skills","Brand Strategy · Digital Marketing · SEO/SEM · Analytics"]].map(([title, body]) => (
                         <div key={title} style={{ marginBottom: "4px" }}>
                           <div style={{ fontSize: "2.8px", fontWeight: 700, color: "#111", textTransform: "uppercase" as const, letterSpacing: "1px", marginBottom: "1.5px", opacity: 0.5 }}>{title}</div>
-                          <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5, whiteSpace: "pre-line" as const }}>{body}</div>
+                          <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5, whiteSpace: "normal" as const }}>{body}</div>
                         </div>
                       ))}
                     </div>
@@ -277,11 +270,10 @@ Brand Manager · Equity Bank
                         </div>
                       </div>
                       <div style={{ padding: "5px 8px" }}>
-                        {[["Profile","Results-driven professional with 8+ years in brand strategy and digital marketing."],["Experience","Marketing Director · Safaricom PLC
-2021–Present · Increased engagement 43%"],["Education","MBA Marketing · University of Nairobi · 2018"],["Skills","Brand Strategy · Digital Marketing · Analytics"]].map(([title, body]) => (
+                        {[["Profile","Results-driven professional with 8+ years in brand strategy and digital marketing."],["Experience","Marketing Director · Safaricom PLC · 2021–Present · Increased engagement 43%"],["Education","MBA Marketing · University of Nairobi · 2018"],["Skills","Brand Strategy · Digital Marketing · Analytics"]].map(([title, body]) => (
                           <div key={title} style={{ marginBottom: "4px" }}>
                             <div style={{ fontSize: "3px", fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.8px", marginBottom: "1.5px" }}>{title}</div>
-                            <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5, whiteSpace: "pre-line" as const }}>{body}</div>
+                            <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5, whiteSpace: "normal" as const }}>{body}</div>
                           </div>
                         ))}
                       </div>
@@ -303,14 +295,13 @@ Brand Manager · Equity Bank
                         <div style={{ height: "0.5px", background: "linear-gradient(90deg, #4ade80, transparent)", marginTop: "5px" }} />
                       </div>
                       <div style={{ padding: "5px 8px" }}>
-                        {[["Summary","Results-driven professional with 8+ years in brand strategy and digital marketing."],["Experience","Marketing Director · Safaricom PLC · 2021–Present
-Increased engagement 43% · Led team of 12"],["Education","MBA Marketing · University of Nairobi · 2018"],["Skills","Brand Strategy · Digital Marketing · Analytics"]].map(([title, body]) => (
+                        {[["Summary","Results-driven professional with 8+ years in brand strategy and digital marketing."],["Experience","Marketing Director · Safaricom PLC · 2021–Present · Increased engagement 43% · Led team of 12"],["Education","MBA Marketing · University of Nairobi · 2018"],["Skills","Brand Strategy · Digital Marketing · Analytics"]].map(([title, body]) => (
                           <div key={title} style={{ marginBottom: "4px" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "3px", marginBottom: "2px" }}>
                               <span style={{ fontSize: "3px", fontWeight: 900, color: "#14532d", letterSpacing: "0.8px", textTransform: "uppercase" as const, whiteSpace: "nowrap" as const }}>{title}</span>
                               <div style={{ flex: 1, height: "0.5px", background: "linear-gradient(90deg, #4ade80, transparent)" }} />
                             </div>
-                            <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5, whiteSpace: "pre-line" as const }}>{body}</div>
+                            <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5, whiteSpace: "normal" as const }}>{body}</div>
                           </div>
                         ))}
                       </div>
