@@ -24,6 +24,7 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
     creative: { headerBg: "#7c3aed", headerText: "#fff", accent: "#a78bfa", body: "#fff", text: "#1a1a2e" },
     corporate: { headerBg: "#14532d", headerText: "#fff", accent: "#16a34a", body: "#fff", text: "#1a1a2e" },
   }[template || "executive"];
+  console.log("TEMPLATE:", template, "COLORS:", colors);
 
   const handleContextMenu = useCallback(
     (e: MouseEvent) => {
