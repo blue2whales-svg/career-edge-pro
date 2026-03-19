@@ -433,12 +433,12 @@ export default function CVBuilderPage() {
 
             {/* Preview panel + Unlock card */}
             {(!isMobile || showPreview) && (
-              <div className="lg:col-span-2 xl:col-span-1 space-y-4 lg:sticky lg:top-4 lg:max-h-[calc(100vh-100px)] overflow-y-auto">
+              <div className="col-span-full lg:col-span-2 xl:col-span-1 space-y-4 lg:sticky lg:top-4 lg:max-h-[calc(100vh-100px)] overflow-y-auto">
                 <div className="rounded-2xl border border-border bg-muted/30 p-3 sm:p-4 overflow-hidden">
                   <p className="text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3 text-center font-medium uppercase tracking-wider">
                     Live Preview {!isPaid && <span className="text-primary">· Protected</span>}
                   </p>
-                  <div className="transform-gpu origin-top scale-[0.85] sm:scale-90 lg:scale-100 max-h-[60vw] sm:max-h-none overflow-hidden">
+                  <div className="transform-gpu origin-top scale-[0.75] sm:scale-[0.85] lg:scale-100">
                     <CVPreview data={data} isPaid={isPaid} template={template} />
                   </div>
                 </div>
