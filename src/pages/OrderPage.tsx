@@ -151,10 +151,10 @@ function formatPhone(phone: string): string {
 }
 
 const PACKAGE_MAP: Record<string, { services: string[]; label: string; price: number }> = {
-  starter: { services: ["cv"], label: "Starter Package", price: 2500 },
-  professional: { services: ["cv", "cover-letter", "linkedin"], label: "Professional Package", price: 4500 },
-  executive: { services: ["executive-cv", "cover-letter", "linkedin"], label: "Executive Package", price: 7900 },
-  international: { services: ["ats-cv", "cover-letter", "linkedin"], label: "✈️ Going Abroad Package", price: 4500 },
+  starter: { services: ["cv"], label: "Starter Package", price: 1490 },
+  professional: { services: ["cv", "cover-letter", "linkedin"], label: "Professional Package", price: 2490 },
+  executive: { services: ["executive-cv", "cover-letter", "linkedin"], label: "Executive Package", price: 5490 },
+  international: { services: ["ats-cv", "cover-letter", "linkedin"], label: "✈️ Going Abroad Package", price: 4490 },
 };
 
 export default function OrderPage() {
@@ -721,10 +721,10 @@ export default function OrderPage() {
                     </span>{" "}
                     — keyword-optimised for global portals, 2 professional pages, and a comprehensive LinkedIn makeover.
                   </p>
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="text-xs text-muted-foreground line-through">KES 6,500</span>
-                    <span className="text-lg font-bold text-primary">KES 4,500</span>
-                  </div>
+                   <div className="flex items-center gap-3 mb-3">
+                     <span className="text-xs text-muted-foreground line-through">KES 6,500</span>
+                     <span className="text-lg font-bold text-primary">KES 4,490</span>
+                   </div>
                   {packageParam === "international" ? (
                     <div className="inline-flex items-center gap-1.5 rounded-lg border border-primary bg-primary/10 px-4 py-2 text-xs font-semibold text-primary">
                       <Check className="h-3.5 w-3.5" /> Bundle Selected

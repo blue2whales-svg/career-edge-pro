@@ -11,11 +11,11 @@ import { toast } from "sonner";
 const PAYBILL = "4561075";
 
 const PACKAGES = [
-  { value: "starter", label: "Starter — KES 2,500", amount: 2500 },
-  { value: "professional", label: "Professional — KES 5,500", amount: 5500 },
-  { value: "executive", label: "Executive — KES 10,500", amount: 10500 },
-  { value: "cover-letter", label: "Cover Letter Only — KES 1,500", amount: 1500 },
-  { value: "cv-review", label: "Expert CV Review — KES 2,500", amount: 2500 },
+  { value: "starter", label: "Starter — KES 1,490", amount: 1490 },
+  { value: "professional", label: "Professional — KES 2,490", amount: 2490 },
+  { value: "executive", label: "Executive — KES 5,490", amount: 5490 },
+  { value: "cover-letter", label: "Cover Letter Only — KES 1,000", amount: 1000 },
+  { value: "cv-review", label: "Expert CV Review — KES 1,000", amount: 1000 },
   { value: "global", label: "Global Assistance — KES 20,000", amount: 20000 },
   { value: "pro-monthly", label: "CVEdge Pro — KES 2,000/month", amount: 2000 },
   { value: "pro-plus", label: "CVEdge Pro Plus — KES 2,500/month", amount: 2500 },
