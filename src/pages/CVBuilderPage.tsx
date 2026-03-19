@@ -55,21 +55,14 @@ export default function CVBuilderPage() {
   const [data, setData] = useState<CVData>(initialCVData);
   const [showPreview, setShowPreview] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
-  const [template, setTemplate] = useState<"executive" | "clean" | "sidebar" | "minimal" | "creative" | "corporate">(
-    () => {
-      const params = new URLSearchParams(window.location.search);
-      const t = params.get("t");
-      const valid = ["executive", "clean", "sidebar", "minimal", "creative", "corporate"];
-      return (t && valid.includes(t) ? t : "executive") as
-        | "executive"
-        | "clean"
-        | "sidebar"
-        | "minimal"
-        | "creative"
-        | "corporate";
-    },
-  );
+  const [template, setTemplate] = useState<"executive" | "clean" | "sidebar" | "minimal" | "creative" | "corporate">(() => {
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get("t");
+    const valid = ["executive","clean","sidebar","minimal","creative","corporate"];
+    return (t && valid.includes(t) ? t : "executive") as "executive" | "clean" | "sidebar" | "minimal" | "creative" | "corporate";
+  });
   const [paymentOpen, setPaymentOpen] = useState(false);
+
 
   const isMobile = useIsMobile();
 
@@ -82,26 +75,16 @@ export default function CVBuilderPage() {
 
   const renderStep = () => {
     switch (step) {
-      case 0:
-        return <StepPersonalDetails data={data} onChange={update} />;
-      case 1:
-        return <StepSummary data={data} onChange={update} />;
-      case 2:
-        return <StepWorkExperience data={data} onChange={update} />;
-      case 3:
-        return <StepEducation data={data} onChange={update} />;
-      case 4:
-        return <StepSkills data={data} onChange={update} />;
-      case 5:
-        return <StepLanguages data={data} onChange={update} />;
-      case 6:
-        return <StepAdditional data={data} onChange={update} />;
-      case 7:
-        return <StepSettings data={data} onChange={update} />;
-      case 8:
-        return <JobMatchScore data={data} onOptimize={() => setPaymentOpen(true)} />;
-      default:
-        return null;
+      case 0: return <StepPersonalDetails data={data} onChange={update} />;
+      case 1: return <StepSummary data={data} onChange={update} />;
+      case 2: return <StepWorkExperience data={data} onChange={update} />;
+      case 3: return <StepEducation data={data} onChange={update} />;
+      case 4: return <StepSkills data={data} onChange={update} />;
+      case 5: return <StepLanguages data={data} onChange={update} />;
+      case 6: return <StepAdditional data={data} onChange={update} />;
+      case 7: return <StepSettings data={data} onChange={update} />;
+      case 8: return <JobMatchScore data={data} onOptimize={() => setPaymentOpen(true)} />;
+      default: return null;
     }
   };
 
@@ -111,6 +94,7 @@ export default function CVBuilderPage() {
 
       <section className="relative z-10 pt-4 sm:pt-6 pb-32 sm:pb-24 px-3 sm:px-4">
         <div className="container max-w-7xl mx-auto">
+
           {/* Header */}
           <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
             <Link to="/">
@@ -172,219 +156,176 @@ export default function CVBuilderPage() {
 
           {/* Template Switcher */}
           <div className="mb-6">
-            <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest mb-3">
-              Choose Template
-            </p>
+            <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest mb-3">Choose Template</p>
             <div className="grid grid-cols-3 gap-3 sm:gap-4">
               {(["executive", "clean", "sidebar", "minimal", "creative", "corporate"] as const).map((t) => {
                 const active = template === t;
                 const labels: Record<string, string> = {
-                  executive: "Executive",
-                  clean: "Clean",
-                  sidebar: "Sidebar",
-                  minimal: "Minimal",
-                  creative: "Creative",
-                  corporate: "Corporate",
+                  executive: "Executive", clean: "Clean", sidebar: "Sidebar",
+                  minimal: "Minimal", creative: "Creative", corporate: "Corporate"
+                };
+                const previews: Record<string, React.ReactNode> = {
+                  executive: (
+                    <div style={{ fontFamily: "Georgia, serif", height: "100%", background: "#fff" }}>
+                      <div style={{ background: "#1a1a2e", padding: "8px 8px 6px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                          <div>
+                            <div style={{ fontSize: "5.5px", fontWeight: 800, color: "#c9a84c", letterSpacing: "1px", textTransform: "uppercase" as const }}>JAMES MITCHELL</div>
+                            <div style={{ fontSize: "3.5px", color: "#c9a84c", opacity: 0.7, marginTop: "1px" }}>Chief Marketing Officer</div>
+                            <div style={{ fontSize: "3px", color: "#aab4cc", marginTop: "2px" }}>james@email.com · +254 722 000 000</div>
+                          </div>
+                          <div style={{ width: "14px", height: "14px", borderRadius: "50%", border: "1px solid #c9a84c", background: "rgba(201,168,76,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <span style={{ fontSize: "3px", color: "#c9a84c" }}>JM</span>
+                          </div>
+                        </div>
+                        <div style={{ height: "0.5px", background: "linear-gradient(90deg, #c9a84c, transparent)", marginTop: "5px" }} />
+                      </div>
+                      <div style={{ padding: "5px 8px" }}>
+                        {[["SUMMARY","Results-driven executive with 15+ years leading brand transformation across Fortune 500 companies."],["EXPERIENCE","Chief Marketing Officer · Safaricom PLC · 2020–Present
+Delivered 156% revenue growth · Built 45-person team"],["EDUCATION","MBA Marketing · University of Nairobi · 2018"],["SKILLS","P&L Management · Brand Strategy · Board Relations"]].map(([title, body]) => (
+                          <div key={title} style={{ marginBottom: "4px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "3px", marginBottom: "2px" }}>
+                              <span style={{ fontSize: "3px", fontWeight: 900, color: "#1a1a2e", letterSpacing: "0.8px", textTransform: "uppercase" as const, whiteSpace: "nowrap" as const }}>{title}</span>
+                              <div style={{ flex: 1, height: "0.5px", background: "linear-gradient(90deg, #c9a84c, transparent)" }} />
+                            </div>
+                            <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5, whiteSpace: "pre-line" as const }}>{body}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ),
+                  clean: (
+                    <div style={{ fontFamily: "Arial, sans-serif", height: "100%", background: "#fff", padding: "8px" }}>
+                      <div style={{ borderBottom: "1.5px solid #2563eb", paddingBottom: "5px", marginBottom: "5px" }}>
+                        <div style={{ fontSize: "5.5px", fontWeight: 700, color: "#111" }}>JAMES MITCHELL</div>
+                        <div style={{ fontSize: "3.5px", color: "#2563eb", fontWeight: 600, marginTop: "1px" }}>Senior Marketing Manager</div>
+                        <div style={{ fontSize: "3px", color: "#555", marginTop: "2px" }}>james@email.com | +254 722 000 000 | Nairobi</div>
+                      </div>
+                      {[["PROFESSIONAL SUMMARY","Marketing professional with 8+ years experience in digital marketing, brand management and team leadership."],["WORK EXPERIENCE","Marketing Director · Safaricom PLC · 2021–Present
+• Increased engagement by 43% · Led team of 12"],["EDUCATION","MBA Marketing · University of Nairobi · 2018"],["SKILLS","Brand Strategy | Digital Marketing | SEO/SEM | Analytics"]].map(([title, body]) => (
+                        <div key={title} style={{ marginBottom: "4px" }}>
+                          <div style={{ fontSize: "3px", fontWeight: 700, color: "#111", textTransform: "uppercase" as const, marginBottom: "1.5px" }}>{title}</div>
+                          <div style={{ fontSize: "3px", color: "#333", lineHeight: 1.5, whiteSpace: "pre-line" as const }}>{body}</div>
+                        </div>
+                      ))}
+                    </div>
+                  ),
+                  sidebar: (
+                    <div style={{ fontFamily: "Arial, sans-serif", display: "flex", height: "100%", background: "#fff" }}>
+                      <div style={{ width: "35%", background: "#1e293b", padding: "8px 5px" }}>
+                        <div style={{ width: "20px", height: "20px", borderRadius: "50%", border: "1px solid #38bdf8", background: "rgba(56,189,248,0.15)", margin: "0 auto 4px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <span style={{ fontSize: "4px", color: "#38bdf8", fontWeight: 700 }}>JM</span>
+                        </div>
+                        <div style={{ fontSize: "3.5px", fontWeight: 700, color: "#fff", textAlign: "center" as const, marginBottom: "1px" }}>JAMES MITCHELL</div>
+                        <div style={{ fontSize: "3px", color: "#38bdf8", textAlign: "center" as const, marginBottom: "4px" }}>Marketing Director</div>
+                        <div style={{ height: "0.5px", background: "rgba(56,189,248,0.3)", marginBottom: "4px" }} />
+                        <div style={{ fontSize: "2.8px", color: "#94a3b8", lineHeight: 1.8 }}>james@email.com{"
+"}+254 722 000 000{"
+"}Nairobi, Kenya</div>
+                        <div style={{ marginTop: "4px" }}>
+                          <div style={{ fontSize: "3px", fontWeight: 700, color: "#38bdf8", textTransform: "uppercase" as const, marginBottom: "2px" }}>Skills</div>
+                          {["Brand Strategy","Digital Mktg","Analytics","Leadership"].map(s => (
+                            <div key={s} style={{ fontSize: "2.8px", color: "#94a3b8", background: "rgba(56,189,248,0.1)", padding: "1px 3px", borderRadius: "2px", marginBottom: "1px" }}>{s}</div>
+                          ))}
+                        </div>
+                      </div>
+                      <div style={{ flex: 1, padding: "8px 6px" }}>
+                        {[["Summary","Results-driven professional with 8+ years across East Africa."],["Experience","Marketing Director
+Safaricom PLC · 2021–Present
+• Grew brand 43%"],["Education","MBA Marketing
+Univ. of Nairobi · 2018"]].map(([title, body]) => (
+                          <div key={title} style={{ marginBottom: "4px" }}>
+                            <div style={{ fontSize: "3px", fontWeight: 700, color: "#1e293b", textTransform: "uppercase" as const, borderBottom: "0.5px solid #38bdf8", paddingBottom: "1px", marginBottom: "2px" }}>{title}</div>
+                            <div style={{ fontSize: "2.8px", color: "#444", lineHeight: 1.5, whiteSpace: "pre-line" as const }}>{body}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ),
+                  minimal: (
+                    <div style={{ fontFamily: "Helvetica, Arial, sans-serif", height: "100%", background: "#fff", padding: "8px" }}>
+                      <div style={{ marginBottom: "6px" }}>
+                        <div style={{ fontSize: "6px", fontWeight: 800, color: "#111" }}>James Mitchell</div>
+                        <div style={{ fontSize: "3.5px", color: "#555", marginTop: "1px" }}>Senior Marketing Manager</div>
+                        <div style={{ fontSize: "3px", color: "#888", marginTop: "2px" }}>james@email.com · +254 722 000 000</div>
+                        <div style={{ height: "0.3px", background: "#111", marginTop: "4px", opacity: 0.1 }} />
+                      </div>
+                      {[["Summary","Results-driven professional with 8+ years in brand strategy and digital marketing."],["Experience","Marketing Director · Safaricom PLC
+2021–Present · Grew brand 43%
+
+Brand Manager · Equity Bank
+2018–2021"],["Education","MBA Marketing · University of Nairobi · 2018"],["Skills","Brand Strategy · Digital Marketing · SEO/SEM · Analytics"]].map(([title, body]) => (
+                        <div key={title} style={{ marginBottom: "4px" }}>
+                          <div style={{ fontSize: "2.8px", fontWeight: 700, color: "#111", textTransform: "uppercase" as const, letterSpacing: "1px", marginBottom: "1.5px", opacity: 0.5 }}>{title}</div>
+                          <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5, whiteSpace: "pre-line" as const }}>{body}</div>
+                        </div>
+                      ))}
+                    </div>
+                  ),
+                  creative: (
+                    <div style={{ fontFamily: "Arial, sans-serif", height: "100%", background: "#fff" }}>
+                      <div style={{ background: "linear-gradient(135deg, #7c3aed, #db2777)", padding: "8px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <div>
+                            <div style={{ fontSize: "5.5px", fontWeight: 800, color: "#fff" }}>JAMES MITCHELL</div>
+                            <div style={{ fontSize: "3.5px", color: "rgba(255,255,255,0.85)", marginTop: "1px" }}>Senior Marketing Manager</div>
+                            <div style={{ fontSize: "3px", color: "rgba(255,255,255,0.6)", marginTop: "2px" }}>james@email.com · Nairobi</div>
+                          </div>
+                          <div style={{ width: "14px", height: "14px", borderRadius: "50%", border: "1px solid rgba(255,255,255,0.5)", background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <span style={{ fontSize: "3px", color: "#fff" }}>JM</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ padding: "5px 8px" }}>
+                        {[["Profile","Results-driven professional with 8+ years in brand strategy and digital marketing."],["Experience","Marketing Director · Safaricom PLC
+2021–Present · Increased engagement 43%"],["Education","MBA Marketing · University of Nairobi · 2018"],["Skills","Brand Strategy · Digital Marketing · Analytics"]].map(([title, body]) => (
+                          <div key={title} style={{ marginBottom: "4px" }}>
+                            <div style={{ fontSize: "3px", fontWeight: 700, color: "#7c3aed", textTransform: "uppercase" as const, letterSpacing: "0.8px", marginBottom: "1.5px" }}>{title}</div>
+                            <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5, whiteSpace: "pre-line" as const }}>{body}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ),
+                  corporate: (
+                    <div style={{ fontFamily: "Georgia, serif", height: "100%", background: "#fff" }}>
+                      <div style={{ background: "#14532d", padding: "8px 8px 6px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                          <div>
+                            <div style={{ fontSize: "5.5px", fontWeight: 800, color: "#fff", letterSpacing: "1px", textTransform: "uppercase" as const }}>JAMES MITCHELL</div>
+                            <div style={{ fontSize: "3.5px", color: "#4ade80", marginTop: "1px" }}>Senior Marketing Manager</div>
+                            <div style={{ fontSize: "3px", color: "rgba(255,255,255,0.6)", marginTop: "2px" }}>james@email.com · +254 722 000 000</div>
+                          </div>
+                          <div style={{ width: "14px", height: "14px", borderRadius: "50%", border: "1px solid #4ade80", background: "rgba(74,222,128,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <span style={{ fontSize: "3px", color: "#4ade80" }}>JM</span>
+                          </div>
+                        </div>
+                        <div style={{ height: "0.5px", background: "linear-gradient(90deg, #4ade80, transparent)", marginTop: "5px" }} />
+                      </div>
+                      <div style={{ padding: "5px 8px" }}>
+                        {[["Summary","Results-driven professional with 8+ years in brand strategy and digital marketing."],["Experience","Marketing Director · Safaricom PLC · 2021–Present
+Increased engagement 43% · Led team of 12"],["Education","MBA Marketing · University of Nairobi · 2018"],["Skills","Brand Strategy · Digital Marketing · Analytics"]].map(([title, body]) => (
+                          <div key={title} style={{ marginBottom: "4px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "3px", marginBottom: "2px" }}>
+                              <span style={{ fontSize: "3px", fontWeight: 900, color: "#14532d", letterSpacing: "0.8px", textTransform: "uppercase" as const, whiteSpace: "nowrap" as const }}>{title}</span>
+                              <div style={{ flex: 1, height: "0.5px", background: "linear-gradient(90deg, #4ade80, transparent)" }} />
+                            </div>
+                            <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5, whiteSpace: "pre-line" as const }}>{body}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ),
                 };
                 return (
                   <button
                     key={t}
-                    onClick={() => {
-                      setTemplate(t);
-                      setShowPreview(true);
-                    }}
+                    onClick={() => { setTemplate(t); setShowPreview(true); }}
                     className={`flex flex-col items-center gap-1.5 rounded-xl transition-all ${active ? "opacity-100" : "opacity-70 hover:opacity-90"}`}
                   >
-                    <div
-                      className={`w-full aspect-[3/4] rounded-lg overflow-hidden shadow-md transition-all ${active ? "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-primary/20 shadow-lg" : "ring-1 ring-border"}`}
-                    >
-                      {t === "executive" && (
-                        <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                          <rect width="120" height="160" fill="white" />
-                          <rect width="120" height="52" fill="#1a1a2e" />
-                          <rect x="12" y="13" width="52" height="6" rx="2" fill="#c9a84c" opacity="0.95" />
-                          <rect x="12" y="22" width="34" height="3" rx="1" fill="#c9a84c" opacity="0.55" />
-                          <rect x="12" y="29" width="16" height="2.5" rx="1" fill="#aab4cc" opacity="0.6" />
-                          <rect x="32" y="29" width="20" height="2.5" rx="1" fill="#aab4cc" opacity="0.6" />
-                          <rect x="56" y="29" width="18" height="2.5" rx="1" fill="#aab4cc" opacity="0.5" />
-                          <circle cx="100" cy="26" r="14" fill="none" stroke="#c9a84c" strokeWidth="2" />
-                          <rect x="12" y="46" width="96" height="1.5" fill="#c9a84c" opacity="0.5" />
-                          <rect x="12" y="58" width="32" height="3" rx="1" fill="#1a1a2e" opacity="0.75" />
-                          <rect x="12" y="64" width="96" height="1.5" rx="0.5" fill="#c9a84c" opacity="0.35" />
-                          <rect x="12" y="69" width="96" height="2" rx="0.5" fill="#444" opacity="0.18" />
-                          <rect x="12" y="73" width="72" height="2" rx="0.5" fill="#444" opacity="0.13" />
-                          <rect x="12" y="77" width="84" height="2" rx="0.5" fill="#444" opacity="0.1" />
-                          <rect x="12" y="87" width="32" height="3" rx="1" fill="#1a1a2e" opacity="0.75" />
-                          <rect x="12" y="93" width="96" height="1.5" rx="0.5" fill="#c9a84c" opacity="0.35" />
-                          <rect x="12" y="98" width="80" height="2" rx="0.5" fill="#444" opacity="0.18" />
-                          <rect x="12" y="102" width="60" height="2" rx="0.5" fill="#444" opacity="0.13" />
-                          <rect x="12" y="106" width="72" height="2" rx="0.5" fill="#444" opacity="0.1" />
-                          <rect x="12" y="116" width="32" height="3" rx="1" fill="#1a1a2e" opacity="0.75" />
-                          <rect x="12" y="122" width="96" height="1.5" rx="0.5" fill="#c9a84c" opacity="0.35" />
-                          <rect x="12" y="127" width="22" height="8" rx="4" fill="#c9a84c" opacity="0.15" />
-                          <rect x="38" y="127" width="22" height="8" rx="4" fill="#c9a84c" opacity="0.1" />
-                          <rect x="64" y="127" width="26" height="8" rx="4" fill="#c9a84c" opacity="0.1" />
-                          <rect x="12" y="141" width="32" height="3" rx="1" fill="#1a1a2e" opacity="0.75" />
-                          <rect x="12" y="147" width="96" height="1.5" rx="0.5" fill="#c9a84c" opacity="0.35" />
-                          <rect x="12" y="152" width="50" height="2" rx="0.5" fill="#444" opacity="0.15" />
-                        </svg>
-                      )}
-                      {t === "clean" && (
-                        <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                          <rect width="120" height="160" fill="white" />
-                          <rect x="12" y="12" width="48" height="6" rx="1.5" fill="#111" opacity="0.88" />
-                          <rect x="12" y="21" width="28" height="3" rx="1" fill="#2563eb" opacity="0.7" />
-                          <rect x="12" y="27" width="16" height="2.5" rx="1" fill="#64748b" opacity="0.5" />
-                          <rect x="32" y="27" width="20" height="2.5" rx="1" fill="#64748b" opacity="0.5" />
-                          <rect x="56" y="27" width="18" height="2.5" rx="1" fill="#64748b" opacity="0.4" />
-                          <rect x="12" y="34" width="96" height="2" fill="#2563eb" opacity="0.2" />
-                          <rect x="12" y="43" width="32" height="3" rx="1" fill="#111" opacity="0.75" />
-                          <rect x="12" y="49" width="96" height="1.5" rx="0.5" fill="#2563eb" opacity="0.3" />
-                          <rect x="12" y="54" width="96" height="2" rx="0.5" fill="#333" opacity="0.18" />
-                          <rect x="12" y="58" width="72" height="2" rx="0.5" fill="#333" opacity="0.13" />
-                          <rect x="12" y="62" width="84" height="2" rx="0.5" fill="#333" opacity="0.1" />
-                          <rect x="12" y="72" width="32" height="3" rx="1" fill="#111" opacity="0.75" />
-                          <rect x="12" y="78" width="96" height="1.5" rx="0.5" fill="#2563eb" opacity="0.3" />
-                          <rect x="12" y="83" width="56" height="2" rx="0.5" fill="#333" opacity="0.18" />
-                          <rect x="12" y="87" width="80" height="2" rx="0.5" fill="#333" opacity="0.13" />
-                          <rect x="12" y="91" width="64" height="2" rx="0.5" fill="#333" opacity="0.1" />
-                          <rect x="12" y="101" width="32" height="3" rx="1" fill="#111" opacity="0.75" />
-                          <rect x="12" y="107" width="96" height="1.5" rx="0.5" fill="#2563eb" opacity="0.3" />
-                          <rect x="12" y="112" width="20" height="8" rx="4" fill="#2563eb" opacity="0.1" />
-                          <rect x="36" y="112" width="24" height="8" rx="4" fill="#2563eb" opacity="0.08" />
-                          <rect x="64" y="112" width="18" height="8" rx="4" fill="#2563eb" opacity="0.08" />
-                          <rect x="12" y="126" width="32" height="3" rx="1" fill="#111" opacity="0.75" />
-                          <rect x="12" y="132" width="96" height="1.5" rx="0.5" fill="#2563eb" opacity="0.3" />
-                          <rect x="12" y="137" width="66" height="2" rx="0.5" fill="#333" opacity="0.15" />
-                          <rect x="12" y="141" width="48" height="2" rx="0.5" fill="#333" opacity="0.12" />
-                        </svg>
-                      )}
-                      {t === "sidebar" && (
-                        <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                          <rect width="120" height="160" fill="#f8fafc" />
-                          <rect width="40" height="160" fill="#1e293b" />
-                          <circle cx="20" cy="24" r="12" fill="none" stroke="#38bdf8" strokeWidth="2" />
-                          <rect x="5" y="42" width="30" height="4" rx="1" fill="white" opacity="0.8" />
-                          <rect x="5" y="49" width="20" height="2.5" rx="1" fill="#38bdf8" opacity="0.7" />
-                          <rect x="5" y="58" width="30" height="1.5" rx="0.5" fill="white" opacity="0.35" />
-                          <rect x="5" y="62" width="24" height="1.5" rx="0.5" fill="white" opacity="0.25" />
-                          <rect x="5" y="66" width="28" height="1.5" rx="0.5" fill="white" opacity="0.2" />
-                          <rect x="5" y="74" width="14" height="2" rx="0.5" fill="#38bdf8" opacity="0.6" />
-                          <rect x="5" y="79" width="30" height="1.5" rx="0.5" fill="white" opacity="0.25" />
-                          <rect x="5" y="83" width="22" height="1.5" rx="0.5" fill="white" opacity="0.2" />
-                          <rect x="5" y="91" width="14" height="2" rx="0.5" fill="#38bdf8" opacity="0.6" />
-                          <rect x="5" y="96" width="18" height="6" rx="3" fill="#38bdf8" opacity="0.2" />
-                          <rect x="5" y="105" width="22" height="6" rx="3" fill="#38bdf8" opacity="0.15" />
-                          <rect x="5" y="114" width="16" height="6" rx="3" fill="#38bdf8" opacity="0.12" />
-                          <rect x="48" y="14" width="36" height="5" rx="1.5" fill="#1e293b" opacity="0.8" />
-                          <rect x="48" y="22" width="24" height="3" rx="1" fill="#0284c7" opacity="0.7" />
-                          <rect x="48" y="34" width="24" height="3" rx="1" fill="#1e293b" opacity="0.65" />
-                          <rect x="48" y="40" width="64" height="1.5" rx="0.5" fill="#38bdf8" opacity="0.35" />
-                          <rect x="48" y="44" width="64" height="2" rx="0.5" fill="#333" opacity="0.18" />
-                          <rect x="48" y="48" width="48" height="2" rx="0.5" fill="#333" opacity="0.13" />
-                          <rect x="48" y="58" width="24" height="3" rx="1" fill="#1e293b" opacity="0.65" />
-                          <rect x="48" y="64" width="64" height="1.5" rx="0.5" fill="#38bdf8" opacity="0.35" />
-                          <rect x="48" y="68" width="56" height="2" rx="0.5" fill="#333" opacity="0.18" />
-                          <rect x="48" y="72" width="40" height="2" rx="0.5" fill="#333" opacity="0.13" />
-                          <rect x="48" y="82" width="24" height="3" rx="1" fill="#1e293b" opacity="0.65" />
-                          <rect x="48" y="88" width="64" height="1.5" rx="0.5" fill="#38bdf8" opacity="0.35" />
-                          <rect x="48" y="92" width="44" height="2" rx="0.5" fill="#333" opacity="0.15" />
-                          <rect x="48" y="102" width="24" height="3" rx="1" fill="#1e293b" opacity="0.65" />
-                          <rect x="48" y="108" width="64" height="1.5" rx="0.5" fill="#38bdf8" opacity="0.35" />
-                          <rect x="48" y="112" width="36" height="2" rx="0.5" fill="#333" opacity="0.15" />
-                        </svg>
-                      )}
-                      {t === "minimal" && (
-                        <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                          <rect width="120" height="160" fill="white" />
-                          <rect x="12" y="12" width="54" height="6" rx="1" fill="#111" opacity="0.9" />
-                          <rect x="12" y="21" width="28" height="3" rx="1" fill="#555" opacity="0.45" />
-                          <rect x="12" y="27" width="16" height="2" rx="1" fill="#888" opacity="0.4" />
-                          <rect x="32" y="27" width="20" height="2" rx="1" fill="#888" opacity="0.4" />
-                          <rect x="12" y="33" width="96" height="0.8" fill="#111" opacity="0.1" />
-                          <rect x="12" y="42" width="24" height="2.5" rx="0.5" fill="#111" opacity="0.5" />
-                          <rect x="12" y="48" width="96" height="2" rx="0.5" fill="#333" opacity="0.14" />
-                          <rect x="12" y="52" width="72" height="2" rx="0.5" fill="#333" opacity="0.11" />
-                          <rect x="12" y="56" width="84" height="2" rx="0.5" fill="#333" opacity="0.09" />
-                          <rect x="12" y="66" width="24" height="2.5" rx="0.5" fill="#111" opacity="0.5" />
-                          <rect x="12" y="72" width="96" height="0.8" fill="#111" opacity="0.1" />
-                          <rect x="12" y="76" width="44" height="2" rx="0.5" fill="#111" opacity="0.5" />
-                          <rect x="12" y="80" width="30" height="2" rx="0.5" fill="#555" opacity="0.3" />
-                          <rect x="12" y="85" width="56" height="2" rx="0.5" fill="#333" opacity="0.14" />
-                          <rect x="12" y="89" width="40" height="2" rx="0.5" fill="#333" opacity="0.1" />
-                          <rect x="12" y="99" width="24" height="2.5" rx="0.5" fill="#111" opacity="0.5" />
-                          <rect x="12" y="105" width="96" height="0.8" fill="#111" opacity="0.1" />
-                          <rect x="12" y="109" width="22" height="7" rx="3.5" fill="#111" opacity="0.07" />
-                          <rect x="38" y="109" width="24" height="7" rx="3.5" fill="#111" opacity="0.05" />
-                          <rect x="66" y="109" width="18" height="7" rx="3.5" fill="#111" opacity="0.05" />
-                          <rect x="12" y="123" width="24" height="2.5" rx="0.5" fill="#111" opacity="0.5" />
-                          <rect x="12" y="129" width="96" height="0.8" fill="#111" opacity="0.1" />
-                          <rect x="12" y="133" width="60" height="2" rx="0.5" fill="#333" opacity="0.12" />
-                          <rect x="12" y="137" width="44" height="2" rx="0.5" fill="#333" opacity="0.09" />
-                        </svg>
-                      )}
-                      {t === "creative" && (
-                        <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                          <rect width="120" height="160" fill="white" />
-                          <defs>
-                            <linearGradient id="cg3" x1="0" y1="0" x2="1" y2="0">
-                              <stop offset="0%" stopColor="#7c3aed" />
-                              <stop offset="100%" stopColor="#db2777" />
-                            </linearGradient>
-                          </defs>
-                          <rect width="120" height="54" fill="url(#cg3)" />
-                          <rect x="12" y="13" width="48" height="6" rx="2" fill="white" opacity="0.95" />
-                          <rect x="12" y="22" width="30" height="3" rx="1" fill="#f0abfc" opacity="0.9" />
-                          <rect x="12" y="29" width="16" height="2.5" rx="1" fill="white" opacity="0.55" />
-                          <rect x="32" y="29" width="20" height="2.5" rx="1" fill="white" opacity="0.55" />
-                          <circle cx="100" cy="26" r="14" fill="none" stroke="#f0abfc" strokeWidth="2" opacity="0.7" />
-                          <rect x="12" y="65" width="32" height="3" rx="1" fill="#7c3aed" opacity="0.75" />
-                          <rect x="12" y="71" width="96" height="1.5" rx="0.5" fill="#a78bfa" opacity="0.4" />
-                          <rect x="12" y="76" width="96" height="2" rx="0.5" fill="#333" opacity="0.18" />
-                          <rect x="12" y="80" width="72" height="2" rx="0.5" fill="#333" opacity="0.13" />
-                          <rect x="12" y="90" width="32" height="3" rx="1" fill="#7c3aed" opacity="0.75" />
-                          <rect x="12" y="96" width="96" height="1.5" rx="0.5" fill="#a78bfa" opacity="0.4" />
-                          <rect x="12" y="101" width="60" height="2" rx="0.5" fill="#333" opacity="0.18" />
-                          <rect x="12" y="105" width="84" height="2" rx="0.5" fill="#333" opacity="0.13" />
-                          <rect x="12" y="109" width="48" height="2" rx="0.5" fill="#333" opacity="0.1" />
-                          <rect x="12" y="119" width="32" height="3" rx="1" fill="#7c3aed" opacity="0.75" />
-                          <rect x="12" y="125" width="96" height="1.5" rx="0.5" fill="#a78bfa" opacity="0.4" />
-                          <rect x="12" y="130" width="20" height="8" rx="4" fill="#7c3aed" opacity="0.1" />
-                          <rect x="36" y="130" width="24" height="8" rx="4" fill="#db2777" opacity="0.08" />
-                          <rect x="64" y="130" width="18" height="8" rx="4" fill="#7c3aed" opacity="0.08" />
-                          <rect x="12" y="144" width="32" height="3" rx="1" fill="#7c3aed" opacity="0.75" />
-                          <rect x="12" y="150" width="96" height="1.5" rx="0.5" fill="#a78bfa" opacity="0.4" />
-                          <rect x="12" y="154" width="50" height="2" rx="0.5" fill="#333" opacity="0.13" />
-                        </svg>
-                      )}
-                      {t === "corporate" && (
-                        <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                          <rect width="120" height="160" fill="white" />
-                          <rect width="120" height="54" fill="#14532d" />
-                          <rect x="12" y="13" width="48" height="6" rx="2" fill="white" opacity="0.95" />
-                          <rect x="12" y="22" width="30" height="3" rx="1" fill="#4ade80" opacity="0.9" />
-                          <rect x="12" y="29" width="16" height="2.5" rx="1" fill="white" opacity="0.55" />
-                          <rect x="32" y="29" width="20" height="2.5" rx="1" fill="white" opacity="0.55" />
-                          <circle cx="100" cy="26" r="14" fill="none" stroke="#4ade80" strokeWidth="2" opacity="0.6" />
-                          <rect x="12" y="49" width="96" height="1.5" fill="#4ade80" opacity="0.4" />
-                          <rect x="12" y="65" width="32" height="3" rx="1" fill="#14532d" opacity="0.75" />
-                          <rect x="12" y="71" width="96" height="1.5" rx="0.5" fill="#16a34a" opacity="0.35" />
-                          <rect x="12" y="76" width="96" height="2" rx="0.5" fill="#333" opacity="0.18" />
-                          <rect x="12" y="80" width="72" height="2" rx="0.5" fill="#333" opacity="0.13" />
-                          <rect x="12" y="90" width="32" height="3" rx="1" fill="#14532d" opacity="0.75" />
-                          <rect x="12" y="96" width="96" height="1.5" rx="0.5" fill="#16a34a" opacity="0.35" />
-                          <rect x="12" y="101" width="60" height="2" rx="0.5" fill="#333" opacity="0.18" />
-                          <rect x="12" y="105" width="84" height="2" rx="0.5" fill="#333" opacity="0.13" />
-                          <rect x="12" y="115" width="32" height="3" rx="1" fill="#14532d" opacity="0.75" />
-                          <rect x="12" y="121" width="96" height="1.5" rx="0.5" fill="#16a34a" opacity="0.35" />
-                          <rect x="12" y="126" width="20" height="8" rx="4" fill="#14532d" opacity="0.1" />
-                          <rect x="36" y="126" width="24" height="8" rx="4" fill="#14532d" opacity="0.08" />
-                          <rect x="64" y="126" width="18" height="8" rx="4" fill="#14532d" opacity="0.07" />
-                          <rect x="12" y="140" width="32" height="3" rx="1" fill="#14532d" opacity="0.75" />
-                          <rect x="12" y="146" width="96" height="1.5" rx="0.5" fill="#16a34a" opacity="0.35" />
-                          <rect x="12" y="151" width="50" height="2" rx="0.5" fill="#333" opacity="0.13" />
-                        </svg>
-                      )}
+                    <div className={`w-full aspect-[3/4] rounded-lg overflow-hidden shadow-md transition-all ${active ? "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-primary/20 shadow-lg" : "ring-1 ring-border"}`}
+                      style={{ userSelect: "none", pointerEvents: "none" }}>
+                      {previews[t]}
                     </div>
                     <span className="text-[10px] sm:text-xs font-semibold tracking-wide">{labels[t]}</span>
                   </button>
@@ -395,6 +336,7 @@ export default function CVBuilderPage() {
 
           {/* Main content grid */}
           <div className="grid lg:grid-cols-5 xl:grid-cols-2 gap-4 sm:gap-6">
+
             {/* Form panel */}
             {(!isMobile || !showPreview) && (
               <div className="lg:col-span-3 xl:col-span-1 rounded-2xl border border-border bg-card p-4 sm:p-6">
@@ -459,6 +401,7 @@ export default function CVBuilderPage() {
                 <PremiumUnlockCard isPaid={isPaid} onUnlock={() => setPaymentOpen(true)} />
               </div>
             )}
+
           </div>
         </div>
       </section>
