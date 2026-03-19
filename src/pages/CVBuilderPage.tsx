@@ -158,117 +158,174 @@ export default function CVBuilderPage() {
             })}
           </div>
 
-          {/* Template Switcher - full width, above the grid */}
-          <div className="mb-4 overflow-x-auto scrollbar-hide">
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-3">Template</p>
-            <div className="flex gap-3">
+          {/* Template Switcher */}
+          <div className="mb-6">
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-3">Choose Template</p>
+            <div className="grid grid-cols-6 gap-2 sm:gap-3">
               {(["executive", "clean", "sidebar", "minimal", "creative", "corporate"] as const).map((t) => {
                 const active = template === t;
                 return (
                   <button
                     key={t}
-                    onClick={() => setTemplate(t)}
-                    className={`shrink-0 flex flex-col items-center gap-2 p-2 rounded-xl border-2 text-xs capitalize font-medium transition-all flex-1 min-w-[90px] max-w-[120px] ${
-                      active
-                        ? "border-primary bg-primary/10 text-primary shadow-md"
-                        : "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
-                    }`}
+                    onClick={() => {
+                      setTemplate(t);
+                      if (isMobile) setShowPreview(true);
+                    }}
+                    className={`flex flex-col items-center gap-2 p-2 sm:p-3 rounded-xl border-2 text-xs capitalize font-medium transition-all w-full ${active ? "border-primary bg-primary/10 text-primary shadow-md" : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground"}`}
                   >
-                    {/* Mini CV thumbnail */}
                     <div
-                      className={`w-full aspect-[3/4] rounded-md overflow-hidden border ${active ? "border-primary/40" : "border-border"} bg-background relative`}
+                      className={`w-full aspect-[3/4] rounded overflow-hidden ${active ? "ring-1 ring-primary/40" : ""}`}
                     >
                       {t === "executive" && (
-                        <div className="w-full h-full flex flex-col">
-                          <div className="h-[35%] bg-yellow-900/60 flex flex-col justify-end px-1.5 pb-1">
-                            <div className="h-1.5 w-10 bg-yellow-500/80 rounded-sm mb-0.5" />
-                            <div className="h-1 w-7 bg-yellow-500/50 rounded-sm" />
-                          </div>
-                          <div className="flex-1 px-1.5 pt-1 space-y-0.5">
-                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded" />
-                            <div className="h-0.5 w-4/5 bg-muted-foreground/20 rounded" />
-                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-1" />
-                            <div className="h-0.5 w-3/4 bg-muted-foreground/20 rounded" />
-                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-1" />
-                            <div className="h-0.5 w-2/3 bg-muted-foreground/20 rounded" />
-                          </div>
-                        </div>
+                        <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                          <rect width="60" height="80" fill="white" />
+                          <rect width="60" height="26" fill="#1a1a2e" />
+                          <rect x="6" y="7" width="24" height="3" rx="1" fill="#c9a84c" opacity="0.9" />
+                          <rect x="6" y="12" width="16" height="1.5" rx="0.5" fill="#c9a84c" opacity="0.5" />
+                          <rect x="6" y="16" width="8" height="1.2" rx="0.3" fill="#aab4cc" opacity="0.6" />
+                          <rect x="16" y="16" width="10" height="1.2" rx="0.3" fill="#aab4cc" opacity="0.6" />
+                          <circle cx="51" cy="13" r="7" fill="none" stroke="#c9a84c" strokeWidth="1" />
+                          <rect x="6" y="23" width="48" height="1" fill="#c9a84c" opacity="0.5" />
+                          <rect x="6" y="30" width="16" height="1.5" rx="0.5" fill="#1a1a2e" opacity="0.7" />
+                          <rect x="6" y="33" width="48" height="0.8" rx="0.3" fill="#c9a84c" opacity="0.3" />
+                          <rect x="6" y="36" width="48" height="1" rx="0.3" fill="#555" opacity="0.2" />
+                          <rect x="6" y="38.5" width="36" height="1" rx="0.3" fill="#555" opacity="0.15" />
+                          <rect x="6" y="44" width="16" height="1.5" rx="0.5" fill="#1a1a2e" opacity="0.7" />
+                          <rect x="6" y="47" width="48" height="0.8" rx="0.3" fill="#c9a84c" opacity="0.3" />
+                          <rect x="6" y="50" width="30" height="1" rx="0.3" fill="#555" opacity="0.2" />
+                          <rect x="6" y="52.5" width="42" height="1" rx="0.3" fill="#555" opacity="0.15" />
+                          <rect x="6" y="55" width="36" height="1" rx="0.3" fill="#555" opacity="0.12" />
+                          <rect x="6" y="62" width="16" height="1.5" rx="0.5" fill="#1a1a2e" opacity="0.7" />
+                          <rect x="6" y="65" width="48" height="0.8" rx="0.3" fill="#c9a84c" opacity="0.3" />
+                          <rect x="6" y="68" width="10" height="4" rx="2" fill="#c9a84c" opacity="0.15" />
+                          <rect x="18" y="68" width="10" height="4" rx="2" fill="#c9a84c" opacity="0.1" />
+                          <rect x="30" y="68" width="12" height="4" rx="2" fill="#c9a84c" opacity="0.1" />
+                        </svg>
                       )}
                       {t === "clean" && (
-                        <div className="w-full h-full flex flex-col px-1.5 pt-1.5 space-y-0.5">
-                          <div className="h-2 w-12 bg-foreground/70 rounded-sm mb-0.5" />
-                          <div className="h-0.5 w-full bg-border rounded" />
-                          <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-0.5" />
-                          <div className="h-0.5 w-4/5 bg-muted-foreground/20 rounded" />
-                          <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-1" />
-                          <div className="h-0.5 w-3/4 bg-muted-foreground/20 rounded" />
-                          <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-1" />
-                          <div className="h-0.5 w-2/3 bg-muted-foreground/20 rounded" />
-                        </div>
+                        <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                          <rect width="60" height="80" fill="white" />
+                          <rect x="6" y="7" width="22" height="3" rx="1" fill="#111" opacity="0.85" />
+                          <rect x="6" y="12" width="14" height="1.5" rx="0.5" fill="#2563eb" opacity="0.7" />
+                          <rect x="6" y="16" width="8" height="1" rx="0.3" fill="#64748b" opacity="0.5" />
+                          <rect x="16" y="16" width="10" height="1" rx="0.3" fill="#64748b" opacity="0.5" />
+                          <rect x="6" y="21" width="48" height="1.5" fill="#2563eb" opacity="0.2" />
+                          <rect x="6" y="27" width="14" height="1.5" rx="0.5" fill="#111" opacity="0.7" />
+                          <rect x="6" y="30" width="48" height="0.8" rx="0.3" fill="#2563eb" opacity="0.3" />
+                          <rect x="6" y="33" width="48" height="1" rx="0.3" fill="#333" opacity="0.2" />
+                          <rect x="6" y="35.5" width="36" height="1" rx="0.3" fill="#333" opacity="0.15" />
+                          <rect x="6" y="41" width="14" height="1.5" rx="0.5" fill="#111" opacity="0.7" />
+                          <rect x="6" y="44" width="48" height="0.8" rx="0.3" fill="#2563eb" opacity="0.3" />
+                          <rect x="6" y="47" width="28" height="1" rx="0.3" fill="#333" opacity="0.2" />
+                          <rect x="6" y="49.5" width="40" height="1" rx="0.3" fill="#333" opacity="0.15" />
+                          <rect x="6" y="55" width="14" height="1.5" rx="0.5" fill="#111" opacity="0.7" />
+                          <rect x="6" y="58" width="48" height="0.8" rx="0.3" fill="#2563eb" opacity="0.3" />
+                          <rect x="6" y="61" width="9" height="4" rx="2" fill="#2563eb" opacity="0.12" />
+                          <rect x="17" y="61" width="11" height="4" rx="2" fill="#2563eb" opacity="0.08" />
+                          <rect x="30" y="61" width="9" height="4" rx="2" fill="#2563eb" opacity="0.08" />
+                        </svg>
                       )}
                       {t === "sidebar" && (
-                        <div className="w-full h-full flex">
-                          <div className="w-[35%] h-full bg-primary/20 px-1 pt-1.5 space-y-0.5">
-                            <div className="w-5 h-5 rounded-full bg-primary/40 mx-auto mb-1" />
-                            <div className="h-0.5 w-full bg-primary/30 rounded" />
-                            <div className="h-0.5 w-4/5 bg-primary/20 rounded" />
-                            <div className="h-0.5 w-full bg-primary/30 rounded mt-1" />
-                            <div className="h-0.5 w-3/4 bg-primary/20 rounded" />
-                          </div>
-                          <div className="flex-1 px-1 pt-1.5 space-y-0.5">
-                            <div className="h-1.5 w-8 bg-foreground/50 rounded-sm mb-0.5" />
-                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded" />
-                            <div className="h-0.5 w-4/5 bg-muted-foreground/20 rounded" />
-                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-1" />
-                            <div className="h-0.5 w-3/4 bg-muted-foreground/20 rounded" />
-                          </div>
-                        </div>
+                        <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                          <rect width="60" height="80" fill="#f8fafc" />
+                          <rect width="21" height="80" fill="#1e293b" />
+                          <circle cx="10.5" cy="13" r="6" fill="none" stroke="#38bdf8" strokeWidth="1.2" />
+                          <rect x="3" y="22" width="15" height="2" rx="0.5" fill="white" opacity="0.8" />
+                          <rect x="3" y="26" width="10" height="1.2" rx="0.3" fill="#38bdf8" opacity="0.7" />
+                          <rect x="3" y="31" width="15" height="0.8" rx="0.3" fill="white" opacity="0.35" />
+                          <rect x="3" y="33.5" width="12" height="0.8" rx="0.3" fill="white" opacity="0.25" />
+                          <rect x="3" y="38" width="6" height="1" rx="0.3" fill="#38bdf8" opacity="0.5" />
+                          <rect x="3" y="41" width="15" height="0.8" rx="0.3" fill="white" opacity="0.25" />
+                          <rect x="3" y="43.5" width="11" height="0.8" rx="0.3" fill="white" opacity="0.2" />
+                          <rect x="3" y="48" width="8" height="3" rx="1.5" fill="#38bdf8" opacity="0.2" />
+                          <rect x="3" y="53" width="10" height="3" rx="1.5" fill="#38bdf8" opacity="0.15" />
+                          <rect x="25" y="8" width="18" height="2.5" rx="1" fill="#1e293b" opacity="0.8" />
+                          <rect x="25" y="12" width="12" height="1.5" rx="0.5" fill="#0284c7" opacity="0.7" />
+                          <rect x="25" y="19" width="12" height="1.2" rx="0.5" fill="#1e293b" opacity="0.6" />
+                          <rect x="25" y="22" width="32" height="0.7" rx="0.3" fill="#38bdf8" opacity="0.35" />
+                          <rect x="25" y="25" width="32" height="0.8" rx="0.3" fill="#333" opacity="0.2" />
+                          <rect x="25" y="27.5" width="24" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
+                          <rect x="25" y="33" width="12" height="1.2" rx="0.5" fill="#1e293b" opacity="0.6" />
+                          <rect x="25" y="36" width="32" height="0.7" rx="0.3" fill="#38bdf8" opacity="0.35" />
+                          <rect x="25" y="39" width="28" height="0.8" rx="0.3" fill="#333" opacity="0.2" />
+                          <rect x="25" y="41.5" width="20" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
+                          <rect x="25" y="47" width="12" height="1.2" rx="0.5" fill="#1e293b" opacity="0.6" />
+                          <rect x="25" y="50" width="32" height="0.7" rx="0.3" fill="#38bdf8" opacity="0.35" />
+                          <rect x="25" y="53" width="22" height="0.8" rx="0.3" fill="#333" opacity="0.2" />
+                        </svg>
                       )}
                       {t === "minimal" && (
-                        <div className="w-full h-full flex flex-col px-1.5 pt-1.5">
-                          <div className="h-1.5 w-14 bg-foreground/60 rounded-sm" />
-                          <div className="h-0.5 w-8 bg-muted-foreground/30 rounded mt-0.5 mb-1.5" />
-                          <div className="space-y-0.5">
-                            <div className="h-0.5 w-full bg-muted-foreground/20 rounded" />
-                            <div className="h-0.5 w-4/5 bg-muted-foreground/15 rounded" />
-                            <div className="h-0.5 w-full bg-muted-foreground/20 rounded mt-1" />
-                            <div className="h-0.5 w-3/4 bg-muted-foreground/15 rounded" />
-                            <div className="h-0.5 w-full bg-muted-foreground/20 rounded mt-1" />
-                          </div>
-                        </div>
+                        <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                          <rect width="60" height="80" fill="white" />
+                          <rect x="6" y="8" width="26" height="3" rx="0.5" fill="#111" opacity="0.9" />
+                          <rect x="6" y="13" width="14" height="1.2" rx="0.3" fill="#555" opacity="0.5" />
+                          <rect x="6" y="17" width="48" height="0.5" fill="#111" opacity="0.12" />
+                          <rect x="6" y="22" width="12" height="1.2" rx="0.3" fill="#111" opacity="0.5" />
+                          <rect x="6" y="25.5" width="48" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
+                          <rect x="6" y="28" width="36" height="0.8" rx="0.3" fill="#333" opacity="0.12" />
+                          <rect x="6" y="30.5" width="44" height="0.8" rx="0.3" fill="#333" opacity="0.1" />
+                          <rect x="6" y="36" width="12" height="1.2" rx="0.3" fill="#111" opacity="0.5" />
+                          <rect x="6" y="39.5" width="48" height="0.5" fill="#111" opacity="0.12" />
+                          <rect x="6" y="43" width="22" height="1" rx="0.3" fill="#111" opacity="0.5" />
+                          <rect x="6" y="45.5" width="16" height="0.8" rx="0.3" fill="#666" opacity="0.3" />
+                          <rect x="6" y="48" width="28" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
+                          <rect x="6" y="54" width="12" height="1.2" rx="0.3" fill="#111" opacity="0.5" />
+                          <rect x="6" y="57.5" width="48" height="0.5" fill="#111" opacity="0.12" />
+                          <rect x="6" y="61" width="10" height="3.5" rx="1.5" fill="#111" opacity="0.07" />
+                          <rect x="18" y="61" width="12" height="3.5" rx="1.5" fill="#111" opacity="0.05" />
+                          <rect x="32" y="61" width="10" height="3.5" rx="1.5" fill="#111" opacity="0.05" />
+                        </svg>
                       )}
                       {t === "creative" && (
-                        <div className="w-full h-full flex flex-col">
-                          <div className="h-[30%] bg-gradient-to-r from-purple-900/60 to-pink-900/60 px-1.5 flex items-center">
-                            <div>
-                              <div className="h-1.5 w-10 bg-white/70 rounded-sm" />
-                              <div className="h-0.5 w-7 bg-white/40 rounded-sm mt-0.5" />
-                            </div>
-                          </div>
-                          <div className="flex-1 px-1.5 pt-1 space-y-0.5">
-                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded" />
-                            <div className="h-0.5 w-4/5 bg-muted-foreground/20 rounded" />
-                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-1" />
-                            <div className="h-0.5 w-2/3 bg-muted-foreground/20 rounded" />
-                          </div>
-                        </div>
+                        <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                          <rect width="60" height="80" fill="white" />
+                          <defs>
+                            <linearGradient id="cg2" x1="0" y1="0" x2="1" y2="0">
+                              <stop offset="0%" stopColor="#7c3aed" />
+                              <stop offset="100%" stopColor="#db2777" />
+                            </linearGradient>
+                          </defs>
+                          <rect width="60" height="27" fill="url(#cg2)" />
+                          <rect x="6" y="7" width="22" height="2.5" rx="1" fill="white" opacity="0.95" />
+                          <rect x="6" y="11" width="14" height="1.5" rx="0.5" fill="#f0abfc" opacity="0.9" />
+                          <rect x="6" y="15" width="8" height="1" rx="0.3" fill="white" opacity="0.55" />
+                          <rect x="16" y="15" width="10" height="1" rx="0.3" fill="white" opacity="0.55" />
+                          <circle cx="51" cy="13" r="7" fill="none" stroke="#f0abfc" strokeWidth="1" opacity="0.7" />
+                          <rect x="6" y="33" width="14" height="1.5" rx="0.5" fill="#7c3aed" opacity="0.7" />
+                          <rect x="6" y="36" width="48" height="0.7" rx="0.3" fill="#a78bfa" opacity="0.35" />
+                          <rect x="6" y="39" width="48" height="0.8" rx="0.3" fill="#333" opacity="0.2" />
+                          <rect x="6" y="41.5" width="36" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
+                          <rect x="6" y="47" width="14" height="1.5" rx="0.5" fill="#7c3aed" opacity="0.7" />
+                          <rect x="6" y="50" width="48" height="0.7" rx="0.3" fill="#a78bfa" opacity="0.35" />
+                          <rect x="6" y="53" width="30" height="0.8" rx="0.3" fill="#333" opacity="0.2" />
+                          <rect x="6" y="55.5" width="42" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
+                          <rect x="6" y="61" width="9" height="4" rx="2" fill="#7c3aed" opacity="0.1" />
+                          <rect x="17" y="61" width="11" height="4" rx="2" fill="#db2777" opacity="0.08" />
+                          <rect x="30" y="61" width="9" height="4" rx="2" fill="#7c3aed" opacity="0.08" />
+                        </svg>
                       )}
                       {t === "corporate" && (
-                        <div className="w-full h-full flex flex-col">
-                          <div className="h-[25%] bg-blue-900/60 px-1.5 flex items-center justify-between">
-                            <div>
-                              <div className="h-1.5 w-8 bg-white/70 rounded-sm" />
-                              <div className="h-0.5 w-5 bg-white/40 rounded-sm mt-0.5" />
-                            </div>
-                            <div className="w-4 h-4 rounded-full bg-white/20" />
-                          </div>
-                          <div className="flex-1 px-1.5 pt-1 space-y-0.5">
-                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded" />
-                            <div className="h-0.5 w-4/5 bg-muted-foreground/20 rounded" />
-                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-1" />
-                            <div className="h-0.5 w-3/4 bg-muted-foreground/20 rounded" />
-                          </div>
-                        </div>
+                        <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                          <rect width="60" height="80" fill="white" />
+                          <rect width="60" height="27" fill="#14532d" />
+                          <rect x="6" y="7" width="22" height="2.5" rx="1" fill="white" opacity="0.95" />
+                          <rect x="6" y="11" width="14" height="1.5" rx="0.5" fill="#4ade80" opacity="0.9" />
+                          <rect x="6" y="15" width="8" height="1" rx="0.3" fill="white" opacity="0.55" />
+                          <rect x="16" y="15" width="10" height="1" rx="0.3" fill="white" opacity="0.55" />
+                          <circle cx="51" cy="13" r="7" fill="none" stroke="#4ade80" strokeWidth="1" opacity="0.6" />
+                          <rect x="6" y="23" width="48" height="1" fill="#4ade80" opacity="0.35" />
+                          <rect x="6" y="33" width="14" height="1.5" rx="0.5" fill="#14532d" opacity="0.7" />
+                          <rect x="6" y="36" width="48" height="0.7" rx="0.3" fill="#16a34a" opacity="0.35" />
+                          <rect x="6" y="39" width="48" height="0.8" rx="0.3" fill="#333" opacity="0.2" />
+                          <rect x="6" y="41.5" width="36" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
+                          <rect x="6" y="47" width="14" height="1.5" rx="0.5" fill="#14532d" opacity="0.7" />
+                          <rect x="6" y="50" width="48" height="0.7" rx="0.3" fill="#16a34a" opacity="0.35" />
+                          <rect x="6" y="53" width="30" height="0.8" rx="0.3" fill="#333" opacity="0.2" />
+                          <rect x="6" y="55.5" width="42" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
+                          <rect x="6" y="61" width="9" height="4" rx="2" fill="#14532d" opacity="0.1" />
+                          <rect x="17" y="61" width="11" height="4" rx="2" fill="#14532d" opacity="0.08" />
+                          <rect x="30" y="61" width="9" height="4" rx="2" fill="#14532d" opacity="0.07" />
+                        </svg>
                       )}
                     </div>
                     {t}
