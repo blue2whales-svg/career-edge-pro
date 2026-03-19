@@ -162,24 +162,119 @@ export default function CVBuilderPage() {
           <div className="mb-4 overflow-x-auto scrollbar-hide">
             <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-3">Template</p>
             <div className="flex gap-3">
-              {(["executive", "clean", "sidebar", "minimal", "creative", "corporate"] as const).map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setTemplate(t)}
-                  className={`shrink-0 flex flex-col items-center gap-2 p-3 rounded-xl border-2 text-sm capitalize font-medium transition-all ${
-                    template === t
-                      ? "border-primary bg-primary/10 text-primary shadow-md"
-                      : "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
-                  }`}
-                >
-                  <div
-                    className={`w-16 h-20 rounded-md border-2 transition-all ${
-                      template === t ? "border-primary bg-primary/20" : "border-border bg-muted"
+              {(["executive", "clean", "sidebar", "minimal", "creative", "corporate"] as const).map((t) => {
+                const active = template === t;
+                return (
+                  <button
+                    key={t}
+                    onClick={() => setTemplate(t)}
+                    className={`shrink-0 flex flex-col items-center gap-2 p-2 rounded-xl border-2 text-xs capitalize font-medium transition-all flex-1 min-w-[90px] max-w-[120px] ${
+                      active
+                        ? "border-primary bg-primary/10 text-primary shadow-md"
+                        : "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
                     }`}
-                  />
-                  {t}
-                </button>
-              ))}
+                  >
+                    {/* Mini CV thumbnail */}
+                    <div
+                      className={`w-full aspect-[3/4] rounded-md overflow-hidden border ${active ? "border-primary/40" : "border-border"} bg-background relative`}
+                    >
+                      {t === "executive" && (
+                        <div className="w-full h-full flex flex-col">
+                          <div className="h-[35%] bg-yellow-900/60 flex flex-col justify-end px-1.5 pb-1">
+                            <div className="h-1.5 w-10 bg-yellow-500/80 rounded-sm mb-0.5" />
+                            <div className="h-1 w-7 bg-yellow-500/50 rounded-sm" />
+                          </div>
+                          <div className="flex-1 px-1.5 pt-1 space-y-0.5">
+                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded" />
+                            <div className="h-0.5 w-4/5 bg-muted-foreground/20 rounded" />
+                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-1" />
+                            <div className="h-0.5 w-3/4 bg-muted-foreground/20 rounded" />
+                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-1" />
+                            <div className="h-0.5 w-2/3 bg-muted-foreground/20 rounded" />
+                          </div>
+                        </div>
+                      )}
+                      {t === "clean" && (
+                        <div className="w-full h-full flex flex-col px-1.5 pt-1.5 space-y-0.5">
+                          <div className="h-2 w-12 bg-foreground/70 rounded-sm mb-0.5" />
+                          <div className="h-0.5 w-full bg-border rounded" />
+                          <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-0.5" />
+                          <div className="h-0.5 w-4/5 bg-muted-foreground/20 rounded" />
+                          <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-1" />
+                          <div className="h-0.5 w-3/4 bg-muted-foreground/20 rounded" />
+                          <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-1" />
+                          <div className="h-0.5 w-2/3 bg-muted-foreground/20 rounded" />
+                        </div>
+                      )}
+                      {t === "sidebar" && (
+                        <div className="w-full h-full flex">
+                          <div className="w-[35%] h-full bg-primary/20 px-1 pt-1.5 space-y-0.5">
+                            <div className="w-5 h-5 rounded-full bg-primary/40 mx-auto mb-1" />
+                            <div className="h-0.5 w-full bg-primary/30 rounded" />
+                            <div className="h-0.5 w-4/5 bg-primary/20 rounded" />
+                            <div className="h-0.5 w-full bg-primary/30 rounded mt-1" />
+                            <div className="h-0.5 w-3/4 bg-primary/20 rounded" />
+                          </div>
+                          <div className="flex-1 px-1 pt-1.5 space-y-0.5">
+                            <div className="h-1.5 w-8 bg-foreground/50 rounded-sm mb-0.5" />
+                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded" />
+                            <div className="h-0.5 w-4/5 bg-muted-foreground/20 rounded" />
+                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-1" />
+                            <div className="h-0.5 w-3/4 bg-muted-foreground/20 rounded" />
+                          </div>
+                        </div>
+                      )}
+                      {t === "minimal" && (
+                        <div className="w-full h-full flex flex-col px-1.5 pt-1.5">
+                          <div className="h-1.5 w-14 bg-foreground/60 rounded-sm" />
+                          <div className="h-0.5 w-8 bg-muted-foreground/30 rounded mt-0.5 mb-1.5" />
+                          <div className="space-y-0.5">
+                            <div className="h-0.5 w-full bg-muted-foreground/20 rounded" />
+                            <div className="h-0.5 w-4/5 bg-muted-foreground/15 rounded" />
+                            <div className="h-0.5 w-full bg-muted-foreground/20 rounded mt-1" />
+                            <div className="h-0.5 w-3/4 bg-muted-foreground/15 rounded" />
+                            <div className="h-0.5 w-full bg-muted-foreground/20 rounded mt-1" />
+                          </div>
+                        </div>
+                      )}
+                      {t === "creative" && (
+                        <div className="w-full h-full flex flex-col">
+                          <div className="h-[30%] bg-gradient-to-r from-purple-900/60 to-pink-900/60 px-1.5 flex items-center">
+                            <div>
+                              <div className="h-1.5 w-10 bg-white/70 rounded-sm" />
+                              <div className="h-0.5 w-7 bg-white/40 rounded-sm mt-0.5" />
+                            </div>
+                          </div>
+                          <div className="flex-1 px-1.5 pt-1 space-y-0.5">
+                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded" />
+                            <div className="h-0.5 w-4/5 bg-muted-foreground/20 rounded" />
+                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-1" />
+                            <div className="h-0.5 w-2/3 bg-muted-foreground/20 rounded" />
+                          </div>
+                        </div>
+                      )}
+                      {t === "corporate" && (
+                        <div className="w-full h-full flex flex-col">
+                          <div className="h-[25%] bg-blue-900/60 px-1.5 flex items-center justify-between">
+                            <div>
+                              <div className="h-1.5 w-8 bg-white/70 rounded-sm" />
+                              <div className="h-0.5 w-5 bg-white/40 rounded-sm mt-0.5" />
+                            </div>
+                            <div className="w-4 h-4 rounded-full bg-white/20" />
+                          </div>
+                          <div className="flex-1 px-1.5 pt-1 space-y-0.5">
+                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded" />
+                            <div className="h-0.5 w-4/5 bg-muted-foreground/20 rounded" />
+                            <div className="h-0.5 w-full bg-muted-foreground/30 rounded mt-1" />
+                            <div className="h-0.5 w-3/4 bg-muted-foreground/20 rounded" />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    {t}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
