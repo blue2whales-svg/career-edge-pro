@@ -60,7 +60,7 @@ const App = () => (
           <Route path="/order" element={<OrderPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/cv-builder" element={<CVBuilderPage />} />
-          <Route path="/cv-editor/:template" element={<CVEditorPage />} />
+          <Route path="/cv-editor/:templateId" element={<CVEditorPage />} />
           <Route path="/cover-letter" element={<CoverLetterPage />} />
           <Route path="/ats-checker" element={<ATSCheckerPage />} />
           <Route path="/tracker" element={<TrackerPage />} />
