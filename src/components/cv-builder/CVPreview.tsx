@@ -409,7 +409,7 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
   return (
     <div
       id="cv-preview-container"
-      className="bg-white rounded-lg shadow-2xl min-h-[600px] relative overflow-hidden"
+      className="bg-white rounded-lg shadow-2xl min-h-[300px] sm:min-h-[600px] relative overflow-hidden"
       style={{
         fontFamily: "'Inter', 'DM Sans', 'Helvetica', sans-serif",
         userSelect: isPaid ? "auto" : "none",
