@@ -62,65 +62,10 @@ export default function CVBuilderPage() {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    const t = searchParams.get("template");
-    if (!t) return;
-    // Direct matches first
-    const direct = ["executive", "clean", "sidebar", "minimal", "creative", "corporate"];
-    if (direct.includes(t)) {
+    const t = searchParams.get("t");
+    const valid = ["executive", "clean", "sidebar", "minimal", "creative", "corporate"];
+    if (t && valid.includes(t)) {
       setTemplate(t as "executive" | "clean" | "sidebar" | "minimal" | "creative" | "corporate");
-      return;
-    }
-    // Category mapping
-    if (
-      [
-        "classic",
-        "traditional",
-        "elegant",
-        "executive-classic",
-        "boardroom",
-        "c-suite",
-        "director",
-        "professional-photo",
-        "corporate-photo",
-        "clean-photo",
-      ].includes(t)
-    ) {
-      setTemplate("executive");
-      return;
-    }
-    if (["basic", "pure-white", "ultra-clean", "typography", "monochrome", "zen"].includes(t)) {
-      setTemplate("minimal");
-      return;
-    }
-    if (["professional", "corporate", "clean-split", "modern-split", "sidebar-dark", "sidebar-light"].includes(t)) {
-      setTemplate("sidebar");
-      return;
-    }
-    if (["creative-purple", "bold-designer", "gradient", "artistic", "portfolio", "creative-photo"].includes(t)) {
-      setTemplate("creative");
-      return;
-    }
-    if (["fresh", "prime-ats", "pure-ats", "specialist", "ats-pro", "ats-clean", "ats-bold"].includes(t)) {
-      setTemplate("clean");
-      return;
-    }
-    if (["corporate-2"].includes(t)) {
-      setTemplate("corporate");
-      return;
-    }
-    // Fallback: use category param
-    const cat = searchParams.get("category");
-    if (cat) {
-      const catMap: Record<string, "executive" | "clean" | "sidebar" | "minimal" | "creative" | "corporate"> = {
-        Simple: "clean",
-        ATS: "clean",
-        "Two-Column": "sidebar",
-        Picture: "executive",
-        Executive: "executive",
-        Creative: "creative",
-        Minimalist: "minimal",
-      };
-      if (catMap[cat]) setTemplate(catMap[cat]);
     }
   }, []);
   const isMobile = useIsMobile();
