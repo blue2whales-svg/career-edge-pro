@@ -169,7 +169,7 @@ export default function CVBuilderPage() {
                     key={t}
                     onClick={() => {
                       setTemplate(t);
-                      if (isMobile) setShowPreview(true);
+                      setShowPreview(true);
                     }}
                     className={`flex flex-col items-center gap-2 p-2 sm:p-3 rounded-xl border-2 text-xs capitalize font-medium transition-all w-full ${active ? "border-primary bg-primary/10 text-primary shadow-md" : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground"}`}
                   >
