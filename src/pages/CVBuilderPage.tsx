@@ -160,30 +160,26 @@ export default function CVBuilderPage() {
 
           {/* Template Switcher - full width, above the grid */}
           <div className="mb-4 overflow-x-auto scrollbar-hide">
-            <div className="flex items-center gap-3">
-              <span className="text-xs text-muted-foreground font-medium uppercase tracking-wide shrink-0">
-                Template
-              </span>
-              <div className="flex gap-2">
-                {(["executive", "clean", "sidebar", "minimal", "creative", "corporate"] as const).map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setTemplate(t)}
-                    className={`shrink-0 flex flex-col items-center gap-1.5 px-3 py-2 rounded-xl border text-xs capitalize font-medium transition-all ${
-                      template === t
-                        ? "border-primary bg-primary/10 text-primary shadow-sm"
-                        : "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-3">Template</p>
+            <div className="flex gap-3">
+              {(["executive", "clean", "sidebar", "minimal", "creative", "corporate"] as const).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setTemplate(t)}
+                  className={`shrink-0 flex flex-col items-center gap-2 p-3 rounded-xl border-2 text-sm capitalize font-medium transition-all ${
+                    template === t
+                      ? "border-primary bg-primary/10 text-primary shadow-md"
+                      : "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                  }`}
+                >
+                  <div
+                    className={`w-16 h-20 rounded-md border-2 transition-all ${
+                      template === t ? "border-primary bg-primary/20" : "border-border bg-muted"
                     }`}
-                  >
-                    <div
-                      className={`w-10 h-12 rounded border-2 transition-all ${
-                        template === t ? "border-primary bg-primary/20" : "border-border bg-muted"
-                      }`}
-                    />
-                    {t}
-                  </button>
-                ))}
-              </div>
+                  />
+                  {t}
+                </button>
+              ))}
             </div>
           </div>
 
