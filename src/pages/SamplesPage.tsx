@@ -967,6 +967,33 @@ const TEMPLATES: TemplateData[] = [
 
 const CATEGORIES = ["All", "Simple", "ATS", "Two-Column", "Picture", "Executive", "Creative", "Minimalist"];
 
+type BuilderTemplate = "executive" | "clean" | "sidebar" | "minimal" | "creative" | "corporate";
+
+function mapTemplateToBuilderTemplate(template: TemplateData): BuilderTemplate {
+  const name = template.name.toLowerCase();
+
+  if (template.category === "ATS") return "corporate";
+  if (template.category === "Two-Column") return "sidebar";
+  if (template.category === "Executive") return "executive";
+  if (template.category === "Creative") return "creative";
+  if (template.category === "Minimalist") return "minimal";
+
+  if (template.category === "Picture") {
+    if (name.includes("creative")) return "creative";
+    if (name.includes("clean")) return "clean";
+    if (name.includes("corporate")) return "corporate";
+    return "executive";
+  }
+
+  if (template.category === "Simple") {
+    if (name.includes("classic") || name.includes("traditional") || name.includes("elegant")) return "executive";
+    if (name.includes("basic")) return "minimal";
+    return "clean";
+  }
+
+  return "executive";
+}
+
 function TemplateCard({ template }: { template: TemplateData }) {
   const [activeColor, setActiveColor] = useState(0);
   const [hovered, setHovered] = useState(false);
@@ -1042,9 +1069,7 @@ function TemplateCard({ template }: { template: TemplateData }) {
             zIndex: 3,
           }}
         >
-          <Link
-            to={`/cv-builder?t=${{ Simple: "clean", ATS: "clean", "Two-Column": "sidebar", Picture: "executive", Executive: "executive", Creative: "creative", Minimalist: "minimal" }[template.category] || "executive"}`}
-          >
+          <Link to={`/cv-builder?t=${mapTemplateToBuilderTemplate(template)}`}>
             <button
               style={{
                 padding: "10px 22px",
