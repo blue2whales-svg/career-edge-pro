@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -762,7 +763,7 @@ type Template = {
   description: string;
   category: string;
   colors: string[];
-  component: (color: string) => JSX.Element;
+  component: (color: string) => React.ReactNode;
 };
 
 const TEMPLATES: Template[] = [
@@ -773,7 +774,7 @@ const TEMPLATES: Template[] = [
     description: "Timeless design for any industry",
     category: "Simple",
     colors: ["#1a1a2e", "#2563eb", "#16a34a", "#7c3aed", "#dc2626"],
-    component: (c) => <CVClassic accent={c} />,
+    component: (c: string) => <CVClassic accent={c} />,
   },
   {
     id: 2,
@@ -781,7 +782,7 @@ const TEMPLATES: Template[] = [
     description: "Conservative layout hiring managers love",
     category: "Simple",
     colors: ["#111", "#1e3a5f", "#14532d", "#4c1d95", "#7f1d1d"],
-    component: (c) => <CVClassic accent={c} />,
+    component: (c: string) => <CVClassic accent={c} />,
   },
   {
     id: 3,
@@ -789,7 +790,7 @@ const TEMPLATES: Template[] = [
     description: "Minimalist approach with maximum readability",
     category: "Simple",
     colors: ["#2563eb", "#111", "#059669", "#9333ea", "#e11d48"],
-    component: (c) => <CVATS accent={c} />,
+    component: (c: string) => <CVATS accent={c} />,
   },
   {
     id: 4,
@@ -797,7 +798,7 @@ const TEMPLATES: Template[] = [
     description: "Simple and straightforward",
     category: "Simple",
     colors: ["#374151", "#1d4ed8", "#065f46", "#6d28d9", "#991b1b"],
-    component: (c) => <CVMinimal accent={c} />,
+    component: (c: string) => <CVMinimal accent={c} />,
   },
   {
     id: 5,
@@ -805,7 +806,7 @@ const TEMPLATES: Template[] = [
     description: "Modern take on a classic format",
     category: "Simple",
     colors: ["#0891b2", "#111", "#15803d", "#7c3aed", "#be123c"],
-    component: (c) => <CVClassic accent={c} />,
+    component: (c: string) => <CVClassic accent={c} />,
   },
   {
     id: 6,
@@ -813,7 +814,7 @@ const TEMPLATES: Template[] = [
     description: "Refined style with graceful typography",
     category: "Simple",
     colors: ["#c9a84c", "#1a1a2e", "#166534", "#6b21a8", "#9f1239"],
-    component: (c) => <CVExecutive accent={c} headerBg="#1a1a2e" />,
+    component: (c: string) => <CVExecutive accent={c} headerBg="#1a1a2e" />,
   },
   // ATS
   {
@@ -822,7 +823,7 @@ const TEMPLATES: Template[] = [
     description: "100% ATS-compatible, clean layout",
     category: "ATS",
     colors: ["#2563eb", "#111", "#16a34a", "#7c3aed", "#dc2626"],
-    component: (c) => <CVATS accent={c} />,
+    component: (c: string) => <CVATS accent={c} />,
   },
   {
     id: 8,
@@ -830,7 +831,7 @@ const TEMPLATES: Template[] = [
     description: "Maximum ATS score guaranteed",
     category: "ATS",
     colors: ["#111", "#1d4ed8", "#15803d", "#6d28d9", "#9f1239"],
-    component: (c) => <CVATS accent={c} />,
+    component: (c: string) => <CVATS accent={c} />,
   },
   {
     id: 9,
@@ -838,7 +839,7 @@ const TEMPLATES: Template[] = [
     description: "Tailored for technical specialists",
     category: "ATS",
     colors: ["#0369a1", "#111", "#047857", "#7c3aed", "#b91c1c"],
-    component: (c) => <CVATS accent={c} />,
+    component: (c: string) => <CVATS accent={c} />,
   },
   {
     id: 10,
@@ -846,7 +847,7 @@ const TEMPLATES: Template[] = [
     description: "Professional grade ATS optimisation",
     category: "ATS",
     colors: ["#1e40af", "#111", "#14532d", "#581c87", "#881337"],
-    component: (c) => <CVATS accent={c} />,
+    component: (c: string) => <CVATS accent={c} />,
   },
   {
     id: 11,
@@ -854,7 +855,7 @@ const TEMPLATES: Template[] = [
     description: "Clean lines, ATS-friendly structure",
     category: "ATS",
     colors: ["#0284c7", "#374151", "#059669", "#9333ea", "#e11d48"],
-    component: (c) => <CVATS accent={c} />,
+    component: (c: string) => <CVATS accent={c} />,
   },
   {
     id: 12,
@@ -862,7 +863,7 @@ const TEMPLATES: Template[] = [
     description: "Bold headings, fully ATS parseable",
     category: "ATS",
     colors: ["#1d4ed8", "#111827", "#065f46", "#7c2d12", "#701a75"],
-    component: (c) => <CVATS accent={c} />,
+    component: (c: string) => <CVATS accent={c} />,
   },
   // Two-Column
   {
@@ -871,7 +872,7 @@ const TEMPLATES: Template[] = [
     description: "Two-column layout with sidebar",
     category: "Two-Column",
     colors: ["#1e293b", "#0f172a", "#14532d", "#3b0764", "#450a0a"],
-    component: (c) => <CVSidebar sidebarBg={c} sidebarAccent="#38bdf8" accent={c} />,
+    component: (c: string) => <CVSidebar sidebarBg={c} sidebarAccent="#38bdf8" accent={c} />,
   },
   {
     id: 14,
@@ -879,7 +880,7 @@ const TEMPLATES: Template[] = [
     description: "Corporate two-column design",
     category: "Two-Column",
     colors: ["#14532d", "#1e293b", "#1e3a5f", "#4c1d95", "#7f1d1d"],
-    component: (c) => <CVSidebar sidebarBg={c} sidebarAccent="#4ade80" accent={c} />,
+    component: (c: string) => <CVSidebar sidebarBg={c} sidebarAccent="#4ade80" accent={c} />,
   },
   {
     id: 15,
@@ -887,7 +888,7 @@ const TEMPLATES: Template[] = [
     description: "Clean two-column split layout",
     category: "Two-Column",
     colors: ["#0c4a6e", "#1e293b", "#14532d", "#3b0764", "#7f1d1d"],
-    component: (c) => <CVSidebar sidebarBg={c} sidebarAccent="#7dd3fc" accent={c} />,
+    component: (c: string) => <CVSidebar sidebarBg={c} sidebarAccent="#7dd3fc" accent={c} />,
   },
   {
     id: 16,
@@ -895,7 +896,7 @@ const TEMPLATES: Template[] = [
     description: "Contemporary split with accents",
     category: "Two-Column",
     colors: ["#312e81", "#1e293b", "#14532d", "#701a75", "#7f1d1d"],
-    component: (c) => <CVSidebar sidebarBg={c} sidebarAccent="#a5b4fc" accent={c} />,
+    component: (c: string) => <CVSidebar sidebarBg={c} sidebarAccent="#a5b4fc" accent={c} />,
   },
   {
     id: 17,
@@ -903,7 +904,7 @@ const TEMPLATES: Template[] = [
     description: "Dark sidebar, light content area",
     category: "Two-Column",
     colors: ["#111827", "#1e293b", "#14532d", "#1c1917", "#450a0a"],
-    component: (c) => <CVSidebar sidebarBg={c} sidebarAccent="#f59e0b" accent={c} />,
+    component: (c: string) => <CVSidebar sidebarBg={c} sidebarAccent="#f59e0b" accent={c} />,
   },
   {
     id: 18,
@@ -911,7 +912,7 @@ const TEMPLATES: Template[] = [
     description: "Light sidebar variant",
     category: "Two-Column",
     colors: ["#1e3a5f", "#1e293b", "#15803d", "#6b21a8", "#9f1239"],
-    component: (c) => <CVSidebar sidebarBg={c} sidebarAccent="#60a5fa" accent={c} />,
+    component: (c: string) => <CVSidebar sidebarBg={c} sidebarAccent="#60a5fa" accent={c} />,
   },
   // Picture
   {
@@ -920,7 +921,7 @@ const TEMPLATES: Template[] = [
     description: "Photo CV for African markets",
     category: "Picture",
     colors: ["#1a1a2e", "#1e293b", "#14532d", "#3b0764", "#7f1d1d"],
-    component: (c) => <CVExecutive accent="#c9a84c" headerBg={c} />,
+    component: (c: string) => <CVExecutive accent="#c9a84c" headerBg={c} />,
   },
   {
     id: 20,
@@ -928,7 +929,7 @@ const TEMPLATES: Template[] = [
     description: "Corporate photo placement",
     category: "Picture",
     colors: ["#14532d", "#1e293b", "#1a1a2e", "#4c1d95", "#7f1d1d"],
-    component: (c) => <CVExecutive accent="#4ade80" headerBg={c} />,
+    component: (c: string) => <CVExecutive accent="#4ade80" headerBg={c} />,
   },
   {
     id: 21,
@@ -936,7 +937,7 @@ const TEMPLATES: Template[] = [
     description: "Creative layout with photo",
     category: "Picture",
     colors: ["#7c3aed", "#db2777", "#0891b2", "#059669", "#dc2626"],
-    component: (c) => <CVCreative accent={c} grad={`linear-gradient(135deg, ${c}, #db2777)`} />,
+    component: (c: string) => <CVCreative accent={c} grad={`linear-gradient(135deg, ${c}, #db2777)`} />,
   },
   {
     id: 22,
@@ -944,7 +945,7 @@ const TEMPLATES: Template[] = [
     description: "Minimal design with photo",
     category: "Picture",
     colors: ["#2563eb", "#111", "#059669", "#7c3aed", "#dc2626"],
-    component: (c) => <CVExecutive accent={c} headerBg="#1a1a2e" />,
+    component: (c: string) => <CVExecutive accent={c} headerBg="#1a1a2e" />,
   },
   // Executive
   {
@@ -953,7 +954,7 @@ const TEMPLATES: Template[] = [
     description: "Premium executive template",
     category: "Executive",
     colors: ["#c9a84c", "#4ade80", "#60a5fa", "#f0abfc", "#fca5a5"],
-    component: (c) => <CVExecutive accent={c} headerBg="#1a1a2e" />,
+    component: (c: string) => <CVExecutive accent={c} headerBg="#1a1a2e" />,
   },
   {
     id: 24,
@@ -961,7 +962,7 @@ const TEMPLATES: Template[] = [
     description: "For C-suite and board level",
     category: "Executive",
     colors: ["#c9a84c", "#4ade80", "#60a5fa", "#f0abfc", "#fda4af"],
-    component: (c) => <CVExecutive accent={c} headerBg="#0f172a" />,
+    component: (c: string) => <CVExecutive accent={c} headerBg="#0f172a" />,
   },
   {
     id: 25,
@@ -969,7 +970,7 @@ const TEMPLATES: Template[] = [
     description: "Top-tier executive presence",
     category: "Executive",
     colors: ["#c9a84c", "#34d399", "#38bdf8", "#a78bfa", "#fb7185"],
-    component: (c) => <CVExecutive accent={c} headerBg="#1e1b4b" />,
+    component: (c: string) => <CVExecutive accent={c} headerBg="#1e1b4b" />,
   },
   {
     id: 26,
@@ -977,7 +978,7 @@ const TEMPLATES: Template[] = [
     description: "Director-level positioning",
     category: "Executive",
     colors: ["#c9a84c", "#6ee7b7", "#7dd3fc", "#c4b5fd", "#fca5a5"],
-    component: (c) => <CVExecutive accent={c} headerBg="#14532d" />,
+    component: (c: string) => <CVExecutive accent={c} headerBg="#14532d" />,
   },
   // Creative
   {
@@ -986,7 +987,7 @@ const TEMPLATES: Template[] = [
     description: "Bold creative with purple gradient",
     category: "Creative",
     colors: ["#7c3aed", "#2563eb", "#db2777", "#059669", "#dc2626"],
-    component: (c) => <CVCreative accent={c} grad={`linear-gradient(135deg, ${c}, #db2777)`} />,
+    component: (c: string) => <CVCreative accent={c} grad={`linear-gradient(135deg, ${c}, #db2777)`} />,
   },
   {
     id: 28,
@@ -994,7 +995,7 @@ const TEMPLATES: Template[] = [
     description: "Strong visual impact",
     category: "Creative",
     colors: ["#db2777", "#7c3aed", "#0891b2", "#059669", "#d97706"],
-    component: (c) => <CVCreative accent={c} grad={`linear-gradient(135deg, ${c}, #7c3aed)`} />,
+    component: (c: string) => <CVCreative accent={c} grad={`linear-gradient(135deg, ${c}, #7c3aed)`} />,
   },
   {
     id: 29,
@@ -1002,7 +1003,7 @@ const TEMPLATES: Template[] = [
     description: "Eye-catching gradient header",
     category: "Creative",
     colors: ["#0891b2", "#7c3aed", "#059669", "#dc2626", "#d97706"],
-    component: (c) => <CVCreative accent={c} grad={`linear-gradient(135deg, ${c}, #06b6d4)`} />,
+    component: (c: string) => <CVCreative accent={c} grad={`linear-gradient(135deg, ${c}, #06b6d4)`} />,
   },
   {
     id: 30,
@@ -1010,7 +1011,7 @@ const TEMPLATES: Template[] = [
     description: "Artistic flair for creative roles",
     category: "Creative",
     colors: ["#d97706", "#7c3aed", "#db2777", "#059669", "#dc2626"],
-    component: (c) => <CVCreative accent={c} grad={`linear-gradient(135deg, ${c}, #f59e0b)`} />,
+    component: (c: string) => <CVCreative accent={c} grad={`linear-gradient(135deg, ${c}, #f59e0b)`} />,
   },
   {
     id: 31,
@@ -1018,7 +1019,7 @@ const TEMPLATES: Template[] = [
     description: "Portfolio-style for designers",
     category: "Creative",
     colors: ["#059669", "#7c3aed", "#0891b2", "#db2777", "#d97706"],
-    component: (c) => <CVCreative accent={c} grad={`linear-gradient(135deg, ${c}, #10b981)`} />,
+    component: (c: string) => <CVCreative accent={c} grad={`linear-gradient(135deg, ${c}, #10b981)`} />,
   },
   // Minimalist
   {
@@ -1027,7 +1028,7 @@ const TEMPLATES: Template[] = [
     description: "Ultra clean white space design",
     category: "Minimalist",
     colors: ["#111", "#2563eb", "#059669", "#7c3aed", "#dc2626"],
-    component: (c) => <CVMinimal accent={c} />,
+    component: (c: string) => <CVMinimal accent={c} />,
   },
   {
     id: 33,
@@ -1035,7 +1036,7 @@ const TEMPLATES: Template[] = [
     description: "Nothing but pure typography",
     category: "Minimalist",
     colors: ["#374151", "#111", "#065f46", "#4c1d95", "#881337"],
-    component: (c) => <CVMinimal accent={c} />,
+    component: (c: string) => <CVMinimal accent={c} />,
   },
   {
     id: 34,
@@ -1043,7 +1044,7 @@ const TEMPLATES: Template[] = [
     description: "Typography-first design",
     category: "Minimalist",
     colors: ["#111827", "#1d4ed8", "#14532d", "#581c87", "#9f1239"],
-    component: (c) => <CVMinimal accent={c} />,
+    component: (c: string) => <CVMinimal accent={c} />,
   },
   {
     id: 35,
@@ -1051,7 +1052,7 @@ const TEMPLATES: Template[] = [
     description: "Black and white elegance",
     category: "Minimalist",
     colors: ["#000", "#222", "#444", "#666", "#888"],
-    component: (c) => <CVMinimal accent={c} />,
+    component: (c: string) => <CVMinimal accent={c} />,
   },
   {
     id: 36,
@@ -1059,7 +1060,7 @@ const TEMPLATES: Template[] = [
     description: "Maximum calm, minimal noise",
     category: "Minimalist",
     colors: ["#111", "#78716c", "#44403c", "#292524", "#1c1917"],
-    component: (c) => <CVMinimal accent={c} />,
+    component: (c: string) => <CVMinimal accent={c} />,
   },
 ];
 
