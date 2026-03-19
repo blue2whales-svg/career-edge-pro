@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import { CVData, initialCVData, PRICING_TIERS } from "@/components/cv-builder/types";
 import StepPersonalDetails from "@/components/cv-builder/StepPersonalDetails";
@@ -59,6 +59,50 @@ export default function CVBuilderPage() {
     "executive",
   );
   const [paymentOpen, setPaymentOpen] = useState(false);
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const t = searchParams.get("template");
+    const map: Record<string, typeof template> = {
+      classic: "executive",
+      traditional: "executive",
+      clean: "clean",
+      basic: "minimal",
+      fresh: "clean",
+      elegant: "executive",
+      "prime-ats": "clean",
+      "pure-ats": "clean",
+      specialist: "clean",
+      "ats-pro": "clean",
+      "ats-clean": "clean",
+      "ats-bold": "clean",
+      professional: "sidebar",
+      corporate: "sidebar",
+      "clean-split": "sidebar",
+      "modern-split": "sidebar",
+      "sidebar-dark": "sidebar",
+      "sidebar-light": "sidebar",
+      "professional-photo": "executive",
+      "corporate-photo": "executive",
+      "creative-photo": "creative",
+      "clean-photo": "executive",
+      "executive-classic": "executive",
+      boardroom: "executive",
+      "c-suite": "executive",
+      director: "executive",
+      "creative-purple": "creative",
+      "bold-designer": "creative",
+      gradient: "creative",
+      artistic: "creative",
+      portfolio: "creative",
+      "pure-white": "minimal",
+      "ultra-clean": "minimal",
+      typography: "minimal",
+      monochrome: "minimal",
+      zen: "minimal",
+    };
+    if (t && map[t]) setTemplate(map[t]);
+  }, [searchParams]);
   const isMobile = useIsMobile();
 
   const progress = ((step + 1) / STEPS.length) * 100;
