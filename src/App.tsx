@@ -18,6 +18,7 @@ import OrderPage from "./pages/OrderPage";
 import ContactPage from "./pages/ContactPage";
 import DocumentReviewPage from "./pages/DocumentReviewPage";
 import CVBuilderPage from "./pages/CVBuilderPage";
+import CVEditorPage from "./pages/CVEditorPage";
 import CoverLetterPage from "./pages/CoverLetterPage";
 import ATSCheckerPage from "./pages/ATSCheckerPage";
 import TrackerPage from "./pages/TrackerPage";
@@ -59,6 +60,7 @@ const App = () => (
           <Route path="/order" element={<OrderPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/cv-builder" element={<CVBuilderPage />} />
+          <Route path="/cv-editor/:template" element={<CVEditorPage />} />
           <Route path="/cover-letter" element={<CoverLetterPage />} />
           <Route path="/ats-checker" element={<ATSCheckerPage />} />
           <Route path="/tracker" element={<TrackerPage />} />
