@@ -163,7 +163,7 @@ export default function CVBuilderPage() {
             <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest mb-3">
               Choose Template
             </p>
-            <div className="grid grid-cols-6 gap-2 sm:gap-3">
+            <div className="grid grid-cols-3 gap-3 sm:gap-4">
               {(["executive", "clean", "sidebar", "minimal", "creative", "corporate"] as const).map((t) => {
                 const active = template === t;
                 const labels: Record<string, string> = {
