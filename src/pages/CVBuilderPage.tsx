@@ -63,46 +63,66 @@ export default function CVBuilderPage() {
 
   useEffect(() => {
     const t = searchParams.get("template");
-    const map: Record<string, typeof template> = {
-      classic: "executive",
-      traditional: "executive",
-      clean: "clean",
-      basic: "minimal",
-      fresh: "clean",
-      elegant: "executive",
-      "prime-ats": "clean",
-      "pure-ats": "clean",
-      specialist: "clean",
-      "ats-pro": "clean",
-      "ats-clean": "clean",
-      "ats-bold": "clean",
-      professional: "sidebar",
-      corporate: "sidebar",
-      "clean-split": "sidebar",
-      "modern-split": "sidebar",
-      "sidebar-dark": "sidebar",
-      "sidebar-light": "sidebar",
-      "professional-photo": "executive",
-      "corporate-photo": "executive",
-      "creative-photo": "creative",
-      "clean-photo": "executive",
-      "executive-classic": "executive",
-      boardroom: "executive",
-      "c-suite": "executive",
-      director: "executive",
-      "creative-purple": "creative",
-      "bold-designer": "creative",
-      gradient: "creative",
-      artistic: "creative",
-      portfolio: "creative",
-      "pure-white": "minimal",
-      "ultra-clean": "minimal",
-      typography: "minimal",
-      monochrome: "minimal",
-      zen: "minimal",
-    };
-    if (t && map[t]) setTemplate(map[t]);
-  }, [searchParams]);
+    if (!t) return;
+    // Direct matches first
+    const direct = ["executive", "clean", "sidebar", "minimal", "creative", "corporate"];
+    if (direct.includes(t)) {
+      setTemplate(t as "executive" | "clean" | "sidebar" | "minimal" | "creative" | "corporate");
+      return;
+    }
+    // Category mapping
+    if (
+      [
+        "classic",
+        "traditional",
+        "elegant",
+        "executive-classic",
+        "boardroom",
+        "c-suite",
+        "director",
+        "professional-photo",
+        "corporate-photo",
+        "clean-photo",
+      ].includes(t)
+    ) {
+      setTemplate("executive");
+      return;
+    }
+    if (["basic", "pure-white", "ultra-clean", "typography", "monochrome", "zen"].includes(t)) {
+      setTemplate("minimal");
+      return;
+    }
+    if (["professional", "corporate", "clean-split", "modern-split", "sidebar-dark", "sidebar-light"].includes(t)) {
+      setTemplate("sidebar");
+      return;
+    }
+    if (["creative-purple", "bold-designer", "gradient", "artistic", "portfolio", "creative-photo"].includes(t)) {
+      setTemplate("creative");
+      return;
+    }
+    if (["fresh", "prime-ats", "pure-ats", "specialist", "ats-pro", "ats-clean", "ats-bold"].includes(t)) {
+      setTemplate("clean");
+      return;
+    }
+    if (["corporate-2"].includes(t)) {
+      setTemplate("corporate");
+      return;
+    }
+    // Fallback: use category param
+    const cat = searchParams.get("category");
+    if (cat) {
+      const catMap: Record<string, "executive" | "clean" | "sidebar" | "minimal" | "creative" | "corporate"> = {
+        Simple: "clean",
+        ATS: "clean",
+        "Two-Column": "sidebar",
+        Picture: "executive",
+        Executive: "executive",
+        Creative: "creative",
+        Minimalist: "minimal",
+      };
+      if (catMap[cat]) setTemplate(catMap[cat]);
+    }
+  }, []);
   const isMobile = useIsMobile();
 
   const progress = ((step + 1) / STEPS.length) * 100;
