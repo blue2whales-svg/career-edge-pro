@@ -521,7 +521,7 @@ export default function CVEditorPage() {
   const preview = PREVIEWS[templateId || "traditional"] || PREVIEWS["traditional"];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0f1117", color: "#f1f5f9", padding: "24px 16px 80px" }}>
+    <div style={{ minHeight: "100vh", background: "white", color: "black", padding: "24px" }}>
       <div className="container max-w-7xl mx-auto">
         <div className="flex items-center gap-4 mb-6">
           <button
