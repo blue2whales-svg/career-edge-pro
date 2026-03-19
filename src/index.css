@@ -57,9 +57,9 @@
     --surface-elevated: 222 30% 10%;
     --surface-glass: 222 35% 8%;
     --gradient-gold: linear-gradient(135deg, hsl(43 55% 54%), hsl(43 60% 70%));
-    --gradient-gold-subtle: linear-gradient(135deg, hsl(43 55% 54% / 0.15), hsl(43 60% 70% / 0.10));
+    --gradient-gold-subtle: linear-gradient(135deg, hsl(43 55% 54% / 0.15), hsl(43 60% 70% / 0.1));
     --gradient-brand: linear-gradient(135deg, hsl(43 55% 54%), hsl(43 60% 70%));
-    --gradient-brand-subtle: linear-gradient(135deg, hsl(43 55% 54% / 0.15), hsl(43 60% 70% / 0.10));
+    --gradient-brand-subtle: linear-gradient(135deg, hsl(43 55% 54% / 0.15), hsl(43 60% 70% / 0.1));
     --gradient-brand-full: linear-gradient(135deg, hsl(0 72% 51%), hsl(43 55% 54%), hsl(217 91% 60%));
     --gradient-hero: linear-gradient(180deg, hsl(222 47% 5%) 0%, hsl(222 35% 8%) 100%);
     --shadow-gold: 0 0 40px -10px hsl(43 55% 54% / 0.4);
@@ -78,7 +78,12 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-sans font-bold tracking-tight;
   }
 }
@@ -132,7 +137,7 @@
     overflow: hidden;
   }
   .gold-shimmer::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
@@ -161,9 +166,16 @@
 
 /* Animated gradient orb */
 @keyframes orb-float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -30px) scale(1.05); }
-  66% { transform: translate(-20px, 20px) scale(0.95); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.05);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
 }
 
 .animate-orb {
@@ -171,19 +183,37 @@
 }
 
 @keyframes shimmer {
-  0% { left: -100%; }
-  50% { left: 100%; }
-  100% { left: 100%; }
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 
 @keyframes slide-up-fade {
-  0% { opacity: 0; transform: translateY(12px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slide-down-fade {
-  0% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-12px); }
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
 }
 
 .animate-slide-up {
@@ -195,8 +225,13 @@
 }
 
 @keyframes pulse-soft {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
 }
 
 .animate-pulse-soft {
@@ -204,9 +239,15 @@
 }
 
 @keyframes counter-tick {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 
 .animate-tick {
@@ -215,8 +256,12 @@
 
 /* Horizontal scroll animation for trust bar */
 @keyframes scroll-left {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .animate-scroll-left {
@@ -237,4 +282,16 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground));
+  .cv-editor-root {
+    background: #0f172a !important;
+    color: #f1f5f9 !important;
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    z-index: 9999;
+  }
 }
