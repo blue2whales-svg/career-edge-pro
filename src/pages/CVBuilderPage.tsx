@@ -1,1119 +1,696 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  ArrowLeft,
-  ArrowRight,
-  User,
-  FileText,
-  Briefcase,
-  GraduationCap,
-  Wrench,
-  Globe,
-  ListPlus,
-  Settings,
-  Eye,
-  Edit3,
-  Target,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
-import { CVData, initialCVData, PRICING_TIERS } from "@/components/cv-builder/types";
-import StepPersonalDetails from "@/components/cv-builder/StepPersonalDetails";
-import StepSummary from "@/components/cv-builder/StepSummary";
-import StepWorkExperience from "@/components/cv-builder/StepWorkExperience";
-import StepEducation from "@/components/cv-builder/StepEducation";
-import StepSkills from "@/components/cv-builder/StepSkills";
-import StepLanguages from "@/components/cv-builder/StepLanguages";
-import StepAdditional from "@/components/cv-builder/StepAdditional";
-import StepSettings from "@/components/cv-builder/StepSettings";
-import CVPreview from "@/components/cv-builder/CVPreview";
-import { PremiumUnlockCard } from "@/components/cv-builder/PremiumUnlockCard";
-import JobMatchScore from "@/components/cv-builder/JobMatchScore";
-import MpesaPaymentModal from "@/components/MpesaPaymentModal";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "@/components/ui/button";
 
-const STEPS = [
-  { label: "Personal", icon: User },
-  { label: "Summary", icon: FileText },
-  { label: "Experience", icon: Briefcase },
-  { label: "Education", icon: GraduationCap },
-  { label: "Skills", icon: Wrench },
-  { label: "Languages", icon: Globe },
-  { label: "Additional", icon: ListPlus },
-  { label: "Settings", icon: Settings },
-  { label: "Job Match", icon: Target },
+const templates = [
+  { id: "executive", label: "Executive" },
+  { id: "clean", label: "Clean" },
+  { id: "sidebar", label: "Sidebar" },
+  { id: "minimal", label: "Minimal" },
+  { id: "creative", label: "Creative" },
+  { id: "corporate", label: "Corporate" },
 ];
 
-function formatKES(amount: number) {
-  return `KES ${amount.toLocaleString()}`;
+function ExecutiveThumb() {
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "#fff",
+        fontFamily: "Georgia, serif",
+        fontSize: 6,
+        overflow: "hidden",
+      }}
+    >
+      <div style={{ background: "#1a2a3a", padding: "10px 12px 8px", textAlign: "center" }}>
+        <div
+          style={{
+            width: 20,
+            height: 20,
+            borderRadius: "50%",
+            background: "#c9a84c",
+            margin: "0 auto 4px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#fff",
+            fontSize: 8,
+            fontWeight: "bold",
+          }}
+        >
+          JM
+        </div>
+        <div style={{ color: "#c9a84c", fontSize: 8, fontWeight: "bold", letterSpacing: 1 }}>JAMES MITCHELL</div>
+        <div style={{ color: "#aab8c5", fontSize: 5.5, marginTop: 1 }}>Chief Marketing Officer</div>
+        <div style={{ color: "#6b7f8d", fontSize: 4.5, marginTop: 2 }}>
+          james@email.com · +254 712 345 678 · Nairobi
+        </div>
+      </div>
+      <div style={{ padding: "6px 10px" }}>
+        <div style={{ height: 1, background: "linear-gradient(90deg,#c9a84c,transparent)", marginBottom: 4 }} />
+        <div
+          style={{
+            fontSize: 5,
+            fontWeight: "bold",
+            color: "#1a2a3a",
+            textTransform: "uppercase",
+            letterSpacing: 1,
+            marginBottom: 2,
+          }}
+        >
+          Professional Summary
+        </div>
+        <div style={{ fontSize: 4.5, color: "#555", lineHeight: 1.6 }}>
+          Results-driven executive with 12+ years leading brand strategy across East African markets. Proven track
+          record growing revenue by 43% and managing teams of 30+.
+        </div>
+        <div style={{ height: 1, background: "linear-gradient(90deg,#c9a84c,transparent)", margin: "4px 0" }} />
+        <div
+          style={{
+            fontSize: 5,
+            fontWeight: "bold",
+            color: "#1a2a3a",
+            textTransform: "uppercase",
+            letterSpacing: 1,
+            marginBottom: 2,
+          }}
+        >
+          Experience
+        </div>
+        <div style={{ fontSize: 5, fontWeight: "bold", color: "#1a2a3a" }}>CMO — Safaricom PLC</div>
+        <div style={{ fontSize: 4, color: "#c9a84c", marginBottom: 1 }}>2018 – Present · Nairobi, Kenya</div>
+        <div style={{ fontSize: 4.5, color: "#555", lineHeight: 1.5 }}>
+          · Grew brand revenue by KES 2.3B through integrated campaigns
+        </div>
+        <div style={{ fontSize: 4.5, color: "#555", lineHeight: 1.5 }}>
+          · Led rebranding initiative reaching 14M+ customers nationally
+        </div>
+        <div style={{ fontSize: 4.5, color: "#555", lineHeight: 1.5 }}>
+          · Managed annual marketing budget of KES 500M
+        </div>
+        <div style={{ height: 1, background: "linear-gradient(90deg,#c9a84c,transparent)", margin: "4px 0" }} />
+        <div
+          style={{
+            fontSize: 5,
+            fontWeight: "bold",
+            color: "#1a2a3a",
+            textTransform: "uppercase",
+            letterSpacing: 1,
+            marginBottom: 2,
+          }}
+        >
+          Education
+        </div>
+        <div style={{ fontSize: 4.5, color: "#333" }}>MBA, Marketing — University of Nairobi · 2012</div>
+        <div style={{ fontSize: 4.5, color: "#333" }}>B.Com — Strathmore University · 2008</div>
+        <div style={{ height: 1, background: "linear-gradient(90deg,#c9a84c,transparent)", margin: "4px 0" }} />
+        <div
+          style={{
+            fontSize: 5,
+            fontWeight: "bold",
+            color: "#1a2a3a",
+            textTransform: "uppercase",
+            letterSpacing: 1,
+            marginBottom: 2,
+          }}
+        >
+          Skills
+        </div>
+        <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+          {["Brand Strategy", "P&L Management", "Team Leadership", "Digital Marketing", "CRM"].map((s) => (
+            <span
+              key={s}
+              style={{ fontSize: 4, background: "#1a2a3a", color: "#c9a84c", padding: "1px 4px", borderRadius: 2 }}
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
-export default function CVBuilderPage() {
-  const [step, setStep] = useState(0);
-  const [data, setData] = useState<CVData>(initialCVData);
-  const [showPreview, setShowPreview] = useState(false);
-  const [isPaid, setIsPaid] = useState(false);
-  const [template, setTemplate] = useState<"executive" | "clean" | "sidebar" | "minimal" | "creative" | "corporate">(
-    () => {
-      const params = new URLSearchParams(window.location.search);
-      const t = params.get("t");
-      const valid = ["executive", "clean", "sidebar", "minimal", "creative", "corporate"];
-      return (t && valid.includes(t) ? t : "executive") as
-        | "executive"
-        | "clean"
-        | "sidebar"
-        | "minimal"
-        | "creative"
-        | "corporate";
-    },
+function CleanThumb() {
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "#fff",
+        fontFamily: "Arial, sans-serif",
+        fontSize: 6,
+        overflow: "hidden",
+      }}
+    >
+      <div style={{ borderBottom: "2px solid #2563eb", padding: "8px 12px 6px" }}>
+        <div style={{ fontSize: 10, fontWeight: "bold", color: "#111" }}>SARAH ODHIAMBO</div>
+        <div style={{ fontSize: 5.5, color: "#2563eb", marginTop: 1 }}>Financial Analyst · CPA-K</div>
+        <div style={{ fontSize: 4.5, color: "#666", marginTop: 2 }}>
+          sarah.odhiambo@email.com · 0722 000 111 · Nairobi, Kenya · linkedin.com/in/sarahodhiambo
+        </div>
+      </div>
+      <div style={{ padding: "5px 12px" }}>
+        <div
+          style={{
+            fontSize: 5.5,
+            fontWeight: "bold",
+            color: "#2563eb",
+            textTransform: "uppercase",
+            borderBottom: "1px solid #2563eb",
+            paddingBottom: 1,
+            marginBottom: 3,
+          }}
+        >
+          Professional Summary
+        </div>
+        <div style={{ fontSize: 4.5, color: "#444", lineHeight: 1.6, marginBottom: 4 }}>
+          CPA-certified Financial Analyst with 6 years driving financial planning and budget optimisation for leading
+          Kenyan corporations. Reduced costs by 18% and improved forecasting accuracy by 30%.
+        </div>
+        <div
+          style={{
+            fontSize: 5.5,
+            fontWeight: "bold",
+            color: "#2563eb",
+            textTransform: "uppercase",
+            borderBottom: "1px solid #2563eb",
+            paddingBottom: 1,
+            marginBottom: 3,
+          }}
+        >
+          Experience
+        </div>
+        <div style={{ fontSize: 5, fontWeight: "bold", color: "#111" }}>Senior Financial Analyst — KCB Group</div>
+        <div style={{ fontSize: 4, color: "#888", marginBottom: 1 }}>Jan 2020 – Present</div>
+        <div style={{ fontSize: 4.5, color: "#555", lineHeight: 1.5 }}>
+          · Prepared monthly P&L reports for executive board review
+        </div>
+        <div style={{ fontSize: 4.5, color: "#555", lineHeight: 1.5 }}>
+          · Reduced operational costs by KES 12M through process automation
+        </div>
+        <div style={{ fontSize: 4.5, color: "#555", lineHeight: 1.5 }}>
+          · Built financial models for 3 major acquisition assessments
+        </div>
+        <div
+          style={{
+            fontSize: 5.5,
+            fontWeight: "bold",
+            color: "#2563eb",
+            textTransform: "uppercase",
+            borderBottom: "1px solid #2563eb",
+            paddingBottom: 1,
+            margin: "4px 0 3px",
+          }}
+        >
+          Education
+        </div>
+        <div style={{ fontSize: 4.5, color: "#444" }}>
+          B.Com (Finance) — University of Nairobi · First Class Honours · 2018
+        </div>
+        <div
+          style={{
+            fontSize: 5.5,
+            fontWeight: "bold",
+            color: "#2563eb",
+            textTransform: "uppercase",
+            borderBottom: "1px solid #2563eb",
+            paddingBottom: 1,
+            margin: "4px 0 3px",
+          }}
+        >
+          Skills
+        </div>
+        <div style={{ fontSize: 4.5, color: "#444" }}>
+          Financial Modelling · Excel & Power BI · IFRS Reporting · SAP · Budget Planning · Audit
+        </div>
+      </div>
+    </div>
   );
-  const [paymentOpen, setPaymentOpen] = useState(false);
+}
 
-  const isMobile = useIsMobile();
+function SidebarThumb() {
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "#fff",
+        fontFamily: "Arial, sans-serif",
+        fontSize: 6,
+        overflow: "hidden",
+        display: "flex",
+      }}
+    >
+      <div style={{ width: "38%", background: "#1e293b", padding: "10px 7px", flexShrink: 0 }}>
+        <div
+          style={{
+            width: 22,
+            height: 22,
+            borderRadius: "50%",
+            background: "#38bdf8",
+            margin: "0 auto 4px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#fff",
+            fontSize: 8,
+            fontWeight: "bold",
+          }}
+        >
+          DK
+        </div>
+        <div style={{ color: "#f1f5f9", fontSize: 5.5, fontWeight: "bold", textAlign: "center", marginBottom: 5 }}>
+          David Kamau
+        </div>
+        <div
+          style={{
+            fontSize: 4,
+            color: "#94a3b8",
+            fontWeight: "bold",
+            textTransform: "uppercase",
+            letterSpacing: 0.5,
+            marginBottom: 2,
+          }}
+        >
+          Contact
+        </div>
+        <div style={{ fontSize: 4, color: "#cbd5e1", lineHeight: 1.6 }}>david@email.com</div>
+        <div style={{ fontSize: 4, color: "#cbd5e1", lineHeight: 1.6 }}>0733 456 789</div>
+        <div style={{ fontSize: 4, color: "#cbd5e1", lineHeight: 1.6 }}>Nairobi, Kenya</div>
+        <div style={{ height: 1, background: "#334155", margin: "5px 0" }} />
+        <div
+          style={{
+            fontSize: 4,
+            color: "#94a3b8",
+            fontWeight: "bold",
+            textTransform: "uppercase",
+            letterSpacing: 0.5,
+            marginBottom: 2,
+          }}
+        >
+          Skills
+        </div>
+        {["React / Next.js", "Node.js", "TypeScript", "PostgreSQL", "AWS", "Docker"].map((s) => (
+          <div key={s} style={{ fontSize: 4, color: "#cbd5e1", lineHeight: 1.7 }}>
+            · {s}
+          </div>
+        ))}
+        <div style={{ height: 1, background: "#334155", margin: "5px 0" }} />
+        <div
+          style={{
+            fontSize: 4,
+            color: "#94a3b8",
+            fontWeight: "bold",
+            textTransform: "uppercase",
+            letterSpacing: 0.5,
+            marginBottom: 2,
+          }}
+        >
+          Education
+        </div>
+        <div style={{ fontSize: 4, color: "#e2e8f0", lineHeight: 1.5 }}>BSc Computer Science</div>
+        <div style={{ fontSize: 3.5, color: "#94a3b8" }}>UoN · 2019</div>
+      </div>
+      <div style={{ flex: 1, padding: "10px 8px" }}>
+        <div style={{ fontSize: 8, fontWeight: "bold", color: "#1e293b" }}>Software Engineer</div>
+        <div style={{ fontSize: 4.5, color: "#38bdf8", marginBottom: 5 }}>
+          Full-Stack Developer · 5 Years Experience
+        </div>
+        <div
+          style={{
+            fontSize: 4,
+            fontWeight: "bold",
+            color: "#1e293b",
+            textTransform: "uppercase",
+            borderBottom: "1px solid #e2e8f0",
+            paddingBottom: 1,
+            marginBottom: 3,
+          }}
+        >
+          Summary
+        </div>
+        <div style={{ fontSize: 4, color: "#555", lineHeight: 1.6, marginBottom: 4 }}>
+          Full-stack engineer building scalable SaaS products for East African fintech startups. Shipped 8 production
+          apps with 100K+ users.
+        </div>
+        <div
+          style={{
+            fontSize: 4,
+            fontWeight: "bold",
+            color: "#1e293b",
+            textTransform: "uppercase",
+            borderBottom: "1px solid #e2e8f0",
+            paddingBottom: 1,
+            marginBottom: 3,
+          }}
+        >
+          Experience
+        </div>
+        <div style={{ fontSize: 4.5, fontWeight: "bold", color: "#1e293b" }}>Lead Engineer — M-Kopa Solar</div>
+        <div style={{ fontSize: 3.5, color: "#888", marginBottom: 1 }}>2021 – Present</div>
+        <div style={{ fontSize: 4, color: "#555", lineHeight: 1.5 }}>· Built IoT dashboard serving 200K+ devices</div>
+        <div style={{ fontSize: 4, color: "#555", lineHeight: 1.5 }}>
+          · Reduced API latency by 65% via Redis caching
+        </div>
+        <div style={{ fontSize: 4, color: "#555", lineHeight: 1.5 }}>· Led team of 6 engineers across 3 countries</div>
+        <div style={{ fontSize: 4.5, fontWeight: "bold", color: "#1e293b", marginTop: 3 }}>
+          Software Engineer — Andela
+        </div>
+        <div style={{ fontSize: 3.5, color: "#888", marginBottom: 1 }}>2019 – 2021</div>
+        <div style={{ fontSize: 4, color: "#555", lineHeight: 1.5 }}>
+          · Delivered React components for US fintech client
+        </div>
+        <div style={{ fontSize: 4, color: "#555", lineHeight: 1.5 }}>
+          · Maintained 99.9% uptime on payment microservices
+        </div>
+      </div>
+    </div>
+  );
+}
 
-  const progress = ((step + 1) / STEPS.length) * 100;
-  const selectedTier = data.experienceLevel ? PRICING_TIERS[data.experienceLevel] : null;
-  const defaultPackage =
-    data.experienceLevel === "executive" ? "executive" : data.experienceLevel === "mid" ? "professional" : "starter";
+function MinimalThumb() {
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "#fafafa",
+        fontFamily: "'Georgia', serif",
+        fontSize: 6,
+        overflow: "hidden",
+        padding: "12px 14px",
+      }}
+    >
+      <div style={{ marginBottom: 8 }}>
+        <div style={{ fontSize: 12, fontWeight: "bold", color: "#111", letterSpacing: -0.5 }}>Grace Wanjiru</div>
+        <div style={{ fontSize: 5.5, color: "#888", marginTop: 1 }}>UX Designer & Product Strategist</div>
+        <div style={{ fontSize: 4.5, color: "#aaa", marginTop: 2 }}>
+          grace@email.com · 0700 123 456 · Nairobi · behance.net/gracewanjiru
+        </div>
+      </div>
+      <div style={{ height: "0.5px", background: "#ddd", marginBottom: 6 }} />
+      <div style={{ fontSize: 4.5, color: "#888", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 3 }}>
+        About
+      </div>
+      <div style={{ fontSize: 4.5, color: "#444", lineHeight: 1.7, marginBottom: 6 }}>
+        Product designer with 7 years crafting intuitive digital experiences for fintech and healthtech. Led design
+        systems adopted by teams of 50+. Passionate about human-centred design in emerging markets.
+      </div>
+      <div style={{ fontSize: 4.5, color: "#888", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 3 }}>
+        Experience
+      </div>
+      <div style={{ marginBottom: 4 }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span style={{ fontSize: 5, fontWeight: "bold", color: "#222" }}>Lead Product Designer — Flutterwave</span>
+          <span style={{ fontSize: 4, color: "#999" }}>2021–Present</span>
+        </div>
+        <div style={{ fontSize: 4.5, color: "#666", lineHeight: 1.6 }}>
+          · Redesigned checkout flow — increased conversion by 34%
+        </div>
+        <div style={{ fontSize: 4.5, color: "#666", lineHeight: 1.6 }}>
+          · Built and maintained design system across 4 product teams
+        </div>
+      </div>
+      <div style={{ marginBottom: 4 }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <span style={{ fontSize: 5, fontWeight: "bold", color: "#222" }}>UX Designer — Jumia Kenya</span>
+          <span style={{ fontSize: 4, color: "#999" }}>2018–2021</span>
+        </div>
+        <div style={{ fontSize: 4.5, color: "#666", lineHeight: 1.6 }}>· Improved mobile app NPS from 42 to 71</div>
+        <div style={{ fontSize: 4.5, color: "#666", lineHeight: 1.6 }}>
+          · Delivered 20+ A/B test designs for marketplace features
+        </div>
+      </div>
+      <div style={{ height: "0.5px", background: "#ddd", marginBottom: 5 }} />
+      <div style={{ fontSize: 4.5, color: "#888", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 3 }}>
+        Skills
+      </div>
+      <div style={{ fontSize: 4.5, color: "#555" }}>
+        Figma · Prototyping · User Research · Design Systems · Usability Testing · Webflow
+      </div>
+    </div>
+  );
+}
 
-  const update = (updates: Partial<CVData>) => setData((prev) => ({ ...prev, ...updates }));
+function CreativeThumb() {
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "#fff",
+        fontFamily: "Arial, sans-serif",
+        fontSize: 6,
+        overflow: "hidden",
+      }}
+    >
+      <div style={{ background: "linear-gradient(135deg,#7c3aed,#db2777)", padding: "10px 12px 8px" }}>
+        <div style={{ fontSize: 10, fontWeight: "bold", color: "#fff", letterSpacing: 0.5 }}>Brian Otieno</div>
+        <div style={{ fontSize: 5.5, color: "#f0abfc", marginTop: 1 }}>Creative Director & Brand Consultant</div>
+        <div style={{ fontSize: 4, color: "#e9d5ff", marginTop: 2 }}>
+          brian@studio.co · 0711 987 654 · Nairobi · @brianotieno
+        </div>
+      </div>
+      <div style={{ padding: "6px 12px" }}>
+        <div
+          style={{
+            fontSize: 5,
+            fontWeight: "bold",
+            color: "#7c3aed",
+            textTransform: "uppercase",
+            letterSpacing: 1,
+            borderLeft: "2px solid #7c3aed",
+            paddingLeft: 4,
+            marginBottom: 3,
+          }}
+        >
+          Profile
+        </div>
+        <div style={{ fontSize: 4.5, color: "#444", lineHeight: 1.6, marginBottom: 5 }}>
+          Award-winning creative director with 10 years shaping brand identities for Fortune 500 companies and African
+          startups. Winner of 3 Loeries Awards. Specialises in visual storytelling that converts.
+        </div>
+        <div
+          style={{
+            fontSize: 5,
+            fontWeight: "bold",
+            color: "#db2777",
+            textTransform: "uppercase",
+            letterSpacing: 1,
+            borderLeft: "2px solid #db2777",
+            paddingLeft: 4,
+            marginBottom: 3,
+          }}
+        >
+          Experience
+        </div>
+        <div style={{ fontSize: 5, fontWeight: "bold", color: "#1a1a1a" }}>Creative Director — Ogilvy Africa</div>
+        <div style={{ fontSize: 4, color: "#db2777", marginBottom: 1 }}>2019 – Present</div>
+        <div style={{ fontSize: 4.5, color: "#555", lineHeight: 1.5 }}>
+          · Led 12-person creative team across 6 African markets
+        </div>
+        <div style={{ fontSize: 4.5, color: "#555", lineHeight: 1.5 }}>· Won Loeries Gold for Equity Bank campaign</div>
+        <div style={{ fontSize: 4.5, color: "#555", lineHeight: 1.5 }}>
+          · Managed client relationships worth $2M annually
+        </div>
+        <div style={{ fontSize: 5, fontWeight: "bold", color: "#1a1a1a", marginTop: 3 }}>
+          Senior Designer — McCann Nairobi
+        </div>
+        <div style={{ fontSize: 4, color: "#db2777", marginBottom: 1 }}>2016 – 2019</div>
+        <div style={{ fontSize: 4.5, color: "#555", lineHeight: 1.5 }}>
+          · Designed brand identity for 20+ regional clients
+        </div>
+        <div
+          style={{
+            fontSize: 5,
+            fontWeight: "bold",
+            color: "#7c3aed",
+            textTransform: "uppercase",
+            letterSpacing: 1,
+            borderLeft: "2px solid #7c3aed",
+            paddingLeft: 4,
+            margin: "4px 0 3px",
+          }}
+        >
+          Skills
+        </div>
+        <div style={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+          {["Adobe CC", "Brand Identity", "Art Direction", "Typography", "Motion Design"].map((s) => (
+            <span
+              key={s}
+              style={{
+                fontSize: 4,
+                background: "#f5f3ff",
+                color: "#7c3aed",
+                padding: "1px 4px",
+                borderRadius: 2,
+                border: "0.5px solid #ddd8fe",
+              }}
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-  const renderStep = () => {
-    switch (step) {
-      case 0:
-        return <StepPersonalDetails data={data} onChange={update} />;
-      case 1:
-        return <StepSummary data={data} onChange={update} />;
-      case 2:
-        return <StepWorkExperience data={data} onChange={update} />;
-      case 3:
-        return <StepEducation data={data} onChange={update} />;
-      case 4:
-        return <StepSkills data={data} onChange={update} />;
-      case 5:
-        return <StepLanguages data={data} onChange={update} />;
-      case 6:
-        return <StepAdditional data={data} onChange={update} />;
-      case 7:
-        return <StepSettings data={data} onChange={update} />;
-      case 8:
-        return <JobMatchScore data={data} onOptimize={() => setPaymentOpen(true)} />;
-      default:
-        return null;
-    }
-  };
+function CorporateThumb() {
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        background: "#fff",
+        fontFamily: "Arial, sans-serif",
+        fontSize: 6,
+        overflow: "hidden",
+      }}
+    >
+      <div style={{ background: "#14532d", padding: "10px 12px 8px" }}>
+        <div style={{ fontSize: 10, fontWeight: "bold", color: "#fff" }}>LINDA MWANGI</div>
+        <div style={{ fontSize: 5.5, color: "#86efac", marginTop: 1 }}>
+          Head of Operations | Supply Chain & Logistics
+        </div>
+        <div style={{ fontSize: 4, color: "#bbf7d0", marginTop: 2 }}>
+          linda.mwangi@email.com · +254 720 111 222 · Nairobi, Kenya
+        </div>
+      </div>
+      <div style={{ height: 2, background: "linear-gradient(90deg,#c9a84c,#eab308,#c9a84c)" }} />
+      <div style={{ padding: "6px 12px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 2 }}>
+          <div style={{ width: 40, height: "0.5px", background: "#14532d" }} />
+          <div
+            style={{ fontSize: 5, fontWeight: "bold", color: "#14532d", textTransform: "uppercase", letterSpacing: 1 }}
+          >
+            Executive Summary
+          </div>
+          <div style={{ flex: 1, height: "0.5px", background: "#14532d" }} />
+        </div>
+        <div style={{ fontSize: 4.5, color: "#444", lineHeight: 1.6, marginBottom: 4 }}>
+          Operations leader with 15 years optimising supply chains for East Africa's largest FMCG companies. Delivered
+          KES 80M in annual savings through procurement transformation and vendor consolidation.
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 2 }}>
+          <div style={{ width: 40, height: "0.5px", background: "#14532d" }} />
+          <div
+            style={{ fontSize: 5, fontWeight: "bold", color: "#14532d", textTransform: "uppercase", letterSpacing: 1 }}
+          >
+            Career History
+          </div>
+          <div style={{ flex: 1, height: "0.5px", background: "#14532d" }} />
+        </div>
+        <div style={{ fontSize: 5, fontWeight: "bold", color: "#14532d" }}>Head of Operations — Bidco Africa</div>
+        <div style={{ fontSize: 4, color: "#888", marginBottom: 1 }}>2017 – Present · Nairobi</div>
+        <div style={{ fontSize: 4.5, color: "#555", lineHeight: 1.5 }}>
+          · Oversaw 14-country distribution network across East & Central Africa
+        </div>
+        <div style={{ fontSize: 4.5, color: "#555", lineHeight: 1.5 }}>
+          · Reduced logistics costs by 22% through fleet optimisation
+        </div>
+        <div style={{ fontSize: 4.5, color: "#555", lineHeight: 1.5 }}>
+          · Managed annual procurement budget of KES 2.4B
+        </div>
+        <div style={{ fontSize: 5, fontWeight: "bold", color: "#14532d", marginTop: 3 }}>
+          Logistics Manager — Unilever Kenya
+        </div>
+        <div style={{ fontSize: 4, color: "#888", marginBottom: 1 }}>2011 – 2017</div>
+        <div style={{ fontSize: 4.5, color: "#555", lineHeight: 1.5 }}>
+          · Led cross-functional team of 40 across warehousing & distribution
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 4, margin: "4px 0 2px" }}>
+          <div style={{ width: 40, height: "0.5px", background: "#14532d" }} />
+          <div
+            style={{ fontSize: 5, fontWeight: "bold", color: "#14532d", textTransform: "uppercase", letterSpacing: 1 }}
+          >
+            Core Competencies
+          </div>
+          <div style={{ flex: 1, height: "0.5px", background: "#14532d" }} />
+        </div>
+        <div style={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+          {["Supply Chain", "Procurement", "P&L", "Vendor Management", "ERP Systems", "Team Leadership"].map((s) => (
+            <span
+              key={s}
+              style={{
+                fontSize: 4,
+                background: "#f0fdf4",
+                color: "#14532d",
+                padding: "1px 4px",
+                borderRadius: 2,
+                border: "0.5px solid #86efac",
+              }}
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const THUMB_MAP: Record<string, JSX.Element> = {
+  executive: <ExecutiveThumb />,
+  clean: <CleanThumb />,
+  sidebar: <SidebarThumb />,
+  minimal: <MinimalThumb />,
+  creative: <CreativeThumb />,
+  corporate: <CorporateThumb />,
+};
+
+export default function CVBuilderPage() {
+  const [selected, setSelected] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   return (
     <PageLayout>
-      <MpesaPaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} defaultPackage={defaultPackage} />
-
-      <section className="relative z-10 pt-4 sm:pt-6 pb-32 sm:pb-24 px-3 sm:px-4">
-        <div className="container max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-            <Link to="/">
-              <Button variant="ghost" size="sm" className="px-2 sm:px-3">
-                <ArrowLeft className="h-4 w-4 sm:mr-1" />
-                <span className="hidden sm:inline">Back</span>
-              </Button>
-            </Link>
-            <div className="flex-1 min-w-0">
-              <h1 className="text-lg sm:text-2xl font-serif font-bold truncate">
-                CV <span className="text-gradient">Builder</span>
-              </h1>
-            </div>
-            {selectedTier && (
-              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
-                <span className="text-xs text-muted-foreground">{selectedTier.label}</span>
-                <span className="text-sm font-bold text-primary">{formatKES(selectedTier.price)}</span>
-              </div>
-            )}
-            {isMobile && (
+      <section className="relative z-10 pt-12 pb-24 px-4">
+        <div className="container max-w-5xl mx-auto">
+          <h1 className="text-3xl sm:text-5xl font-serif font-bold text-center mb-3">
+            Choose your <span className="text-gradient">template</span>
+          </h1>
+          <p className="text-center text-muted-foreground text-sm mb-10">
+            Pick a design — then fill in your details and download your CV instantly.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-5">
+            {templates.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setSelected(t.id)}
+                className={`rounded-2xl border overflow-hidden text-left transition-all duration-200 group ${
+                  selected === t.id
+                    ? "border-primary shadow-glow ring-2 ring-primary/30"
+                    : "border-border hover:border-primary/40"
+                }`}
+              >
+                <div style={{ height: 260, overflow: "hidden", position: "relative", background: "#f8f8f8" }}>
+                  {THUMB_MAP[t.id]}
+                </div>
+                <div
+                  className={`px-4 py-3 flex items-center justify-between ${selected === t.id ? "bg-primary/10" : "bg-card"}`}
+                >
+                  <span className="font-semibold text-sm">{t.label}</span>
+                  {selected === t.id && <span className="text-xs text-primary font-mono">Selected ✓</span>}
+                </div>
+              </button>
+            ))}
+          </div>
+          {selected && (
+            <div className="mt-10 text-center">
               <Button
-                variant="outline"
-                size="sm"
-                className="gap-1.5 shrink-0"
-                onClick={() => setShowPreview(!showPreview)}
+                onClick={() => navigate(`/cv-builder/${selected}`)}
+                className="bg-gradient-brand border-0 font-semibold px-10 h-12 shadow-glow gold-shimmer"
               >
-                {showPreview ? <Edit3 className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-                {showPreview ? "Edit" : "Preview"}
+                Use {templates.find((t) => t.id === selected)?.label} Template →
               </Button>
-            )}
-          </div>
-
-          {/* Progress */}
-          <Progress value={progress} className="h-1 sm:h-1.5 mb-3 sm:mb-4" />
-
-          {/* Step indicators */}
-          <div className="flex gap-1 mb-4 sm:mb-6 overflow-x-auto pb-1 -mx-3 px-3 sm:mx-0 sm:px-0 scrollbar-hide">
-            {STEPS.map((s, i) => {
-              const Icon = s.icon;
-              return (
-                <button
-                  key={i}
-                  onClick={() => setStep(i)}
-                  className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-medium whitespace-nowrap transition-all shrink-0 ${
-                    i === step
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : i < step
-                        ? "bg-primary/20 text-primary"
-                        : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  <Icon className="h-3 w-3" />
-                  {i === step ? s.label : <span className="hidden sm:inline">{s.label}</span>}
-                  {i !== step && <span className="sm:hidden">{i + 1}</span>}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Template Switcher */}
-          <div className="mb-6">
-            <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest mb-3">
-              Choose Template
-            </p>
-            <div className="grid grid-cols-3 gap-3 sm:gap-4">
-              {/* Executive */}
-              <button
-                onClick={() => {
-                  setTemplate("executive");
-                  setShowPreview(true);
-                }}
-                className={`flex flex-col items-center gap-1.5 rounded-xl transition-all ${template === "executive" ? "opacity-100" : "opacity-70 hover:opacity-90"}`}
-              >
-                <div
-                  className={`w-full aspect-[3/4] rounded-lg overflow-hidden shadow-md ${template === "executive" ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-1 ring-border"}`}
-                  style={{ userSelect: "none", pointerEvents: "none" }}
-                >
-                  <div style={{ fontFamily: "Georgia,serif", height: "100%", background: "#fff" }}>
-                    <div style={{ background: "#1a1a2e", padding: "8px 8px 6px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                        <div>
-                          <div
-                            style={{
-                              fontSize: "5.5px",
-                              fontWeight: 800,
-                              color: "#c9a84c",
-                              letterSpacing: "1px",
-                              textTransform: "uppercase",
-                            }}
-                          >
-                            JAMES MITCHELL
-                          </div>
-                          <div style={{ fontSize: "3.5px", color: "#c9a84c", opacity: 0.8, marginTop: "1px" }}>
-                            Chief Marketing Officer
-                          </div>
-                          <div style={{ fontSize: "3px", color: "#aab4cc", marginTop: "2px" }}>
-                            james@email.com · +254 722 000 000
-                          </div>
-                        </div>
-                        <div
-                          style={{
-                            width: "14px",
-                            height: "14px",
-                            borderRadius: "50%",
-                            border: "1px solid #c9a84c",
-                            background: "rgba(201,168,76,0.15)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <span style={{ fontSize: "3px", color: "#c9a84c" }}>JM</span>
-                        </div>
-                      </div>
-                      <div
-                        style={{
-                          height: "0.5px",
-                          background: "linear-gradient(90deg,#c9a84c,transparent)",
-                          marginTop: "5px",
-                        }}
-                      />
-                    </div>
-                    <div style={{ padding: "5px 8px" }}>
-                      <div style={{ marginBottom: "4px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "3px", marginBottom: "2px" }}>
-                          <span
-                            style={{
-                              fontSize: "3px",
-                              fontWeight: 900,
-                              color: "#1a1a2e",
-                              letterSpacing: "0.8px",
-                              textTransform: "uppercase",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            SUMMARY
-                          </span>
-                          <div
-                            style={{
-                              flex: 1,
-                              height: "0.5px",
-                              background: "linear-gradient(90deg,#c9a84c,transparent)",
-                            }}
-                          />
-                        </div>
-                        <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5 }}>
-                          Visionary executive with 15+ years leading brand transformation across Fortune 500 companies.
-                        </div>
-                      </div>
-                      <div style={{ marginBottom: "4px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "3px", marginBottom: "2px" }}>
-                          <span
-                            style={{
-                              fontSize: "3px",
-                              fontWeight: 900,
-                              color: "#1a1a2e",
-                              letterSpacing: "0.8px",
-                              textTransform: "uppercase",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            EXPERIENCE
-                          </span>
-                          <div
-                            style={{
-                              flex: 1,
-                              height: "0.5px",
-                              background: "linear-gradient(90deg,#c9a84c,transparent)",
-                            }}
-                          />
-                        </div>
-                        <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5 }}>
-                          Chief Marketing Officer · Safaricom PLC · 2020–Present
-                        </div>
-                        <div style={{ fontSize: "3px", color: "#666", lineHeight: 1.5 }}>
-                          Delivered 156% revenue growth · Built 45-person team
-                        </div>
-                      </div>
-                      <div style={{ marginBottom: "4px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "3px", marginBottom: "2px" }}>
-                          <span
-                            style={{
-                              fontSize: "3px",
-                              fontWeight: 900,
-                              color: "#1a1a2e",
-                              letterSpacing: "0.8px",
-                              textTransform: "uppercase",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            EDUCATION
-                          </span>
-                          <div
-                            style={{
-                              flex: 1,
-                              height: "0.5px",
-                              background: "linear-gradient(90deg,#c9a84c,transparent)",
-                            }}
-                          />
-                        </div>
-                        <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5 }}>
-                          MBA Marketing · University of Nairobi · 2018
-                        </div>
-                      </div>
-                      <div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "3px", marginBottom: "2px" }}>
-                          <span
-                            style={{
-                              fontSize: "3px",
-                              fontWeight: 900,
-                              color: "#1a1a2e",
-                              letterSpacing: "0.8px",
-                              textTransform: "uppercase",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            SKILLS
-                          </span>
-                          <div
-                            style={{
-                              flex: 1,
-                              height: "0.5px",
-                              background: "linear-gradient(90deg,#c9a84c,transparent)",
-                            }}
-                          />
-                        </div>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "2px" }}>
-                          {["P&L Mgmt", "Brand Strategy", "Board Relations"].map((s) => (
-                            <span
-                              key={s}
-                              style={{
-                                fontSize: "2.5px",
-                                background: "rgba(201,168,76,0.1)",
-                                border: "0.5px solid rgba(201,168,76,0.3)",
-                                color: "#1a1a2e",
-                                padding: "1px 3px",
-                                borderRadius: "8px",
-                              }}
-                            >
-                              {s}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <span className="text-[10px] sm:text-xs font-semibold tracking-wide">Executive</span>
-              </button>
-
-              {/* Clean */}
-              <button
-                onClick={() => {
-                  setTemplate("clean");
-                  setShowPreview(true);
-                }}
-                className={`flex flex-col items-center gap-1.5 rounded-xl transition-all ${template === "clean" ? "opacity-100" : "opacity-70 hover:opacity-90"}`}
-              >
-                <div
-                  className={`w-full aspect-[3/4] rounded-lg overflow-hidden shadow-md ${template === "clean" ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-1 ring-border"}`}
-                  style={{ userSelect: "none", pointerEvents: "none" }}
-                >
-                  <div style={{ fontFamily: "Arial,sans-serif", height: "100%", background: "#fff", padding: "8px" }}>
-                    <div style={{ borderBottom: "1.5px solid #2563eb", paddingBottom: "5px", marginBottom: "5px" }}>
-                      <div style={{ fontSize: "5.5px", fontWeight: 700, color: "#111" }}>JAMES MITCHELL</div>
-                      <div style={{ fontSize: "3.5px", color: "#2563eb", fontWeight: 600, marginTop: "1px" }}>
-                        Senior Marketing Manager
-                      </div>
-                      <div style={{ fontSize: "3px", color: "#555", marginTop: "2px" }}>
-                        james@email.com | +254 722 000 000 | Nairobi
-                      </div>
-                    </div>
-                    <div style={{ marginBottom: "4px" }}>
-                      <div
-                        style={{
-                          fontSize: "3px",
-                          fontWeight: 700,
-                          color: "#111",
-                          textTransform: "uppercase",
-                          marginBottom: "1.5px",
-                        }}
-                      >
-                        Professional Summary
-                      </div>
-                      <div style={{ fontSize: "3px", color: "#333", lineHeight: 1.5 }}>
-                        Marketing professional with 8+ years in digital marketing, brand management and team leadership
-                        with proven results.
-                      </div>
-                    </div>
-                    <div style={{ marginBottom: "4px" }}>
-                      <div
-                        style={{
-                          fontSize: "3px",
-                          fontWeight: 700,
-                          color: "#111",
-                          textTransform: "uppercase",
-                          marginBottom: "1.5px",
-                        }}
-                      >
-                        Work Experience
-                      </div>
-                      <div style={{ fontSize: "3px", color: "#333", lineHeight: 1.5 }}>
-                        Marketing Director · Safaricom PLC · 2021–Present
-                      </div>
-                      <div style={{ fontSize: "3px", color: "#555", lineHeight: 1.5 }}>
-                        Increased engagement by 43% · Led team of 12 professionals
-                      </div>
-                    </div>
-                    <div style={{ marginBottom: "4px" }}>
-                      <div
-                        style={{
-                          fontSize: "3px",
-                          fontWeight: 700,
-                          color: "#111",
-                          textTransform: "uppercase",
-                          marginBottom: "1.5px",
-                        }}
-                      >
-                        Education
-                      </div>
-                      <div style={{ fontSize: "3px", color: "#333", lineHeight: 1.5 }}>
-                        MBA Marketing · University of Nairobi · 2018
-                      </div>
-                    </div>
-                    <div>
-                      <div
-                        style={{
-                          fontSize: "3px",
-                          fontWeight: 700,
-                          color: "#111",
-                          textTransform: "uppercase",
-                          marginBottom: "1.5px",
-                        }}
-                      >
-                        Skills
-                      </div>
-                      <div style={{ fontSize: "3px", color: "#333" }}>
-                        Brand Strategy | Digital Marketing | SEO/SEM | Analytics | Leadership
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <span className="text-[10px] sm:text-xs font-semibold tracking-wide">Clean</span>
-              </button>
-
-              {/* Sidebar */}
-              <button
-                onClick={() => {
-                  setTemplate("sidebar");
-                  setShowPreview(true);
-                }}
-                className={`flex flex-col items-center gap-1.5 rounded-xl transition-all ${template === "sidebar" ? "opacity-100" : "opacity-70 hover:opacity-90"}`}
-              >
-                <div
-                  className={`w-full aspect-[3/4] rounded-lg overflow-hidden shadow-md ${template === "sidebar" ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-1 ring-border"}`}
-                  style={{ userSelect: "none", pointerEvents: "none" }}
-                >
-                  <div style={{ fontFamily: "Arial,sans-serif", display: "flex", height: "100%", background: "#fff" }}>
-                    <div style={{ width: "35%", background: "#1e293b", padding: "8px 5px" }}>
-                      <div
-                        style={{
-                          width: "20px",
-                          height: "20px",
-                          borderRadius: "50%",
-                          border: "1px solid #38bdf8",
-                          background: "rgba(56,189,248,0.15)",
-                          margin: "0 auto 4px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <span style={{ fontSize: "4px", color: "#38bdf8", fontWeight: 700 }}>JM</span>
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "3.5px",
-                          fontWeight: 700,
-                          color: "#fff",
-                          textAlign: "center",
-                          marginBottom: "1px",
-                        }}
-                      >
-                        JAMES MITCHELL
-                      </div>
-                      <div style={{ fontSize: "3px", color: "#38bdf8", textAlign: "center", marginBottom: "4px" }}>
-                        Marketing Director
-                      </div>
-                      <div style={{ height: "0.5px", background: "rgba(56,189,248,0.3)", marginBottom: "4px" }} />
-                      <div style={{ fontSize: "2.8px", color: "#94a3b8", lineHeight: 1.8, marginBottom: "4px" }}>
-                        james@email.com · Nairobi, Kenya
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "3px",
-                          fontWeight: 700,
-                          color: "#38bdf8",
-                          textTransform: "uppercase",
-                          marginBottom: "2px",
-                        }}
-                      >
-                        Skills
-                      </div>
-                      {["Brand Strategy", "Digital Mktg", "Analytics", "Leadership"].map((s) => (
-                        <div
-                          key={s}
-                          style={{
-                            fontSize: "2.8px",
-                            color: "#94a3b8",
-                            background: "rgba(56,189,248,0.1)",
-                            padding: "1px 3px",
-                            borderRadius: "2px",
-                            marginBottom: "1px",
-                          }}
-                        >
-                          {s}
-                        </div>
-                      ))}
-                    </div>
-                    <div style={{ flex: 1, padding: "8px 6px" }}>
-                      <div style={{ marginBottom: "4px" }}>
-                        <div
-                          style={{
-                            fontSize: "3px",
-                            fontWeight: 700,
-                            color: "#1e293b",
-                            textTransform: "uppercase",
-                            borderBottom: "0.5px solid #38bdf8",
-                            paddingBottom: "1px",
-                            marginBottom: "2px",
-                          }}
-                        >
-                          Summary
-                        </div>
-                        <div style={{ fontSize: "2.8px", color: "#444", lineHeight: 1.5 }}>
-                          Results-driven professional with 8+ years across East Africa in brand and digital marketing.
-                        </div>
-                      </div>
-                      <div style={{ marginBottom: "4px" }}>
-                        <div
-                          style={{
-                            fontSize: "3px",
-                            fontWeight: 700,
-                            color: "#1e293b",
-                            textTransform: "uppercase",
-                            borderBottom: "0.5px solid #38bdf8",
-                            paddingBottom: "1px",
-                            marginBottom: "2px",
-                          }}
-                        >
-                          Experience
-                        </div>
-                        <div style={{ fontSize: "2.8px", color: "#444", lineHeight: 1.5, fontWeight: 600 }}>
-                          Marketing Director
-                        </div>
-                        <div style={{ fontSize: "2.8px", color: "#38bdf8", lineHeight: 1.5 }}>
-                          Safaricom PLC · 2021–Present
-                        </div>
-                        <div style={{ fontSize: "2.8px", color: "#555", lineHeight: 1.5 }}>
-                          Grew brand by 43% · Led team of 12
-                        </div>
-                      </div>
-                      <div>
-                        <div
-                          style={{
-                            fontSize: "3px",
-                            fontWeight: 700,
-                            color: "#1e293b",
-                            textTransform: "uppercase",
-                            borderBottom: "0.5px solid #38bdf8",
-                            paddingBottom: "1px",
-                            marginBottom: "2px",
-                          }}
-                        >
-                          Education
-                        </div>
-                        <div style={{ fontSize: "2.8px", color: "#444", lineHeight: 1.5 }}>
-                          MBA Marketing · Univ. of Nairobi · 2018
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <span className="text-[10px] sm:text-xs font-semibold tracking-wide">Sidebar</span>
-              </button>
-
-              {/* Minimal */}
-              <button
-                onClick={() => {
-                  setTemplate("minimal");
-                  setShowPreview(true);
-                }}
-                className={`flex flex-col items-center gap-1.5 rounded-xl transition-all ${template === "minimal" ? "opacity-100" : "opacity-70 hover:opacity-90"}`}
-              >
-                <div
-                  className={`w-full aspect-[3/4] rounded-lg overflow-hidden shadow-md ${template === "minimal" ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-1 ring-border"}`}
-                  style={{ userSelect: "none", pointerEvents: "none" }}
-                >
-                  <div
-                    style={{
-                      fontFamily: "Helvetica,Arial,sans-serif",
-                      height: "100%",
-                      background: "#fff",
-                      padding: "8px",
-                    }}
-                  >
-                    <div style={{ marginBottom: "6px" }}>
-                      <div style={{ fontSize: "6px", fontWeight: 800, color: "#111" }}>James Mitchell</div>
-                      <div style={{ fontSize: "3.5px", color: "#555", marginTop: "1px" }}>Senior Marketing Manager</div>
-                      <div style={{ fontSize: "3px", color: "#888", marginTop: "2px" }}>
-                        james@email.com · +254 722 000 000
-                      </div>
-                      <div style={{ height: "0.3px", background: "#111", marginTop: "4px", opacity: 0.1 }} />
-                    </div>
-                    <div style={{ marginBottom: "4px" }}>
-                      <div
-                        style={{
-                          fontSize: "2.8px",
-                          fontWeight: 700,
-                          color: "#111",
-                          textTransform: "uppercase",
-                          letterSpacing: "1px",
-                          marginBottom: "1.5px",
-                          opacity: 0.5,
-                        }}
-                      >
-                        Summary
-                      </div>
-                      <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5 }}>
-                        Results-driven professional with 8+ years in brand strategy and digital marketing.
-                      </div>
-                    </div>
-                    <div style={{ marginBottom: "4px" }}>
-                      <div
-                        style={{
-                          fontSize: "2.8px",
-                          fontWeight: 700,
-                          color: "#111",
-                          textTransform: "uppercase",
-                          letterSpacing: "1px",
-                          marginBottom: "1.5px",
-                          opacity: 0.5,
-                        }}
-                      >
-                        Experience
-                      </div>
-                      <div style={{ fontSize: "3px", color: "#333", fontWeight: 600 }}>
-                        Marketing Director · Safaricom PLC
-                      </div>
-                      <div style={{ fontSize: "3px", color: "#666" }}>2021–Present · Grew brand engagement 43%</div>
-                    </div>
-                    <div style={{ marginBottom: "4px" }}>
-                      <div
-                        style={{
-                          fontSize: "2.8px",
-                          fontWeight: 700,
-                          color: "#111",
-                          textTransform: "uppercase",
-                          letterSpacing: "1px",
-                          marginBottom: "1.5px",
-                          opacity: 0.5,
-                        }}
-                      >
-                        Education
-                      </div>
-                      <div style={{ fontSize: "3px", color: "#333" }}>MBA Marketing · University of Nairobi · 2018</div>
-                    </div>
-                    <div>
-                      <div
-                        style={{
-                          fontSize: "2.8px",
-                          fontWeight: 700,
-                          color: "#111",
-                          textTransform: "uppercase",
-                          letterSpacing: "1px",
-                          marginBottom: "1.5px",
-                          opacity: 0.5,
-                        }}
-                      >
-                        Skills
-                      </div>
-                      <div style={{ fontSize: "3px", color: "#555" }}>
-                        Brand Strategy · Digital Marketing · SEO/SEM · Analytics
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <span className="text-[10px] sm:text-xs font-semibold tracking-wide">Minimal</span>
-              </button>
-
-              {/* Creative */}
-              <button
-                onClick={() => {
-                  setTemplate("creative");
-                  setShowPreview(true);
-                }}
-                className={`flex flex-col items-center gap-1.5 rounded-xl transition-all ${template === "creative" ? "opacity-100" : "opacity-70 hover:opacity-90"}`}
-              >
-                <div
-                  className={`w-full aspect-[3/4] rounded-lg overflow-hidden shadow-md ${template === "creative" ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-1 ring-border"}`}
-                  style={{ userSelect: "none", pointerEvents: "none" }}
-                >
-                  <div style={{ fontFamily: "Arial,sans-serif", height: "100%", background: "#fff" }}>
-                    <div style={{ background: "linear-gradient(135deg,#7c3aed,#db2777)", padding: "8px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <div>
-                          <div style={{ fontSize: "5.5px", fontWeight: 800, color: "#fff" }}>JAMES MITCHELL</div>
-                          <div style={{ fontSize: "3.5px", color: "rgba(255,255,255,0.85)", marginTop: "1px" }}>
-                            Senior Marketing Manager
-                          </div>
-                          <div style={{ fontSize: "3px", color: "rgba(255,255,255,0.6)", marginTop: "2px" }}>
-                            james@email.com · Nairobi
-                          </div>
-                        </div>
-                        <div
-                          style={{
-                            width: "14px",
-                            height: "14px",
-                            borderRadius: "50%",
-                            border: "1px solid rgba(255,255,255,0.5)",
-                            background: "rgba(255,255,255,0.15)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <span style={{ fontSize: "3px", color: "#fff" }}>JM</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div style={{ padding: "5px 8px" }}>
-                      <div style={{ marginBottom: "4px" }}>
-                        <div
-                          style={{
-                            fontSize: "3px",
-                            fontWeight: 700,
-                            color: "#7c3aed",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.8px",
-                            marginBottom: "1.5px",
-                          }}
-                        >
-                          Profile
-                        </div>
-                        <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5 }}>
-                          Results-driven professional with 8+ years in brand strategy and digital marketing across East
-                          Africa.
-                        </div>
-                      </div>
-                      <div style={{ marginBottom: "4px" }}>
-                        <div
-                          style={{
-                            fontSize: "3px",
-                            fontWeight: 700,
-                            color: "#7c3aed",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.8px",
-                            marginBottom: "1.5px",
-                          }}
-                        >
-                          Experience
-                        </div>
-                        <div style={{ fontSize: "3px", color: "#333", fontWeight: 600 }}>
-                          Marketing Director · Safaricom PLC
-                        </div>
-                        <div style={{ fontSize: "3px", color: "#7c3aed" }}>2021–Present · Increased engagement 43%</div>
-                      </div>
-                      <div style={{ marginBottom: "4px" }}>
-                        <div
-                          style={{
-                            fontSize: "3px",
-                            fontWeight: 700,
-                            color: "#7c3aed",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.8px",
-                            marginBottom: "1.5px",
-                          }}
-                        >
-                          Education
-                        </div>
-                        <div style={{ fontSize: "3px", color: "#444" }}>
-                          MBA Marketing · University of Nairobi · 2018
-                        </div>
-                      </div>
-                      <div>
-                        <div
-                          style={{
-                            fontSize: "3px",
-                            fontWeight: 700,
-                            color: "#7c3aed",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.8px",
-                            marginBottom: "1.5px",
-                          }}
-                        >
-                          Skills
-                        </div>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "2px" }}>
-                          {["Brand Strategy", "Digital Mktg", "Analytics"].map((s) => (
-                            <span
-                              key={s}
-                              style={{
-                                fontSize: "2.5px",
-                                background: "rgba(124,58,237,0.1)",
-                                border: "0.5px solid rgba(124,58,237,0.3)",
-                                color: "#7c3aed",
-                                padding: "1px 3px",
-                                borderRadius: "8px",
-                              }}
-                            >
-                              {s}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <span className="text-[10px] sm:text-xs font-semibold tracking-wide">Creative</span>
-              </button>
-
-              {/* Corporate */}
-              <button
-                onClick={() => {
-                  setTemplate("corporate");
-                  setShowPreview(true);
-                }}
-                className={`flex flex-col items-center gap-1.5 rounded-xl transition-all ${template === "corporate" ? "opacity-100" : "opacity-70 hover:opacity-90"}`}
-              >
-                <div
-                  className={`w-full aspect-[3/4] rounded-lg overflow-hidden shadow-md ${template === "corporate" ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "ring-1 ring-border"}`}
-                  style={{ userSelect: "none", pointerEvents: "none" }}
-                >
-                  <div style={{ fontFamily: "Georgia,serif", height: "100%", background: "#fff" }}>
-                    <div style={{ background: "#14532d", padding: "8px 8px 6px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                        <div>
-                          <div
-                            style={{
-                              fontSize: "5.5px",
-                              fontWeight: 800,
-                              color: "#fff",
-                              letterSpacing: "1px",
-                              textTransform: "uppercase",
-                            }}
-                          >
-                            JAMES MITCHELL
-                          </div>
-                          <div style={{ fontSize: "3.5px", color: "#4ade80", marginTop: "1px" }}>
-                            Senior Marketing Manager
-                          </div>
-                          <div style={{ fontSize: "3px", color: "rgba(255,255,255,0.6)", marginTop: "2px" }}>
-                            james@email.com · +254 722 000 000
-                          </div>
-                        </div>
-                        <div
-                          style={{
-                            width: "14px",
-                            height: "14px",
-                            borderRadius: "50%",
-                            border: "1px solid #4ade80",
-                            background: "rgba(74,222,128,0.15)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <span style={{ fontSize: "3px", color: "#4ade80" }}>JM</span>
-                        </div>
-                      </div>
-                      <div
-                        style={{
-                          height: "0.5px",
-                          background: "linear-gradient(90deg,#4ade80,transparent)",
-                          marginTop: "5px",
-                        }}
-                      />
-                    </div>
-                    <div style={{ padding: "5px 8px" }}>
-                      <div style={{ marginBottom: "4px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "3px", marginBottom: "2px" }}>
-                          <span
-                            style={{
-                              fontSize: "3px",
-                              fontWeight: 900,
-                              color: "#14532d",
-                              letterSpacing: "0.8px",
-                              textTransform: "uppercase",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            SUMMARY
-                          </span>
-                          <div
-                            style={{
-                              flex: 1,
-                              height: "0.5px",
-                              background: "linear-gradient(90deg,#4ade80,transparent)",
-                            }}
-                          />
-                        </div>
-                        <div style={{ fontSize: "3px", color: "#444", lineHeight: 1.5 }}>
-                          Results-driven professional with 8+ years in brand strategy and digital marketing.
-                        </div>
-                      </div>
-                      <div style={{ marginBottom: "4px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "3px", marginBottom: "2px" }}>
-                          <span
-                            style={{
-                              fontSize: "3px",
-                              fontWeight: 900,
-                              color: "#14532d",
-                              letterSpacing: "0.8px",
-                              textTransform: "uppercase",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            EXPERIENCE
-                          </span>
-                          <div
-                            style={{
-                              flex: 1,
-                              height: "0.5px",
-                              background: "linear-gradient(90deg,#4ade80,transparent)",
-                            }}
-                          />
-                        </div>
-                        <div style={{ fontSize: "3px", color: "#333", fontWeight: 600 }}>
-                          Marketing Director · Safaricom PLC · 2021–Present
-                        </div>
-                        <div style={{ fontSize: "3px", color: "#555" }}>Increased engagement 43% · Led team of 12</div>
-                      </div>
-                      <div style={{ marginBottom: "4px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "3px", marginBottom: "2px" }}>
-                          <span
-                            style={{
-                              fontSize: "3px",
-                              fontWeight: 900,
-                              color: "#14532d",
-                              letterSpacing: "0.8px",
-                              textTransform: "uppercase",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            EDUCATION
-                          </span>
-                          <div
-                            style={{
-                              flex: 1,
-                              height: "0.5px",
-                              background: "linear-gradient(90deg,#4ade80,transparent)",
-                            }}
-                          />
-                        </div>
-                        <div style={{ fontSize: "3px", color: "#444" }}>
-                          MBA Marketing · University of Nairobi · 2018
-                        </div>
-                      </div>
-                      <div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "3px", marginBottom: "2px" }}>
-                          <span
-                            style={{
-                              fontSize: "3px",
-                              fontWeight: 900,
-                              color: "#14532d",
-                              letterSpacing: "0.8px",
-                              textTransform: "uppercase",
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            SKILLS
-                          </span>
-                          <div
-                            style={{
-                              flex: 1,
-                              height: "0.5px",
-                              background: "linear-gradient(90deg,#4ade80,transparent)",
-                            }}
-                          />
-                        </div>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "2px" }}>
-                          {["Brand Strategy", "Digital Mktg", "Analytics"].map((s) => (
-                            <span
-                              key={s}
-                              style={{
-                                fontSize: "2.5px",
-                                background: "rgba(20,83,45,0.1)",
-                                border: "0.5px solid rgba(20,83,45,0.3)",
-                                color: "#14532d",
-                                padding: "1px 3px",
-                                borderRadius: "8px",
-                              }}
-                            >
-                              {s}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <span className="text-[10px] sm:text-xs font-semibold tracking-wide">Corporate</span>
-              </button>
             </div>
-          </div>
-
-          {/* Main content grid */}
-          <div className="grid lg:grid-cols-5 xl:grid-cols-2 gap-4 sm:gap-6">
-            {/* Form panel */}
-            {(!isMobile || !showPreview) && (
-              <div className="lg:col-span-3 xl:col-span-1 rounded-2xl border border-border bg-card p-4 sm:p-6">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={step}
-                    initial={{ opacity: 0, x: 15 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -15 }}
-                    transition={{ duration: 0.15 }}
-                  >
-                    {renderStep()}
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Navigation */}
-                <div className="flex justify-between mt-6 sm:mt-8 pt-4 border-t border-border">
-                  <Button
-                    onClick={() => setStep(Math.max(0, step - 1))}
-                    disabled={step === 0}
-                    variant="outline"
-                    size={isMobile ? "sm" : "default"}
-                  >
-                    <ArrowLeft className="h-4 w-4 mr-1" /> Previous
-                  </Button>
-                  {step < STEPS.length - 1 ? (
-                    <Button
-                      onClick={() => setStep(step + 1)}
-                      className="bg-gradient-brand border-0"
-                      size={isMobile ? "sm" : "default"}
-                    >
-                      Next <ArrowRight className="h-4 w-4 ml-1" />
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => setPaymentOpen(true)}
-                      className="bg-gradient-brand border-0"
-                      size={isMobile ? "sm" : "default"}
-                    >
-                      {isPaid ? "Download CV" : "Generate CV"}
-                      {selectedTier && !isPaid && <span className="ml-1">• {formatKES(selectedTier.price)}</span>}
-                      <ArrowRight className="h-4 w-4 ml-1" />
-                    </Button>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Preview panel + Unlock card */}
-            {(!isMobile || showPreview) && (
-              <div className="col-span-full lg:col-span-2 xl:col-span-1 space-y-4 lg:sticky lg:top-4 lg:max-h-[calc(100vh-100px)] overflow-y-auto">
-                <div className="rounded-2xl border border-border bg-muted/30 p-3 sm:p-4 overflow-hidden">
-                  <p className="text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3 text-center font-medium uppercase tracking-wider">
-                    Live Preview {!isPaid && <span className="text-primary">· Protected</span>}
-                  </p>
-                  <div className="transform-gpu origin-top scale-[0.75] sm:scale-[0.85] lg:scale-100">
-                    <CVPreview data={data} isPaid={isPaid} template={template} />
-                  </div>
-                </div>
-
-                {/* Premium unlock card */}
-                <PremiumUnlockCard isPaid={isPaid} onUnlock={() => setPaymentOpen(true)} />
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </section>
-
-      {/* Mobile sticky bottom bar */}
-      {isMobile && !showPreview && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-lg border-t border-border px-4 py-3 safe-area-pb">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-wider">
-                Step {step + 1}/{STEPS.length}
-              </p>
-              {selectedTier && <p className="text-sm font-bold text-primary">{formatKES(selectedTier.price)}</p>}
-            </div>
-            <div className="flex gap-2">
-              <Button onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0} variant="outline" size="sm">
-                <ArrowLeft className="h-3.5 w-3.5" />
-              </Button>
-              {step < STEPS.length - 1 ? (
-                <Button onClick={() => setStep(step + 1)} className="bg-gradient-brand border-0" size="sm">
-                  Next <ArrowRight className="h-3.5 w-3.5 ml-1" />
-                </Button>
-              ) : (
-                <Button onClick={() => setPaymentOpen(true)} className="bg-gradient-brand border-0" size="sm">
-                  {isPaid ? "Download" : "Generate CV"} <ArrowRight className="h-3.5 w-3.5 ml-1" />
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </PageLayout>
   );
 }
