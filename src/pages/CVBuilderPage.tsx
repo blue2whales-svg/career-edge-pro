@@ -238,7 +238,10 @@ export default function CVBuilderPage() {
                 ].map((t) => (
                   <button
                     key={t.id}
-                    onClick={() => setTemplate(t.id as any)}
+                    onClick={() => {
+                      setTemplate(t.id as any);
+                      if (isMobile) setShowPreview(true);
+                    }}
                     style={{
                       width: "100%",
                       height: "140px",
