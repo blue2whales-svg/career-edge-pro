@@ -16,6 +16,15 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
   const showPassport = data.showPassport && ["uae", "qatar", "africa"].includes(market);
   const showPhoto = ["kenya", "uae", "qatar", "africa"].includes(market);
 
+  const colors = {
+    executive: { headerBg: "#1a1a2e", headerText: "#fff", accent: "#c9a84c", body: "#fff", text: "#1a1a2e" },
+    clean: { headerBg: "#fff", headerText: "#111", accent: "#2563eb", body: "#fff", text: "#222" },
+    sidebar: { headerBg: "#1e293b", headerText: "#fff", accent: "#38bdf8", body: "#f8fafc", text: "#1e293b" },
+    minimal: { headerBg: "#fff", headerText: "#111", accent: "#111", body: "#fff", text: "#111" },
+    creative: { headerBg: "#7c3aed", headerText: "#fff", accent: "#a78bfa", body: "#fff", text: "#1a1a2e" },
+    corporate: { headerBg: "#14532d", headerText: "#fff", accent: "#16a34a", body: "#fff", text: "#1a1a2e" },
+  }[template || "executive"];
+
   const handleContextMenu = useCallback(
     (e: MouseEvent) => {
       if (!isPaid) e.preventDefault();
@@ -77,7 +86,7 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
       )}
 
       {/* ── HEADER ── */}
-      <div style={{ background: "#1a1a2e", padding: "32px 36px 24px" }}>
+      <div style={{ background: background: colors.headerBg, padding: "32px 36px 24px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div style={{ flex: 1 }}>
             <h1
