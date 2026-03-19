@@ -5,6 +5,19 @@ import { Link } from "react-router-dom";
 import type { CVTemplate } from "@/data/cv-templates";
 import { MiniCVPreview } from "./MiniCVPreview";
 
+function mapStyleToBuilderTemplate(style: string, layout: string): string {
+  if (layout === "sidebar" || layout === "two-column") return "sidebar";
+  switch (style) {
+    case "executive": return "executive";
+    case "creative": return "creative";
+    case "minimal": return "minimal";
+    case "modern": return "clean";
+    case "ats": return "corporate";
+    case "classic":
+    default: return "executive";
+  }
+}
+
 interface TemplateCardProps {
   template: CVTemplate;
   index: number;
@@ -42,7 +55,7 @@ export function TemplateCard({ template, index }: TemplateCardProps) {
           style={{ pointerEvents: hovered ? "auto" : "none" }}
         >
           <Link
-            to={`/cv-builder?template=${template.id}`}
+            to={`/cv-builder?t=${mapStyleToBuilderTemplate(template.style, template.layout)}`}
             className="px-5 py-2.5 rounded-lg font-semibold text-sm shadow-lg transition-transform hover:scale-105"
             style={{ background: "linear-gradient(135deg, hsl(43 55% 54%), hsl(43 60% 70%))", color: "#0f1b2d" }}
           >
