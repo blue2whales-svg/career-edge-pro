@@ -160,10 +160,20 @@ export default function CVBuilderPage() {
 
           {/* Template Switcher */}
           <div className="mb-6">
-            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-3">Choose Template</p>
+            <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest mb-3">
+              Choose Template
+            </p>
             <div className="grid grid-cols-6 gap-2 sm:gap-3">
               {(["executive", "clean", "sidebar", "minimal", "creative", "corporate"] as const).map((t) => {
                 const active = template === t;
+                const labels: Record<string, string> = {
+                  executive: "Executive",
+                  clean: "Clean",
+                  sidebar: "Sidebar",
+                  minimal: "Minimal",
+                  creative: "Creative",
+                  corporate: "Corporate",
+                };
                 return (
                   <button
                     key={t}
@@ -171,164 +181,200 @@ export default function CVBuilderPage() {
                       setTemplate(t);
                       setShowPreview(true);
                     }}
-                    className={`flex flex-col items-center gap-2 p-2 sm:p-3 rounded-xl border-2 text-xs capitalize font-medium transition-all w-full ${active ? "border-primary bg-primary/10 text-primary shadow-md" : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground"}`}
+                    className={`flex flex-col items-center gap-1.5 rounded-xl transition-all ${active ? "opacity-100" : "opacity-70 hover:opacity-90"}`}
                   >
                     <div
-                      className={`w-full aspect-[3/4] rounded overflow-hidden ${active ? "ring-1 ring-primary/40" : ""}`}
+                      className={`w-full aspect-[3/4] rounded-lg overflow-hidden shadow-md transition-all ${active ? "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-primary/20 shadow-lg" : "ring-1 ring-border"}`}
                     >
                       {t === "executive" && (
-                        <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                          <rect width="60" height="80" fill="white" />
-                          <rect width="60" height="26" fill="#1a1a2e" />
-                          <rect x="6" y="7" width="24" height="3" rx="1" fill="#c9a84c" opacity="0.9" />
-                          <rect x="6" y="12" width="16" height="1.5" rx="0.5" fill="#c9a84c" opacity="0.5" />
-                          <rect x="6" y="16" width="8" height="1.2" rx="0.3" fill="#aab4cc" opacity="0.6" />
-                          <rect x="16" y="16" width="10" height="1.2" rx="0.3" fill="#aab4cc" opacity="0.6" />
-                          <circle cx="51" cy="13" r="7" fill="none" stroke="#c9a84c" strokeWidth="1" />
-                          <rect x="6" y="23" width="48" height="1" fill="#c9a84c" opacity="0.5" />
-                          <rect x="6" y="30" width="16" height="1.5" rx="0.5" fill="#1a1a2e" opacity="0.7" />
-                          <rect x="6" y="33" width="48" height="0.8" rx="0.3" fill="#c9a84c" opacity="0.3" />
-                          <rect x="6" y="36" width="48" height="1" rx="0.3" fill="#555" opacity="0.2" />
-                          <rect x="6" y="38.5" width="36" height="1" rx="0.3" fill="#555" opacity="0.15" />
-                          <rect x="6" y="44" width="16" height="1.5" rx="0.5" fill="#1a1a2e" opacity="0.7" />
-                          <rect x="6" y="47" width="48" height="0.8" rx="0.3" fill="#c9a84c" opacity="0.3" />
-                          <rect x="6" y="50" width="30" height="1" rx="0.3" fill="#555" opacity="0.2" />
-                          <rect x="6" y="52.5" width="42" height="1" rx="0.3" fill="#555" opacity="0.15" />
-                          <rect x="6" y="55" width="36" height="1" rx="0.3" fill="#555" opacity="0.12" />
-                          <rect x="6" y="62" width="16" height="1.5" rx="0.5" fill="#1a1a2e" opacity="0.7" />
-                          <rect x="6" y="65" width="48" height="0.8" rx="0.3" fill="#c9a84c" opacity="0.3" />
-                          <rect x="6" y="68" width="10" height="4" rx="2" fill="#c9a84c" opacity="0.15" />
-                          <rect x="18" y="68" width="10" height="4" rx="2" fill="#c9a84c" opacity="0.1" />
-                          <rect x="30" y="68" width="12" height="4" rx="2" fill="#c9a84c" opacity="0.1" />
+                        <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                          <rect width="120" height="160" fill="white" />
+                          <rect width="120" height="52" fill="#1a1a2e" />
+                          <rect x="12" y="13" width="52" height="6" rx="2" fill="#c9a84c" opacity="0.95" />
+                          <rect x="12" y="22" width="34" height="3" rx="1" fill="#c9a84c" opacity="0.55" />
+                          <rect x="12" y="29" width="16" height="2.5" rx="1" fill="#aab4cc" opacity="0.6" />
+                          <rect x="32" y="29" width="20" height="2.5" rx="1" fill="#aab4cc" opacity="0.6" />
+                          <rect x="56" y="29" width="18" height="2.5" rx="1" fill="#aab4cc" opacity="0.5" />
+                          <circle cx="100" cy="26" r="14" fill="none" stroke="#c9a84c" strokeWidth="2" />
+                          <rect x="12" y="46" width="96" height="1.5" fill="#c9a84c" opacity="0.5" />
+                          <rect x="12" y="58" width="32" height="3" rx="1" fill="#1a1a2e" opacity="0.75" />
+                          <rect x="12" y="64" width="96" height="1.5" rx="0.5" fill="#c9a84c" opacity="0.35" />
+                          <rect x="12" y="69" width="96" height="2" rx="0.5" fill="#444" opacity="0.18" />
+                          <rect x="12" y="73" width="72" height="2" rx="0.5" fill="#444" opacity="0.13" />
+                          <rect x="12" y="77" width="84" height="2" rx="0.5" fill="#444" opacity="0.1" />
+                          <rect x="12" y="87" width="32" height="3" rx="1" fill="#1a1a2e" opacity="0.75" />
+                          <rect x="12" y="93" width="96" height="1.5" rx="0.5" fill="#c9a84c" opacity="0.35" />
+                          <rect x="12" y="98" width="80" height="2" rx="0.5" fill="#444" opacity="0.18" />
+                          <rect x="12" y="102" width="60" height="2" rx="0.5" fill="#444" opacity="0.13" />
+                          <rect x="12" y="106" width="72" height="2" rx="0.5" fill="#444" opacity="0.1" />
+                          <rect x="12" y="116" width="32" height="3" rx="1" fill="#1a1a2e" opacity="0.75" />
+                          <rect x="12" y="122" width="96" height="1.5" rx="0.5" fill="#c9a84c" opacity="0.35" />
+                          <rect x="12" y="127" width="22" height="8" rx="4" fill="#c9a84c" opacity="0.15" />
+                          <rect x="38" y="127" width="22" height="8" rx="4" fill="#c9a84c" opacity="0.1" />
+                          <rect x="64" y="127" width="26" height="8" rx="4" fill="#c9a84c" opacity="0.1" />
+                          <rect x="12" y="141" width="32" height="3" rx="1" fill="#1a1a2e" opacity="0.75" />
+                          <rect x="12" y="147" width="96" height="1.5" rx="0.5" fill="#c9a84c" opacity="0.35" />
+                          <rect x="12" y="152" width="50" height="2" rx="0.5" fill="#444" opacity="0.15" />
                         </svg>
                       )}
                       {t === "clean" && (
-                        <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                          <rect width="60" height="80" fill="white" />
-                          <rect x="6" y="7" width="22" height="3" rx="1" fill="#111" opacity="0.85" />
-                          <rect x="6" y="12" width="14" height="1.5" rx="0.5" fill="#2563eb" opacity="0.7" />
-                          <rect x="6" y="16" width="8" height="1" rx="0.3" fill="#64748b" opacity="0.5" />
-                          <rect x="16" y="16" width="10" height="1" rx="0.3" fill="#64748b" opacity="0.5" />
-                          <rect x="6" y="21" width="48" height="1.5" fill="#2563eb" opacity="0.2" />
-                          <rect x="6" y="27" width="14" height="1.5" rx="0.5" fill="#111" opacity="0.7" />
-                          <rect x="6" y="30" width="48" height="0.8" rx="0.3" fill="#2563eb" opacity="0.3" />
-                          <rect x="6" y="33" width="48" height="1" rx="0.3" fill="#333" opacity="0.2" />
-                          <rect x="6" y="35.5" width="36" height="1" rx="0.3" fill="#333" opacity="0.15" />
-                          <rect x="6" y="41" width="14" height="1.5" rx="0.5" fill="#111" opacity="0.7" />
-                          <rect x="6" y="44" width="48" height="0.8" rx="0.3" fill="#2563eb" opacity="0.3" />
-                          <rect x="6" y="47" width="28" height="1" rx="0.3" fill="#333" opacity="0.2" />
-                          <rect x="6" y="49.5" width="40" height="1" rx="0.3" fill="#333" opacity="0.15" />
-                          <rect x="6" y="55" width="14" height="1.5" rx="0.5" fill="#111" opacity="0.7" />
-                          <rect x="6" y="58" width="48" height="0.8" rx="0.3" fill="#2563eb" opacity="0.3" />
-                          <rect x="6" y="61" width="9" height="4" rx="2" fill="#2563eb" opacity="0.12" />
-                          <rect x="17" y="61" width="11" height="4" rx="2" fill="#2563eb" opacity="0.08" />
-                          <rect x="30" y="61" width="9" height="4" rx="2" fill="#2563eb" opacity="0.08" />
+                        <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                          <rect width="120" height="160" fill="white" />
+                          <rect x="12" y="12" width="48" height="6" rx="1.5" fill="#111" opacity="0.88" />
+                          <rect x="12" y="21" width="28" height="3" rx="1" fill="#2563eb" opacity="0.7" />
+                          <rect x="12" y="27" width="16" height="2.5" rx="1" fill="#64748b" opacity="0.5" />
+                          <rect x="32" y="27" width="20" height="2.5" rx="1" fill="#64748b" opacity="0.5" />
+                          <rect x="56" y="27" width="18" height="2.5" rx="1" fill="#64748b" opacity="0.4" />
+                          <rect x="12" y="34" width="96" height="2" fill="#2563eb" opacity="0.2" />
+                          <rect x="12" y="43" width="32" height="3" rx="1" fill="#111" opacity="0.75" />
+                          <rect x="12" y="49" width="96" height="1.5" rx="0.5" fill="#2563eb" opacity="0.3" />
+                          <rect x="12" y="54" width="96" height="2" rx="0.5" fill="#333" opacity="0.18" />
+                          <rect x="12" y="58" width="72" height="2" rx="0.5" fill="#333" opacity="0.13" />
+                          <rect x="12" y="62" width="84" height="2" rx="0.5" fill="#333" opacity="0.1" />
+                          <rect x="12" y="72" width="32" height="3" rx="1" fill="#111" opacity="0.75" />
+                          <rect x="12" y="78" width="96" height="1.5" rx="0.5" fill="#2563eb" opacity="0.3" />
+                          <rect x="12" y="83" width="56" height="2" rx="0.5" fill="#333" opacity="0.18" />
+                          <rect x="12" y="87" width="80" height="2" rx="0.5" fill="#333" opacity="0.13" />
+                          <rect x="12" y="91" width="64" height="2" rx="0.5" fill="#333" opacity="0.1" />
+                          <rect x="12" y="101" width="32" height="3" rx="1" fill="#111" opacity="0.75" />
+                          <rect x="12" y="107" width="96" height="1.5" rx="0.5" fill="#2563eb" opacity="0.3" />
+                          <rect x="12" y="112" width="20" height="8" rx="4" fill="#2563eb" opacity="0.1" />
+                          <rect x="36" y="112" width="24" height="8" rx="4" fill="#2563eb" opacity="0.08" />
+                          <rect x="64" y="112" width="18" height="8" rx="4" fill="#2563eb" opacity="0.08" />
+                          <rect x="12" y="126" width="32" height="3" rx="1" fill="#111" opacity="0.75" />
+                          <rect x="12" y="132" width="96" height="1.5" rx="0.5" fill="#2563eb" opacity="0.3" />
+                          <rect x="12" y="137" width="66" height="2" rx="0.5" fill="#333" opacity="0.15" />
+                          <rect x="12" y="141" width="48" height="2" rx="0.5" fill="#333" opacity="0.12" />
                         </svg>
                       )}
                       {t === "sidebar" && (
-                        <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                          <rect width="60" height="80" fill="#f8fafc" />
-                          <rect width="21" height="80" fill="#1e293b" />
-                          <circle cx="10.5" cy="13" r="6" fill="none" stroke="#38bdf8" strokeWidth="1.2" />
-                          <rect x="3" y="22" width="15" height="2" rx="0.5" fill="white" opacity="0.8" />
-                          <rect x="3" y="26" width="10" height="1.2" rx="0.3" fill="#38bdf8" opacity="0.7" />
-                          <rect x="3" y="31" width="15" height="0.8" rx="0.3" fill="white" opacity="0.35" />
-                          <rect x="3" y="33.5" width="12" height="0.8" rx="0.3" fill="white" opacity="0.25" />
-                          <rect x="3" y="38" width="6" height="1" rx="0.3" fill="#38bdf8" opacity="0.5" />
-                          <rect x="3" y="41" width="15" height="0.8" rx="0.3" fill="white" opacity="0.25" />
-                          <rect x="3" y="43.5" width="11" height="0.8" rx="0.3" fill="white" opacity="0.2" />
-                          <rect x="3" y="48" width="8" height="3" rx="1.5" fill="#38bdf8" opacity="0.2" />
-                          <rect x="3" y="53" width="10" height="3" rx="1.5" fill="#38bdf8" opacity="0.15" />
-                          <rect x="25" y="8" width="18" height="2.5" rx="1" fill="#1e293b" opacity="0.8" />
-                          <rect x="25" y="12" width="12" height="1.5" rx="0.5" fill="#0284c7" opacity="0.7" />
-                          <rect x="25" y="19" width="12" height="1.2" rx="0.5" fill="#1e293b" opacity="0.6" />
-                          <rect x="25" y="22" width="32" height="0.7" rx="0.3" fill="#38bdf8" opacity="0.35" />
-                          <rect x="25" y="25" width="32" height="0.8" rx="0.3" fill="#333" opacity="0.2" />
-                          <rect x="25" y="27.5" width="24" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
-                          <rect x="25" y="33" width="12" height="1.2" rx="0.5" fill="#1e293b" opacity="0.6" />
-                          <rect x="25" y="36" width="32" height="0.7" rx="0.3" fill="#38bdf8" opacity="0.35" />
-                          <rect x="25" y="39" width="28" height="0.8" rx="0.3" fill="#333" opacity="0.2" />
-                          <rect x="25" y="41.5" width="20" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
-                          <rect x="25" y="47" width="12" height="1.2" rx="0.5" fill="#1e293b" opacity="0.6" />
-                          <rect x="25" y="50" width="32" height="0.7" rx="0.3" fill="#38bdf8" opacity="0.35" />
-                          <rect x="25" y="53" width="22" height="0.8" rx="0.3" fill="#333" opacity="0.2" />
+                        <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                          <rect width="120" height="160" fill="#f8fafc" />
+                          <rect width="40" height="160" fill="#1e293b" />
+                          <circle cx="20" cy="24" r="12" fill="none" stroke="#38bdf8" strokeWidth="2" />
+                          <rect x="5" y="42" width="30" height="4" rx="1" fill="white" opacity="0.8" />
+                          <rect x="5" y="49" width="20" height="2.5" rx="1" fill="#38bdf8" opacity="0.7" />
+                          <rect x="5" y="58" width="30" height="1.5" rx="0.5" fill="white" opacity="0.35" />
+                          <rect x="5" y="62" width="24" height="1.5" rx="0.5" fill="white" opacity="0.25" />
+                          <rect x="5" y="66" width="28" height="1.5" rx="0.5" fill="white" opacity="0.2" />
+                          <rect x="5" y="74" width="14" height="2" rx="0.5" fill="#38bdf8" opacity="0.6" />
+                          <rect x="5" y="79" width="30" height="1.5" rx="0.5" fill="white" opacity="0.25" />
+                          <rect x="5" y="83" width="22" height="1.5" rx="0.5" fill="white" opacity="0.2" />
+                          <rect x="5" y="91" width="14" height="2" rx="0.5" fill="#38bdf8" opacity="0.6" />
+                          <rect x="5" y="96" width="18" height="6" rx="3" fill="#38bdf8" opacity="0.2" />
+                          <rect x="5" y="105" width="22" height="6" rx="3" fill="#38bdf8" opacity="0.15" />
+                          <rect x="5" y="114" width="16" height="6" rx="3" fill="#38bdf8" opacity="0.12" />
+                          <rect x="48" y="14" width="36" height="5" rx="1.5" fill="#1e293b" opacity="0.8" />
+                          <rect x="48" y="22" width="24" height="3" rx="1" fill="#0284c7" opacity="0.7" />
+                          <rect x="48" y="34" width="24" height="3" rx="1" fill="#1e293b" opacity="0.65" />
+                          <rect x="48" y="40" width="64" height="1.5" rx="0.5" fill="#38bdf8" opacity="0.35" />
+                          <rect x="48" y="44" width="64" height="2" rx="0.5" fill="#333" opacity="0.18" />
+                          <rect x="48" y="48" width="48" height="2" rx="0.5" fill="#333" opacity="0.13" />
+                          <rect x="48" y="58" width="24" height="3" rx="1" fill="#1e293b" opacity="0.65" />
+                          <rect x="48" y="64" width="64" height="1.5" rx="0.5" fill="#38bdf8" opacity="0.35" />
+                          <rect x="48" y="68" width="56" height="2" rx="0.5" fill="#333" opacity="0.18" />
+                          <rect x="48" y="72" width="40" height="2" rx="0.5" fill="#333" opacity="0.13" />
+                          <rect x="48" y="82" width="24" height="3" rx="1" fill="#1e293b" opacity="0.65" />
+                          <rect x="48" y="88" width="64" height="1.5" rx="0.5" fill="#38bdf8" opacity="0.35" />
+                          <rect x="48" y="92" width="44" height="2" rx="0.5" fill="#333" opacity="0.15" />
+                          <rect x="48" y="102" width="24" height="3" rx="1" fill="#1e293b" opacity="0.65" />
+                          <rect x="48" y="108" width="64" height="1.5" rx="0.5" fill="#38bdf8" opacity="0.35" />
+                          <rect x="48" y="112" width="36" height="2" rx="0.5" fill="#333" opacity="0.15" />
                         </svg>
                       )}
                       {t === "minimal" && (
-                        <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                          <rect width="60" height="80" fill="white" />
-                          <rect x="6" y="8" width="26" height="3" rx="0.5" fill="#111" opacity="0.9" />
-                          <rect x="6" y="13" width="14" height="1.2" rx="0.3" fill="#555" opacity="0.5" />
-                          <rect x="6" y="17" width="48" height="0.5" fill="#111" opacity="0.12" />
-                          <rect x="6" y="22" width="12" height="1.2" rx="0.3" fill="#111" opacity="0.5" />
-                          <rect x="6" y="25.5" width="48" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
-                          <rect x="6" y="28" width="36" height="0.8" rx="0.3" fill="#333" opacity="0.12" />
-                          <rect x="6" y="30.5" width="44" height="0.8" rx="0.3" fill="#333" opacity="0.1" />
-                          <rect x="6" y="36" width="12" height="1.2" rx="0.3" fill="#111" opacity="0.5" />
-                          <rect x="6" y="39.5" width="48" height="0.5" fill="#111" opacity="0.12" />
-                          <rect x="6" y="43" width="22" height="1" rx="0.3" fill="#111" opacity="0.5" />
-                          <rect x="6" y="45.5" width="16" height="0.8" rx="0.3" fill="#666" opacity="0.3" />
-                          <rect x="6" y="48" width="28" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
-                          <rect x="6" y="54" width="12" height="1.2" rx="0.3" fill="#111" opacity="0.5" />
-                          <rect x="6" y="57.5" width="48" height="0.5" fill="#111" opacity="0.12" />
-                          <rect x="6" y="61" width="10" height="3.5" rx="1.5" fill="#111" opacity="0.07" />
-                          <rect x="18" y="61" width="12" height="3.5" rx="1.5" fill="#111" opacity="0.05" />
-                          <rect x="32" y="61" width="10" height="3.5" rx="1.5" fill="#111" opacity="0.05" />
+                        <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                          <rect width="120" height="160" fill="white" />
+                          <rect x="12" y="12" width="54" height="6" rx="1" fill="#111" opacity="0.9" />
+                          <rect x="12" y="21" width="28" height="3" rx="1" fill="#555" opacity="0.45" />
+                          <rect x="12" y="27" width="16" height="2" rx="1" fill="#888" opacity="0.4" />
+                          <rect x="32" y="27" width="20" height="2" rx="1" fill="#888" opacity="0.4" />
+                          <rect x="12" y="33" width="96" height="0.8" fill="#111" opacity="0.1" />
+                          <rect x="12" y="42" width="24" height="2.5" rx="0.5" fill="#111" opacity="0.5" />
+                          <rect x="12" y="48" width="96" height="2" rx="0.5" fill="#333" opacity="0.14" />
+                          <rect x="12" y="52" width="72" height="2" rx="0.5" fill="#333" opacity="0.11" />
+                          <rect x="12" y="56" width="84" height="2" rx="0.5" fill="#333" opacity="0.09" />
+                          <rect x="12" y="66" width="24" height="2.5" rx="0.5" fill="#111" opacity="0.5" />
+                          <rect x="12" y="72" width="96" height="0.8" fill="#111" opacity="0.1" />
+                          <rect x="12" y="76" width="44" height="2" rx="0.5" fill="#111" opacity="0.5" />
+                          <rect x="12" y="80" width="30" height="2" rx="0.5" fill="#555" opacity="0.3" />
+                          <rect x="12" y="85" width="56" height="2" rx="0.5" fill="#333" opacity="0.14" />
+                          <rect x="12" y="89" width="40" height="2" rx="0.5" fill="#333" opacity="0.1" />
+                          <rect x="12" y="99" width="24" height="2.5" rx="0.5" fill="#111" opacity="0.5" />
+                          <rect x="12" y="105" width="96" height="0.8" fill="#111" opacity="0.1" />
+                          <rect x="12" y="109" width="22" height="7" rx="3.5" fill="#111" opacity="0.07" />
+                          <rect x="38" y="109" width="24" height="7" rx="3.5" fill="#111" opacity="0.05" />
+                          <rect x="66" y="109" width="18" height="7" rx="3.5" fill="#111" opacity="0.05" />
+                          <rect x="12" y="123" width="24" height="2.5" rx="0.5" fill="#111" opacity="0.5" />
+                          <rect x="12" y="129" width="96" height="0.8" fill="#111" opacity="0.1" />
+                          <rect x="12" y="133" width="60" height="2" rx="0.5" fill="#333" opacity="0.12" />
+                          <rect x="12" y="137" width="44" height="2" rx="0.5" fill="#333" opacity="0.09" />
                         </svg>
                       )}
                       {t === "creative" && (
-                        <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                          <rect width="60" height="80" fill="white" />
+                        <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                          <rect width="120" height="160" fill="white" />
                           <defs>
-                            <linearGradient id="cg2" x1="0" y1="0" x2="1" y2="0">
+                            <linearGradient id="cg3" x1="0" y1="0" x2="1" y2="0">
                               <stop offset="0%" stopColor="#7c3aed" />
                               <stop offset="100%" stopColor="#db2777" />
                             </linearGradient>
                           </defs>
-                          <rect width="60" height="27" fill="url(#cg2)" />
-                          <rect x="6" y="7" width="22" height="2.5" rx="1" fill="white" opacity="0.95" />
-                          <rect x="6" y="11" width="14" height="1.5" rx="0.5" fill="#f0abfc" opacity="0.9" />
-                          <rect x="6" y="15" width="8" height="1" rx="0.3" fill="white" opacity="0.55" />
-                          <rect x="16" y="15" width="10" height="1" rx="0.3" fill="white" opacity="0.55" />
-                          <circle cx="51" cy="13" r="7" fill="none" stroke="#f0abfc" strokeWidth="1" opacity="0.7" />
-                          <rect x="6" y="33" width="14" height="1.5" rx="0.5" fill="#7c3aed" opacity="0.7" />
-                          <rect x="6" y="36" width="48" height="0.7" rx="0.3" fill="#a78bfa" opacity="0.35" />
-                          <rect x="6" y="39" width="48" height="0.8" rx="0.3" fill="#333" opacity="0.2" />
-                          <rect x="6" y="41.5" width="36" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
-                          <rect x="6" y="47" width="14" height="1.5" rx="0.5" fill="#7c3aed" opacity="0.7" />
-                          <rect x="6" y="50" width="48" height="0.7" rx="0.3" fill="#a78bfa" opacity="0.35" />
-                          <rect x="6" y="53" width="30" height="0.8" rx="0.3" fill="#333" opacity="0.2" />
-                          <rect x="6" y="55.5" width="42" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
-                          <rect x="6" y="61" width="9" height="4" rx="2" fill="#7c3aed" opacity="0.1" />
-                          <rect x="17" y="61" width="11" height="4" rx="2" fill="#db2777" opacity="0.08" />
-                          <rect x="30" y="61" width="9" height="4" rx="2" fill="#7c3aed" opacity="0.08" />
+                          <rect width="120" height="54" fill="url(#cg3)" />
+                          <rect x="12" y="13" width="48" height="6" rx="2" fill="white" opacity="0.95" />
+                          <rect x="12" y="22" width="30" height="3" rx="1" fill="#f0abfc" opacity="0.9" />
+                          <rect x="12" y="29" width="16" height="2.5" rx="1" fill="white" opacity="0.55" />
+                          <rect x="32" y="29" width="20" height="2.5" rx="1" fill="white" opacity="0.55" />
+                          <circle cx="100" cy="26" r="14" fill="none" stroke="#f0abfc" strokeWidth="2" opacity="0.7" />
+                          <rect x="12" y="65" width="32" height="3" rx="1" fill="#7c3aed" opacity="0.75" />
+                          <rect x="12" y="71" width="96" height="1.5" rx="0.5" fill="#a78bfa" opacity="0.4" />
+                          <rect x="12" y="76" width="96" height="2" rx="0.5" fill="#333" opacity="0.18" />
+                          <rect x="12" y="80" width="72" height="2" rx="0.5" fill="#333" opacity="0.13" />
+                          <rect x="12" y="90" width="32" height="3" rx="1" fill="#7c3aed" opacity="0.75" />
+                          <rect x="12" y="96" width="96" height="1.5" rx="0.5" fill="#a78bfa" opacity="0.4" />
+                          <rect x="12" y="101" width="60" height="2" rx="0.5" fill="#333" opacity="0.18" />
+                          <rect x="12" y="105" width="84" height="2" rx="0.5" fill="#333" opacity="0.13" />
+                          <rect x="12" y="109" width="48" height="2" rx="0.5" fill="#333" opacity="0.1" />
+                          <rect x="12" y="119" width="32" height="3" rx="1" fill="#7c3aed" opacity="0.75" />
+                          <rect x="12" y="125" width="96" height="1.5" rx="0.5" fill="#a78bfa" opacity="0.4" />
+                          <rect x="12" y="130" width="20" height="8" rx="4" fill="#7c3aed" opacity="0.1" />
+                          <rect x="36" y="130" width="24" height="8" rx="4" fill="#db2777" opacity="0.08" />
+                          <rect x="64" y="130" width="18" height="8" rx="4" fill="#7c3aed" opacity="0.08" />
+                          <rect x="12" y="144" width="32" height="3" rx="1" fill="#7c3aed" opacity="0.75" />
+                          <rect x="12" y="150" width="96" height="1.5" rx="0.5" fill="#a78bfa" opacity="0.4" />
+                          <rect x="12" y="154" width="50" height="2" rx="0.5" fill="#333" opacity="0.13" />
                         </svg>
                       )}
                       {t === "corporate" && (
-                        <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                          <rect width="60" height="80" fill="white" />
-                          <rect width="60" height="27" fill="#14532d" />
-                          <rect x="6" y="7" width="22" height="2.5" rx="1" fill="white" opacity="0.95" />
-                          <rect x="6" y="11" width="14" height="1.5" rx="0.5" fill="#4ade80" opacity="0.9" />
-                          <rect x="6" y="15" width="8" height="1" rx="0.3" fill="white" opacity="0.55" />
-                          <rect x="16" y="15" width="10" height="1" rx="0.3" fill="white" opacity="0.55" />
-                          <circle cx="51" cy="13" r="7" fill="none" stroke="#4ade80" strokeWidth="1" opacity="0.6" />
-                          <rect x="6" y="23" width="48" height="1" fill="#4ade80" opacity="0.35" />
-                          <rect x="6" y="33" width="14" height="1.5" rx="0.5" fill="#14532d" opacity="0.7" />
-                          <rect x="6" y="36" width="48" height="0.7" rx="0.3" fill="#16a34a" opacity="0.35" />
-                          <rect x="6" y="39" width="48" height="0.8" rx="0.3" fill="#333" opacity="0.2" />
-                          <rect x="6" y="41.5" width="36" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
-                          <rect x="6" y="47" width="14" height="1.5" rx="0.5" fill="#14532d" opacity="0.7" />
-                          <rect x="6" y="50" width="48" height="0.7" rx="0.3" fill="#16a34a" opacity="0.35" />
-                          <rect x="6" y="53" width="30" height="0.8" rx="0.3" fill="#333" opacity="0.2" />
-                          <rect x="6" y="55.5" width="42" height="0.8" rx="0.3" fill="#333" opacity="0.15" />
-                          <rect x="6" y="61" width="9" height="4" rx="2" fill="#14532d" opacity="0.1" />
-                          <rect x="17" y="61" width="11" height="4" rx="2" fill="#14532d" opacity="0.08" />
-                          <rect x="30" y="61" width="9" height="4" rx="2" fill="#14532d" opacity="0.07" />
+                        <svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                          <rect width="120" height="160" fill="white" />
+                          <rect width="120" height="54" fill="#14532d" />
+                          <rect x="12" y="13" width="48" height="6" rx="2" fill="white" opacity="0.95" />
+                          <rect x="12" y="22" width="30" height="3" rx="1" fill="#4ade80" opacity="0.9" />
+                          <rect x="12" y="29" width="16" height="2.5" rx="1" fill="white" opacity="0.55" />
+                          <rect x="32" y="29" width="20" height="2.5" rx="1" fill="white" opacity="0.55" />
+                          <circle cx="100" cy="26" r="14" fill="none" stroke="#4ade80" strokeWidth="2" opacity="0.6" />
+                          <rect x="12" y="49" width="96" height="1.5" fill="#4ade80" opacity="0.4" />
+                          <rect x="12" y="65" width="32" height="3" rx="1" fill="#14532d" opacity="0.75" />
+                          <rect x="12" y="71" width="96" height="1.5" rx="0.5" fill="#16a34a" opacity="0.35" />
+                          <rect x="12" y="76" width="96" height="2" rx="0.5" fill="#333" opacity="0.18" />
+                          <rect x="12" y="80" width="72" height="2" rx="0.5" fill="#333" opacity="0.13" />
+                          <rect x="12" y="90" width="32" height="3" rx="1" fill="#14532d" opacity="0.75" />
+                          <rect x="12" y="96" width="96" height="1.5" rx="0.5" fill="#16a34a" opacity="0.35" />
+                          <rect x="12" y="101" width="60" height="2" rx="0.5" fill="#333" opacity="0.18" />
+                          <rect x="12" y="105" width="84" height="2" rx="0.5" fill="#333" opacity="0.13" />
+                          <rect x="12" y="115" width="32" height="3" rx="1" fill="#14532d" opacity="0.75" />
+                          <rect x="12" y="121" width="96" height="1.5" rx="0.5" fill="#16a34a" opacity="0.35" />
+                          <rect x="12" y="126" width="20" height="8" rx="4" fill="#14532d" opacity="0.1" />
+                          <rect x="36" y="126" width="24" height="8" rx="4" fill="#14532d" opacity="0.08" />
+                          <rect x="64" y="126" width="18" height="8" rx="4" fill="#14532d" opacity="0.07" />
+                          <rect x="12" y="140" width="32" height="3" rx="1" fill="#14532d" opacity="0.75" />
+                          <rect x="12" y="146" width="96" height="1.5" rx="0.5" fill="#16a34a" opacity="0.35" />
+                          <rect x="12" y="151" width="50" height="2" rx="0.5" fill="#333" opacity="0.13" />
                         </svg>
                       )}
                     </div>
-                    {t}
+                    <span className="text-[10px] sm:text-xs font-semibold tracking-wide">{labels[t]}</span>
                   </button>
                 );
               })}
