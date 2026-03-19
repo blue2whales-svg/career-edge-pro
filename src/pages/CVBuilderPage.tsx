@@ -158,7 +158,36 @@ export default function CVBuilderPage() {
             })}
           </div>
 
-          {/* Main content */}
+          {/* Template Switcher - full width, above the grid */}
+          <div className="mb-4 overflow-x-auto scrollbar-hide">
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-muted-foreground font-medium uppercase tracking-wide shrink-0">
+                Template
+              </span>
+              <div className="flex gap-2">
+                {(["executive", "clean", "sidebar", "minimal", "creative", "corporate"] as const).map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setTemplate(t)}
+                    className={`shrink-0 flex flex-col items-center gap-1.5 px-3 py-2 rounded-xl border text-xs capitalize font-medium transition-all ${
+                      template === t
+                        ? "border-primary bg-primary/10 text-primary shadow-sm"
+                        : "border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                    }`}
+                  >
+                    <div
+                      className={`w-10 h-12 rounded border-2 transition-all ${
+                        template === t ? "border-primary bg-primary/20" : "border-border bg-muted"
+                      }`}
+                    />
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Main content grid */}
           <div className="grid lg:grid-cols-5 xl:grid-cols-2 gap-4 sm:gap-6">
             {/* Form panel */}
             {(!isMobile || !showPreview) && (
@@ -207,31 +236,6 @@ export default function CVBuilderPage() {
                 </div>
               </div>
             )}
-
-            {/* Template Switcher - always visible */}
-            <div className="px-4 py-3 overflow-x-auto">
-              <p className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wide">Template</p>
-              <div className="flex gap-2">
-                {(["executive", "clean", "sidebar", "minimal", "creative", "corporate"] as const).map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setTemplate(t)}
-                    className={`flex-shrink-0 flex flex-col items-center gap-1 px-3 py-2 rounded-lg border text-xs capitalize transition-colors ${
-                      template === t
-                        ? "border-primary bg-primary/10 text-primary font-semibold"
-                        : "border-border bg-background text-muted-foreground"
-                    }`}
-                  >
-                    <div
-                      className={`w-8 h-10 rounded-sm border ${
-                        template === t ? "border-primary bg-primary/20" : "border-border bg-muted"
-                      }`}
-                    />
-                    {t}
-                  </button>
-                ))}
-              </div>
-            </div>
 
             {/* Preview panel + Unlock card */}
             {(!isMobile || showPreview) && (
