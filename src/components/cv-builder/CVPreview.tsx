@@ -86,7 +86,7 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
       )}
 
       {/* ── HEADER ── */}
-      <div style={{ background: background: colors.headerBg, padding: "32px 36px 24px" }}>
+      <div style={{ background: colors.headerBg, padding: "32px 36px 24px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
           <div style={{ flex: 1 }}>
             <h1
