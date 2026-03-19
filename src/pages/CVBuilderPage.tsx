@@ -218,8 +218,7 @@ export default function CVBuilderPage() {
                   padding: "12px 8px",
                   marginBottom: "8px",
                   alignItems: "start",
-            justifyContent: "start",
-          }}
+                  justifyContent: "start",
                 }}
               >
                 {[
