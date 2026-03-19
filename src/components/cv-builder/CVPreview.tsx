@@ -95,7 +95,7 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
                 fontWeight: 800,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                color: "#ffffff",
+                color: colors.headerText,
                 marginBottom: "6px",
                 fontFamily: "Georgia, serif",
               }}
@@ -106,7 +106,7 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
               <p
                 style={{
                   fontSize: "12px",
-                  color: "#c9a84c",
+                  color: colors.accent,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
                   fontWeight: 600,
