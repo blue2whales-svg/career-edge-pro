@@ -1377,11 +1377,21 @@ export const TEMPLATES: TemplateInfo[] = [
     layout: "single",
   },
   {
+    {
     id: "ats-executive",
     name: "ATS Executive",
     category: "ATS",
     description: "Senior-level ATS optimized format",
     colors: ["#0f172a", "#1e3a5f", "#1a2332", "#374151", "#2d3748"],
+    person: PEOPLE[14],
+    layout: "single",
+  },
+  {
+    id: "ats-banner",
+    name: "ATS Banner",
+    category: "ATS",
+    description: "Gold banner sections, navy prestige design",
+    colors: ["#c9a84c", "#0f172a", "#1e3a5f", "#374151", "#2d3748"],
     person: PEOPLE[14],
     layout: "single",
   },
@@ -1507,13 +1517,368 @@ function SectionLabel({
   );
 }
 
+// ─── ATS MINI PREVIEWS — each with its own distinct look ─────────────────────
+
+function MiniATSPro({ p }: { p: TemplatePerson }) {
+  const acc = "#1e40af";
+  const SH = ({ label }: { label: string }) => (
+    <div style={{ display: "flex", alignItems: "center", margin: "8px 0 4px" }}>
+      <span
+        style={{
+          background: acc,
+          color: "#fff",
+          fontSize: 6,
+          fontWeight: 800,
+          textTransform: "uppercase",
+          letterSpacing: 1,
+          padding: "1.5px 6px",
+          borderRadius: 2,
+          flexShrink: 0,
+        }}
+      >
+        {label}
+      </span>
+      <div style={{ flex: 1, height: 0.5, background: "#e2e8f0", marginLeft: 5 }} />
+    </div>
+  );
+  return (
+    <div
+      style={{
+        width: "100%",
+        background: "#fff",
+        fontFamily: "Arial, sans-serif",
+        fontSize: 7.5,
+        borderLeft: "5px solid #1e40af",
+        padding: "16px 14px",
+      }}
+    >
+      {/* CENTRED header */}
+      <div style={{ textAlign: "center", marginBottom: 10 }}>
+        <div
+          style={{
+            fontSize: 17,
+            fontWeight: 900,
+            color: "#0f172a",
+            letterSpacing: 2,
+            textTransform: "uppercase",
+            lineHeight: 1,
+          }}
+        >
+          {p.name}
+        </div>
+        <div
+          style={{
+            fontSize: 7.5,
+            color: acc,
+            fontWeight: 700,
+            letterSpacing: 2,
+            textTransform: "uppercase",
+            marginTop: 3,
+          }}
+        >
+          {p.title}
+        </div>
+        <div style={{ fontSize: 6.5, color: "#94a3b8", marginTop: 4 }}>
+          {p.email} · {p.phone} · {p.location}
+        </div>
+      </div>
+      <div style={{ height: 1.5, background: acc, marginBottom: 2 }} />
+      {/* LEFT-ALIGNED body */}
+      <SH label="Professional Summary" />
+      <div style={{ fontSize: 7, color: "#475569", lineHeight: 1.6, marginBottom: 4 }}>{p.summary}</div>
+      <SH label="Work Experience" />
+      {p.experience.slice(0, 2).map((exp, i) => (
+        <div key={i} style={{ marginBottom: 7 }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <span style={{ fontWeight: 700, fontSize: 7.5, color: "#0f172a" }}>
+              {exp.role} — {exp.company}
+            </span>
+            <span style={{ fontSize: 6.5, color: "#94a3b8" }}>{exp.dates}</span>
+          </div>
+          {exp.bullets.slice(0, 2).map((b, j) => (
+            <div
+              key={j}
+              style={{ fontSize: 6.5, color: "#475569", paddingLeft: 9, position: "relative", lineHeight: 1.5 }}
+            >
+              <span style={{ position: "absolute", left: 0, color: acc, fontSize: 7 }}>▸</span>
+              {b}
+            </div>
+          ))}
+        </div>
+      ))}
+      <SH label="Core Skills" />
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+        {p.skills.map((s) => (
+          <span
+            key={s}
+            style={{
+              fontSize: 6,
+              background: "#eff6ff",
+              color: acc,
+              border: "1px solid #bfdbfe",
+              borderRadius: 2,
+              padding: "1px 5px",
+              fontWeight: 600,
+            }}
+          >
+            {s}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MiniATSClassic({ p }: { p: TemplatePerson }) {
+  const SH = ({ label }: { label: string }) => (
+    <div
+      style={{
+        fontSize: 7.5,
+        fontWeight: 900,
+        color: "#0f172a",
+        textTransform: "uppercase",
+        letterSpacing: 2,
+        borderBottom: "1.5px solid #0f172a",
+        paddingBottom: 2,
+        margin: "8px 0 4px",
+      }}
+    >
+      {label}
+    </div>
+  );
+  return (
+    <div
+      style={{
+        width: "100%",
+        background: "#fff",
+        fontFamily: "Arial, sans-serif",
+        fontSize: 7.5,
+        padding: "16px 16px",
+      }}
+    >
+      {/* CENTRED header */}
+      <div style={{ textAlign: "center", marginBottom: 8 }}>
+        <div style={{ fontSize: 18, fontWeight: 900, color: "#0f172a", letterSpacing: -0.3, lineHeight: 1 }}>
+          {p.name}
+        </div>
+        <div style={{ fontSize: 7, color: "#475569", letterSpacing: 2, textTransform: "uppercase", marginTop: 3 }}>
+          {p.title}
+        </div>
+        <div style={{ height: 1, background: "#e2e8f0", margin: "5px auto", width: "60%" }} />
+        <div style={{ fontSize: 6.5, color: "#94a3b8" }}>
+          {p.email} · {p.phone} · {p.location}
+        </div>
+      </div>
+      {/* LEFT-ALIGNED body */}
+      <SH label="Experience" />
+      {p.experience.slice(0, 2).map((exp, i) => (
+        <div key={i} style={{ marginBottom: 7 }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <span style={{ fontWeight: 700, fontSize: 8, color: "#0f172a" }}>{exp.role}</span>
+            <span style={{ fontSize: 6.5, color: "#6b7280" }}>{exp.dates}</span>
+          </div>
+          <div style={{ fontSize: 7, color: "#64748b", marginBottom: 1 }}>{exp.company}</div>
+          {exp.bullets.slice(0, 2).map((b, j) => (
+            <div
+              key={j}
+              style={{ fontSize: 6.5, color: "#475569", paddingLeft: 8, position: "relative", lineHeight: 1.5 }}
+            >
+              <span style={{ position: "absolute", left: 0, color: "#94a3b8" }}>–</span>
+              {b}
+            </div>
+          ))}
+        </div>
+      ))}
+      <SH label="Skills" />
+      <div style={{ fontSize: 7, color: "#475569" }}>{p.skills.join(", ")}</div>
+    </div>
+  );
+}
+
+function MiniATSModern({ p }: { p: TemplatePerson }) {
+  const acc = "#1e40af";
+  const SH = ({ label }: { label: string }) => (
+    <div style={{ display: "flex", alignItems: "center", gap: 4, margin: "8px 0 4px" }}>
+      <div style={{ width: 5, height: 5, borderRadius: "50%", background: acc, flexShrink: 0 }} />
+      <span style={{ fontSize: 7, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, color: "#0f172a" }}>
+        {label}
+      </span>
+      <div style={{ flex: 1, height: 0.5, background: "#e2e8f0" }} />
+    </div>
+  );
+  return (
+    <div style={{ width: "100%", background: "#fafafa", fontFamily: "Arial, sans-serif", fontSize: 7.5 }}>
+      {/* LEFT-ALIGNED dark header */}
+      <div style={{ background: "#1e293b", padding: "12px 14px" }}>
+        <div style={{ fontSize: 15, fontWeight: 900, color: "#f8fafc", letterSpacing: 0.5 }}>{p.name}</div>
+        <div style={{ fontSize: 7, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 1.5, marginTop: 2 }}>
+          {p.title}
+        </div>
+      </div>
+      <div
+        style={{
+          background: "#f1f5f9",
+          padding: "3px 14px",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 6,
+          borderBottom: "1px solid #e2e8f0",
+        }}
+      >
+        <span style={{ fontSize: 6.5, color: "#64748b" }}>{p.email}</span>
+        <span style={{ fontSize: 6.5, color: "#cbd5e1" }}>·</span>
+        <span style={{ fontSize: 6.5, color: "#64748b" }}>{p.phone}</span>
+        <span style={{ fontSize: 6.5, color: "#cbd5e1" }}>·</span>
+        <span style={{ fontSize: 6.5, color: "#64748b" }}>{p.location}</span>
+      </div>
+      <div style={{ padding: "6px 14px 12px" }}>
+        <SH label="Summary" />
+        <div style={{ fontSize: 7, color: "#475569", lineHeight: 1.6, marginBottom: 2 }}>{p.summary}</div>
+        <SH label="Experience" />
+        {p.experience.slice(0, 2).map((exp, i) => (
+          <div key={i} style={{ marginBottom: 7 }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ fontWeight: 700, fontSize: 7.5, color: "#0f172a" }}>{exp.role}</span>
+              <span style={{ fontSize: 6.5, color: "#94a3b8" }}>{exp.dates}</span>
+            </div>
+            <div style={{ fontSize: 7, color: "#64748b", marginBottom: 1 }}>{exp.company}</div>
+            {exp.bullets.slice(0, 2).map((b, j) => (
+              <div
+                key={j}
+                style={{ fontSize: 6.5, color: "#475569", paddingLeft: 10, position: "relative", lineHeight: 1.5 }}
+              >
+                <span
+                  style={{
+                    position: "absolute",
+                    left: 2,
+                    top: 4,
+                    width: 3,
+                    height: 3,
+                    borderRadius: "50%",
+                    background: acc,
+                    display: "inline-block",
+                  }}
+                />
+                {b}
+              </div>
+            ))}
+          </div>
+        ))}
+        <SH label="Skills" />
+        <div style={{ fontSize: 7, color: "#475569" }}>{p.skills.join(", ")}</div>
+      </div>
+    </div>
+  );
+}
+
+function MiniATSExecutive({ p }: { p: TemplatePerson }) {
+  const SH = ({ label }: { label: string }) => (
+    <div
+      style={{
+        fontSize: 6.5,
+        fontWeight: 900,
+        textTransform: "uppercase",
+        letterSpacing: 2.5,
+        color: "#94a3b8",
+        margin: "9px 0 4px",
+      }}
+    >
+      {label}
+    </div>
+  );
+  return (
+    <div
+      style={{
+        width: "100%",
+        background: "#fff",
+        fontFamily: "Arial, sans-serif",
+        fontSize: 7.5,
+        padding: "16px 16px",
+      }}
+    >
+      {/* LEFT-ALIGNED header */}
+      <div style={{ marginBottom: 6 }}>
+        <div
+          style={{
+            fontSize: 17,
+            fontWeight: 900,
+            color: "#0f172a",
+            letterSpacing: -0.5,
+            textTransform: "uppercase",
+            lineHeight: 1,
+          }}
+        >
+          {p.name}
+        </div>
+        <div style={{ fontSize: 7, color: "#64748b", letterSpacing: 2.5, textTransform: "uppercase", marginTop: 4 }}>
+          {p.title}
+        </div>
+        <div
+          style={{
+            height: 1,
+            background: "linear-gradient(90deg,#0f172a 40%,transparent)",
+            marginTop: 5,
+            marginBottom: 4,
+          }}
+        />
+        <div style={{ fontSize: 6.5, color: "#94a3b8", display: "flex", gap: 8 }}>
+          <span>{p.email}</span>
+          <span>{p.phone}</span>
+          <span>{p.location}</span>
+        </div>
+      </div>
+      {/* LEFT-ALIGNED body */}
+      <SH label="Professional Summary" />
+      <div
+        style={{
+          fontSize: 7,
+          color: "#475569",
+          lineHeight: 1.7,
+          borderLeft: "2px solid #e2e8f0",
+          paddingLeft: 6,
+          marginBottom: 2,
+        }}
+      >
+        {p.summary}
+      </div>
+      <SH label="Experience" />
+      {p.experience.slice(0, 2).map((exp, i) => (
+        <div key={i} style={{ marginBottom: 7 }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <span style={{ fontWeight: 900, fontSize: 8, color: "#0f172a" }}>{exp.role}</span>
+            <span style={{ fontSize: 6.5, color: "#94a3b8" }}>{exp.dates}</span>
+          </div>
+          <div style={{ fontSize: 7, color: "#475569", fontStyle: "italic", marginBottom: 1 }}>{exp.company}</div>
+          {exp.bullets.slice(0, 2).map((b, j) => (
+            <div
+              key={j}
+              style={{ fontSize: 6.5, color: "#475569", paddingLeft: 7, position: "relative", lineHeight: 1.5 }}
+            >
+              <span style={{ position: "absolute", left: 0, color: "#0f172a", fontSize: 9, lineHeight: 1.2 }}>·</span>
+              {b}
+            </div>
+          ))}
+        </div>
+      ))}
+      <SH label="Skills" />
+      <div style={{ fontSize: 7, color: "#475569" }}>{p.skills.join(", ")}</div>
+    </div>
+  );
+}
+
+// ─── MAIN MINI CV PREVIEW ─────────────────────────────────────────────────────
 function MiniCVPreview({ template }: { template: TemplateInfo }) {
   const p = template.person;
   const accent = template.colors[0];
   const isExecutive = template.category === "Executive";
   const isCreative = template.category === "Creative";
   const isMinimalist = template.category === "Minimalist";
-  const isATS = template.category === "ATS";
+
+  // ── Route ATS templates to their own distinct mini previews ──
+  if (template.id === "ats-pro") return <MiniATSPro p={p} />;
+  if (template.id === "ats-classic") return <MiniATSClassic p={p} />;
+  if (template.id === "ats-modern") return <MiniATSModern p={p} />;
+  if (template.id === "ats-executive") return <MiniATSExecutive p={p} />;
 
   if (template.layout === "sidebar") {
     return (
@@ -1601,24 +1966,6 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               marginBottom: 5,
             }}
           >
-            Languages
-          </div>
-          {p.languages.map((l, i) => (
-            <div key={i} style={{ fontSize: 8, color: "#94a3b8", marginBottom: 2 }}>
-              • {l}
-            </div>
-          ))}
-          <div style={{ height: 1, background: "#334155", margin: "8px 0" }} />
-          <div
-            style={{
-              fontSize: 9,
-              color: accent,
-              fontWeight: 800,
-              textTransform: "uppercase",
-              letterSpacing: 1,
-              marginBottom: 5,
-            }}
-          >
             Education
           </div>
           {p.education.map((e, i) => (
@@ -1627,24 +1974,6 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               <div style={{ fontSize: 7, color: "#94a3b8" }}>
                 {e.school} · {e.year}
               </div>
-            </div>
-          ))}
-          <div style={{ height: 1, background: "#334155", margin: "8px 0" }} />
-          <div
-            style={{
-              fontSize: 9,
-              color: accent,
-              fontWeight: 800,
-              textTransform: "uppercase",
-              letterSpacing: 1,
-              marginBottom: 5,
-            }}
-          >
-            Certifications
-          </div>
-          {p.certifications.map((c, i) => (
-            <div key={i} style={{ fontSize: 8, color: "#94a3b8", marginBottom: 2 }}>
-              ✓ {c}
             </div>
           ))}
         </div>
@@ -1789,42 +2118,6 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
                 </div>
               </div>
             ))}
-            <div style={{ height: 1, background: "#e2e8f0", margin: "8px 0" }} />
-            <div
-              style={{
-                fontSize: 10,
-                fontWeight: 800,
-                color: accent,
-                textTransform: "uppercase",
-                letterSpacing: 1,
-                marginBottom: 6,
-              }}
-            >
-              Languages
-            </div>
-            {p.languages.map((l, i) => (
-              <div key={i} style={{ fontSize: 8, color: "#475569", lineHeight: 1.7 }}>
-                • {l}
-              </div>
-            ))}
-            <div style={{ height: 1, background: "#e2e8f0", margin: "8px 0" }} />
-            <div
-              style={{
-                fontSize: 10,
-                fontWeight: 800,
-                color: accent,
-                textTransform: "uppercase",
-                letterSpacing: 1,
-                marginBottom: 6,
-              }}
-            >
-              Certifications
-            </div>
-            {p.certifications.map((c, i) => (
-              <div key={i} style={{ fontSize: 8, color: "#475569", lineHeight: 1.7 }}>
-                ✓ {c}
-              </div>
-            ))}
           </div>
         </div>
       </div>
@@ -1904,59 +2197,181 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               ))}
             </div>
           ))}
-          <SectionLabel color="#0f172a" borderColor={accent}>
-            Education
-          </SectionLabel>
-          {p.education.map((e, i) => (
-            <div key={i} style={{ fontSize: 9, color: "#334155", marginBottom: 3 }}>
-              <span style={{ fontWeight: 700 }}>{e.degree}</span> — {e.school} · {e.year}
-            </div>
-          ))}
-          <SectionLabel color="#0f172a" borderColor={accent}>
-            Skills
-          </SectionLabel>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 2 }}>
-            {p.skills.map((s, i) => (
-              <span
-                key={i}
-                style={{
-                  fontSize: 8,
-                  background: `${accent}18`,
-                  color: accent,
-                  padding: "2px 7px",
-                  borderRadius: 3,
-                  border: `1px solid ${accent}40`,
-                  fontWeight: 600,
-                }}
-              >
-                {s}
-              </span>
-            ))}
-          </div>
-          <SectionLabel color="#0f172a" borderColor={accent}>
-            Certifications
-          </SectionLabel>
-          {p.certifications.map((c, i) => (
-            <div key={i} style={{ fontSize: 8, color: "#475569", marginBottom: 2 }}>
-              ✓ {c}
-            </div>
-          ))}
-          <SectionLabel color="#0f172a" borderColor={accent}>
-            Languages
-          </SectionLabel>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-            {p.languages.map((l, i) => (
-              <div key={i} style={{ fontSize: 8, color: "#475569" }}>
-                • {l}
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     );
   }
 
-  const headerBg = isExecutive ? "#0f172a" : isCreative ? accent : isATS || isMinimalist ? "#fff" : "#1e293b";
+  if (isATS) {
+    const id = template.id;
+
+    if (id === "ats-pro") {
+      return (
+        <div style={{ width: "100%", fontFamily: "Arial, sans-serif", background: "#fff" }}>
+          <div style={{ display: "flex", background: "#0f172a" }}>
+            <div style={{ width: 6, background: "#c9a84c", flexShrink: 0 }} />
+            <div style={{ padding: "18px 18px 14px 14px", flex: 1 }}>
+              <div style={{ fontSize: 22, fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1 }}>{p.name.toUpperCase()}</div>
+              <div style={{ fontSize: 10, color: "#c9a84c", fontWeight: 700, textTransform: "uppercase", letterSpacing: 2, margin: "4px 0 7px" }}>{p.title}</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, fontSize: 8, color: "rgba(255,255,255,0.6)" }}>
+                <span>{p.email}</span><span>{p.phone}</span><span>{p.location}</span>
+              </div>
+            </div>
+          </div>
+          <div style={{ padding: "10px 16px" }}>
+            {[["PROFESSIONAL PROFILE", p.summary], null].map((_, si) => si === 0 ? (
+              <div key={si}>
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#0f172a", textTransform: "uppercase", letterSpacing: 2, marginBottom: 3 }}>PROFESSIONAL PROFILE</div>
+                <div style={{ width: 36, height: 2, background: "#c9a84c", marginBottom: 6 }} />
+                <div style={{ fontSize: 8, color: "#475569", lineHeight: 1.6, marginBottom: 10 }}>{p.summary}</div>
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#0f172a", textTransform: "uppercase", letterSpacing: 2, marginBottom: 3 }}>WORK EXPERIENCE</div>
+                <div style={{ width: 36, height: 2, background: "#c9a84c", marginBottom: 8 }} />
+                {p.experience.map((exp, i) => (
+                  <div key={i} style={{ marginBottom: 9, paddingBottom: 9, borderBottom: i < p.experience.length - 1 ? "0.5px solid #f1f5f9" : "none" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                      <span style={{ fontSize: 9.5, fontWeight: 800, color: "#0f172a" }}>{exp.role}</span>
+                      <span style={{ fontSize: 7.5, background: "#0f172a", color: "#c9a84c", padding: "1px 7px", borderRadius: 3, fontWeight: 700 }}>{exp.dates}</span>
+                    </div>
+                    <div style={{ fontSize: 8.5, color: "#c9a84c", fontWeight: 700, margin: "2px 0 4px" }}>{exp.company}</div>
+                    {exp.bullets.map((b, j) => <div key={j} style={{ fontSize: 8, color: "#334155", paddingLeft: 10, position: "relative", lineHeight: 1.65 }}><span style={{ position: "absolute", left: 2, color: "#c9a84c", fontWeight: 900 }}>›</span>{b}</div>)}
+                  </div>
+                ))}
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#0f172a", textTransform: "uppercase", letterSpacing: 2, marginBottom: 3 }}>EDUCATION</div>
+                <div style={{ width: 36, height: 2, background: "#c9a84c", marginBottom: 7 }} />
+                {p.education.map((e, i) => <div key={i} style={{ display: "flex", justifyContent: "space-between", background: "#f8fafc", padding: "5px 8px", borderRadius: 3, borderLeft: "3px solid #c9a84c", marginBottom: 4 }}><div><div style={{ fontSize: 9, fontWeight: 800, color: "#0f172a" }}>{e.degree}</div><div style={{ fontSize: 7.5, color: "#64748b" }}>{e.school}</div></div><div style={{ fontSize: 7.5, color: "#c9a84c", fontWeight: 700 }}>{e.year}</div></div>)}
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#0f172a", textTransform: "uppercase", letterSpacing: 2, margin: "8px 0 3px" }}>SKILLS</div>
+                <div style={{ width: 36, height: 2, background: "#c9a84c", marginBottom: 7 }} />
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 9 }}>{p.skills.map((s, i) => <span key={i} style={{ fontSize: 7.5, background: "#0f172a", color: "#c9a84c", padding: "2px 8px", borderRadius: 3, fontWeight: 700 }}>{s}</span>)}</div>
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#0f172a", textTransform: "uppercase", letterSpacing: 2, marginBottom: 3 }}>CERTIFICATIONS</div>
+                <div style={{ width: 36, height: 2, background: "#c9a84c", marginBottom: 6 }} />
+                {p.certifications.map((c, i) => <div key={i} style={{ fontSize: 8, color: "#334155", lineHeight: 1.8, display: "flex", alignItems: "center", gap: 5 }}><span style={{ width: 4, height: 4, background: "#c9a84c", borderRadius: "50%", flexShrink: 0 }} />{c}</div>)}
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#0f172a", textTransform: "uppercase", letterSpacing: 2, margin: "8px 0 6px" }}>LANGUAGES</div>
+                <div style={{ width: 36, height: 2, background: "#c9a84c", marginBottom: 7 }} />
+                <div style={{ display: "flex", gap: 14 }}>{p.languages.map((l, i) => <div key={i} style={{ fontSize: 8, color: "#334155" }}>{l}</div>)}</div>
+              </div>
+            ) : null)}
+          </div>
+        </div>
+      );
+    }
+
+    if (id === "ats-classic") {
+      return (
+        <div style={{ width: "100%", fontFamily: "Arial, sans-serif", background: "#fff" }}>
+          <div style={{ padding: "20px 22px 14px", textAlign: "center", borderBottom: "2.5px solid #0f172a" }}>
+            <div style={{ fontSize: 24, fontWeight: 900, color: "#0f172a", letterSpacing: 1 }}>{p.name.toUpperCase()}</div>
+            <div style={{ fontSize: 9.5, color: "#64748b", fontWeight: 600, textTransform: "uppercase", letterSpacing: 2.5, margin: "5px 0 7px" }}>{p.title}</div>
+            <div style={{ display: "flex", justifyContent: "center", gap: 12, fontSize: 8, color: "#64748b", flexWrap: "wrap" }}>
+              <span>{p.email}</span><span>·</span><span>{p.phone}</span><span>·</span><span>{p.location}</span>
+            </div>
+          </div>
+          <div style={{ padding: "10px 20px" }}>
+            {["PROFESSIONAL SUMMARY","PROFESSIONAL EXPERIENCE","EDUCATION","SKILLS","CERTIFICATIONS","LANGUAGES"].map((sec, si) => (
+              <div key={si}>
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#0f172a", textTransform: "uppercase", letterSpacing: 2, borderBottom: "1.5px solid #0f172a", paddingBottom: 3, marginBottom: 6, marginTop: si > 0 ? 10 : 0 }}>{sec}</div>
+                {si === 0 && <div style={{ fontSize: 8, color: "#475569", lineHeight: 1.65, marginBottom: 2 }}>{p.summary}</div>}
+                {si === 1 && p.experience.map((exp, i) => <div key={i} style={{ marginBottom: 9 }}><div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 9.5, fontWeight: 800, color: "#0f172a" }}>{exp.role}</span><span style={{ fontSize: 8, color: "#475569", fontStyle: "italic" }}>{exp.dates}</span></div><div style={{ fontSize: 8.5, color: "#475569", fontWeight: 700, margin: "2px 0 4px" }}>{exp.company}</div>{exp.bullets.map((b, j) => <div key={j} style={{ fontSize: 8, color: "#334155", paddingLeft: 12, position: "relative", lineHeight: 1.65 }}><span style={{ position: "absolute", left: 3 }}>•</span>{b}</div>)}</div>)}
+                {si === 2 && p.education.map((e, i) => <div key={i} style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}><div><div style={{ fontSize: 9, fontWeight: 800, color: "#0f172a" }}>{e.degree}</div><div style={{ fontSize: 7.5, color: "#64748b" }}>{e.school}</div></div><div style={{ fontSize: 8, color: "#475569", fontStyle: "italic" }}>{e.year}</div></div>)}
+                {si === 3 && <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{p.skills.map((s, i) => <span key={i} style={{ fontSize: 7.5, background: "#f8fafc", color: "#334155", padding: "2px 8px", borderRadius: 2, border: "1px solid #e2e8f0", fontWeight: 600 }}>{s}</span>)}</div>}
+                {si === 4 && <div style={{ fontSize: 8, color: "#475569", lineHeight: 1.8 }}>{p.certifications.join(" · ")}</div>}
+                {si === 5 && <div style={{ fontSize: 8, color: "#475569" }}>{p.languages.join(" · ")}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    if (id === "ats-modern") {
+      return (
+        <div style={{ width: "100%", fontFamily: "Arial, sans-serif", background: "#fff" }}>
+          <div style={{ background: "#1e40af", padding: "18px 22px 14px", textAlign: "center" }}>
+            <div style={{ fontSize: 23, fontWeight: 900, color: "#fff", lineHeight: 1 }}>{p.name}</div>
+            <div style={{ fontSize: 9.5, color: "#93c5fd", fontWeight: 600, textTransform: "uppercase", letterSpacing: 2, margin: "5px 0 8px" }}>{p.title}</div>
+            <div style={{ display: "flex", justifyContent: "center", gap: 12, fontSize: 8, color: "rgba(255,255,255,0.65)", flexWrap: "wrap" }}>
+              <span>{p.email}</span><span>|</span><span>{p.phone}</span><span>|</span><span>{p.location}</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
+              {p.skills.slice(0, 3).map((s, i) => <span key={i} style={{ fontSize: 7.5, background: "rgba(255,255,255,0.15)", color: "#fff", padding: "2px 9px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.25)" }}>{s}</span>)}
+            </div>
+          </div>
+          <div style={{ padding: "10px 20px" }}>
+            {["PROFILE","WORK EXPERIENCE","EDUCATION","SKILLS","CERTIFICATIONS","LANGUAGES"].map((sec, si) => (
+              <div key={si}>
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#1e40af", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 4, marginTop: si > 0 ? 10 : 0 }}>{sec}</div>
+                <div style={{ height: 1.5, background: "#dbeafe", marginBottom: 7 }} />
+                {si === 0 && <div style={{ fontSize: 8, color: "#475569", lineHeight: 1.65 }}>{p.summary}</div>}
+                {si === 1 && p.experience.map((exp, i) => <div key={i} style={{ marginBottom: 9 }}><div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}><span style={{ fontSize: 9.5, fontWeight: 800, color: "#0f172a" }}>{exp.role}</span><span style={{ fontSize: 7.5, background: "#dbeafe", color: "#1e40af", padding: "1px 7px", borderRadius: 3, fontWeight: 700 }}>{exp.dates}</span></div><div style={{ fontSize: 8.5, color: "#1e40af", fontWeight: 700, margin: "2px 0 4px" }}>{exp.company}</div>{exp.bullets.map((b, j) => <div key={j} style={{ fontSize: 8, color: "#334155", paddingLeft: 10, position: "relative", lineHeight: 1.65 }}><span style={{ position: "absolute", left: 2, color: "#1e40af" }}>›</span>{b}</div>)}</div>)}
+                {si === 2 && p.education.map((e, i) => <div key={i} style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}><div><div style={{ fontSize: 9, fontWeight: 800, color: "#0f172a" }}>{e.degree}</div><div style={{ fontSize: 7.5, color: "#64748b" }}>{e.school}</div></div><div style={{ fontSize: 8, color: "#1e40af", fontWeight: 700 }}>{e.year}</div></div>)}
+                {si === 3 && <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{p.skills.map((s, i) => <span key={i} style={{ fontSize: 7.5, background: "#dbeafe", color: "#1e40af", padding: "2px 8px", borderRadius: 4, fontWeight: 700 }}>{s}</span>)}</div>}
+                {si === 4 && <div style={{ fontSize: 8, color: "#475569", lineHeight: 1.8 }}>{p.certifications.join(" · ")}</div>}
+                {si === 5 && <div style={{ fontSize: 8, color: "#475569" }}>{p.languages.join(" · ")}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    if (id === "ats-executive") {
+      return (
+        <div style={{ width: "100%", fontFamily: "Arial, sans-serif", background: "#fff" }}>
+          <div style={{ background: "#0f172a", padding: "20px 22px 16px" }}>
+            <div style={{ fontSize: 9, color: "#c9a84c", fontWeight: 700, textTransform: "uppercase", letterSpacing: 4, marginBottom: 5 }}>Curriculum Vitae</div>
+            <div style={{ fontSize: 24, fontWeight: 900, color: "#fff", letterSpacing: 1.5, textTransform: "uppercase" }}>{p.name}</div>
+            <div style={{ fontSize: 9.5, color: "#c9a84c", fontWeight: 600, textTransform: "uppercase", letterSpacing: 2.5, margin: "5px 0 9px" }}>{p.title}</div>
+            <div style={{ display: "flex", gap: 6, marginBottom: 8 }}><div style={{ height: 2, background: "#c9a84c", flex: 1 }} /><div style={{ height: 2, background: "rgba(201,168,76,0.3)", flex: 1 }} /><div style={{ height: 2, background: "rgba(201,168,76,0.1)", flex: 1 }} /></div>
+            <div style={{ display: "flex", gap: 14, fontSize: 8, color: "rgba(255,255,255,0.55)", flexWrap: "wrap" }}><span>{p.email}</span><span>{p.phone}</span><span>{p.location}</span></div>
+          </div>
+          <div style={{ padding: "10px 22px" }}>
+            {["Executive Summary","Leadership Experience","Education","Core Competencies","Certifications","Languages"].map((sec, si) => (
+              <div key={si}>
+                <div style={{ display: "flex", alignItems: "center", gap: 7, margin: `${si > 0 ? 10 : 0}px 0 5px` }}><div style={{ width: 3, height: 13, background: "#c9a84c", borderRadius: 2 }} /><div style={{ fontSize: 9, fontWeight: 800, color: "#0f172a", textTransform: "uppercase", letterSpacing: 2 }}>{sec}</div></div>
+                {si === 0 && <div style={{ fontSize: 8, color: "#475569", lineHeight: 1.65, paddingLeft: 10 }}>{p.summary}</div>}
+                {si === 1 && <div style={{ paddingLeft: 10 }}>{p.experience.map((exp, i) => <div key={i} style={{ marginBottom: 9 }}><div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 9.5, fontWeight: 800, color: "#0f172a" }}>{exp.role}</span><span style={{ fontSize: 8, color: "#c9a84c", fontWeight: 800 }}>{exp.dates}</span></div><div style={{ fontSize: 8.5, color: "#c9a84c", fontWeight: 700, margin: "2px 0 4px" }}>{exp.company}</div>{exp.bullets.map((b, j) => <div key={j} style={{ fontSize: 8, color: "#334155", paddingLeft: 10, position: "relative", lineHeight: 1.65 }}><span style={{ position: "absolute", left: 2, color: "#c9a84c" }}>◆</span>{b}</div>)}</div>)}</div>}
+                {si === 2 && <div style={{ paddingLeft: 10 }}>{p.education.map((e, i) => <div key={i} style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}><div><div style={{ fontSize: 9, fontWeight: 800, color: "#0f172a" }}>{e.degree}</div><div style={{ fontSize: 7.5, color: "#64748b" }}>{e.school}</div></div><div style={{ fontSize: 8, color: "#c9a84c", fontWeight: 800 }}>{e.year}</div></div>)}</div>}
+                {si === 3 && <div style={{ display: "flex", flexWrap: "wrap", gap: 4, paddingLeft: 10 }}>{p.skills.map((s, i) => <span key={i} style={{ fontSize: 7.5, background: "#0f172a", color: "#c9a84c", padding: "2px 9px", borderRadius: 3, fontWeight: 700, border: "1px solid rgba(201,168,76,0.3)" }}>{s}</span>)}</div>}
+                {si === 4 && <div style={{ fontSize: 8, color: "#475569", lineHeight: 1.8, paddingLeft: 10 }}>{p.certifications.join(" · ")}</div>}
+                {si === 5 && <div style={{ fontSize: 8, color: "#475569", paddingLeft: 10 }}>{p.languages.join(" · ")}</div>}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    // ats-banner
+    return (
+      <div style={{ width: "100%", fontFamily: "Arial, sans-serif", background: "#fff" }}>
+        <div style={{ background: "#0f172a", padding: "18px 22px 14px" }}>
+          <div style={{ fontSize: 24, fontWeight: 900, color: "#fff", letterSpacing: 1, textTransform: "uppercase", textAlign: "center" }}>{p.name}</div>
+          <div style={{ fontSize: 9.5, color: "#c9a84c", fontWeight: 700, textTransform: "uppercase", letterSpacing: 2.5, margin: "5px 0 8px", textAlign: "center" }}>{p.title}</div>
+          <div style={{ display: "flex", justifyContent: "center", gap: 12, fontSize: 8, color: "rgba(255,255,255,0.6)", flexWrap: "wrap" }}>
+            <span>{p.email}</span><span>·</span><span>{p.phone}</span><span>·</span><span>{p.location}</span>
+          </div>
+        </div>
+        <div style={{ padding: "0 18px 12px" }}>
+          {["PROFESSIONAL SUMMARY","EXPERIENCE","EDUCATION","CORE SKILLS","LANGUAGES & CERTIFICATIONS"].map((sec, si) => (
+            <div key={si}>
+              <div style={{ background: "#c9a84c", margin: "10px -18px 7px", padding: "4px 18px" }}>
+                <div style={{ fontSize: 9, fontWeight: 800, color: "#0f172a", textTransform: "uppercase", letterSpacing: 2 }}>{sec}</div>
+              </div>
+              {si === 0 && <div style={{ fontSize: 8, color: "#475569", lineHeight: 1.65 }}>{p.summary}</div>}
+              {si === 1 && p.experience.map((exp, i) => <div key={i} style={{ marginBottom: 9 }}><div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ fontSize: 9.5, fontWeight: 800, color: "#0f172a" }}>{exp.role}</span><span style={{ fontSize: 8, color: "#64748b" }}>{exp.dates}</span></div><div style={{ fontSize: 8.5, color: "#c9a84c", fontWeight: 700, margin: "2px 0 4px" }}>{exp.company}</div>{exp.bullets.map((b, j) => <div key={j} style={{ fontSize: 8, color: "#334155", paddingLeft: 10, position: "relative", lineHeight: 1.65 }}><span style={{ position: "absolute", left: 2, color: "#c9a84c" }}>◆</span>{b}</div>)}</div>)}
+              {si === 2 && p.education.map((e, i) => <div key={i} style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}><div><div style={{ fontSize: 9, fontWeight: 800, color: "#0f172a" }}>{e.degree}</div><div style={{ fontSize: 7.5, color: "#64748b" }}>{e.school}</div></div><div style={{ fontSize: 8, color: "#c9a84c", fontWeight: 700 }}>{e.year}</div></div>)}
+              {si === 3 && <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{p.skills.map((s, i) => <span key={i} style={{ fontSize: 7.5, background: "#0f172a", color: "#c9a84c", padding: "2px 9px", borderRadius: 3, fontWeight: 700 }}>{s}</span>)}</div>}
+              {si === 4 && <div style={{ fontSize: 8, color: "#475569", lineHeight: 1.9 }}>{[...p.certifications, ...p.languages].join(" · ")}</div>}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+```
+
+Then delete the old single-layout code that starts with:
+```
+  const headerBg = isExecutive ? ...
   const headerText = headerBg === "#fff" ? "#0f172a" : "#fff";
   const accentOnHeader = isExecutive ? "#c9a84c" : isCreative ? "#fff" : accent;
   const bodyAccent = isExecutive ? "#c9a84c" : accent;
@@ -1968,7 +2383,6 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
         style={{
           background: headerBg,
           padding: "12px 16px",
-          borderLeft: isATS ? `6px solid ${accent}` : "none",
           borderBottom: isMinimalist ? `2px solid ${accent}` : "none",
         }}
       >
@@ -2057,26 +2471,6 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
             >
               {s}
             </span>
-          ))}
-        </div>
-        <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
-          Certifications
-        </SectionLabel>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 2 }}>
-          {p.certifications.map((c, i) => (
-            <div key={i} style={{ fontSize: 8, color: "#475569" }}>
-              ✓ {c}
-            </div>
-          ))}
-        </div>
-        <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
-          Languages
-        </SectionLabel>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-          {p.languages.map((l, i) => (
-            <div key={i} style={{ fontSize: 8, color: "#475569" }}>
-              • {l}
-            </div>
           ))}
         </div>
       </div>
