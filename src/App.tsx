@@ -70,7 +70,7 @@ const App = () => (
           <Route path="/recruiters" element={<RecruitersPage />} />
           <Route path="/global-service" element={<GlobalServicePage />} />
           <Route path="/optimize" element={<OptimizePage />} />
-          <Route path="/samples" element={<SamplesPage />} />
+          <Route path="/samples" element={<Navigate to="/templates" replace />} />
           <Route path="/payment-success" element={<PaymentSuccessPage />} />
           <Route path="/review/:orderId" element={<DocumentReviewPage />} />
 
