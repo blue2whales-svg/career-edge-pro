@@ -1146,34 +1146,23 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
   const isMinimalist = template.category === "Minimalist";
   const isATS = template.category === "ATS";
 
-  /* ── SIDEBAR ── */
   if (template.layout === "sidebar") {
     return (
-      <div style={{ display: "flex", width: "100%", height: "100%", fontFamily: "'Inter', sans-serif" }}>
-        <div
-          style={{
-            width: "35%",
-            background: "#1e293b",
-            padding: "12px 7px",
-            color: "#fff",
-            flexShrink: 0,
-            overflow: "hidden",
-          }}
-        >
+      <div style={{ display: "flex", width: "100%", height: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
+        <div style={{ width: "34%", background: "#1e293b", padding: "28px 16px", color: "#fff", flexShrink: 0 }}>
           <div
             style={{
-              width: 24,
-              height: 24,
+              width: 60,
+              height: 60,
               borderRadius: "50%",
               background: accent,
-              margin: "0 auto 4px",
+              margin: "0 auto 12px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 7.5,
+              fontSize: 22,
               fontWeight: 800,
-              color: "#1e293b",
-              border: "1.5px solid rgba(255,255,255,0.15)",
+              color: "#fff",
             }}
           >
             {p.name
@@ -1183,123 +1172,121 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
           </div>
           <div
             style={{
-              fontSize: 6,
+              fontSize: 16,
               fontWeight: 800,
               textAlign: "center",
               color: "#fff",
               lineHeight: 1.2,
-              marginBottom: 1,
+              marginBottom: 4,
             }}
           >
             {p.name}
           </div>
           <div
             style={{
-              fontSize: 3.5,
+              fontSize: 10,
               color: accent,
               textAlign: "center",
               textTransform: "uppercase",
-              letterSpacing: 0.5,
+              letterSpacing: 1,
               fontWeight: 700,
-              marginBottom: 6,
+              marginBottom: 18,
             }}
           >
             {p.title}
           </div>
-          <div style={{ fontSize: 3.5, color: "#94a3b8", marginBottom: 1 }}>✉ {p.email}</div>
-          <div style={{ fontSize: 3.5, color: "#94a3b8", marginBottom: 1 }}>☎ {p.phone}</div>
-          <div style={{ fontSize: 3.5, color: "#94a3b8", marginBottom: 6 }}>⌖ {p.location}</div>
-          <div style={{ height: 0.5, background: "#334155", marginBottom: 5 }} />
+          <div style={{ fontSize: 9, color: "#94a3b8", marginBottom: 5 }}>✉ {p.email}</div>
+          <div style={{ fontSize: 9, color: "#94a3b8", marginBottom: 5 }}>☎ {p.phone}</div>
+          <div style={{ fontSize: 9, color: "#94a3b8", marginBottom: 18 }}>⌖ {p.location}</div>
+          <div style={{ height: 1, background: "#334155", marginBottom: 12 }} />
           <div
             style={{
-              fontSize: 3.5,
+              fontSize: 10,
               color: accent,
               fontWeight: 800,
               textTransform: "uppercase",
-              letterSpacing: 0.5,
-              marginBottom: 3,
+              letterSpacing: 1,
+              marginBottom: 10,
             }}
           >
             Skills
           </div>
           {p.skills.map((s, i) => (
-            <div key={i} style={{ marginBottom: 3 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 1 }}>
-                <div style={{ fontSize: 3.5, color: "#cbd5e1" }}>{s}</div>
-              </div>
-              <div style={{ height: 1.5, background: "#334155", borderRadius: 1 }}>
+            <div key={i} style={{ marginBottom: 8 }}>
+              <div style={{ fontSize: 9, color: "#cbd5e1", marginBottom: 3 }}>{s}</div>
+              <div style={{ height: 4, background: "#334155", borderRadius: 2 }}>
                 <div
-                  style={{ height: "100%", width: `${85 - ((i * 9) % 40)}%`, background: accent, borderRadius: 1 }}
+                  style={{ height: "100%", width: `${88 - ((i * 9) % 38)}%`, background: accent, borderRadius: 2 }}
                 />
               </div>
             </div>
           ))}
-          <div style={{ height: 0.5, background: "#334155", margin: "5px 0" }} />
+          <div style={{ height: 1, background: "#334155", margin: "12px 0" }} />
           <div
             style={{
-              fontSize: 3.5,
+              fontSize: 10,
               color: accent,
               fontWeight: 800,
               textTransform: "uppercase",
-              letterSpacing: 0.5,
-              marginBottom: 3,
+              letterSpacing: 1,
+              marginBottom: 10,
             }}
           >
             Education
           </div>
           {p.education.map((e, i) => (
-            <div key={i} style={{ marginBottom: 3 }}>
-              <div style={{ fontSize: 3.5, fontWeight: 700, color: "#e2e8f0", lineHeight: 1.3 }}>{e.degree}</div>
-              <div style={{ fontSize: 3, color: "#94a3b8" }}>
+            <div key={i} style={{ marginBottom: 10 }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: "#e2e8f0", lineHeight: 1.3 }}>{e.degree}</div>
+              <div style={{ fontSize: 8, color: "#94a3b8" }}>
                 {e.school} · {e.year}
               </div>
             </div>
           ))}
         </div>
-        <div style={{ flex: 1, padding: "12px 9px", background: "#fff", overflow: "hidden" }}>
+        <div style={{ flex: 1, padding: "28px 20px", background: "#fff" }}>
           <div
             style={{
-              fontSize: 3.5,
+              fontSize: 11,
               fontWeight: 800,
               color: "#0f172a",
               textTransform: "uppercase",
-              letterSpacing: 0.6,
-              borderBottom: `0.5px solid ${accent}`,
-              paddingBottom: 1.5,
-              marginBottom: 3,
+              letterSpacing: 1.5,
+              borderBottom: `2px solid ${accent}`,
+              paddingBottom: 6,
+              marginBottom: 10,
             }}
           >
             Profile
           </div>
-          <div style={{ fontSize: 4, color: "#475569", lineHeight: 1.5, marginBottom: 5 }}>{p.summary}</div>
+          <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.7, marginBottom: 16 }}>{p.summary}</div>
           <div
             style={{
-              fontSize: 3.5,
+              fontSize: 11,
               fontWeight: 800,
               color: "#0f172a",
               textTransform: "uppercase",
-              letterSpacing: 0.6,
-              borderBottom: `0.5px solid ${accent}`,
-              paddingBottom: 1.5,
-              marginBottom: 3,
+              letterSpacing: 1.5,
+              borderBottom: `2px solid ${accent}`,
+              paddingBottom: 6,
+              marginBottom: 10,
             }}
           >
             Work Experience
           </div>
           {p.experience.map((exp, i) => (
-            <div key={i} style={{ marginBottom: 5 }}>
+            <div key={i} style={{ marginBottom: 13 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <span style={{ fontSize: 4.5, fontWeight: 700, color: "#0f172a", flex: 1, lineHeight: 1.2 }}>
-                  {exp.role}
-                </span>
-                <span style={{ fontSize: 3, color: accent, fontWeight: 600, flexShrink: 0, marginLeft: 3 }}>
-                  {exp.dates}
-                </span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a", lineHeight: 1.2 }}>{exp.role}</span>
+                <span style={{ fontSize: 9, color: accent, fontWeight: 600 }}>{exp.dates}</span>
               </div>
-              <div style={{ fontSize: 3.5, color: "#64748b", fontWeight: 600, marginBottom: 2 }}>{exp.company}</div>
+              <div style={{ fontSize: 10, color: "#64748b", fontWeight: 600, marginBottom: 5 }}>{exp.company}</div>
               {exp.bullets.map((b, j) => (
-                <div key={j} style={{ fontSize: 3.5, color: "#475569", lineHeight: 1.4, paddingLeft: 5 }}>
-                  • {b}
+                <div
+                  key={j}
+                  style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, paddingLeft: 12, position: "relative" }}
+                >
+                  <span style={{ position: "absolute", left: 3 }}>•</span>
+                  {b}
                 </div>
               ))}
             </div>
@@ -1309,85 +1296,88 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
     );
   }
 
-  /* ── TWO-COLUMN ── */
   if (template.layout === "two-column") {
     return (
-      <div style={{ width: "100%", height: "100%", fontFamily: "'Inter', sans-serif", background: "#fff" }}>
-        <div style={{ background: accent, padding: "10px 12px" }}>
-          <div style={{ fontSize: 12, fontWeight: 900, color: "#fff", letterSpacing: 0.3, lineHeight: 1 }}>
+      <div style={{ width: "100%", height: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
+        <div style={{ background: accent, padding: "22px 24px 16px" }}>
+          <div style={{ fontSize: 30, fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1 }}>
             {p.name}
           </div>
           <div
             style={{
-              fontSize: 5,
+              fontSize: 12,
               color: "rgba(255,255,255,0.88)",
               textTransform: "uppercase",
-              letterSpacing: 1,
+              letterSpacing: 2,
               fontWeight: 600,
-              marginTop: 1.5,
+              marginTop: 5,
             }}
           >
             {p.title}
           </div>
-          <div style={{ fontSize: 3.5, color: "rgba(255,255,255,0.65)", marginTop: 2 }}>
+          <div style={{ fontSize: 9, color: "rgba(255,255,255,0.65)", marginTop: 6 }}>
             {p.email} · {p.phone} · {p.location}
           </div>
         </div>
-        <div style={{ display: "flex", height: "calc(100% - 38px)" }}>
-          <div style={{ flex: 1, padding: "8px 10px", overflow: "hidden" }}>
+        <div style={{ display: "flex" }}>
+          <div style={{ flex: 1, padding: "18px 18px" }}>
             <div
               style={{
-                fontSize: 3.5,
+                fontSize: 11,
                 fontWeight: 800,
                 color: accent,
                 textTransform: "uppercase",
-                letterSpacing: 0.6,
-                borderBottom: `0.5px solid ${accent}`,
-                paddingBottom: 1.5,
-                marginBottom: 3,
+                letterSpacing: 1.5,
+                borderBottom: `2px solid ${accent}`,
+                paddingBottom: 5,
+                marginBottom: 10,
               }}
             >
               Profile
             </div>
-            <div style={{ fontSize: 4, color: "#475569", lineHeight: 1.5, marginBottom: 5 }}>{p.summary}</div>
+            <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.7, marginBottom: 14 }}>{p.summary}</div>
             <div
               style={{
-                fontSize: 3.5,
+                fontSize: 11,
                 fontWeight: 800,
                 color: accent,
                 textTransform: "uppercase",
-                letterSpacing: 0.6,
-                borderBottom: `0.5px solid ${accent}`,
-                paddingBottom: 1.5,
-                marginBottom: 3,
+                letterSpacing: 1.5,
+                borderBottom: `2px solid ${accent}`,
+                paddingBottom: 5,
+                marginBottom: 10,
               }}
             >
               Work Experience
             </div>
             {p.experience.map((exp, i) => (
-              <div key={i} style={{ marginBottom: 4 }}>
+              <div key={i} style={{ marginBottom: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ fontSize: 4.5, fontWeight: 700, color: "#0f172a" }}>{exp.role}</span>
-                  <span style={{ fontSize: 3, color: "#64748b" }}>{exp.dates}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a" }}>{exp.role}</span>
+                  <span style={{ fontSize: 9, color: "#64748b" }}>{exp.dates}</span>
                 </div>
-                <div style={{ fontSize: 3.5, color: accent, fontWeight: 600, marginBottom: 1.5 }}>{exp.company}</div>
+                <div style={{ fontSize: 10, color: accent, fontWeight: 600, marginBottom: 4 }}>{exp.company}</div>
                 {exp.bullets.map((b, j) => (
-                  <div key={j} style={{ fontSize: 3.5, color: "#475569", lineHeight: 1.4, paddingLeft: 5 }}>
-                    • {b}
+                  <div
+                    key={j}
+                    style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, paddingLeft: 12, position: "relative" }}
+                  >
+                    <span style={{ position: "absolute", left: 3 }}>•</span>
+                    {b}
                   </div>
                 ))}
               </div>
             ))}
           </div>
-          <div style={{ width: "34%", background: "#f8fafc", padding: "8px 7px", borderLeft: `2px solid ${accent}` }}>
+          <div style={{ width: "32%", background: "#f8fafc", padding: "18px 14px", borderLeft: `3px solid ${accent}` }}>
             <div
               style={{
-                fontSize: 3.5,
+                fontSize: 11,
                 fontWeight: 800,
                 color: accent,
                 textTransform: "uppercase",
-                letterSpacing: 0.5,
-                marginBottom: 3,
+                letterSpacing: 1,
+                marginBottom: 10,
               }}
             >
               Skills
@@ -1396,45 +1386,45 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               <div
                 key={i}
                 style={{
-                  fontSize: 3.5,
+                  fontSize: 9,
                   color: "#334155",
-                  lineHeight: 1.7,
+                  lineHeight: 1.9,
                   display: "flex",
                   alignItems: "center",
-                  gap: 2,
+                  gap: 5,
                 }}
               >
                 <span
                   style={{
-                    width: 3,
-                    height: 3,
+                    width: 5,
+                    height: 5,
                     borderRadius: "50%",
                     background: accent,
                     display: "inline-block",
                     flexShrink: 0,
                   }}
-                />{" "}
+                />
                 {s}
               </div>
             ))}
-            <div style={{ height: 0.5, background: "#e2e8f0", margin: "5px 0" }} />
+            <div style={{ height: 1, background: "#e2e8f0", margin: "12px 0" }} />
             <div
               style={{
-                fontSize: 3.5,
+                fontSize: 11,
                 fontWeight: 800,
                 color: accent,
                 textTransform: "uppercase",
-                letterSpacing: 0.5,
-                marginBottom: 3,
+                letterSpacing: 1,
+                marginBottom: 10,
               }}
             >
               Education
             </div>
             {p.education.map((e, i) => (
-              <div key={i} style={{ marginBottom: 4 }}>
-                <div style={{ fontSize: 3.5, fontWeight: 700, color: "#0f172a", lineHeight: 1.3 }}>{e.degree}</div>
-                <div style={{ fontSize: 3, color: "#64748b" }}>{e.school}</div>
-                <div style={{ fontSize: 3, color: accent, fontWeight: 600 }}>{e.year}</div>
+              <div key={i} style={{ marginBottom: 10 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, color: "#0f172a", lineHeight: 1.3 }}>{e.degree}</div>
+                <div style={{ fontSize: 9, color: "#64748b" }}>{e.school}</div>
+                <div style={{ fontSize: 9, color: accent, fontWeight: 600 }}>{e.year}</div>
               </div>
             ))}
           </div>
@@ -1443,25 +1433,24 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
     );
   }
 
-  /* ── PHOTO ── */
   if (template.layout === "photo") {
     return (
-      <div style={{ width: "100%", height: "100%", fontFamily: "'Inter', sans-serif", background: "#fff" }}>
-        <div style={{ background: "#1a2332", padding: "10px 12px", display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{ width: "100%", height: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
+        <div style={{ background: "#1e293b", padding: "18px 22px", display: "flex", alignItems: "center", gap: 16 }}>
           <div
             style={{
-              width: 32,
-              height: 32,
+              width: 68,
+              height: 68,
               borderRadius: "50%",
               background: accent,
               flexShrink: 0,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 9.5,
+              fontSize: 22,
               fontWeight: 800,
-              color: "#1a2332",
-              border: "2px solid rgba(255,255,255,0.2)",
+              color: "#fff",
+              border: "3px solid rgba(255,255,255,0.2)",
             }}
           >
             {p.name
@@ -1470,117 +1459,121 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               .join("")}
           </div>
           <div>
-            <div style={{ fontSize: 10, fontWeight: 900, color: "#fff", letterSpacing: 0.2, lineHeight: 1 }}>
+            <div style={{ fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.3, lineHeight: 1 }}>
               {p.name}
             </div>
             <div
               style={{
-                fontSize: 4.5,
+                fontSize: 11,
                 color: accent,
                 textTransform: "uppercase",
-                letterSpacing: 0.8,
+                letterSpacing: 1.5,
                 fontWeight: 700,
-                marginTop: 1.5,
+                marginTop: 5,
               }}
             >
               {p.title}
             </div>
-            <div style={{ fontSize: 3.5, color: "rgba(255,255,255,0.55)", marginTop: 2 }}>
+            <div style={{ fontSize: 9, color: "rgba(255,255,255,0.55)", marginTop: 5 }}>
               {p.email} · {p.phone} · {p.location}
             </div>
           </div>
         </div>
-        <div style={{ height: 2.5, background: `linear-gradient(90deg, ${accent}, ${accent}60)` }} />
-        <div style={{ padding: "8px 12px" }}>
+        <div style={{ height: 4, background: `linear-gradient(90deg, ${accent}, ${accent}60)` }} />
+        <div style={{ padding: "16px 22px" }}>
           <div
             style={{
-              fontSize: 3.5,
+              fontSize: 11,
               fontWeight: 800,
               color: "#0f172a",
               textTransform: "uppercase",
-              letterSpacing: 0.6,
-              borderBottom: `0.5px solid ${accent}`,
-              paddingBottom: 1.5,
-              marginBottom: 3,
+              letterSpacing: 1.5,
+              borderBottom: `2px solid ${accent}`,
+              paddingBottom: 5,
+              marginBottom: 10,
             }}
           >
             Profile
           </div>
-          <div style={{ fontSize: 4, color: "#475569", lineHeight: 1.5, marginBottom: 5 }}>{p.summary}</div>
+          <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.7, marginBottom: 14 }}>{p.summary}</div>
           <div
             style={{
-              fontSize: 3.5,
+              fontSize: 11,
               fontWeight: 800,
               color: "#0f172a",
               textTransform: "uppercase",
-              letterSpacing: 0.6,
-              borderBottom: `0.5px solid ${accent}`,
-              paddingBottom: 1.5,
-              marginBottom: 3,
+              letterSpacing: 1.5,
+              borderBottom: `2px solid ${accent}`,
+              paddingBottom: 5,
+              marginBottom: 10,
             }}
           >
             Work Experience
           </div>
           {p.experience.map((exp, i) => (
-            <div key={i} style={{ marginBottom: 4 }}>
+            <div key={i} style={{ marginBottom: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 4.5, fontWeight: 700, color: "#0f172a" }}>{exp.role}</span>
-                <span style={{ fontSize: 3, color: accent, fontWeight: 600 }}>{exp.dates}</span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a" }}>{exp.role}</span>
+                <span style={{ fontSize: 9, color: accent, fontWeight: 600 }}>{exp.dates}</span>
               </div>
-              <div style={{ fontSize: 3.5, color: accent, fontWeight: 600, marginBottom: 1.5 }}>{exp.company}</div>
+              <div style={{ fontSize: 10, color: accent, fontWeight: 600, marginBottom: 4 }}>{exp.company}</div>
               {exp.bullets.map((b, j) => (
-                <div key={j} style={{ fontSize: 3.5, color: "#475569", lineHeight: 1.4, paddingLeft: 5 }}>
-                  • {b}
+                <div
+                  key={j}
+                  style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, paddingLeft: 12, position: "relative" }}
+                >
+                  <span style={{ position: "absolute", left: 3 }}>•</span>
+                  {b}
                 </div>
               ))}
             </div>
           ))}
           <div
             style={{
-              fontSize: 3.5,
+              fontSize: 11,
               fontWeight: 800,
               color: "#0f172a",
               textTransform: "uppercase",
-              letterSpacing: 0.6,
-              borderBottom: `0.5px solid ${accent}`,
-              paddingBottom: 1.5,
-              marginBottom: 3,
-              marginTop: 4,
+              letterSpacing: 1.5,
+              borderBottom: `2px solid ${accent}`,
+              paddingBottom: 5,
+              marginBottom: 10,
+              marginTop: 14,
             }}
           >
             Education
           </div>
           {p.education.map((e, i) => (
-            <div key={i} style={{ fontSize: 4, color: "#334155", marginBottom: 2 }}>
-              <span style={{ fontWeight: 600 }}>{e.degree}</span> — {e.school} · {e.year}
+            <div key={i} style={{ fontSize: 10, color: "#334155", marginBottom: 5 }}>
+              <span style={{ fontWeight: 700 }}>{e.degree}</span> — {e.school} · {e.year}
             </div>
           ))}
           <div
             style={{
-              fontSize: 3.5,
+              fontSize: 11,
               fontWeight: 800,
               color: "#0f172a",
               textTransform: "uppercase",
-              letterSpacing: 0.6,
-              borderBottom: `0.5px solid ${accent}`,
-              paddingBottom: 1.5,
-              marginBottom: 3,
-              marginTop: 4,
+              letterSpacing: 1.5,
+              borderBottom: `2px solid ${accent}`,
+              paddingBottom: 5,
+              marginBottom: 10,
+              marginTop: 14,
             }}
           >
             Skills
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
             {p.skills.map((s, i) => (
               <span
                 key={i}
                 style={{
-                  fontSize: 3,
+                  fontSize: 9,
                   background: `${accent}18`,
                   color: accent,
-                  padding: "1px 4px",
-                  borderRadius: 2,
-                  border: `0.5px solid ${accent}40`,
+                  padding: "3px 8px",
+                  borderRadius: 3,
+                  border: `1px solid ${accent}40`,
                   fontWeight: 600,
                 }}
               >
@@ -1593,29 +1586,29 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
     );
   }
 
-  /* ── SINGLE (Simple, Executive, Creative, ATS, Minimalist) ── */
-  const headerBg = isExecutive ? "#0f172a" : isCreative ? accent : isMinimalist || isATS ? "#fff" : "#1a2332";
+  /* ── SINGLE ── */
+  const headerBg = isExecutive ? "#0f172a" : isCreative ? accent : isATS || isMinimalist ? "#fff" : "#1e293b";
   const headerText = headerBg === "#fff" ? "#0f172a" : "#fff";
   const accentOnHeader = isExecutive ? "#c9a84c" : isCreative ? "#fff" : accent;
   const bodyAccent = isExecutive ? "#c9a84c" : accent;
-  const sectionColor = isMinimalist ? "#9ca3af" : isCreative ? accent : "#0f172a";
+  const sectionLabelColor = isMinimalist ? "#9ca3af" : "#0f172a";
 
   return (
-    <div style={{ width: "100%", height: "100%", fontFamily: "'Inter', sans-serif", background: "#fff" }}>
+    <div style={{ width: "100%", height: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
       <div
         style={{
           background: headerBg,
-          padding: "12px 12px",
-          borderBottom: isExecutive || isMinimalist || isATS ? "none" : `2px solid ${accent}`,
-          borderLeft: isATS ? `4px solid ${accent}` : "none",
+          padding: "20px 22px",
+          borderLeft: isATS ? `6px solid ${accent}` : "none",
+          borderBottom: isMinimalist ? `2px solid ${accent}` : "none",
         }}
       >
         <div
           style={{
-            fontSize: isExecutive ? 12 : 11,
+            fontSize: isExecutive ? 26 : 24,
             fontWeight: 900,
             color: headerText,
-            letterSpacing: isExecutive ? 1.5 : 0.2,
+            letterSpacing: isExecutive ? 3 : -0.3,
             lineHeight: 1,
           }}
         >
@@ -1623,68 +1616,71 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
         </div>
         <div
           style={{
-            fontSize: 5,
+            fontSize: 12,
             color: accentOnHeader,
             textTransform: "uppercase",
-            letterSpacing: isExecutive ? 2 : 0.8,
+            letterSpacing: isExecutive ? 3 : 1.5,
             fontWeight: 600,
-            marginTop: 2,
+            marginTop: 5,
           }}
         >
           {p.title}
         </div>
-        <div style={{ fontSize: 3.5, color: headerBg === "#fff" ? "#64748b" : "rgba(255,255,255,0.6)", marginTop: 2 }}>
+        <div style={{ fontSize: 9, color: headerBg === "#fff" ? "#64748b" : "rgba(255,255,255,0.6)", marginTop: 6 }}>
           {p.email} · {p.phone} · {p.location}
         </div>
       </div>
-      {isExecutive && <div style={{ height: 2, background: "linear-gradient(90deg,#c9a84c,#f0d080,#c9a84c)" }} />}
-      {isMinimalist && <div style={{ height: 1, background: "#e5e7eb", marginBottom: 0 }} />}
+      {isExecutive && <div style={{ height: 4, background: "linear-gradient(90deg,#c9a84c,#f0d080,#c9a84c)" }} />}
 
-      <div style={{ padding: "8px 12px" }}>
+      <div style={{ padding: "16px 22px" }}>
         <div
           style={{
-            fontSize: 3.5,
+            fontSize: 11,
             fontWeight: 800,
-            color: sectionColor,
+            color: sectionLabelColor,
             textTransform: "uppercase",
-            letterSpacing: 0.6,
-            borderBottom: `0.5px solid ${bodyAccent}`,
-            paddingBottom: 1.5,
-            marginBottom: 3,
+            letterSpacing: 1.5,
+            borderBottom: `2px solid ${bodyAccent}`,
+            paddingBottom: 5,
+            marginBottom: 10,
           }}
         >
           {isExecutive ? "Executive Summary" : "Profile"}
         </div>
-        <div style={{ fontSize: 4, color: "#475569", lineHeight: 1.5, marginBottom: 5 }}>{p.summary}</div>
+        <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.7, marginBottom: 14 }}>{p.summary}</div>
 
         <div
           style={{
-            fontSize: 3.5,
+            fontSize: 11,
             fontWeight: 800,
-            color: sectionColor,
+            color: sectionLabelColor,
             textTransform: "uppercase",
-            letterSpacing: 0.6,
-            borderBottom: `0.5px solid ${bodyAccent}`,
-            paddingBottom: 1.5,
-            marginBottom: 3,
+            letterSpacing: 1.5,
+            borderBottom: `2px solid ${bodyAccent}`,
+            paddingBottom: 5,
+            marginBottom: 10,
           }}
         >
           {isExecutive ? "Leadership Experience" : "Work Experience"}
         </div>
         {p.experience.map((exp, i) => (
-          <div key={i} style={{ marginBottom: 5 }}>
+          <div key={i} style={{ marginBottom: 12 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-              <span style={{ fontSize: 4.5, fontWeight: 700, color: "#0f172a", flex: 1, lineHeight: 1.2 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a", flex: 1, lineHeight: 1.2 }}>
                 {exp.role}
               </span>
-              <span style={{ fontSize: 3, color: bodyAccent, fontWeight: 600, flexShrink: 0, marginLeft: 4 }}>
+              <span style={{ fontSize: 9, color: bodyAccent, fontWeight: 600, flexShrink: 0, marginLeft: 8 }}>
                 {exp.dates}
               </span>
             </div>
-            <div style={{ fontSize: 3.5, color: bodyAccent, fontWeight: 600, marginBottom: 1.5 }}>{exp.company}</div>
+            <div style={{ fontSize: 10, color: bodyAccent, fontWeight: 600, marginBottom: 4 }}>{exp.company}</div>
             {exp.bullets.map((b, j) => (
-              <div key={j} style={{ fontSize: 3.5, color: "#475569", lineHeight: 1.4, paddingLeft: 5 }}>
-                • {b}
+              <div
+                key={j}
+                style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, paddingLeft: 12, position: "relative" }}
+              >
+                <span style={{ position: "absolute", left: 3 }}>•</span>
+                {b}
               </div>
             ))}
           </div>
@@ -1692,51 +1688,51 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
 
         <div
           style={{
-            fontSize: 3.5,
+            fontSize: 11,
             fontWeight: 800,
-            color: sectionColor,
+            color: sectionLabelColor,
             textTransform: "uppercase",
-            letterSpacing: 0.6,
-            borderBottom: `0.5px solid ${bodyAccent}`,
-            paddingBottom: 1.5,
-            marginBottom: 3,
-            marginTop: 4,
+            letterSpacing: 1.5,
+            borderBottom: `2px solid ${bodyAccent}`,
+            paddingBottom: 5,
+            marginBottom: 10,
+            marginTop: 14,
           }}
         >
           Education
         </div>
         {p.education.map((e, i) => (
-          <div key={i} style={{ fontSize: 4, color: "#334155", marginBottom: 2 }}>
+          <div key={i} style={{ fontSize: 10, color: "#334155", marginBottom: 5 }}>
             <span style={{ fontWeight: 700 }}>{e.degree}</span> — {e.school} · {e.year}
           </div>
         ))}
 
         <div
           style={{
-            fontSize: 3.5,
+            fontSize: 11,
             fontWeight: 800,
-            color: sectionColor,
+            color: sectionLabelColor,
             textTransform: "uppercase",
-            letterSpacing: 0.6,
-            borderBottom: `0.5px solid ${bodyAccent}`,
-            paddingBottom: 1.5,
-            marginBottom: 3,
-            marginTop: 4,
+            letterSpacing: 1.5,
+            borderBottom: `2px solid ${bodyAccent}`,
+            paddingBottom: 5,
+            marginBottom: 10,
+            marginTop: 14,
           }}
         >
           Skills
         </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
           {p.skills.map((s, i) => (
             <span
               key={i}
               style={{
-                fontSize: 3,
+                fontSize: 9,
                 background: isExecutive ? "#0f172a" : isMinimalist ? "#f3f4f6" : `${accent}15`,
                 color: isExecutive ? "#c9a84c" : isMinimalist ? "#374151" : accent,
-                padding: "1.5px 5px",
-                borderRadius: 2,
-                border: `0.5px solid ${isExecutive ? "#c9a84c40" : isMinimalist ? "#e5e7eb" : accent + "40"}`,
+                padding: "3px 8px",
+                borderRadius: 3,
+                border: `1px solid ${isExecutive ? "#c9a84c40" : isMinimalist ? "#e5e7eb" : accent + "40"}`,
                 fontWeight: 600,
               }}
             >
@@ -1760,7 +1756,7 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
     const updateScale = () => {
       if (containerRef.current) {
         const w = containerRef.current.offsetWidth;
-        setScale(w / 480);
+        setScale(w / 600);
       }
     };
     updateScale();
@@ -1784,7 +1780,7 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
             position: "absolute",
             top: 0,
             left: 0,
-            width: 480,
+            width: 600,
             transform: `scale(${scale})`,
             transformOrigin: "top left",
             pointerEvents: "none",
