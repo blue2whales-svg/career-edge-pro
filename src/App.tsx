@@ -14,6 +14,8 @@ import PricingPage from "./pages/PricingPage";
 import JobsPage from "./pages/JobsPage";
 import HowItWorksPage from "./pages/HowItWorksPage";
 import AboutPage from "./pages/AboutPage";
+import DocumentVault from "./pages/DocumentVault";
+import GenerateCV from "./pages/GenerateCV";
 import OrderPage from "./pages/OrderPage";
 import ContactPage from "./pages/ContactPage";
 import DocumentReviewPage from "./pages/DocumentReviewPage";
@@ -63,6 +65,8 @@ const App = () => (
           <Route path="/cv-builder" element={<Navigate to="/templates" replace />} />
           <Route path="/cv-editor/:templateId" element={<NewCVEditorPage />} />
           <Route path="/cover-letter" element={<CoverLetterPage />} />
+          <Route path="/document-vault" element={<DocumentVault />} />
+<Route path="/generate-cv" element={<GenerateCV />} />
           <Route path="/ats-checker" element={<ATSCheckerPage />} />
           <Route path="/tracker" element={<TrackerPage />} />
           <Route path="/vault" element={<VaultPage />} />
