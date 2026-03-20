@@ -13,8 +13,8 @@ serve(async (req) => {
   try {
     const { systemPrompt, clientProfile, jobDescription } = await req.json();
 
-    const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
-    if (!ANTHROPIC_API_KEY) throw new Error("Missing ANTHROPIC_API_KEY");
+    const GROQ_API_KEY = Deno.env.get("GROQ_API_KEY");
+    if (!GROQ_API_KEY) throw new Error("Missing GROQ_API_KEY");
 
     const userMessage = `
 CLIENT PROFILE:
@@ -34,23 +34,24 @@ Format your response exactly like this:
 [full cover letter here]
     `.trim();
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
+        "Authorization": `Bearer ${GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "llama-3.3-70b-versatile",
         max_tokens: 4000,
-        system: systemPrompt,
-        messages: [{ role: "user", content: userMessage }],
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userMessage }
+        ],
       }),
     });
 
     const data = await response.json();
-    const text = data.content?.[0]?.text ?? "";
+    const text = data.choices?.[0]?.message?.content ?? "";
 
     const cvMatch = text.match(/===CV===([\s\S]*?)===COVER LETTER===/);
     const coverMatch = text.match(/===COVER LETTER===([\s\S]*)/);
