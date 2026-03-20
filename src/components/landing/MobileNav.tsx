@@ -7,6 +7,7 @@ import cvedgeLogo from "@/assets/cvedge-logo.png";
 
 const NAV_LINKS = [
   { label: "Jobs", to: "/jobs" },
+  { label: "CV Builder", to: "/cv-builder" },
   { label: "CV Templates", to: "/templates" },
   { label: "Cover Letter", to: "/cover-letter" },
   { label: "ATS Checker", to: "/ats-checker" },
