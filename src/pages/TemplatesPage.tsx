@@ -607,7 +607,6 @@ const PEOPLE = [
     ],
   },
   {
-    {
     name: "Pauline Adhiambo",
     title: "Social Worker & Counsellor",
     email: "pauline.a@email.com",
@@ -650,7 +649,14 @@ const PEOPLE = [
     location: "Nairobi, Kenya",
     summary:
       "Certified electrical engineer with 5+ years designing and maintaining power systems for commercial and industrial facilities. Experienced in renewable energy and smart building systems.",
-    skills: ["AutoCAD Electrical", "PLC Programming", "Solar Systems", "Power Distribution", "Project Management", "OSHA"],
+    skills: [
+      "AutoCAD Electrical",
+      "PLC Programming",
+      "Solar Systems",
+      "Power Distribution",
+      "Project Management",
+      "OSHA",
+    ],
     experience: [
       {
         role: "Electrical Engineer",
@@ -685,7 +691,14 @@ const PEOPLE = [
     location: "Nairobi, Kenya",
     summary:
       "CIPS-certified procurement professional with 7+ years managing strategic sourcing and supply chain operations for large organizations. Expert in vendor management and cost reduction.",
-    skills: ["Strategic Sourcing", "CIPS Certified", "Vendor Management", "Contract Negotiation", "SAP MM", "Cost Reduction"],
+    skills: [
+      "Strategic Sourcing",
+      "CIPS Certified",
+      "Vendor Management",
+      "Contract Negotiation",
+      "SAP MM",
+      "Cost Reduction",
+    ],
     experience: [
       {
         role: "Procurement Manager",
@@ -701,10 +714,7 @@ const PEOPLE = [
         role: "Procurement Officer",
         company: "Nation Media Group",
         dates: "2016 – 2019",
-        bullets: [
-          "Sourced printing materials for 5 daily publications",
-          "Reduced procurement cycle time by 35%",
-        ],
+        bullets: ["Sourced printing materials for 5 daily publications", "Reduced procurement cycle time by 35%"],
       },
     ],
     education: [
@@ -755,7 +765,14 @@ const PEOPLE = [
     location: "Nairobi, Kenya",
     summary:
       "Registered nutritionist with 5+ years providing evidence-based dietary guidance for hospitals, corporates, and individuals. Specialized in clinical nutrition, weight management, and sports nutrition.",
-    skills: ["Clinical Nutrition", "Diet Planning", "Sports Nutrition", "Public Health", "SPSS", "Nutrition Counselling"],
+    skills: [
+      "Clinical Nutrition",
+      "Diet Planning",
+      "Sports Nutrition",
+      "Public Health",
+      "SPSS",
+      "Nutrition Counselling",
+    ],
     experience: [
       {
         role: "Senior Nutritionist",
@@ -790,7 +807,14 @@ const PEOPLE = [
     location: "Mombasa, Kenya",
     summary:
       "Supply chain expert with 9+ years managing end-to-end logistics operations at Kenya's largest port. Specialized in customs clearance, freight forwarding, and regional distribution across East Africa.",
-    skills: ["Freight Forwarding", "Customs Clearance", "Warehouse Management", "SAP TM", "INCOTERMS", "Risk Management"],
+    skills: [
+      "Freight Forwarding",
+      "Customs Clearance",
+      "Warehouse Management",
+      "SAP TM",
+      "INCOTERMS",
+      "Risk Management",
+    ],
     experience: [
       {
         role: "Logistics Manager",
@@ -841,10 +865,7 @@ const PEOPLE = [
         role: "Digital Marketing Executive",
         company: "Jumia Kenya",
         dates: "2019 – 2021",
-        bullets: [
-          "Managed Google Ads budget of KES 2M monthly",
-          "Increased email open rates from 12% to 28%",
-        ],
+        bullets: ["Managed Google Ads budget of KES 2M monthly", "Increased email open rates from 12% to 28%"],
       },
     ],
     education: [{ degree: "BA Communication & PR", school: "Egerton University", year: "2019" }],
