@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Check, FileText, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PageLayout from "@/components/PageLayout";
 
-/* ── Template data with realistic content ── */
 interface TemplateInfo {
   id: string;
   name: string;
@@ -22,6 +21,8 @@ interface TemplateInfo {
     skills: string[];
     experience: { role: string; company: string; dates: string; bullets: string[] }[];
     education: { degree: string; school: string; year: string }[];
+    certifications: string[];
+    languages: string[];
   };
   layout: "single" | "sidebar" | "two-column" | "photo";
 }
@@ -54,13 +55,22 @@ const PEOPLE = [
         bullets: [
           "Developed award-winning awareness campaign reaching 2M+ people",
           "Grew social media following by 340% in 18 months",
+          "Managed annual marketing budget of KES 50M",
         ],
+      },
+      {
+        role: "Marketing Officer",
+        company: "Nation Media Group",
+        dates: "2015 – 2018",
+        bullets: ["Coordinated print and digital advertising campaigns", "Supported launch of 3 new product lines"],
       },
     ],
     education: [
       { degree: "MBA, Marketing", school: "Strathmore University", year: "2018" },
       { degree: "BSc Business Administration", school: "University of Nairobi", year: "2015" },
     ],
+    certifications: ["Google Analytics Certified", "HubSpot Content Marketing", "Facebook Blueprint"],
+    languages: ["English (Fluent)", "Swahili (Native)", "French (Intermediate)"],
   },
   {
     name: "Sarah Wanjiku",
@@ -89,10 +99,25 @@ const PEOPLE = [
         bullets: [
           "Built supply chain management system for 5,000+ vendors",
           "Implemented real-time tracking reducing delivery delays by 35%",
+          "Developed mobile-first interfaces for field agents",
+        ],
+      },
+      {
+        role: "Junior Developer",
+        company: "iHub Nairobi",
+        dates: "2015 – 2017",
+        bullets: [
+          "Built internal tools and dashboards for startup clients",
+          "Contributed to open-source projects on GitHub",
         ],
       },
     ],
-    education: [{ degree: "BSc Computer Science", school: "JKUAT", year: "2017" }],
+    education: [
+      { degree: "BSc Computer Science", school: "JKUAT", year: "2017" },
+      { degree: "AWS Solutions Architect", school: "Amazon Web Services", year: "2020" },
+    ],
+    certifications: ["AWS Certified Solutions Architect", "Google Cloud Professional", "MongoDB Certified Developer"],
+    languages: ["English (Fluent)", "Swahili (Native)", "German (Basic)"],
   },
   {
     name: "David Ochieng",
@@ -121,13 +146,22 @@ const PEOPLE = [
         bullets: [
           "Conducted due diligence for 15+ M&A transactions",
           "Prepared valuation reports for companies worth KES 2B+",
+          "Supported audit engagements across 5 industries",
         ],
+      },
+      {
+        role: "Accounts Assistant",
+        company: "Kenya Revenue Authority",
+        dates: "2016 – 2018",
+        bullets: ["Processed tax returns for SME clients", "Reconciled accounts and prepared financial summaries"],
       },
     ],
     education: [
       { degree: "BCom Finance", school: "University of Nairobi", year: "2018" },
       { degree: "CPA-K Certification", school: "KASNEB", year: "2019" },
     ],
+    certifications: ["CPA-K", "CFA Level 1", "IFRS Specialist Certificate"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Arabic (Basic)"],
   },
   {
     name: "Amina Hassan",
@@ -156,10 +190,25 @@ const PEOPLE = [
         bullets: [
           "Managed recruitment for 500+ hires annually",
           "Developed leadership pipeline program for high-potential employees",
+          "Rolled out performance management system across 6 regions",
+        ],
+      },
+      {
+        role: "HR Officer",
+        company: "Safaricom PLC",
+        dates: "2013 – 2015",
+        bullets: [
+          "Supported onboarding of 200+ new hires per year",
+          "Administered employee benefits and payroll processes",
         ],
       },
     ],
-    education: [{ degree: "MBA, Human Resources", school: "Strathmore University", year: "2015" }],
+    education: [
+      { degree: "MBA, Human Resources", school: "Strathmore University", year: "2015" },
+      { degree: "BA Psychology", school: "University of Nairobi", year: "2012" },
+    ],
+    certifications: ["SHRM-SCP Certified", "CHRP Kenya", "Coaching & Mentoring Certificate"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Somali (Native)"],
   },
   {
     name: "Peter Kamau",
@@ -188,6 +237,16 @@ const PEOPLE = [
         bullets: [
           "Oversaw 4G network rollout across 15 counties",
           "Reduced project costs by 20% through resource optimization",
+          "Coordinated with county governments and regulators",
+        ],
+      },
+      {
+        role: "Site Engineer",
+        company: "China Roads & Bridges",
+        dates: "2014 – 2017",
+        bullets: [
+          "Supervised road construction projects worth KES 200M",
+          "Ensured compliance with KENHA standards and specifications",
         ],
       },
     ],
@@ -195,6 +254,8 @@ const PEOPLE = [
       { degree: "BSc Civil Engineering", school: "University of Nairobi", year: "2016" },
       { degree: "PMP Certification", school: "PMI", year: "2018" },
     ],
+    certifications: ["PMP Certified", "Prince2 Practitioner", "Agile Scrum Master"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Kikuyu (Native)"],
   },
   {
     name: "Grace Muthoni",
@@ -220,10 +281,28 @@ const PEOPLE = [
         role: "Graphic Designer",
         company: "Scanad Kenya",
         dates: "2018 – 2021",
-        bullets: ["Created visual campaigns reaching 10M+ consumers", "Developed packaging designs for FMCG products"],
+        bullets: [
+          "Created visual campaigns reaching 10M+ consumers",
+          "Developed packaging designs for FMCG products",
+          "Produced motion graphics for digital and TV channels",
+        ],
+      },
+      {
+        role: "Junior Designer",
+        company: "Pixels & Ink Studio",
+        dates: "2016 – 2018",
+        bullets: [
+          "Designed logos and brand assets for 30+ SMEs",
+          "Built social media content calendars and visual systems",
+        ],
       },
     ],
-    education: [{ degree: "BA Graphic Design", school: "USIU-Africa", year: "2018" }],
+    education: [
+      { degree: "BA Graphic Design", school: "USIU-Africa", year: "2018" },
+      { degree: "Certificate UI/UX Design", school: "Google UX Design Certificate", year: "2021" },
+    ],
+    certifications: ["Adobe Certified Expert", "Google UX Design Certificate", "Canva Certified Creator"],
+    languages: ["English (Fluent)", "Swahili (Native)", "French (Intermediate)"],
   },
   {
     name: "Michael Njoroge",
@@ -252,13 +331,22 @@ const PEOPLE = [
         bullets: [
           "Coordinated supply chain for 200+ SKUs across 5 countries",
           "Reduced inventory costs by 18% through JIT implementation",
+          "Managed 3PL relationships and SLA compliance",
         ],
+      },
+      {
+        role: "Warehouse Supervisor",
+        company: "Unilever Kenya",
+        dates: "2013 – 2016",
+        bullets: ["Supervised warehouse team of 40 staff", "Achieved 99.8% order fulfilment accuracy"],
       },
     ],
     education: [
       { degree: "BSc Mechanical Engineering", school: "University of Nairobi", year: "2015" },
       { degree: "Lean Six Sigma Black Belt", school: "ASQ", year: "2018" },
     ],
+    certifications: ["Lean Six Sigma Black Belt", "APICS CPIM", "ISO 9001 Lead Auditor"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Kikuyu (Native)"],
   },
   {
     name: "Faith Akinyi",
@@ -287,6 +375,16 @@ const PEOPLE = [
         bullets: [
           "Analyzed transaction patterns for 30M+ mobile money users",
           "Built fraud detection algorithms saving KES 200M annually",
+          "Delivered weekly insights reports to product teams",
+        ],
+      },
+      {
+        role: "Research Analyst",
+        company: "Kenya National Bureau of Statistics",
+        dates: "2017 – 2019",
+        bullets: [
+          "Supported national household survey data analysis",
+          "Produced statistical reports for government policy use",
         ],
       },
     ],
@@ -294,6 +392,12 @@ const PEOPLE = [
       { degree: "MSc Data Science", school: "Strathmore University", year: "2019" },
       { degree: "BSc Mathematics", school: "University of Nairobi", year: "2017" },
     ],
+    certifications: [
+      "TensorFlow Developer Certificate",
+      "AWS Machine Learning Specialty",
+      "Tableau Desktop Specialist",
+    ],
+    languages: ["English (Fluent)", "Swahili (Native)", "Luo (Native)"],
   },
   {
     name: "Robert Kipchoge",
@@ -322,10 +426,22 @@ const PEOPLE = [
         bullets: [
           "Managed Rift Valley region achieving 120% of target",
           "Launched 3 new product lines generating KES 300M first year",
+          "Developed route-to-market strategy for rural distributors",
         ],
       },
+      {
+        role: "Territory Sales Rep",
+        company: "Procter & Gamble Kenya",
+        dates: "2013 – 2016",
+        bullets: ["Consistently exceeded quarterly targets by 15–20%", "Built relationships with 200+ retail outlets"],
+      },
     ],
-    education: [{ degree: "BBA Marketing", school: "Moi University", year: "2015" }],
+    education: [
+      { degree: "BBA Marketing", school: "Moi University", year: "2015" },
+      { degree: "Diploma Sales Management", school: "KIM", year: "2016" },
+    ],
+    certifications: ["Salesforce Certified Sales Cloud", "Challenger Sale Certified", "KIM Sales Leadership Award"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Kalenjin (Native)"],
   },
   {
     name: "Linda Chebet",
@@ -354,6 +470,16 @@ const PEOPLE = [
         bullets: [
           "Handled M&A transactions totalling KES 5B+",
           "Represented clients in commercial arbitration proceedings",
+          "Advised on competition law and sector-specific regulations",
+        ],
+      },
+      {
+        role: "Legal Intern",
+        company: "Office of the Attorney General",
+        dates: "2016 – 2017",
+        bullets: [
+          "Assisted in drafting legislative instruments",
+          "Conducted legal research for state advisory opinions",
         ],
       },
     ],
@@ -361,6 +487,8 @@ const PEOPLE = [
       { degree: "LLB (Hons)", school: "University of Nairobi", year: "2016" },
       { degree: "KSL Diploma", school: "Kenya School of Law", year: "2017" },
     ],
+    certifications: ["LSK Practicing Certificate", "ICPAK Affiliate Member", "CIARB Membership"],
+    languages: ["English (Fluent)", "Swahili (Native)", "French (Intermediate)"],
   },
   {
     name: "John Mwangi",
@@ -386,10 +514,25 @@ const PEOPLE = [
         role: "Operations Coordinator",
         company: "Nairobi Hospital",
         dates: "2017 – 2020",
-        bullets: ["Coordinated across 12 departments with 400+ staff", "Implemented electronic health records system"],
+        bullets: [
+          "Coordinated across 12 departments with 400+ staff",
+          "Implemented electronic health records system",
+          "Managed procurement of medical supplies worth KES 200M",
+        ],
+      },
+      {
+        role: "Health Records Officer",
+        company: "Kenyatta National Hospital",
+        dates: "2015 – 2017",
+        bullets: ["Maintained patient records for 1,000+ daily visits", "Ensured compliance with MoH data standards"],
       },
     ],
-    education: [{ degree: "MPH", school: "University of Nairobi", year: "2017" }],
+    education: [
+      { degree: "MPH", school: "University of Nairobi", year: "2017" },
+      { degree: "BSc Health Systems Management", school: "JKUAT", year: "2014" },
+    ],
+    certifications: ["AHIMA Certified", "Kenya Health Informatics Certificate", "ISO 15189 Quality Management"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Kikuyu (Native)"],
   },
   {
     name: "Christine Njeri",
@@ -418,10 +561,25 @@ const PEOPLE = [
         bullets: [
           "Designed developer dashboard serving 100K+ users",
           "Built component library reducing development time by 50%",
+          "Led accessibility audit improving WCAG compliance to AA standard",
+        ],
+      },
+      {
+        role: "Web Designer",
+        company: "Craft Silicon",
+        dates: "2016 – 2018",
+        bullets: [
+          "Designed interfaces for mobile banking apps",
+          "Produced wireframes and prototypes for client presentations",
         ],
       },
     ],
-    education: [{ degree: "BA Design", school: "USIU-Africa", year: "2018" }],
+    education: [
+      { degree: "BA Design", school: "USIU-Africa", year: "2018" },
+      { degree: "Google UX Design Certificate", school: "Coursera", year: "2020" },
+    ],
+    certifications: ["Certified Usability Analyst", "Google UX Design Certificate", "Figma Advanced Certification"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Kikuyu (Native)"],
   },
   {
     name: "Brian Otieno",
@@ -457,6 +615,16 @@ const PEOPLE = [
         bullets: [
           "Designed structural drawings for 8 commercial buildings",
           "Conducted geotechnical surveys across 12 sites",
+          "Prepared bills of quantities and tender documents",
+        ],
+      },
+      {
+        role: "Graduate Engineer",
+        company: "Kenya Urban Roads Authority",
+        dates: "2015 – 2017",
+        bullets: [
+          "Assisted in road condition surveys and reporting",
+          "Supported site supervision of urban road projects",
         ],
       },
     ],
@@ -464,6 +632,8 @@ const PEOPLE = [
       { degree: "BSc Civil Engineering", school: "University of Nairobi", year: "2017" },
       { degree: "EBK Licensed Engineer", school: "Engineers Board of Kenya", year: "2018" },
     ],
+    certifications: ["EBK Licensed Engineer", "FIDIC Contracts Specialist", "AutoCAD Civil 3D Certified"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Luo (Native)"],
   },
   {
     name: "Mercy Wambui",
@@ -492,6 +662,16 @@ const PEOPLE = [
         bullets: [
           "Provided post-operative care for 1,000+ surgical patients",
           "Achieved 98% patient satisfaction score over 3 years",
+          "Led ward infection control committee",
+        ],
+      },
+      {
+        role: "Community Nurse",
+        company: "Amref Health Africa",
+        dates: "2014 – 2016",
+        bullets: [
+          "Delivered maternal and child health services in rural communities",
+          "Trained 50+ community health workers in basic care",
         ],
       },
     ],
@@ -499,6 +679,8 @@ const PEOPLE = [
       { degree: "BSc Nursing", school: "KMTC Nairobi", year: "2016" },
       { degree: "ACLS Certification", school: "AHA Kenya", year: "2019" },
     ],
+    certifications: ["ACLS Certified", "NCK Licensed Nurse", "Wound Care Certified Practitioner"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Kikuyu (Native)"],
   },
   {
     name: "Samuel Mutua",
@@ -524,13 +706,25 @@ const PEOPLE = [
         role: "Mathematics Teacher",
         company: "Machakos Boys High School",
         dates: "2015 – 2019",
-        bullets: ["Taught Form 1–4 Mathematics and Physics classes", "Served as class teacher and games master"],
+        bullets: [
+          "Taught Form 1–4 Mathematics and Physics classes",
+          "Served as class teacher and games master",
+          "Introduced coding club with 80+ active members",
+        ],
+      },
+      {
+        role: "Student Teacher",
+        company: "Kenyatta University Practice Schools",
+        dates: "2014 – 2015",
+        bullets: ["Completed teaching practice in 2 national schools", "Received commendation from school boards"],
       },
     ],
     education: [
       { degree: "BEd Mathematics & Physics", school: "Kenyatta University", year: "2015" },
       { degree: "KNEC Examiner Certificate", school: "Kenya National Examinations Council", year: "2017" },
     ],
+    certifications: ["TSC Registered Teacher", "KNEC Examiner", "Cambridge CELTA Certificate"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Kamba (Native)"],
   },
   {
     name: "Aisha Mohamed",
@@ -566,10 +760,25 @@ const PEOPLE = [
         bullets: [
           "Anchored morning drive news bulletins reaching 2M listeners",
           "Covered 3 East African heads of state summits",
+          "Produced documentary series on coastal communities",
+        ],
+      },
+      {
+        role: "Editorial Assistant",
+        company: "Daily Nation",
+        dates: "2015 – 2017",
+        bullets: [
+          "Researched and fact-checked stories for print and online",
+          "Assisted senior editors with layout and production",
         ],
       },
     ],
-    education: [{ degree: "BA Mass Communication", school: "USIU-Africa", year: "2017" }],
+    education: [
+      { degree: "BA Mass Communication", school: "USIU-Africa", year: "2017" },
+      { degree: "Diploma in Broadcast Journalism", school: "KBC School of Journalism", year: "2015" },
+    ],
+    certifications: ["AJEA Member", "Google News Initiative Certified", "Reuters Journalism Training Certificate"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Arabic (Intermediate)"],
   },
   {
     name: "Daniel Kiprop",
@@ -598,6 +807,16 @@ const PEOPLE = [
         bullets: [
           "Prepared monthly management accounts for KES 2B turnover company",
           "Led year-end audit process with zero material misstatements",
+          "Managed payroll for 800+ employees",
+        ],
+      },
+      {
+        role: "Audit Trainee",
+        company: "PricewaterhouseCoopers Kenya",
+        dates: "2016 – 2018",
+        bullets: [
+          "Supported statutory audits across banking and manufacturing sectors",
+          "Performed substantive testing and control assessments",
         ],
       },
     ],
@@ -605,6 +824,8 @@ const PEOPLE = [
       { degree: "BCom Accounting", school: "Moi University", year: "2018" },
       { degree: "CPA-K", school: "KASNEB", year: "2020" },
     ],
+    certifications: ["CPA-K", "ICPAK Member", "QuickBooks ProAdvisor"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Kalenjin (Native)"],
   },
   {
     name: "Pauline Adhiambo",
@@ -633,6 +854,16 @@ const PEOPLE = [
         bullets: [
           "Provided trauma counselling to 300+ GBV survivors annually",
           "Facilitated youth empowerment workshops across 5 sub-counties",
+          "Trained 40 community volunteers in psychosocial support",
+        ],
+      },
+      {
+        role: "Social Work Intern",
+        company: "Kenya Red Cross",
+        dates: "2014 – 2016",
+        bullets: [
+          "Assisted in emergency response operations in flood-affected areas",
+          "Coordinated food distribution for 5,000+ displaced persons",
         ],
       },
     ],
@@ -640,6 +871,8 @@ const PEOPLE = [
       { degree: "BSW Social Work", school: "Maseno University", year: "2016" },
       { degree: "Diploma Counselling Psychology", school: "Kenya Institute of Professional Counselling", year: "2018" },
     ],
+    certifications: ["KCSW Registered Social Worker", "Trauma-Focused CBT Certified", "Project Management for NGOs"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Luo (Native)"],
   },
   {
     name: "Victor Omondi",
@@ -675,13 +908,22 @@ const PEOPLE = [
         bullets: [
           "Installed and commissioned industrial automation systems",
           "Maintained electrical systems for 20+ factory clients",
+          "Conducted energy audits identifying savings of KES 30M",
         ],
+      },
+      {
+        role: "Electrical Technician",
+        company: "PowerGen Renewable Energy",
+        dates: "2016 – 2018",
+        bullets: ["Installed off-grid solar systems in rural Kenya", "Trained local technicians in system maintenance"],
       },
     ],
     education: [
       { degree: "BSc Electrical Engineering", school: "University of Nairobi", year: "2018" },
       { degree: "EBK Licensed Engineer", school: "Engineers Board of Kenya", year: "2019" },
     ],
+    certifications: ["EBK Licensed Engineer", "OSHA 30-Hour Certified", "Solar Energy International Certificate"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Luo (Native)"],
   },
   {
     name: "Esther Kamau",
@@ -714,13 +956,28 @@ const PEOPLE = [
         role: "Procurement Officer",
         company: "Nation Media Group",
         dates: "2016 – 2019",
-        bullets: ["Sourced printing materials for 5 daily publications", "Reduced procurement cycle time by 35%"],
+        bullets: [
+          "Sourced printing materials for 5 daily publications",
+          "Reduced procurement cycle time by 35%",
+          "Managed supplier performance reviews quarterly",
+        ],
+      },
+      {
+        role: "Purchasing Assistant",
+        company: "Nakumatt Holdings",
+        dates: "2014 – 2016",
+        bullets: [
+          "Processed purchase orders for 200+ product categories",
+          "Coordinated with warehouse teams on inventory replenishment",
+        ],
       },
     ],
     education: [
       { degree: "BCom Procurement", school: "JKUAT", year: "2016" },
       { degree: "CIPS Level 6", school: "Chartered Institute of Procurement", year: "2019" },
     ],
+    certifications: ["CIPS Level 6 Diploma", "SAP MM Certified", "Public Procurement Certificate PPRA"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Kikuyu (Native)"],
   },
   {
     name: "George Njuguna",
@@ -749,6 +1006,16 @@ const PEOPLE = [
         bullets: [
           "Designed 15+ residential projects across Nairobi",
           "Managed building permit approvals for 20+ projects",
+          "Coordinated with structural and MEP engineers on complex builds",
+        ],
+      },
+      {
+        role: "Architectural Assistant",
+        company: "Clive Wilkins & Partners",
+        dates: "2013 – 2015",
+        bullets: [
+          "Produced architectural drawings and 3D visualizations",
+          "Supported site visits and client presentation preparation",
         ],
       },
     ],
@@ -756,6 +1023,8 @@ const PEOPLE = [
       { degree: "BArch Architecture", school: "University of Nairobi", year: "2015" },
       { degree: "AAK Registered Architect", school: "Architectural Association of Kenya", year: "2016" },
     ],
+    certifications: ["AAK Registered Architect", "LEED Green Associate", "Revit BIM Professional"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Kikuyu (Native)"],
   },
   {
     name: "Tabitha Mwangi",
@@ -791,6 +1060,16 @@ const PEOPLE = [
         bullets: [
           "Provided dietary counselling to 200+ outpatients monthly",
           "Designed corporate wellness nutrition programs for 5 companies",
+          "Delivered nutrition education sessions for diabetes management",
+        ],
+      },
+      {
+        role: "Community Nutritionist",
+        company: "World Food Programme Kenya",
+        dates: "2016 – 2018",
+        bullets: [
+          "Implemented nutrition programs in arid and semi-arid regions",
+          "Monitored nutritional status of 10,000+ beneficiaries",
         ],
       },
     ],
@@ -798,6 +1077,12 @@ const PEOPLE = [
       { degree: "BSc Food Nutrition & Dietetics", school: "Kenyatta University", year: "2018" },
       { degree: "Registered Nutritionist", school: "Kenya Nutritionists & Dieticians Institute", year: "2019" },
     ],
+    certifications: [
+      "KNDI Registered Nutritionist",
+      "Sports Nutrition Certificate ISSN",
+      "Diabetes Educator Certificate",
+    ],
+    languages: ["English (Fluent)", "Swahili (Native)", "Kikuyu (Native)"],
   },
   {
     name: "Hassan Abdi",
@@ -833,6 +1118,16 @@ const PEOPLE = [
         bullets: [
           "Coordinated air and sea freight for 100+ corporate clients",
           "Managed customs documentation for regulated goods",
+          "Established last-mile delivery partnerships in 3 new regions",
+        ],
+      },
+      {
+        role: "Customs Agent",
+        company: "Kenya Revenue Authority",
+        dates: "2012 – 2014",
+        bullets: [
+          "Processed import and export documentation daily",
+          "Advised traders on customs tariff classification",
         ],
       },
     ],
@@ -840,6 +1135,8 @@ const PEOPLE = [
       { degree: "BSc Logistics & Supply Chain", school: "Technical University of Mombasa", year: "2014" },
       { degree: "Diploma Customs & Freight", school: "Kenya Revenue Authority", year: "2015" },
     ],
+    certifications: ["CILT Diploma in Logistics", "KRA Customs Agent Licensed", "IATA Cargo Agent Certified"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Somali (Native)", "Arabic (Intermediate)"],
   },
   {
     name: "Vivian Cherop",
@@ -865,10 +1162,28 @@ const PEOPLE = [
         role: "Digital Marketing Executive",
         company: "Jumia Kenya",
         dates: "2019 – 2021",
-        bullets: ["Managed Google Ads budget of KES 2M monthly", "Increased email open rates from 12% to 28%"],
+        bullets: [
+          "Managed Google Ads budget of KES 2M monthly",
+          "Increased email open rates from 12% to 28%",
+          "Produced weekly performance reports for senior management",
+        ],
+      },
+      {
+        role: "Communications Intern",
+        company: "UNICEF Kenya",
+        dates: "2018 – 2019",
+        bullets: [
+          "Supported production of advocacy materials and reports",
+          "Assisted in social media management and content scheduling",
+        ],
       },
     ],
-    education: [{ degree: "BA Communication & PR", school: "Egerton University", year: "2019" }],
+    education: [
+      { degree: "BA Communication & PR", school: "Egerton University", year: "2019" },
+      { degree: "Digital Marketing Diploma", school: "CIM Kenya", year: "2020" },
+    ],
+    certifications: ["Google Ads Certified", "HubSpot Inbound Marketing", "CIM Digital Marketing Diploma"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Kalenjin (Native)"],
   },
   {
     name: "Newton Karanja",
@@ -897,6 +1212,16 @@ const PEOPLE = [
         bullets: [
           "Provided Tier 2 support for 3,000+ internal users",
           "Deployed endpoint security across 200+ devices",
+          "Implemented ITIL service desk framework reducing ticket resolution time",
+        ],
+      },
+      {
+        role: "IT Technician",
+        company: "Nation Media Group",
+        dates: "2015 – 2017",
+        bullets: [
+          "Maintained newsroom IT systems for 24/7 broadcasting operations",
+          "Installed and configured network equipment across 3 floors",
         ],
       },
     ],
@@ -904,6 +1229,8 @@ const PEOPLE = [
       { degree: "BSc Information Technology", school: "Strathmore University", year: "2017" },
       { degree: "Microsoft Azure Administrator", school: "Microsoft Certified", year: "2020" },
     ],
+    certifications: ["Microsoft Azure Administrator", "CompTIA Security+", "ITIL v4 Foundation"],
+    languages: ["English (Fluent)", "Swahili (Native)", "Kikuyu (Native)"],
   },
 ];
 
@@ -1137,7 +1464,34 @@ const TEMPLATES: TemplateInfo[] = [
 
 const CATEGORIES = ["All", "Simple", "ATS", "Two-Column", "Picture", "Executive", "Creative", "Minimalist"];
 
-/* ── Mini CV Preview Component ── */
+function SectionLabel({
+  children,
+  color,
+  borderColor,
+}: {
+  children: React.ReactNode;
+  color: string;
+  borderColor: string;
+}) {
+  return (
+    <div
+      style={{
+        fontSize: 10,
+        fontWeight: 800,
+        color,
+        textTransform: "uppercase",
+        letterSpacing: 1.5,
+        borderBottom: `2px solid ${borderColor}`,
+        paddingBottom: 4,
+        marginBottom: 6,
+        marginTop: 10,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 function MiniCVPreview({ template }: { template: TemplateInfo }) {
   const p = template.person;
   const accent = template.colors[0];
@@ -1149,18 +1503,18 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
   if (template.layout === "sidebar") {
     return (
       <div style={{ display: "flex", width: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
-        <div style={{ width: "34%", background: "#1e293b", padding: "28px 16px", color: "#fff", flexShrink: 0 }}>
+        <div style={{ width: "34%", background: "#1e293b", padding: "22px 14px", color: "#fff", flexShrink: 0 }}>
           <div
             style={{
-              width: 60,
-              height: 60,
+              width: 52,
+              height: 52,
               borderRadius: "50%",
               background: accent,
-              margin: "0 auto 12px",
+              margin: "0 auto 10px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 22,
+              fontSize: 18,
               fontWeight: 800,
               color: "#fff",
             }}
@@ -1172,36 +1526,36 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
           </div>
           <div
             style={{
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: 800,
               textAlign: "center",
               color: "#fff",
               lineHeight: 1.2,
-              marginBottom: 4,
+              marginBottom: 3,
             }}
           >
             {p.name}
           </div>
           <div
             style={{
-              fontSize: 10,
+              fontSize: 9,
               color: accent,
               textAlign: "center",
               textTransform: "uppercase",
               letterSpacing: 1,
               fontWeight: 700,
-              marginBottom: 18,
+              marginBottom: 14,
             }}
           >
             {p.title}
           </div>
-          <div style={{ fontSize: 9, color: "#94a3b8", marginBottom: 3 }}>✉ {p.email}</div>
-          <div style={{ fontSize: 9, color: "#94a3b8", marginBottom: 3 }}>☎ {p.phone}</div>
-          <div style={{ fontSize: 9, color: "#94a3b8", marginBottom: 18 }}>⌖ {p.location}</div>
-          <div style={{ height: 1, background: "#334155", marginBottom: 7 }} />
+          <div style={{ fontSize: 8, color: "#94a3b8", marginBottom: 2 }}>✉ {p.email}</div>
+          <div style={{ fontSize: 8, color: "#94a3b8", marginBottom: 2 }}>☎ {p.phone}</div>
+          <div style={{ fontSize: 8, color: "#94a3b8", marginBottom: 12 }}>⌖ {p.location}</div>
+          <div style={{ height: 1, background: "#334155", marginBottom: 8 }} />
           <div
             style={{
-              fontSize: 10,
+              fontSize: 9,
               color: accent,
               fontWeight: 800,
               textTransform: "uppercase",
@@ -1212,80 +1566,94 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
             Skills
           </div>
           {p.skills.map((s, i) => (
-            <div key={i} style={{ marginBottom: 8 }}>
-              <div style={{ fontSize: 9, color: "#cbd5e1", marginBottom: 3 }}>{s}</div>
-              <div style={{ height: 4, background: "#334155", borderRadius: 2 }}>
+            <div key={i} style={{ marginBottom: 5 }}>
+              <div style={{ fontSize: 8, color: "#cbd5e1", marginBottom: 2 }}>{s}</div>
+              <div style={{ height: 3, background: "#334155", borderRadius: 2 }}>
                 <div
                   style={{ height: "100%", width: `${88 - ((i * 9) % 38)}%`, background: accent, borderRadius: 2 }}
                 />
               </div>
             </div>
           ))}
-          <div style={{ height: 1, background: "#334155", margin: "12px 0" }} />
+          <div style={{ height: 1, background: "#334155", margin: "8px 0" }} />
           <div
             style={{
-              fontSize: 10,
+              fontSize: 9,
               color: accent,
               fontWeight: 800,
               textTransform: "uppercase",
               letterSpacing: 1,
-              marginBottom: 6,
+              marginBottom: 5,
+            }}
+          >
+            Languages
+          </div>
+          {p.languages.map((l, i) => (
+            <div key={i} style={{ fontSize: 8, color: "#94a3b8", marginBottom: 2 }}>
+              • {l}
+            </div>
+          ))}
+          <div style={{ height: 1, background: "#334155", margin: "8px 0" }} />
+          <div
+            style={{
+              fontSize: 9,
+              color: accent,
+              fontWeight: 800,
+              textTransform: "uppercase",
+              letterSpacing: 1,
+              marginBottom: 5,
             }}
           >
             Education
           </div>
           {p.education.map((e, i) => (
-            <div key={i} style={{ marginBottom: 6 }}>
-              <div style={{ fontSize: 9, fontWeight: 700, color: "#e2e8f0", lineHeight: 1.3 }}>{e.degree}</div>
-              <div style={{ fontSize: 8, color: "#94a3b8" }}>
+            <div key={i} style={{ marginBottom: 5 }}>
+              <div style={{ fontSize: 8, fontWeight: 700, color: "#e2e8f0", lineHeight: 1.3 }}>{e.degree}</div>
+              <div style={{ fontSize: 7, color: "#94a3b8" }}>
                 {e.school} · {e.year}
               </div>
             </div>
           ))}
+          <div style={{ height: 1, background: "#334155", margin: "8px 0" }} />
+          <div
+            style={{
+              fontSize: 9,
+              color: accent,
+              fontWeight: 800,
+              textTransform: "uppercase",
+              letterSpacing: 1,
+              marginBottom: 5,
+            }}
+          >
+            Certifications
+          </div>
+          {p.certifications.map((c, i) => (
+            <div key={i} style={{ fontSize: 8, color: "#94a3b8", marginBottom: 2 }}>
+              ✓ {c}
+            </div>
+          ))}
         </div>
-        <div style={{ flex: 1, padding: "28px 20px", background: "#fff" }}>
-          <div
-            style={{
-              fontSize: 11,
-              fontWeight: 800,
-              color: "#0f172a",
-              textTransform: "uppercase",
-              letterSpacing: 1.5,
-              borderBottom: `2px solid ${accent}`,
-              paddingBottom: 6,
-              marginBottom: 6,
-            }}
-          >
+        <div style={{ flex: 1, padding: "22px 16px", background: "#fff" }}>
+          <SectionLabel color="#0f172a" borderColor={accent}>
             Profile
-          </div>
-          <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.5, marginBottom: 16 }}>{p.summary}</div>
-          <div
-            style={{
-              fontSize: 11,
-              fontWeight: 800,
-              color: "#0f172a",
-              textTransform: "uppercase",
-              letterSpacing: 1.5,
-              borderBottom: `2px solid ${accent}`,
-              paddingBottom: 6,
-              marginBottom: 6,
-            }}
-          >
+          </SectionLabel>
+          <div style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, marginBottom: 2 }}>{p.summary}</div>
+          <SectionLabel color="#0f172a" borderColor={accent}>
             Work Experience
-          </div>
+          </SectionLabel>
           {p.experience.map((exp, i) => (
-            <div key={i} style={{ marginBottom: 13 }}>
+            <div key={i} style={{ marginBottom: 9 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a", lineHeight: 1.2 }}>{exp.role}</span>
-                <span style={{ fontSize: 9, color: accent, fontWeight: 600 }}>{exp.dates}</span>
+                <span style={{ fontSize: 10, fontWeight: 700, color: "#0f172a", lineHeight: 1.2 }}>{exp.role}</span>
+                <span style={{ fontSize: 8, color: accent, fontWeight: 600 }}>{exp.dates}</span>
               </div>
-              <div style={{ fontSize: 10, color: "#64748b", fontWeight: 600, marginBottom: 3 }}>{exp.company}</div>
+              <div style={{ fontSize: 9, color: "#64748b", fontWeight: 600, marginBottom: 2 }}>{exp.company}</div>
               {exp.bullets.map((b, j) => (
                 <div
                   key={j}
-                  style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, paddingLeft: 12, position: "relative" }}
+                  style={{ fontSize: 8, color: "#475569", lineHeight: 1.5, paddingLeft: 10, position: "relative" }}
                 >
-                  <span style={{ position: "absolute", left: 3 }}>•</span>
+                  <span style={{ position: "absolute", left: 2 }}>•</span>
                   {b}
                 </div>
               ))}
@@ -1299,80 +1667,58 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
   if (template.layout === "two-column") {
     return (
       <div style={{ width: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
-        <div style={{ background: accent, padding: "22px 24px 16px" }}>
-          <div style={{ fontSize: 30, fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1 }}>
+        <div style={{ background: accent, padding: "18px 20px 14px" }}>
+          <div style={{ fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1 }}>
             {p.name}
           </div>
           <div
             style={{
-              fontSize: 12,
+              fontSize: 11,
               color: "rgba(255,255,255,0.88)",
               textTransform: "uppercase",
               letterSpacing: 2,
               fontWeight: 600,
-              marginTop: 5,
+              marginTop: 4,
             }}
           >
             {p.title}
           </div>
-          <div style={{ fontSize: 9, color: "rgba(255,255,255,0.65)", marginTop: 6 }}>
+          <div style={{ fontSize: 8, color: "rgba(255,255,255,0.65)", marginTop: 5 }}>
             {p.email} · {p.phone} · {p.location}
           </div>
         </div>
         <div style={{ display: "flex" }}>
-          <div style={{ flex: 1, padding: "18px 18px" }}>
-            <div
-              style={{
-                fontSize: 11,
-                fontWeight: 800,
-                color: accent,
-                textTransform: "uppercase",
-                letterSpacing: 1.5,
-                borderBottom: `2px solid ${accent}`,
-                paddingBottom: 5,
-                marginBottom: 6,
-              }}
-            >
+          <div style={{ flex: 1, padding: "14px 16px" }}>
+            <SectionLabel color={accent} borderColor={accent}>
               Profile
-            </div>
-            <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.5, marginBottom: 8 }}>{p.summary}</div>
-            <div
-              style={{
-                fontSize: 11,
-                fontWeight: 800,
-                color: accent,
-                textTransform: "uppercase",
-                letterSpacing: 1.5,
-                borderBottom: `2px solid ${accent}`,
-                paddingBottom: 5,
-                marginBottom: 6,
-              }}
-            >
+            </SectionLabel>
+            <div style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, marginBottom: 2 }}>{p.summary}</div>
+            <SectionLabel color={accent} borderColor={accent}>
               Work Experience
-            </div>
+            </SectionLabel>
             {p.experience.map((exp, i) => (
-              <div key={i} style={{ marginBottom: 7 }}>
+              <div key={i} style={{ marginBottom: 8 }}>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a" }}>{exp.role}</span>
-                  <span style={{ fontSize: 9, color: "#64748b" }}>{exp.dates}</span>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: "#0f172a" }}>{exp.role}</span>
+                  <span style={{ fontSize: 8, color: "#64748b" }}>{exp.dates}</span>
                 </div>
-                <div style={{ fontSize: 10, color: accent, fontWeight: 600, marginBottom: 4 }}>{exp.company}</div>
+                <div style={{ fontSize: 9, color: accent, fontWeight: 600, marginBottom: 3 }}>{exp.company}</div>
                 {exp.bullets.map((b, j) => (
                   <div
                     key={j}
-                    style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, paddingLeft: 12, position: "relative" }}
+                    style={{ fontSize: 8, color: "#475569", lineHeight: 1.5, paddingLeft: 10, position: "relative" }}
                   >
-                    <span style={{ position: "absolute", left: 3 }}>•</span>
+                    <span style={{ position: "absolute", left: 2 }}>•</span>
                     {b}
                   </div>
                 ))}
               </div>
             ))}
           </div>
-          <div style={{ width: "32%", background: "#f8fafc", padding: "18px 14px", borderLeft: `3px solid ${accent}` }}>
+          <div style={{ width: "32%", background: "#f8fafc", padding: "14px 12px", borderLeft: `3px solid ${accent}` }}>
             <div
               style={{
-                fontSize: 11,
+                fontSize: 10,
                 fontWeight: 800,
                 color: accent,
                 textTransform: "uppercase",
@@ -1388,16 +1734,16 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
                 style={{
                   fontSize: 9,
                   color: "#334155",
-                  lineHeight: 1.9,
+                  lineHeight: 1.8,
                   display: "flex",
                   alignItems: "center",
-                  gap: 5,
+                  gap: 4,
                 }}
               >
                 <span
                   style={{
-                    width: 5,
-                    height: 5,
+                    width: 4,
+                    height: 4,
                     borderRadius: "50%",
                     background: accent,
                     display: "inline-block",
@@ -1407,10 +1753,10 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
                 {s}
               </div>
             ))}
-            <div style={{ height: 1, background: "#e2e8f0", margin: "12px 0" }} />
+            <div style={{ height: 1, background: "#e2e8f0", margin: "8px 0" }} />
             <div
               style={{
-                fontSize: 11,
+                fontSize: 10,
                 fontWeight: 800,
                 color: accent,
                 textTransform: "uppercase",
@@ -1421,10 +1767,47 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               Education
             </div>
             {p.education.map((e, i) => (
-              <div key={i} style={{ marginBottom: 6 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "#0f172a", lineHeight: 1.3 }}>{e.degree}</div>
-                <div style={{ fontSize: 9, color: "#64748b" }}>{e.school}</div>
-                <div style={{ fontSize: 9, color: accent, fontWeight: 600 }}>{e.year}</div>
+              <div key={i} style={{ marginBottom: 5 }}>
+                <div style={{ fontSize: 9, fontWeight: 700, color: "#0f172a", lineHeight: 1.3 }}>{e.degree}</div>
+                <div style={{ fontSize: 8, color: "#64748b" }}>
+                  {e.school} · {e.year}
+                </div>
+              </div>
+            ))}
+            <div style={{ height: 1, background: "#e2e8f0", margin: "8px 0" }} />
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 800,
+                color: accent,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+                marginBottom: 6,
+              }}
+            >
+              Languages
+            </div>
+            {p.languages.map((l, i) => (
+              <div key={i} style={{ fontSize: 8, color: "#475569", lineHeight: 1.7 }}>
+                • {l}
+              </div>
+            ))}
+            <div style={{ height: 1, background: "#e2e8f0", margin: "8px 0" }} />
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 800,
+                color: accent,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+                marginBottom: 6,
+              }}
+            >
+              Certifications
+            </div>
+            {p.certifications.map((c, i) => (
+              <div key={i} style={{ fontSize: 8, color: "#475569", lineHeight: 1.7 }}>
+                ✓ {c}
               </div>
             ))}
           </div>
@@ -1436,18 +1819,18 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
   if (template.layout === "photo") {
     return (
       <div style={{ width: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
-        <div style={{ background: "#1e293b", padding: "18px 22px", display: "flex", alignItems: "center", gap: 16 }}>
+        <div style={{ background: "#1e293b", padding: "16px 20px", display: "flex", alignItems: "center", gap: 14 }}>
           <div
             style={{
-              width: 68,
-              height: 68,
+              width: 60,
+              height: 60,
               borderRadius: "50%",
               background: accent,
               flexShrink: 0,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 22,
+              fontSize: 20,
               fontWeight: 800,
               color: "#fff",
               border: "3px solid rgba(255,255,255,0.2)",
@@ -1459,119 +1842,73 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               .join("")}
           </div>
           <div>
-            <div style={{ fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.3, lineHeight: 1 }}>
+            <div style={{ fontSize: 22, fontWeight: 900, color: "#fff", letterSpacing: -0.3, lineHeight: 1 }}>
               {p.name}
             </div>
             <div
               style={{
-                fontSize: 11,
+                fontSize: 10,
                 color: accent,
                 textTransform: "uppercase",
                 letterSpacing: 1.5,
                 fontWeight: 700,
-                marginTop: 5,
+                marginTop: 4,
               }}
             >
               {p.title}
             </div>
-            <div style={{ fontSize: 9, color: "rgba(255,255,255,0.55)", marginTop: 5 }}>
+            <div style={{ fontSize: 8, color: "rgba(255,255,255,0.55)", marginTop: 4 }}>
               {p.email} · {p.phone} · {p.location}
             </div>
           </div>
         </div>
-        <div style={{ height: 4, background: `linear-gradient(90deg, ${accent}, ${accent}60)` }} />
+        <div style={{ height: 3, background: `linear-gradient(90deg, ${accent}, ${accent}60)` }} />
         <div style={{ padding: "10px 16px" }}>
-          <div
-            style={{
-              fontSize: 11,
-              fontWeight: 800,
-              color: "#0f172a",
-              textTransform: "uppercase",
-              letterSpacing: 1.5,
-              borderBottom: `2px solid ${accent}`,
-              paddingBottom: 5,
-              marginBottom: 6,
-            }}
-          >
+          <SectionLabel color="#0f172a" borderColor={accent}>
             Profile
-          </div>
-          <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.5, marginBottom: 8 }}>{p.summary}</div>
-          <div
-            style={{
-              fontSize: 11,
-              fontWeight: 800,
-              color: "#0f172a",
-              textTransform: "uppercase",
-              letterSpacing: 1.5,
-              borderBottom: `2px solid ${accent}`,
-              paddingBottom: 5,
-              marginBottom: 6,
-            }}
-          >
+          </SectionLabel>
+          <div style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, marginBottom: 2 }}>{p.summary}</div>
+          <SectionLabel color="#0f172a" borderColor={accent}>
             Work Experience
-          </div>
+          </SectionLabel>
           {p.experience.map((exp, i) => (
-            <div key={i} style={{ marginBottom: 7 }}>
+            <div key={i} style={{ marginBottom: 8 }}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a" }}>{exp.role}</span>
-                <span style={{ fontSize: 9, color: accent, fontWeight: 600 }}>{exp.dates}</span>
+                <span style={{ fontSize: 10, fontWeight: 700, color: "#0f172a" }}>{exp.role}</span>
+                <span style={{ fontSize: 8, color: accent, fontWeight: 600 }}>{exp.dates}</span>
               </div>
-              <div style={{ fontSize: 10, color: accent, fontWeight: 600, marginBottom: 4 }}>{exp.company}</div>
+              <div style={{ fontSize: 9, color: accent, fontWeight: 600, marginBottom: 3 }}>{exp.company}</div>
               {exp.bullets.map((b, j) => (
                 <div
                   key={j}
-                  style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, paddingLeft: 12, position: "relative" }}
+                  style={{ fontSize: 8, color: "#475569", lineHeight: 1.5, paddingLeft: 10, position: "relative" }}
                 >
-                  <span style={{ position: "absolute", left: 3 }}>•</span>
+                  <span style={{ position: "absolute", left: 2 }}>•</span>
                   {b}
                 </div>
               ))}
             </div>
           ))}
-          <div
-            style={{
-              fontSize: 11,
-              fontWeight: 800,
-              color: "#0f172a",
-              textTransform: "uppercase",
-              letterSpacing: 1.5,
-              borderBottom: `2px solid ${accent}`,
-              paddingBottom: 5,
-              marginBottom: 6,
-              marginTop: 14,
-            }}
-          >
+          <SectionLabel color="#0f172a" borderColor={accent}>
             Education
-          </div>
+          </SectionLabel>
           {p.education.map((e, i) => (
-            <div key={i} style={{ fontSize: 10, color: "#334155", marginBottom: 3 }}>
+            <div key={i} style={{ fontSize: 9, color: "#334155", marginBottom: 3 }}>
               <span style={{ fontWeight: 700 }}>{e.degree}</span> — {e.school} · {e.year}
             </div>
           ))}
-          <div
-            style={{
-              fontSize: 11,
-              fontWeight: 800,
-              color: "#0f172a",
-              textTransform: "uppercase",
-              letterSpacing: 1.5,
-              borderBottom: `2px solid ${accent}`,
-              paddingBottom: 5,
-              marginBottom: 6,
-              marginTop: 14,
-            }}
-          >
+          <SectionLabel color="#0f172a" borderColor={accent}>
             Skills
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+          </SectionLabel>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 2 }}>
             {p.skills.map((s, i) => (
               <span
                 key={i}
                 style={{
-                  fontSize: 9,
+                  fontSize: 8,
                   background: `${accent}18`,
                   color: accent,
-                  padding: "3px 8px",
+                  padding: "2px 7px",
                   borderRadius: 3,
                   border: `1px solid ${accent}40`,
                   fontWeight: 600,
@@ -1581,12 +1918,29 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               </span>
             ))}
           </div>
+          <SectionLabel color="#0f172a" borderColor={accent}>
+            Certifications
+          </SectionLabel>
+          {p.certifications.map((c, i) => (
+            <div key={i} style={{ fontSize: 8, color: "#475569", marginBottom: 2 }}>
+              ✓ {c}
+            </div>
+          ))}
+          <SectionLabel color="#0f172a" borderColor={accent}>
+            Languages
+          </SectionLabel>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+            {p.languages.map((l, i) => (
+              <div key={i} style={{ fontSize: 8, color: "#475569" }}>
+                • {l}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
   }
 
-  /* ── SINGLE ── */
   const headerBg = isExecutive ? "#0f172a" : isCreative ? accent : isATS || isMinimalist ? "#fff" : "#1e293b";
   const headerText = headerBg === "#fff" ? "#0f172a" : "#fff";
   const accentOnHeader = isExecutive ? "#c9a84c" : isCreative ? "#fff" : accent;
@@ -1605,7 +1959,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
       >
         <div
           style={{
-            fontSize: isExecutive ? 26 : 24,
+            fontSize: isExecutive ? 24 : 22,
             fontWeight: 900,
             color: headerText,
             letterSpacing: isExecutive ? 3 : -0.3,
@@ -1616,121 +1970,75 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
         </div>
         <div
           style={{
-            fontSize: 12,
+            fontSize: 11,
             color: accentOnHeader,
             textTransform: "uppercase",
             letterSpacing: isExecutive ? 3 : 1.5,
             fontWeight: 600,
-            marginTop: 5,
+            marginTop: 4,
           }}
         >
           {p.title}
         </div>
-        <div style={{ fontSize: 9, color: headerBg === "#fff" ? "#64748b" : "rgba(255,255,255,0.6)", marginTop: 6 }}>
+        <div style={{ fontSize: 8, color: headerBg === "#fff" ? "#64748b" : "rgba(255,255,255,0.6)", marginTop: 5 }}>
           {p.email} · {p.phone} · {p.location}
         </div>
       </div>
-      {isExecutive && <div style={{ height: 4, background: "linear-gradient(90deg,#c9a84c,#f0d080,#c9a84c)" }} />}
+      {isExecutive && <div style={{ height: 3, background: "linear-gradient(90deg,#c9a84c,#f0d080,#c9a84c)" }} />}
 
       <div style={{ padding: "10px 16px" }}>
-        <div
-          style={{
-            fontSize: 11,
-            fontWeight: 800,
-            color: sectionLabelColor,
-            textTransform: "uppercase",
-            letterSpacing: 1.5,
-            borderBottom: `2px solid ${bodyAccent}`,
-            paddingBottom: 5,
-            marginBottom: 6,
-          }}
-        >
+        <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
           {isExecutive ? "Executive Summary" : "Profile"}
-        </div>
-        <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.5, marginBottom: 8 }}>{p.summary}</div>
+        </SectionLabel>
+        <div style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, marginBottom: 2 }}>{p.summary}</div>
 
-        <div
-          style={{
-            fontSize: 11,
-            fontWeight: 800,
-            color: sectionLabelColor,
-            textTransform: "uppercase",
-            letterSpacing: 1.5,
-            borderBottom: `2px solid ${bodyAccent}`,
-            paddingBottom: 5,
-            marginBottom: 6,
-          }}
-        >
+        <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
           {isExecutive ? "Leadership Experience" : "Work Experience"}
-        </div>
+        </SectionLabel>
         {p.experience.map((exp, i) => (
-          <div key={i} style={{ marginBottom: 7 }}>
+          <div key={i} style={{ marginBottom: 8 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-              <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a", flex: 1, lineHeight: 1.2 }}>
+              <span style={{ fontSize: 10, fontWeight: 700, color: "#0f172a", flex: 1, lineHeight: 1.2 }}>
                 {exp.role}
               </span>
-              <span style={{ fontSize: 9, color: bodyAccent, fontWeight: 600, flexShrink: 0, marginLeft: 8 }}>
+              <span style={{ fontSize: 8, color: bodyAccent, fontWeight: 600, flexShrink: 0, marginLeft: 8 }}>
                 {exp.dates}
               </span>
             </div>
-            <div style={{ fontSize: 10, color: bodyAccent, fontWeight: 600, marginBottom: 4 }}>{exp.company}</div>
+            <div style={{ fontSize: 9, color: bodyAccent, fontWeight: 600, marginBottom: 3 }}>{exp.company}</div>
             {exp.bullets.map((b, j) => (
               <div
                 key={j}
-                style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, paddingLeft: 12, position: "relative" }}
+                style={{ fontSize: 8, color: "#475569", lineHeight: 1.5, paddingLeft: 10, position: "relative" }}
               >
-                <span style={{ position: "absolute", left: 3 }}>•</span>
+                <span style={{ position: "absolute", left: 2 }}>•</span>
                 {b}
               </div>
             ))}
           </div>
         ))}
 
-        <div
-          style={{
-            fontSize: 11,
-            fontWeight: 800,
-            color: sectionLabelColor,
-            textTransform: "uppercase",
-            letterSpacing: 1.5,
-            borderBottom: `2px solid ${bodyAccent}`,
-            paddingBottom: 5,
-            marginBottom: 6,
-            marginTop: 14,
-          }}
-        >
+        <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
           Education
-        </div>
+        </SectionLabel>
         {p.education.map((e, i) => (
-          <div key={i} style={{ fontSize: 10, color: "#334155", marginBottom: 3 }}>
+          <div key={i} style={{ fontSize: 9, color: "#334155", marginBottom: 3 }}>
             <span style={{ fontWeight: 700 }}>{e.degree}</span> — {e.school} · {e.year}
           </div>
         ))}
 
-        <div
-          style={{
-            fontSize: 11,
-            fontWeight: 800,
-            color: sectionLabelColor,
-            textTransform: "uppercase",
-            letterSpacing: 1.5,
-            borderBottom: `2px solid ${bodyAccent}`,
-            paddingBottom: 5,
-            marginBottom: 6,
-            marginTop: 14,
-          }}
-        >
+        <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
           Skills
-        </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+        </SectionLabel>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 2 }}>
           {p.skills.map((s, i) => (
             <span
               key={i}
               style={{
-                fontSize: 9,
+                fontSize: 8,
                 background: isExecutive ? "#0f172a" : isMinimalist ? "#f3f4f6" : `${accent}15`,
                 color: isExecutive ? "#c9a84c" : isMinimalist ? "#374151" : accent,
-                padding: "3px 8px",
+                padding: "2px 7px",
                 borderRadius: 3,
                 border: `1px solid ${isExecutive ? "#c9a84c40" : isMinimalist ? "#e5e7eb" : accent + "40"}`,
                 fontWeight: 600,
@@ -1740,12 +2048,33 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
             </span>
           ))}
         </div>
+
+        <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
+          Certifications
+        </SectionLabel>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 2 }}>
+          {p.certifications.map((c, i) => (
+            <div key={i} style={{ fontSize: 8, color: "#475569" }}>
+              ✓ {c}
+            </div>
+          ))}
+        </div>
+
+        <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
+          Languages
+        </SectionLabel>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+          {p.languages.map((l, i) => (
+            <div key={i} style={{ fontSize: 8, color: "#475569" }}>
+              • {l}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
-/* ── Template Card ── */
 function TemplateCard({ template }: { template: TemplateInfo }) {
   const navigate = useNavigate();
   const [selectedColor, setSelectedColor] = useState(0);
@@ -1773,7 +2102,6 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
       className="group cursor-pointer rounded-xl border border-border bg-card overflow-hidden"
       onClick={() => navigate(`/cv-editor/${template.id}`)}
     >
-      {/* CV Preview */}
       <div ref={containerRef} className="relative aspect-[3/4] bg-white overflow-hidden">
         <div
           style={{
@@ -1788,15 +2116,12 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
         >
           <MiniCVPreview template={template} />
         </div>
-        {/* Hover overlay */}
         <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
           <Button size="sm" className="bg-gradient-brand border-0 font-semibold gold-shimmer">
             Use This Template
           </Button>
         </div>
       </div>
-
-      {/* Card footer */}
       <div className="p-3 space-y-2">
         <div className="flex items-center gap-1.5">
           {template.colors.map((color, i) => (
@@ -1834,17 +2159,14 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
   );
 }
 
-/* ── Main Page ── */
 export default function TemplatesPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const navigate = useNavigate();
-
   const filtered = activeCategory === "All" ? TEMPLATES : TEMPLATES.filter((t) => t.category === activeCategory);
 
   return (
     <PageLayout>
       <div className="relative z-10">
-        {/* Hero */}
         <section className="py-16 md:py-20 text-center px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             CV <span className="text-gradient">Templates</span>
@@ -1867,8 +2189,6 @@ export default function TemplatesPage() {
               Upload My CV
             </Button>
           </div>
-
-          {/* Trust badges */}
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
             {["36+ Templates", "ATS-Optimised", "PDF & DOCX", "Used by 10,000+ professionals"].map((badge) => (
               <span key={badge} className="flex items-center gap-1.5">
@@ -1877,8 +2197,6 @@ export default function TemplatesPage() {
             ))}
           </div>
         </section>
-
-        {/* Category filter */}
         <div className="sticky top-16 z-30 surface-glass border-b border-border/30 py-3">
           <div className="container max-w-6xl mx-auto px-4">
             <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
@@ -1886,11 +2204,7 @@ export default function TemplatesPage() {
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-                    activeCategory === cat
-                      ? "bg-gradient-brand text-primary-foreground shadow-glow-sm"
-                      : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${activeCategory === cat ? "bg-gradient-brand text-primary-foreground shadow-glow-sm" : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"}`}
                 >
                   {cat}
                 </button>
@@ -1898,15 +2212,12 @@ export default function TemplatesPage() {
             </div>
           </div>
         </div>
-
-        {/* Template grid */}
         <section className="container max-w-6xl mx-auto px-4 py-10">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {filtered.map((template) => (
               <TemplateCard key={template.id} template={template} />
             ))}
           </div>
-
           {filtered.length === 0 && (
             <div className="text-center py-20 text-muted-foreground">
               No templates in this category yet. More coming soon!
