@@ -1,19 +1,18 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Layout, CreditCard, Briefcase, ShoppingCart } from "lucide-react";
+import { Home, FileText, CreditCard, Briefcase, ShoppingCart, PenSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { to: "/", icon: Home, label: "Home" },
-  { to: "/templates", icon: Layout, label: "Templates" },
+  { to: "/cv-builder", icon: PenSquare, label: "CV Builder" },
   { to: "/order", icon: ShoppingCart, label: "Order" },
-  { to: "/pricing", icon: CreditCard, label: "Pricing" },
+  { to: "/templates", icon: FileText, label: "Templates" },
   { to: "/jobs", icon: Briefcase, label: "Jobs" },
 ];
 
 export default function MobileBottomNav() {
   const { pathname } = useLocation();
 
-  // Hide on portal routes
   if (pathname.startsWith("/portal")) return null;
 
   return (
@@ -22,7 +21,6 @@ export default function MobileBottomNav() {
         {NAV_ITEMS.map((item) => {
           const isActive = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
           const isOrder = item.to === "/order";
-
           return (
             <Link
               key={item.to}
@@ -30,7 +28,7 @@ export default function MobileBottomNav() {
               className={cn(
                 "flex flex-col items-center justify-center gap-0.5 flex-1 py-1 transition-colors",
                 isActive ? "text-primary" : "text-muted-foreground",
-                isOrder && "relative"
+                isOrder && "relative",
               )}
             >
               {isOrder ? (
@@ -40,17 +38,11 @@ export default function MobileBottomNav() {
               ) : (
                 <item.icon className="w-5 h-5" />
               )}
-              <span className={cn(
-                "text-[10px] font-medium leading-none",
-                isOrder && "-mt-0.5"
-              )}>
-                {item.label}
-              </span>
+              <span className={cn("text-[10px] font-medium leading-none", isOrder && "-mt-0.5")}>{item.label}</span>
             </Link>
           );
         })}
       </div>
-      {/* Safe area spacer for notched phones */}
       <div className="h-[env(safe-area-inset-bottom)]" />
     </nav>
   );
