@@ -1507,368 +1507,13 @@ function SectionLabel({
   );
 }
 
-// ─── ATS MINI PREVIEWS — each with its own distinct look ─────────────────────
-
-function MiniATSPro({ p }: { p: TemplatePerson }) {
-  const acc = "#1e40af";
-  const SH = ({ label }: { label: string }) => (
-    <div style={{ display: "flex", alignItems: "center", margin: "8px 0 4px" }}>
-      <span
-        style={{
-          background: acc,
-          color: "#fff",
-          fontSize: 6,
-          fontWeight: 800,
-          textTransform: "uppercase",
-          letterSpacing: 1,
-          padding: "1.5px 6px",
-          borderRadius: 2,
-          flexShrink: 0,
-        }}
-      >
-        {label}
-      </span>
-      <div style={{ flex: 1, height: 0.5, background: "#e2e8f0", marginLeft: 5 }} />
-    </div>
-  );
-  return (
-    <div
-      style={{
-        width: "100%",
-        background: "#fff",
-        fontFamily: "Arial, sans-serif",
-        fontSize: 7.5,
-        borderLeft: "5px solid #1e40af",
-        padding: "16px 14px",
-      }}
-    >
-      {/* CENTRED header */}
-      <div style={{ textAlign: "center", marginBottom: 10 }}>
-        <div
-          style={{
-            fontSize: 17,
-            fontWeight: 900,
-            color: "#0f172a",
-            letterSpacing: 2,
-            textTransform: "uppercase",
-            lineHeight: 1,
-          }}
-        >
-          {p.name}
-        </div>
-        <div
-          style={{
-            fontSize: 7.5,
-            color: acc,
-            fontWeight: 700,
-            letterSpacing: 2,
-            textTransform: "uppercase",
-            marginTop: 3,
-          }}
-        >
-          {p.title}
-        </div>
-        <div style={{ fontSize: 6.5, color: "#94a3b8", marginTop: 4 }}>
-          {p.email} · {p.phone} · {p.location}
-        </div>
-      </div>
-      <div style={{ height: 1.5, background: acc, marginBottom: 2 }} />
-      {/* LEFT-ALIGNED body */}
-      <SH label="Professional Summary" />
-      <div style={{ fontSize: 7, color: "#475569", lineHeight: 1.6, marginBottom: 4 }}>{p.summary}</div>
-      <SH label="Work Experience" />
-      {p.experience.slice(0, 2).map((exp, i) => (
-        <div key={i} style={{ marginBottom: 7 }}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ fontWeight: 700, fontSize: 7.5, color: "#0f172a" }}>
-              {exp.role} — {exp.company}
-            </span>
-            <span style={{ fontSize: 6.5, color: "#94a3b8" }}>{exp.dates}</span>
-          </div>
-          {exp.bullets.slice(0, 2).map((b, j) => (
-            <div
-              key={j}
-              style={{ fontSize: 6.5, color: "#475569", paddingLeft: 9, position: "relative", lineHeight: 1.5 }}
-            >
-              <span style={{ position: "absolute", left: 0, color: acc, fontSize: 7 }}>▸</span>
-              {b}
-            </div>
-          ))}
-        </div>
-      ))}
-      <SH label="Core Skills" />
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-        {p.skills.map((s) => (
-          <span
-            key={s}
-            style={{
-              fontSize: 6,
-              background: "#eff6ff",
-              color: acc,
-              border: "1px solid #bfdbfe",
-              borderRadius: 2,
-              padding: "1px 5px",
-              fontWeight: 600,
-            }}
-          >
-            {s}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function MiniATSClassic({ p }: { p: TemplatePerson }) {
-  const SH = ({ label }: { label: string }) => (
-    <div
-      style={{
-        fontSize: 7.5,
-        fontWeight: 900,
-        color: "#0f172a",
-        textTransform: "uppercase",
-        letterSpacing: 2,
-        borderBottom: "1.5px solid #0f172a",
-        paddingBottom: 2,
-        margin: "8px 0 4px",
-      }}
-    >
-      {label}
-    </div>
-  );
-  return (
-    <div
-      style={{
-        width: "100%",
-        background: "#fff",
-        fontFamily: "Arial, sans-serif",
-        fontSize: 7.5,
-        padding: "16px 16px",
-      }}
-    >
-      {/* CENTRED header */}
-      <div style={{ textAlign: "center", marginBottom: 8 }}>
-        <div style={{ fontSize: 18, fontWeight: 900, color: "#0f172a", letterSpacing: -0.3, lineHeight: 1 }}>
-          {p.name}
-        </div>
-        <div style={{ fontSize: 7, color: "#475569", letterSpacing: 2, textTransform: "uppercase", marginTop: 3 }}>
-          {p.title}
-        </div>
-        <div style={{ height: 1, background: "#e2e8f0", margin: "5px auto", width: "60%" }} />
-        <div style={{ fontSize: 6.5, color: "#94a3b8" }}>
-          {p.email} · {p.phone} · {p.location}
-        </div>
-      </div>
-      {/* LEFT-ALIGNED body */}
-      <SH label="Experience" />
-      {p.experience.slice(0, 2).map((exp, i) => (
-        <div key={i} style={{ marginBottom: 7 }}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ fontWeight: 700, fontSize: 8, color: "#0f172a" }}>{exp.role}</span>
-            <span style={{ fontSize: 6.5, color: "#6b7280" }}>{exp.dates}</span>
-          </div>
-          <div style={{ fontSize: 7, color: "#64748b", marginBottom: 1 }}>{exp.company}</div>
-          {exp.bullets.slice(0, 2).map((b, j) => (
-            <div
-              key={j}
-              style={{ fontSize: 6.5, color: "#475569", paddingLeft: 8, position: "relative", lineHeight: 1.5 }}
-            >
-              <span style={{ position: "absolute", left: 0, color: "#94a3b8" }}>–</span>
-              {b}
-            </div>
-          ))}
-        </div>
-      ))}
-      <SH label="Skills" />
-      <div style={{ fontSize: 7, color: "#475569" }}>{p.skills.join(", ")}</div>
-    </div>
-  );
-}
-
-function MiniATSModern({ p }: { p: TemplatePerson }) {
-  const acc = "#1e40af";
-  const SH = ({ label }: { label: string }) => (
-    <div style={{ display: "flex", alignItems: "center", gap: 4, margin: "8px 0 4px" }}>
-      <div style={{ width: 5, height: 5, borderRadius: "50%", background: acc, flexShrink: 0 }} />
-      <span style={{ fontSize: 7, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, color: "#0f172a" }}>
-        {label}
-      </span>
-      <div style={{ flex: 1, height: 0.5, background: "#e2e8f0" }} />
-    </div>
-  );
-  return (
-    <div style={{ width: "100%", background: "#fafafa", fontFamily: "Arial, sans-serif", fontSize: 7.5 }}>
-      {/* LEFT-ALIGNED dark header */}
-      <div style={{ background: "#1e293b", padding: "12px 14px" }}>
-        <div style={{ fontSize: 15, fontWeight: 900, color: "#f8fafc", letterSpacing: 0.5 }}>{p.name}</div>
-        <div style={{ fontSize: 7, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 1.5, marginTop: 2 }}>
-          {p.title}
-        </div>
-      </div>
-      <div
-        style={{
-          background: "#f1f5f9",
-          padding: "3px 14px",
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 6,
-          borderBottom: "1px solid #e2e8f0",
-        }}
-      >
-        <span style={{ fontSize: 6.5, color: "#64748b" }}>{p.email}</span>
-        <span style={{ fontSize: 6.5, color: "#cbd5e1" }}>·</span>
-        <span style={{ fontSize: 6.5, color: "#64748b" }}>{p.phone}</span>
-        <span style={{ fontSize: 6.5, color: "#cbd5e1" }}>·</span>
-        <span style={{ fontSize: 6.5, color: "#64748b" }}>{p.location}</span>
-      </div>
-      <div style={{ padding: "6px 14px 12px" }}>
-        <SH label="Summary" />
-        <div style={{ fontSize: 7, color: "#475569", lineHeight: 1.6, marginBottom: 2 }}>{p.summary}</div>
-        <SH label="Experience" />
-        {p.experience.slice(0, 2).map((exp, i) => (
-          <div key={i} style={{ marginBottom: 7 }}>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ fontWeight: 700, fontSize: 7.5, color: "#0f172a" }}>{exp.role}</span>
-              <span style={{ fontSize: 6.5, color: "#94a3b8" }}>{exp.dates}</span>
-            </div>
-            <div style={{ fontSize: 7, color: "#64748b", marginBottom: 1 }}>{exp.company}</div>
-            {exp.bullets.slice(0, 2).map((b, j) => (
-              <div
-                key={j}
-                style={{ fontSize: 6.5, color: "#475569", paddingLeft: 10, position: "relative", lineHeight: 1.5 }}
-              >
-                <span
-                  style={{
-                    position: "absolute",
-                    left: 2,
-                    top: 4,
-                    width: 3,
-                    height: 3,
-                    borderRadius: "50%",
-                    background: acc,
-                    display: "inline-block",
-                  }}
-                />
-                {b}
-              </div>
-            ))}
-          </div>
-        ))}
-        <SH label="Skills" />
-        <div style={{ fontSize: 7, color: "#475569" }}>{p.skills.join(", ")}</div>
-      </div>
-    </div>
-  );
-}
-
-function MiniATSExecutive({ p }: { p: TemplatePerson }) {
-  const SH = ({ label }: { label: string }) => (
-    <div
-      style={{
-        fontSize: 6.5,
-        fontWeight: 900,
-        textTransform: "uppercase",
-        letterSpacing: 2.5,
-        color: "#94a3b8",
-        margin: "9px 0 4px",
-      }}
-    >
-      {label}
-    </div>
-  );
-  return (
-    <div
-      style={{
-        width: "100%",
-        background: "#fff",
-        fontFamily: "Arial, sans-serif",
-        fontSize: 7.5,
-        padding: "16px 16px",
-      }}
-    >
-      {/* LEFT-ALIGNED header */}
-      <div style={{ marginBottom: 6 }}>
-        <div
-          style={{
-            fontSize: 17,
-            fontWeight: 900,
-            color: "#0f172a",
-            letterSpacing: -0.5,
-            textTransform: "uppercase",
-            lineHeight: 1,
-          }}
-        >
-          {p.name}
-        </div>
-        <div style={{ fontSize: 7, color: "#64748b", letterSpacing: 2.5, textTransform: "uppercase", marginTop: 4 }}>
-          {p.title}
-        </div>
-        <div
-          style={{
-            height: 1,
-            background: "linear-gradient(90deg,#0f172a 40%,transparent)",
-            marginTop: 5,
-            marginBottom: 4,
-          }}
-        />
-        <div style={{ fontSize: 6.5, color: "#94a3b8", display: "flex", gap: 8 }}>
-          <span>{p.email}</span>
-          <span>{p.phone}</span>
-          <span>{p.location}</span>
-        </div>
-      </div>
-      {/* LEFT-ALIGNED body */}
-      <SH label="Professional Summary" />
-      <div
-        style={{
-          fontSize: 7,
-          color: "#475569",
-          lineHeight: 1.7,
-          borderLeft: "2px solid #e2e8f0",
-          paddingLeft: 6,
-          marginBottom: 2,
-        }}
-      >
-        {p.summary}
-      </div>
-      <SH label="Experience" />
-      {p.experience.slice(0, 2).map((exp, i) => (
-        <div key={i} style={{ marginBottom: 7 }}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ fontWeight: 900, fontSize: 8, color: "#0f172a" }}>{exp.role}</span>
-            <span style={{ fontSize: 6.5, color: "#94a3b8" }}>{exp.dates}</span>
-          </div>
-          <div style={{ fontSize: 7, color: "#475569", fontStyle: "italic", marginBottom: 1 }}>{exp.company}</div>
-          {exp.bullets.slice(0, 2).map((b, j) => (
-            <div
-              key={j}
-              style={{ fontSize: 6.5, color: "#475569", paddingLeft: 7, position: "relative", lineHeight: 1.5 }}
-            >
-              <span style={{ position: "absolute", left: 0, color: "#0f172a", fontSize: 9, lineHeight: 1.2 }}>·</span>
-              {b}
-            </div>
-          ))}
-        </div>
-      ))}
-      <SH label="Skills" />
-      <div style={{ fontSize: 7, color: "#475569" }}>{p.skills.join(", ")}</div>
-    </div>
-  );
-}
-
-// ─── MAIN MINI CV PREVIEW ─────────────────────────────────────────────────────
 function MiniCVPreview({ template }: { template: TemplateInfo }) {
   const p = template.person;
   const accent = template.colors[0];
   const isExecutive = template.category === "Executive";
   const isCreative = template.category === "Creative";
   const isMinimalist = template.category === "Minimalist";
-
-  // ── Route ATS templates to their own distinct mini previews ──
-  if (template.id === "ats-pro") return <MiniATSPro p={p} />;
-  if (template.id === "ats-classic") return <MiniATSClassic p={p} />;
-  if (template.id === "ats-modern") return <MiniATSModern p={p} />;
-  if (template.id === "ats-executive") return <MiniATSExecutive p={p} />;
+  const isATS = template.category === "ATS";
 
   if (template.layout === "sidebar") {
     return (
@@ -1956,6 +1601,24 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               marginBottom: 5,
             }}
           >
+            Languages
+          </div>
+          {p.languages.map((l, i) => (
+            <div key={i} style={{ fontSize: 8, color: "#94a3b8", marginBottom: 2 }}>
+              • {l}
+            </div>
+          ))}
+          <div style={{ height: 1, background: "#334155", margin: "8px 0" }} />
+          <div
+            style={{
+              fontSize: 9,
+              color: accent,
+              fontWeight: 800,
+              textTransform: "uppercase",
+              letterSpacing: 1,
+              marginBottom: 5,
+            }}
+          >
             Education
           </div>
           {p.education.map((e, i) => (
@@ -1964,6 +1627,24 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               <div style={{ fontSize: 7, color: "#94a3b8" }}>
                 {e.school} · {e.year}
               </div>
+            </div>
+          ))}
+          <div style={{ height: 1, background: "#334155", margin: "8px 0" }} />
+          <div
+            style={{
+              fontSize: 9,
+              color: accent,
+              fontWeight: 800,
+              textTransform: "uppercase",
+              letterSpacing: 1,
+              marginBottom: 5,
+            }}
+          >
+            Certifications
+          </div>
+          {p.certifications.map((c, i) => (
+            <div key={i} style={{ fontSize: 8, color: "#94a3b8", marginBottom: 2 }}>
+              ✓ {c}
             </div>
           ))}
         </div>
@@ -2108,6 +1789,42 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
                 </div>
               </div>
             ))}
+            <div style={{ height: 1, background: "#e2e8f0", margin: "8px 0" }} />
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 800,
+                color: accent,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+                marginBottom: 6,
+              }}
+            >
+              Languages
+            </div>
+            {p.languages.map((l, i) => (
+              <div key={i} style={{ fontSize: 8, color: "#475569", lineHeight: 1.7 }}>
+                • {l}
+              </div>
+            ))}
+            <div style={{ height: 1, background: "#e2e8f0", margin: "8px 0" }} />
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 800,
+                color: accent,
+                textTransform: "uppercase",
+                letterSpacing: 1,
+                marginBottom: 6,
+              }}
+            >
+              Certifications
+            </div>
+            {p.certifications.map((c, i) => (
+              <div key={i} style={{ fontSize: 8, color: "#475569", lineHeight: 1.7 }}>
+                ✓ {c}
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -2187,12 +1904,59 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               ))}
             </div>
           ))}
+          <SectionLabel color="#0f172a" borderColor={accent}>
+            Education
+          </SectionLabel>
+          {p.education.map((e, i) => (
+            <div key={i} style={{ fontSize: 9, color: "#334155", marginBottom: 3 }}>
+              <span style={{ fontWeight: 700 }}>{e.degree}</span> — {e.school} · {e.year}
+            </div>
+          ))}
+          <SectionLabel color="#0f172a" borderColor={accent}>
+            Skills
+          </SectionLabel>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 2 }}>
+            {p.skills.map((s, i) => (
+              <span
+                key={i}
+                style={{
+                  fontSize: 8,
+                  background: `${accent}18`,
+                  color: accent,
+                  padding: "2px 7px",
+                  borderRadius: 3,
+                  border: `1px solid ${accent}40`,
+                  fontWeight: 600,
+                }}
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+          <SectionLabel color="#0f172a" borderColor={accent}>
+            Certifications
+          </SectionLabel>
+          {p.certifications.map((c, i) => (
+            <div key={i} style={{ fontSize: 8, color: "#475569", marginBottom: 2 }}>
+              ✓ {c}
+            </div>
+          ))}
+          <SectionLabel color="#0f172a" borderColor={accent}>
+            Languages
+          </SectionLabel>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+            {p.languages.map((l, i) => (
+              <div key={i} style={{ fontSize: 8, color: "#475569" }}>
+                • {l}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
   }
 
-  const headerBg = isExecutive ? "#0f172a" : isCreative ? accent : isMinimalist ? "#fff" : "#1e293b";
+  const headerBg = isExecutive ? "#0f172a" : isCreative ? accent : isATS || isMinimalist ? "#fff" : "#1e293b";
   const headerText = headerBg === "#fff" ? "#0f172a" : "#fff";
   const accentOnHeader = isExecutive ? "#c9a84c" : isCreative ? "#fff" : accent;
   const bodyAccent = isExecutive ? "#c9a84c" : accent;
@@ -2204,6 +1968,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
         style={{
           background: headerBg,
           padding: "12px 16px",
+          borderLeft: isATS ? `6px solid ${accent}` : "none",
           borderBottom: isMinimalist ? `2px solid ${accent}` : "none",
         }}
       >
@@ -2292,6 +2057,26 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
             >
               {s}
             </span>
+          ))}
+        </div>
+        <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
+          Certifications
+        </SectionLabel>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 2 }}>
+          {p.certifications.map((c, i) => (
+            <div key={i} style={{ fontSize: 8, color: "#475569" }}>
+              ✓ {c}
+            </div>
+          ))}
+        </div>
+        <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
+          Languages
+        </SectionLabel>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+          {p.languages.map((l, i) => (
+            <div key={i} style={{ fontSize: 8, color: "#475569" }}>
+              • {l}
+            </div>
           ))}
         </div>
       </div>
