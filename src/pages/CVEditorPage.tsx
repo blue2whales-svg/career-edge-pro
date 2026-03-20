@@ -25,14 +25,12 @@ interface Experience {
   to: string;
   bullets: string;
 }
-
 interface Education {
   degree: string;
   school: string;
   year: string;
   grade: string;
 }
-
 interface CVData {
   name: string;
   title: string;
@@ -101,19 +99,14 @@ function buildCVFromTemplate(templateId: string): CVData {
       to: exp.dates.split("–")[1]?.trim() ?? "Present",
       bullets: exp.bullets.map((b) => `· ${b}`).join("\n"),
     })),
-    educations: p.education.map((edu) => ({
-      degree: edu.degree,
-      school: edu.school,
-      year: edu.year,
-      grade: "",
-    })),
+    educations: p.education.map((edu) => ({ degree: edu.degree, school: edu.school, year: edu.year, grade: "" })),
     skills: p.skills.join(", "),
     languages: p.languages.join(", "),
     certifications: p.certifications.join(", "),
   };
 }
 
-// ─── JOB SCORE MATCH SECTION ─────────────────────────────────────────────────
+// ─── JOB SCORE MATCH ─────────────────────────────────────────────────────────
 function JobScoreMatch({ cv }: { cv: CVData }) {
   const [jobDesc, setJobDesc] = useState("");
   const [score, setScore] = useState<null | {
@@ -130,7 +123,6 @@ function JobScoreMatch({ cv }: { cv: CVData }) {
     if (!jobDesc.trim()) return;
     setLoading(true);
     setTimeout(() => {
-      // Extract keywords from job description
       const jdWords = jobDesc
         .toLowerCase()
         .split(/\W+/)
@@ -138,37 +130,28 @@ function JobScoreMatch({ cv }: { cv: CVData }) {
       const cvText =
         `${cv.title} ${cv.summary} ${cv.skills} ${cv.experiences.map((e) => `${e.title} ${e.company} ${e.bullets}`).join(" ")}`.toLowerCase();
       const cvWords = cvText.split(/\W+/).filter((w) => w.length > 3);
-
-      // Find matched and missing keywords
-      const importantJdWords = [
-        ...new Set(
-          jdWords.filter(
-            (w) =>
-              ![
-                "that",
-                "with",
-                "this",
-                "will",
-                "have",
-                "from",
-                "they",
-                "your",
-                "must",
-                "able",
-                "been",
-                "also",
-                "into",
-                "their",
-                "more",
-                "about",
-                "over",
-              ].includes(w),
-          ),
-        ),
+      const stopwords = [
+        "that",
+        "with",
+        "this",
+        "will",
+        "have",
+        "from",
+        "they",
+        "your",
+        "must",
+        "able",
+        "been",
+        "also",
+        "into",
+        "their",
+        "more",
+        "about",
+        "over",
       ];
+      const importantJdWords = [...new Set(jdWords.filter((w) => !stopwords.includes(w)))];
       const matched = importantJdWords.filter((w) => cvWords.includes(w)).slice(0, 8);
       const missing = importantJdWords.filter((w) => !cvWords.includes(w)).slice(0, 6);
-
       const keywordScore = Math.min(
         100,
         Math.round((matched.length / Math.max(importantJdWords.length, 1)) * 100 * 2.5),
@@ -176,7 +159,6 @@ function JobScoreMatch({ cv }: { cv: CVData }) {
       const expScore = cv.experiences.length >= 3 ? 85 : cv.experiences.length >= 2 ? 70 : 55;
       const skillsScore = Math.min(100, cv.skills.split(",").length * 14);
       const overall = Math.round(keywordScore * 0.45 + expScore * 0.3 + skillsScore * 0.25);
-
       setScore({ overall, keywords: keywordScore, experience: expScore, skills: skillsScore, matched, missing });
       setLoading(false);
     }, 1200);
@@ -194,7 +176,6 @@ function JobScoreMatch({ cv }: { cv: CVData }) {
       <p className="text-xs text-muted-foreground mb-4">
         Paste a job description to see how well your CV matches the role.
       </p>
-
       <Textarea
         placeholder="Paste the job description here..."
         value={jobDesc}
@@ -212,10 +193,8 @@ function JobScoreMatch({ cv }: { cv: CVData }) {
       >
         {loading ? "Analysing..." : "Analyse Match"}
       </Button>
-
       {score && (
         <div className="space-y-4">
-          {/* Overall score */}
           <div
             className="flex items-center justify-between p-4 rounded-xl border-2"
             style={{ borderColor: getScoreColor(score.overall), background: `${getScoreColor(score.overall)}08` }}
@@ -230,8 +209,6 @@ function JobScoreMatch({ cv }: { cv: CVData }) {
               {score.overall}%
             </div>
           </div>
-
-          {/* Sub scores */}
           <div className="grid grid-cols-3 gap-2">
             {[
               { label: "Keywords", value: score.keywords },
@@ -252,8 +229,6 @@ function JobScoreMatch({ cv }: { cv: CVData }) {
               </div>
             ))}
           </div>
-
-          {/* Matched keywords */}
           {score.matched.length > 0 && (
             <div>
               <div className="flex items-center gap-1.5 mb-2">
@@ -272,8 +247,6 @@ function JobScoreMatch({ cv }: { cv: CVData }) {
               </div>
             </div>
           )}
-
-          {/* Missing keywords */}
           {score.missing.length > 0 && (
             <div>
               <div className="flex items-center gap-1.5 mb-2">
@@ -292,8 +265,6 @@ function JobScoreMatch({ cv }: { cv: CVData }) {
               </div>
             </div>
           )}
-
-          {/* Tip */}
           <div className="flex items-start gap-2 p-3 rounded-lg bg-muted/50 border border-border">
             <TrendingUp className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
             <p className="text-[11px] text-muted-foreground leading-relaxed">
@@ -310,15 +281,13 @@ function JobScoreMatch({ cv }: { cv: CVData }) {
   );
 }
 
-// ─── MPESA PAYMENT MODAL ──────────────────────────────────────────────────────
+// ─── MPESA MODAL ─────────────────────────────────────────────────────────────
 function MpesaModal({ onClose }: { onClose: () => void }) {
   const [phone, setPhone] = useState("");
   const [step, setStep] = useState<"enter" | "waiting" | "success">("enter");
-
   const handlePay = () => {
     if (!phone.trim()) return;
     setStep("waiting");
-    // Simulate STK push delay then success
     setTimeout(() => setStep("success"), 3500);
   };
 
@@ -328,7 +297,6 @@ function MpesaModal({ onClose }: { onClose: () => void }) {
       style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
     >
       <div className="relative w-full max-w-sm rounded-2xl border border-border bg-card shadow-2xl overflow-hidden">
-        {/* Header */}
         <div className="bg-gradient-to-r from-[#00a651] to-[#007a3d] px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -345,7 +313,6 @@ function MpesaModal({ onClose }: { onClose: () => void }) {
             </button>
           </div>
         </div>
-
         <div className="p-6">
           {step === "enter" && (
             <>
@@ -378,7 +345,6 @@ function MpesaModal({ onClose }: { onClose: () => void }) {
               </div>
             </>
           )}
-
           {step === "waiting" && (
             <div className="text-center py-6 space-y-4">
               <div className="w-16 h-16 rounded-full border-4 border-[#00a651] border-t-transparent animate-spin mx-auto" />
@@ -390,12 +356,10 @@ function MpesaModal({ onClose }: { onClose: () => void }) {
                 </div>
               </div>
               <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#00a651] animate-pulse" />
-                Waiting for confirmation...
+                <div className="w-1.5 h-1.5 rounded-full bg-[#00a651] animate-pulse" /> Waiting for confirmation...
               </div>
             </div>
           )}
-
           {step === "success" && (
             <div className="text-center py-6 space-y-4">
               <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">
@@ -425,8 +389,7 @@ function MpesaModal({ onClose }: { onClose: () => void }) {
   );
 }
 
-// ─── PREVIEW COMPONENTS ───────────────────────────────────────────────────────
-
+// ─── NON-ATS PREVIEWS ────────────────────────────────────────────────────────
 function PreviewTraditional({ cv }: { cv: CVData }) {
   return (
     <div
@@ -1532,7 +1495,166 @@ function PreviewCreative({ cv, accent = "#7c3aed" }: { cv: CVData; accent?: stri
   );
 }
 
-function PreviewATS({ cv, accent = "#1e40af" }: { cv: CVData; accent?: string }) {
+// ─── 4 ATS PREVIEWS ──────────────────────────────────────────────────────────
+
+// ① ATS PRO — CENTRED header, colour-block section labels, body left-aligned
+function PreviewATSPro({ cv }: { cv: CVData }) {
+  const acc = "#1e40af";
+  const SH = ({ label }: { label: string }) => (
+    <div style={{ display: "flex", alignItems: "center", margin: "10px 0 5px" }}>
+      <span
+        style={{
+          background: acc,
+          color: "#fff",
+          fontSize: 6.5,
+          fontWeight: 800,
+          textTransform: "uppercase",
+          letterSpacing: 1.2,
+          padding: "2px 9px",
+          borderRadius: 2,
+          flexShrink: 0,
+        }}
+      >
+        {label}
+      </span>
+      <div style={{ flex: 1, height: 0.5, background: "#e2e8f0", marginLeft: 7 }} />
+    </div>
+  );
+  return (
+    <div
+      style={{
+        background: "#fff",
+        fontFamily: "Arial, sans-serif",
+        fontSize: 8,
+        padding: "22px 26px",
+        color: "#111",
+        minHeight: 700,
+        borderLeft: `5px solid ${acc}`,
+      }}
+    >
+      {/* CENTRED header */}
+      <div style={{ textAlign: "center", marginBottom: 12 }}>
+        <div
+          style={{
+            fontSize: 19,
+            fontWeight: 900,
+            color: "#0f172a",
+            letterSpacing: 2,
+            textTransform: "uppercase",
+            lineHeight: 1,
+          }}
+        >
+          {cv.name}
+        </div>
+        <div
+          style={{
+            fontSize: 8.5,
+            color: acc,
+            fontWeight: 700,
+            letterSpacing: 2,
+            textTransform: "uppercase",
+            marginTop: 4,
+          }}
+        >
+          {cv.title}
+        </div>
+        <div style={{ fontSize: 7, color: "#94a3b8", marginTop: 5, letterSpacing: 0.3 }}>
+          {cv.email} · {cv.phone} · {cv.location} · {cv.linkedin}
+        </div>
+      </div>
+      <div style={{ height: 1.5, background: acc, marginBottom: 2 }} />
+      {/* LEFT-ALIGNED body */}
+      <SH label="Professional Summary" />
+      <div style={{ fontSize: 7.5, color: "#475569", lineHeight: 1.7, marginBottom: 2 }}>{cv.summary}</div>
+      <SH label="Work Experience" />
+      {cv.experiences.map((exp, i) => (
+        <div key={i} style={{ marginBottom: 9 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <span style={{ fontWeight: 700, fontSize: 8.5, color: "#0f172a" }}>
+              {exp.title} — {exp.company}
+            </span>
+            <span style={{ fontSize: 7, color: "#94a3b8", flexShrink: 0, marginLeft: 8 }}>
+              {exp.from} – {exp.to}
+            </span>
+          </div>
+          <div style={{ fontSize: 7, color: "#94a3b8", marginBottom: 2 }}>{exp.location}</div>
+          {exp.bullets.split("\n").map((b, j) =>
+            b ? (
+              <div
+                key={j}
+                style={{ fontSize: 7.5, color: "#475569", lineHeight: 1.65, paddingLeft: 11, position: "relative" }}
+              >
+                <span style={{ position: "absolute", left: 0, color: acc, fontSize: 8, lineHeight: 1.5 }}>▸</span>
+                {b.replace(/^·\s*/, "")}
+              </div>
+            ) : null,
+          )}
+        </div>
+      ))}
+      <SH label="Education" />
+      {cv.educations.map((edu, i) => (
+        <div key={i} style={{ marginBottom: 4 }}>
+          <span style={{ fontWeight: 700, fontSize: 8.5, color: "#0f172a" }}>{edu.degree}</span>
+          <span style={{ fontSize: 7.5, color: "#64748b" }}>
+            {" "}
+            — {edu.school} · {edu.year}
+            {edu.grade ? ` · ${edu.grade}` : ""}
+          </span>
+        </div>
+      ))}
+      <SH label="Core Skills" />
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 3, marginBottom: 6 }}>
+        {cv.skills.split(",").map((s) => (
+          <span
+            key={s}
+            style={{
+              fontSize: 7,
+              background: "#eff6ff",
+              color: acc,
+              border: `1px solid #bfdbfe`,
+              borderRadius: 2,
+              padding: "1.5px 6px",
+              fontWeight: 600,
+            }}
+          >
+            {s.trim()}
+          </span>
+        ))}
+      </div>
+      {cv.certifications && (
+        <>
+          <SH label="Certifications" />
+          <div style={{ fontSize: 7.5, color: "#475569" }}>{cv.certifications}</div>
+        </>
+      )}
+      {cv.languages && (
+        <>
+          <SH label="Languages" />
+          <div style={{ fontSize: 7.5, color: "#475569" }}>{cv.languages}</div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ② ATS CLASSIC — CENTRED header, bold underline section labels, body left-aligned
+function PreviewATSClassic({ cv }: { cv: CVData }) {
+  const SH = ({ label }: { label: string }) => (
+    <div
+      style={{
+        fontSize: 8,
+        fontWeight: 900,
+        color: "#0f172a",
+        textTransform: "uppercase",
+        letterSpacing: 2,
+        borderBottom: "1.5px solid #0f172a",
+        paddingBottom: 2,
+        margin: "10px 0 5px",
+      }}
+    >
+      {label}
+    </div>
+  );
   return (
     <div
       style={{
@@ -1542,135 +1664,302 @@ function PreviewATS({ cv, accent = "#1e40af" }: { cv: CVData; accent?: string })
         padding: "24px 28px",
         color: "#111",
         minHeight: 700,
-        borderLeft: `5px solid ${accent}`,
       }}
     >
-      <div style={{ marginBottom: 12 }}>
-        <div style={{ fontSize: 18, fontWeight: "bold", color: "#000" }}>{cv.name}</div>
-        <div style={{ fontSize: 9, color: accent, fontWeight: "bold", marginTop: 2 }}>{cv.title}</div>
-        <div style={{ fontSize: 8, color: "#444", marginTop: 4 }}>
-          {cv.email} · {cv.phone} · {cv.location} · {cv.linkedin}
+      {/* CENTRED header */}
+      <div style={{ textAlign: "center", marginBottom: 10 }}>
+        <div style={{ fontSize: 20, fontWeight: 900, color: "#0f172a", letterSpacing: -0.3, lineHeight: 1 }}>
+          {cv.name}
+        </div>
+        <div style={{ fontSize: 8, color: "#475569", letterSpacing: 2, textTransform: "uppercase", marginTop: 4 }}>
+          {cv.title}
+        </div>
+        <div style={{ height: 1, background: "#e2e8f0", margin: "6px auto", width: "60%" }} />
+        <div style={{ fontSize: 7.5, color: "#94a3b8" }}>
+          {cv.email} · {cv.phone} · {cv.location}
         </div>
       </div>
-      <div style={{ height: 1.5, background: accent, marginBottom: 10 }} />
-      <div
-        style={{
-          fontSize: 8,
-          fontWeight: "bold",
-          textTransform: "uppercase",
-          letterSpacing: 1,
-          color: accent,
-          marginBottom: 4,
-        }}
-      >
-        Professional Summary
-      </div>
-      <div style={{ fontSize: 8, color: "#333", lineHeight: 1.7, marginBottom: 10 }}>{cv.summary}</div>
-      <div style={{ height: 0.5, background: "#ccc", marginBottom: 8 }} />
-      <div
-        style={{
-          fontSize: 8,
-          fontWeight: "bold",
-          textTransform: "uppercase",
-          letterSpacing: 1,
-          color: accent,
-          marginBottom: 6,
-        }}
-      >
-        Work Experience
-      </div>
+      {/* LEFT-ALIGNED body */}
+      <SH label="Experience" />
       {cv.experiences.map((exp, i) => (
         <div key={i} style={{ marginBottom: 9 }}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ fontWeight: "bold", fontSize: 9 }}>
-              {exp.title} | {exp.company}
-            </span>
-            <span style={{ fontSize: 7.5, color: "#555" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <span style={{ fontWeight: 700, fontSize: 9, color: "#0f172a" }}>{exp.title}</span>
+            <span style={{ fontSize: 7.5, color: "#6b7280", flexShrink: 0, marginLeft: 8 }}>
               {exp.from} – {exp.to}
             </span>
           </div>
-          <div style={{ fontSize: 7.5, color: "#777", marginBottom: 2 }}>{exp.location}</div>
-          {exp.bullets.split("\n").map(
-            (b, j) =>
-              b && (
-                <div key={j} style={{ fontSize: 8, color: "#333", lineHeight: 1.6 }}>
-                  {b}
-                </div>
-              ),
+          <div style={{ fontSize: 7.5, color: "#64748b", marginBottom: 2 }}>
+            {exp.company} · {exp.location}
+          </div>
+          {exp.bullets.split("\n").map((b, j) =>
+            b ? (
+              <div
+                key={j}
+                style={{ fontSize: 7.5, color: "#475569", lineHeight: 1.65, paddingLeft: 10, position: "relative" }}
+              >
+                <span style={{ position: "absolute", left: 0, color: "#94a3b8" }}>–</span>
+                {b.replace(/^·\s*/, "")}
+              </div>
+            ) : null,
           )}
         </div>
       ))}
-      <div style={{ height: 0.5, background: "#ccc", marginBottom: 8 }} />
-      <div
-        style={{
-          fontSize: 8,
-          fontWeight: "bold",
-          textTransform: "uppercase",
-          letterSpacing: 1,
-          color: accent,
-          marginBottom: 6,
-        }}
-      >
-        Education
-      </div>
+      <SH label="Education" />
       {cv.educations.map((edu, i) => (
         <div key={i} style={{ marginBottom: 5 }}>
-          <span style={{ fontWeight: "bold", fontSize: 8.5 }}>{edu.degree}</span>
-          <span style={{ fontSize: 8, color: "#555" }}>
+          <span style={{ fontWeight: 700, fontSize: 9, color: "#0f172a" }}>{edu.degree}</span>
+          <span style={{ fontSize: 7.5, color: "#475569" }}>
             {" "}
-            | {edu.school} | {edu.year}
-            {edu.grade ? ` | ${edu.grade}` : ""}
+            · {edu.school} · {edu.year}
+            {edu.grade ? ` · ${edu.grade}` : ""}
           </span>
         </div>
       ))}
-      <div style={{ height: 0.5, background: "#ccc", marginBottom: 8 }} />
-      <div
-        style={{
-          fontSize: 8,
-          fontWeight: "bold",
-          textTransform: "uppercase",
-          letterSpacing: 1,
-          color: accent,
-          marginBottom: 4,
-        }}
-      >
-        Skills
-      </div>
-      <div style={{ fontSize: 8, color: "#333", marginBottom: 8 }}>{cv.skills}</div>
+      <SH label="Skills" />
+      <div style={{ fontSize: 7.5, color: "#475569", marginBottom: 6 }}>{cv.skills}</div>
       {cv.certifications && (
         <>
-          <div style={{ height: 0.5, background: "#ccc", marginBottom: 8 }} />
-          <div
-            style={{
-              fontSize: 8,
-              fontWeight: "bold",
-              textTransform: "uppercase",
-              letterSpacing: 1,
-              color: accent,
-              marginBottom: 4,
-            }}
-          >
-            Certifications
-          </div>
-          <div style={{ fontSize: 8, color: "#333", marginBottom: 8 }}>{cv.certifications}</div>
+          <SH label="Certifications" />
+          <div style={{ fontSize: 7.5, color: "#475569", marginBottom: 6 }}>{cv.certifications}</div>
         </>
       )}
       {cv.languages && (
         <>
-          <div style={{ height: 0.5, background: "#ccc", marginBottom: 8 }} />
-          <div
-            style={{
-              fontSize: 8,
-              fontWeight: "bold",
-              textTransform: "uppercase",
-              letterSpacing: 1,
-              color: accent,
-              marginBottom: 4,
-            }}
-          >
-            Languages
+          <SH label="Languages" />
+          <div style={{ fontSize: 7.5, color: "#475569" }}>{cv.languages}</div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ③ ATS MODERN — LEFT-ALIGNED header, dot accent section labels
+function PreviewATSModern({ cv }: { cv: CVData }) {
+  const acc = "#1e40af";
+  const SH = ({ label }: { label: string }) => (
+    <div style={{ display: "flex", alignItems: "center", gap: 5, margin: "10px 0 5px" }}>
+      <div style={{ width: 6, height: 6, borderRadius: "50%", background: acc, flexShrink: 0 }} />
+      <span style={{ fontSize: 7.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, color: "#0f172a" }}>
+        {label}
+      </span>
+      <div style={{ flex: 1, height: 0.5, background: "#e2e8f0" }} />
+    </div>
+  );
+  return (
+    <div style={{ background: "#fafafa", fontFamily: "Arial, sans-serif", fontSize: 8, minHeight: 700 }}>
+      {/* LEFT-ALIGNED dark header */}
+      <div style={{ background: "#1e293b", padding: "16px 20px" }}>
+        <div style={{ fontSize: 17, fontWeight: 900, color: "#f8fafc", letterSpacing: 0.5 }}>{cv.name}</div>
+        <div style={{ fontSize: 7.5, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 1.5, marginTop: 3 }}>
+          {cv.title}
+        </div>
+      </div>
+      <div
+        style={{
+          background: "#f1f5f9",
+          padding: "5px 20px",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 8,
+          borderBottom: "1px solid #e2e8f0",
+        }}
+      >
+        <span style={{ fontSize: 7, color: "#64748b" }}>{cv.email}</span>
+        <span style={{ fontSize: 7, color: "#cbd5e1" }}>·</span>
+        <span style={{ fontSize: 7, color: "#64748b" }}>{cv.phone}</span>
+        <span style={{ fontSize: 7, color: "#cbd5e1" }}>·</span>
+        <span style={{ fontSize: 7, color: "#64748b" }}>{cv.location}</span>
+        <span style={{ fontSize: 7, color: "#cbd5e1" }}>·</span>
+        <span style={{ fontSize: 7, color: "#64748b" }}>{cv.linkedin}</span>
+      </div>
+      <div style={{ padding: "8px 20px 14px" }}>
+        <SH label="Summary" />
+        <div style={{ fontSize: 7.5, color: "#475569", lineHeight: 1.7, marginBottom: 2 }}>{cv.summary}</div>
+        <SH label="Experience" />
+        {cv.experiences.map((exp, i) => (
+          <div key={i} style={{ marginBottom: 9 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+              <span style={{ fontWeight: 700, fontSize: 8.5, color: "#0f172a" }}>{exp.title}</span>
+              <span style={{ fontSize: 7, color: "#94a3b8", flexShrink: 0, marginLeft: 8 }}>
+                {exp.from} – {exp.to}
+              </span>
+            </div>
+            <div style={{ fontSize: 7.5, color: "#64748b", marginBottom: 2 }}>
+              {exp.company} · {exp.location}
+            </div>
+            {exp.bullets.split("\n").map((b, j) =>
+              b ? (
+                <div
+                  key={j}
+                  style={{ fontSize: 7.5, color: "#475569", lineHeight: 1.65, paddingLeft: 12, position: "relative" }}
+                >
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 2,
+                      top: 4.5,
+                      width: 3,
+                      height: 3,
+                      borderRadius: "50%",
+                      background: acc,
+                      display: "inline-block",
+                    }}
+                  />
+                  {b.replace(/^·\s*/, "")}
+                </div>
+              ) : null,
+            )}
           </div>
-          <div style={{ fontSize: 8, color: "#333" }}>{cv.languages}</div>
+        ))}
+        <SH label="Education" />
+        {cv.educations.map((edu, i) => (
+          <div key={i} style={{ marginBottom: 4 }}>
+            <span style={{ fontWeight: 700, fontSize: 8.5, color: "#0f172a" }}>{edu.degree}</span>
+            <span style={{ fontSize: 7.5, color: "#64748b" }}>
+              {" "}
+              — {edu.school} · {edu.year}
+            </span>
+          </div>
+        ))}
+        <SH label="Skills" />
+        <div style={{ fontSize: 7.5, color: "#475569", marginBottom: 4 }}>{cv.skills}</div>
+        {cv.certifications && (
+          <>
+            <SH label="Certifications" />
+            <div style={{ fontSize: 7.5, color: "#475569", marginBottom: 4 }}>{cv.certifications}</div>
+          </>
+        )}
+        {cv.languages && (
+          <>
+            <SH label="Languages" />
+            <div style={{ fontSize: 7.5, color: "#475569" }}>{cv.languages}</div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ④ ATS EXECUTIVE — LEFT-ALIGNED header, spaced grey uppercase labels, no lines
+function PreviewATSExecutive({ cv }: { cv: CVData }) {
+  const SH = ({ label }: { label: string }) => (
+    <div
+      style={{
+        fontSize: 7,
+        fontWeight: 900,
+        textTransform: "uppercase",
+        letterSpacing: 3,
+        color: "#94a3b8",
+        margin: "12px 0 5px",
+      }}
+    >
+      {label}
+    </div>
+  );
+  return (
+    <div
+      style={{
+        background: "#fff",
+        fontFamily: "Arial, sans-serif",
+        fontSize: 8,
+        padding: "26px 28px",
+        color: "#111",
+        minHeight: 700,
+      }}
+    >
+      {/* LEFT-ALIGNED header */}
+      <div style={{ marginBottom: 8 }}>
+        <div
+          style={{
+            fontSize: 20,
+            fontWeight: 900,
+            color: "#0f172a",
+            letterSpacing: -0.5,
+            textTransform: "uppercase",
+            lineHeight: 1,
+          }}
+        >
+          {cv.name}
+        </div>
+        <div style={{ fontSize: 7.5, color: "#64748b", letterSpacing: 3, textTransform: "uppercase", marginTop: 5 }}>
+          {cv.title}
+        </div>
+        <div
+          style={{
+            height: 1,
+            background: "linear-gradient(90deg,#0f172a 40%,transparent)",
+            marginTop: 6,
+            marginBottom: 5,
+          }}
+        />
+        <div style={{ fontSize: 7.5, color: "#94a3b8", display: "flex", gap: 10, flexWrap: "wrap" }}>
+          <span>{cv.email}</span>
+          <span>{cv.phone}</span>
+          <span>{cv.location}</span>
+        </div>
+      </div>
+      {/* LEFT-ALIGNED body */}
+      <SH label="Professional Summary" />
+      <div
+        style={{
+          fontSize: 7.5,
+          color: "#475569",
+          lineHeight: 1.8,
+          borderLeft: "2px solid #e2e8f0",
+          paddingLeft: 8,
+          marginBottom: 2,
+        }}
+      >
+        {cv.summary}
+      </div>
+      <SH label="Experience" />
+      {cv.experiences.map((exp, i) => (
+        <div key={i} style={{ marginBottom: 10 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+            <span style={{ fontWeight: 900, fontSize: 9, color: "#0f172a" }}>{exp.title}</span>
+            <span style={{ fontSize: 7.5, color: "#94a3b8", flexShrink: 0, marginLeft: 8 }}>
+              {exp.from} – {exp.to}
+            </span>
+          </div>
+          <div style={{ fontSize: 7.5, color: "#475569", fontStyle: "italic", marginBottom: 2 }}>{exp.company}</div>
+          {exp.bullets.split("\n").map((b, j) =>
+            b ? (
+              <div
+                key={j}
+                style={{ fontSize: 7.5, color: "#475569", lineHeight: 1.7, paddingLeft: 8, position: "relative" }}
+              >
+                <span style={{ position: "absolute", left: 0, color: "#0f172a", fontSize: 10, lineHeight: 1.3 }}>
+                  ·
+                </span>
+                {b.replace(/^·\s*/, "")}
+              </div>
+            ) : null,
+          )}
+        </div>
+      ))}
+      <SH label="Education" />
+      {cv.educations.map((edu, i) => (
+        <div key={i} style={{ marginBottom: 4 }}>
+          <span style={{ fontWeight: 900, fontSize: 9, color: "#0f172a" }}>{edu.degree}</span>
+          <span style={{ fontSize: 7.5, color: "#64748b" }}>
+            {" "}
+            · {edu.school} · {edu.year}
+          </span>
+        </div>
+      ))}
+      <SH label="Skills" />
+      <div style={{ fontSize: 7.5, color: "#475569", letterSpacing: 0.3, marginBottom: 4 }}>{cv.skills}</div>
+      {cv.certifications && (
+        <>
+          <SH label="Certifications" />
+          <div style={{ fontSize: 7.5, color: "#475569", marginBottom: 4 }}>{cv.certifications}</div>
+        </>
+      )}
+      {cv.languages && (
+        <>
+          <SH label="Languages" />
+          <div style={{ fontSize: 7.5, color: "#475569" }}>{cv.languages}</div>
         </>
       )}
     </div>
@@ -1685,10 +1974,10 @@ const PREVIEWS: Record<string, (cv: CVData) => JSX.Element> = {
   basic: (cv) => <PreviewTraditional cv={cv} />,
   modern: (cv) => <PreviewTraditional cv={cv} />,
   "modern-dark": (cv) => <PreviewTraditional cv={cv} />,
-  "ats-pro": (cv) => <PreviewATS cv={cv} accent="#1e40af" />,
-  "ats-classic": (cv) => <PreviewATS cv={cv} accent="#1a2332" />,
-  "ats-modern": (cv) => <PreviewATS cv={cv} accent="#1e40af" />,
-  "ats-executive": (cv) => <PreviewATS cv={cv} accent="#0f172a" />,
+  "ats-pro": (cv) => <PreviewATSPro cv={cv} />, // centred header
+  "ats-classic": (cv) => <PreviewATSClassic cv={cv} />, // centred header
+  "ats-modern": (cv) => <PreviewATSModern cv={cv} />, // left header
+  "ats-executive": (cv) => <PreviewATSExecutive cv={cv} />, // left header
   minimal: (cv) => <PreviewMinimalist cv={cv} />,
   "minimalist-pro": (cv) => <PreviewMinimalist cv={cv} />,
   creative: (cv) => <PreviewCreative cv={cv} accent="#7c3aed" />,
@@ -1714,7 +2003,6 @@ export default function CVEditorPage() {
   const [showMpesa, setShowMpesa] = useState(false);
 
   const update = (field: keyof CVData, value: string) => setCv((prev) => ({ ...prev, [field]: value }));
-
   const updateExp = (i: number, field: keyof Experience, value: string) => {
     const exps = [...cv.experiences];
     exps[i] = { ...exps[i], [field]: value };
@@ -1727,7 +2015,6 @@ export default function CVEditorPage() {
     }));
   const removeExp = (i: number) =>
     setCv((prev) => ({ ...prev, experiences: prev.experiences.filter((_, idx) => idx !== i) }));
-
   const updateEdu = (i: number, field: keyof Education, value: string) => {
     const edus = [...cv.educations];
     edus[i] = { ...edus[i], [field]: value };
@@ -1744,7 +2031,6 @@ export default function CVEditorPage() {
   return (
     <>
       {showMpesa && <MpesaModal onClose={() => setShowMpesa(false)} />}
-
       <div className="cv-editor-root">
         <div className="container max-w-7xl mx-auto">
           <div className="flex items-center gap-4 mb-6">
@@ -1756,11 +2042,8 @@ export default function CVEditorPage() {
             </button>
             <h1 className="text-xl font-bold">{templateLabel} Template Editor</h1>
           </div>
-
           <div className="grid lg:grid-cols-2 gap-8">
-            {/* ── FORM ── */}
             <div className="space-y-6 max-h-[85vh] overflow-y-auto pr-2">
-              {/* Personal Details */}
               <div className="rounded-xl border border-border bg-card p-5">
                 <h2 className="font-bold text-base mb-4">Personal Details</h2>
                 <div className="grid grid-cols-2 gap-3">
@@ -1788,8 +2071,6 @@ export default function CVEditorPage() {
                   />
                 </div>
               </div>
-
-              {/* Summary */}
               <div className="rounded-xl border border-border bg-card p-5">
                 <h2 className="font-bold text-base mb-3">Professional Summary</h2>
                 <Textarea
@@ -1799,8 +2080,6 @@ export default function CVEditorPage() {
                   rows={4}
                 />
               </div>
-
-              {/* Experience */}
               <div className="rounded-xl border border-border bg-card p-5">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="font-bold text-base">Work Experience</h2>
@@ -1854,8 +2133,6 @@ export default function CVEditorPage() {
                   ))}
                 </div>
               </div>
-
-              {/* Education */}
               <div className="rounded-xl border border-border bg-card p-5">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="font-bold text-base">Education</h2>
@@ -1904,8 +2181,6 @@ export default function CVEditorPage() {
                   ))}
                 </div>
               </div>
-
-              {/* Additional */}
               <div className="rounded-xl border border-border bg-card p-5 space-y-3">
                 <h2 className="font-bold text-base mb-1">Additional Information</h2>
                 <div>
@@ -1934,11 +2209,7 @@ export default function CVEditorPage() {
                   />
                 </div>
               </div>
-
-              {/* ── JOB SCORE MATCH ── */}
               <JobScoreMatch cv={cv} />
-
-              {/* ── DOWNLOAD BUTTON → M-PESA ── */}
               <div className="flex gap-3 pb-6">
                 <Button
                   onClick={() => setShowMpesa(true)}
@@ -1948,8 +2219,6 @@ export default function CVEditorPage() {
                 </Button>
               </div>
             </div>
-
-            {/* ── PREVIEW ── */}
             <div className="sticky top-24">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-semibold text-muted-foreground">Live Preview</span>
