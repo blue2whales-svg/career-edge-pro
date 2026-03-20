@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Trash2, Download, ArrowLeft } from "lucide-react";
+import { TEMPLATES } from "./TemplatesPage"; // adjust path if your file is elsewhere
 
 interface Experience {
   title: string;
@@ -69,7 +70,40 @@ const defaultCV: CVData = {
   certifications: "CPA-K, Google Analytics Certificate",
 };
 
-// ─── PREVIEW: TRADITIONAL (single-column, serif) ────────────────────────────
+// Build a CVData object from a template's person data
+function buildCVFromTemplate(templateId: string): CVData {
+  const template = TEMPLATES.find((t) => t.id === templateId);
+  if (!template) return defaultCV;
+  const p = template.person;
+  return {
+    name: p.name,
+    title: p.title,
+    email: p.email,
+    phone: p.phone,
+    location: p.location,
+    linkedin: `linkedin.com/in/${p.name.toLowerCase().replace(/\s+/g, "")}`,
+    summary: p.summary,
+    experiences: p.experience.map((exp) => ({
+      title: exp.role,
+      company: exp.company,
+      location: p.location,
+      from: exp.dates.split("–")[0]?.trim() ?? "",
+      to: exp.dates.split("–")[1]?.trim() ?? "Present",
+      bullets: exp.bullets.map((b) => `· ${b}`).join("\n"),
+    })),
+    educations: p.education.map((edu) => ({
+      degree: edu.degree,
+      school: edu.school,
+      year: edu.year,
+      grade: "",
+    })),
+    skills: p.skills.join(", "),
+    languages: p.languages.join(", "),
+    certifications: p.certifications.join(", "),
+  };
+}
+
+// ─── PREVIEW: TRADITIONAL ────────────────────────────────────────────────────
 function PreviewTraditional({ cv }: { cv: CVData }) {
   return (
     <div
@@ -165,7 +199,7 @@ function PreviewTraditional({ cv }: { cv: CVData }) {
   );
 }
 
-// ─── PREVIEW: SIDEBAR (dark left panel + light right) ───────────────────────
+// ─── PREVIEW: SIDEBAR ────────────────────────────────────────────────────────
 function PreviewSidebar({ cv, accent = "#38bdf8" }: { cv: CVData; accent?: string }) {
   return (
     <div style={{ background: "#fff", fontFamily: "Arial, sans-serif", fontSize: 8, display: "flex", minHeight: 700 }}>
@@ -346,7 +380,7 @@ function PreviewSidebar({ cv, accent = "#38bdf8" }: { cv: CVData; accent?: strin
   );
 }
 
-// ─── PREVIEW: EXECUTIVE (dark header + gold accents) ────────────────────────
+// ─── PREVIEW: EXECUTIVE ──────────────────────────────────────────────────────
 function PreviewExecutive({
   cv,
   accentColor = "#c9a84c",
@@ -532,7 +566,7 @@ function PreviewExecutive({
   );
 }
 
-// ─── PREVIEW: TWO-COLUMN (bold header + right sidebar) ──────────────────────
+// ─── PREVIEW: TWO-COLUMN ─────────────────────────────────────────────────────
 function PreviewTwoColumn({ cv, accent = "#2563eb" }: { cv: CVData; accent?: string }) {
   return (
     <div style={{ background: "#fff", fontFamily: "Georgia, serif", fontSize: 8, minHeight: 700 }}>
@@ -711,7 +745,7 @@ function PreviewTwoColumn({ cv, accent = "#2563eb" }: { cv: CVData; accent?: str
   );
 }
 
-// ─── PREVIEW: PHOTO (dark header with initials avatar) ──────────────────────
+// ─── PREVIEW: PHOTO ──────────────────────────────────────────────────────────
 function PreviewPhoto({ cv, accent = "#2563eb" }: { cv: CVData; accent?: string }) {
   return (
     <div style={{ background: "#fff", fontFamily: "Georgia, serif", fontSize: 8, minHeight: 700 }}>
@@ -922,7 +956,7 @@ function PreviewPhoto({ cv, accent = "#2563eb" }: { cv: CVData; accent?: string 
   );
 }
 
-// ─── PREVIEW: MINIMALIST (clean, monochrome, generous spacing) ───────────────
+// ─── PREVIEW: MINIMALIST ─────────────────────────────────────────────────────
 function PreviewMinimalist({ cv }: { cv: CVData }) {
   return (
     <div
@@ -1049,7 +1083,7 @@ function PreviewMinimalist({ cv }: { cv: CVData }) {
   );
 }
 
-// ─── PREVIEW: CREATIVE (bold accent header, colorful skill tags) ─────────────
+// ─── PREVIEW: CREATIVE ───────────────────────────────────────────────────────
 function PreviewCreative({ cv, accent = "#7c3aed" }: { cv: CVData; accent?: string }) {
   return (
     <div style={{ background: "#fff", fontFamily: "Arial, sans-serif", fontSize: 8, minHeight: 700 }}>
@@ -1181,7 +1215,7 @@ function PreviewCreative({ cv, accent = "#7c3aed" }: { cv: CVData; accent?: stri
   );
 }
 
-// ─── PREVIEW: ATS (plain, no color, maximum scanner compatibility) ────────────
+// ─── PREVIEW: ATS ────────────────────────────────────────────────────────────
 function PreviewATS({ cv, accent = "#1e40af" }: { cv: CVData; accent?: string }) {
   return (
     <div
@@ -1328,45 +1362,29 @@ function PreviewATS({ cv, accent = "#1e40af" }: { cv: CVData; accent?: string })
 }
 
 // ─── MASTER PREVIEW MAP ──────────────────────────────────────────────────────
-// Maps every template ID from TemplatesPage to the correct preview component
 const PREVIEWS: Record<string, (cv: CVData) => JSX.Element> = {
-  // ── Simple / single-column ──────────────────────────────────────────────
   classic: (cv) => <PreviewTraditional cv={cv} />,
   traditional: (cv) => <PreviewTraditional cv={cv} />,
   clean: (cv) => <PreviewTraditional cv={cv} />,
   basic: (cv) => <PreviewTraditional cv={cv} />,
   modern: (cv) => <PreviewTraditional cv={cv} />,
   "modern-dark": (cv) => <PreviewTraditional cv={cv} />,
-
-  // ── ATS ─────────────────────────────────────────────────────────────────
   "ats-pro": (cv) => <PreviewATS cv={cv} accent="#1e40af" />,
   "ats-classic": (cv) => <PreviewATS cv={cv} accent="#1a2332" />,
   "ats-modern": (cv) => <PreviewATS cv={cv} accent="#1e40af" />,
   "ats-executive": (cv) => <PreviewATS cv={cv} accent="#0f172a" />,
-
-  // ── Minimalist ──────────────────────────────────────────────────────────
   minimal: (cv) => <PreviewMinimalist cv={cv} />,
   "minimalist-pro": (cv) => <PreviewMinimalist cv={cv} />,
-
-  // ── Creative ────────────────────────────────────────────────────────────
   creative: (cv) => <PreviewCreative cv={cv} accent="#7c3aed" />,
   "creative-bold": (cv) => <PreviewCreative cv={cv} accent="#ec4899" />,
   "creative-minimal": (cv) => <PreviewCreative cv={cv} accent="#6366f1" />,
-
-  // ── Executive ───────────────────────────────────────────────────────────
   "executive-classic": (cv) => <PreviewExecutive cv={cv} accentColor="#c9a84c" headerBg="#0f172a" />,
   "executive-gold": (cv) => <PreviewExecutive cv={cv} accentColor="#c9a84c" headerBg="#0f172a" />,
   "executive-navy": (cv) => <PreviewExecutive cv={cv} accentColor="#93c5fd" headerBg="#1e3a5f" />,
-
-  // ── Sidebar ─────────────────────────────────────────────────────────────
   sidebar: (cv) => <PreviewSidebar cv={cv} accent="#38bdf8" />,
   "two-column-creative": (cv) => <PreviewSidebar cv={cv} accent="#7c3aed" />,
-
-  // ── Two-Column ──────────────────────────────────────────────────────────
   "two-column": (cv) => <PreviewTwoColumn cv={cv} accent="#2563eb" />,
   "two-column-pro": (cv) => <PreviewTwoColumn cv={cv} accent="#c9a84c" />,
-
-  // ── Photo / Picture ─────────────────────────────────────────────────────
   picture: (cv) => <PreviewPhoto cv={cv} accent="#2563eb" />,
   "picture-classic": (cv) => <PreviewPhoto cv={cv} accent="#2563eb" />,
   "picture-modern": (cv) => <PreviewPhoto cv={cv} accent="#0ea5e9" />,
@@ -1375,7 +1393,9 @@ const PREVIEWS: Record<string, (cv: CVData) => JSX.Element> = {
 export default function CVEditorPage() {
   const { templateId } = useParams<{ templateId: string }>();
   const navigate = useNavigate();
-  const [cv, setCv] = useState<CVData>(defaultCV);
+
+  // Pre-fill the form with the selected template's sample person data
+  const [cv, setCv] = useState<CVData>(() => buildCVFromTemplate(templateId ?? "classic"));
 
   const update = (field: keyof CVData, value: string) => setCv((prev) => ({ ...prev, [field]: value }));
 
@@ -1407,12 +1427,10 @@ export default function CVEditorPage() {
     }));
 
   const removeEdu = (i: number) =>
-    setCv((prev) => ({ ...prev, educations: prev.educations.filter((_, idx) => idx !== i) }));
+    setCv((prev) => ({ ...prev, educations: cv.educations.filter((_, idx) => idx !== i) }));
 
-  // Resolve the correct preview renderer — falls back to classic if ID unknown
   const preview = PREVIEWS[templateId ?? "classic"] ?? PREVIEWS["classic"];
 
-  // Human-readable label for the header
   const templateLabel = templateId ? templateId.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Classic";
 
   return (
@@ -1430,7 +1448,6 @@ export default function CVEditorPage() {
         <div className="grid lg:grid-cols-2 gap-8">
           {/* FORM */}
           <div className="space-y-6 max-h-[85vh] overflow-y-auto pr-2">
-            {/* Personal Details */}
             <div className="rounded-xl border border-border bg-card p-5">
               <h2 className="font-bold text-base mb-4">Personal Details</h2>
               <div className="grid grid-cols-2 gap-3">
@@ -1459,7 +1476,6 @@ export default function CVEditorPage() {
               </div>
             </div>
 
-            {/* Summary */}
             <div className="rounded-xl border border-border bg-card p-5">
               <h2 className="font-bold text-base mb-3">Professional Summary</h2>
               <Textarea
@@ -1470,7 +1486,6 @@ export default function CVEditorPage() {
               />
             </div>
 
-            {/* Experience */}
             <div className="rounded-xl border border-border bg-card p-5">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-bold text-base">Work Experience</h2>
@@ -1525,7 +1540,6 @@ export default function CVEditorPage() {
               </div>
             </div>
 
-            {/* Education */}
             <div className="rounded-xl border border-border bg-card p-5">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-bold text-base">Education</h2>
@@ -1575,7 +1589,6 @@ export default function CVEditorPage() {
               </div>
             </div>
 
-            {/* Additional */}
             <div className="rounded-xl border border-border bg-card p-5 space-y-3">
               <h2 className="font-bold text-base mb-1">Additional Information</h2>
               <div>
