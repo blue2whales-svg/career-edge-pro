@@ -1148,7 +1148,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
 
   if (template.layout === "sidebar") {
     return (
-      <div style={{ display: "flex", width: "100%", height: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
+      <div style={{ display: "flex", width: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
         <div style={{ width: "34%", background: "#1e293b", padding: "28px 16px", color: "#fff", flexShrink: 0 }}>
           <div
             style={{
@@ -1298,7 +1298,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
 
   if (template.layout === "two-column") {
     return (
-      <div style={{ width: "100%", height: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
+      <div style={{ width: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
         <div style={{ background: accent, padding: "22px 24px 16px" }}>
           <div style={{ fontSize: 30, fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1 }}>
             {p.name}
@@ -1435,7 +1435,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
 
   if (template.layout === "photo") {
     return (
-      <div style={{ width: "100%", height: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
+      <div style={{ width: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
         <div style={{ background: "#1e293b", padding: "18px 22px", display: "flex", alignItems: "center", gap: 16 }}>
           <div
             style={{
@@ -1594,7 +1594,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
   const sectionLabelColor = isMinimalist ? "#9ca3af" : "#0f172a";
 
   return (
-    <div style={{ width: "100%", height: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
+    <div style={{ width: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
       <div
         style={{
           background: headerBg,
@@ -1750,7 +1750,7 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
   const navigate = useNavigate();
   const [selectedColor, setSelectedColor] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [scale, setScale] = useState(0.315);
+  const [scale, setScale] = useState(0.4);
 
   useEffect(() => {
     const updateScale = () => {
@@ -1774,7 +1774,7 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
       onClick={() => navigate(`/cv-editor/${template.id}`)}
     >
       {/* CV Preview */}
-      <div ref={containerRef} className="relative aspect-[2/3] bg-white overflow-hidden">
+      <div ref={containerRef} className="relative aspect-[3/4] bg-white overflow-hidden">
         <div
           style={{
             position: "absolute",
