@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Check, FileText, FileDown } from "lucide-react";
@@ -1750,9 +1750,642 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
 }
 
 /* ── Template Card ── */
+/* ── Mini CV Preview Component ── */
+function MiniCVPreview({ template }: { template: TemplateInfo }) {
+  const p = template.person;
+  const accent = template.colors[0];
+  const isExecutive = template.category === "Executive";
+  const isCreative = template.category === "Creative";
+  const isMinimalist = template.category === "Minimalist";
+  const isATS = template.category === "ATS";
+
+  const headerBg = isExecutive ? "#0f172a" : isCreative ? accent : isATS || isMinimalist ? "#fff" : "#1e293b";
+  const headerText = headerBg === "#fff" ? "#0f172a" : "#fff";
+  const accentOnHeader = isExecutive ? "#c9a84c" : isCreative ? "#fff" : accent;
+  const bodyAccent = isExecutive ? "#c9a84c" : accent;
+  const sectionLabelColor = isMinimalist ? "#9ca3af" : "#0f172a";
+
+  if (template.layout === "sidebar") {
+    return (
+      <div style={{ display: "flex", width: "100%", height: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
+        {/* Sidebar */}
+        <div style={{ width: "34%", background: "#1e293b", padding: "32px 16px", color: "#fff", flexShrink: 0 }}>
+          <div
+            style={{
+              width: 64,
+              height: 64,
+              borderRadius: "50%",
+              background: accent,
+              margin: "0 auto 12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 22,
+              fontWeight: 800,
+              color: "#fff",
+              border: "3px solid rgba(255,255,255,0.2)",
+            }}
+          >
+            {p.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")}
+          </div>
+          <div
+            style={{
+              fontSize: 15,
+              fontWeight: 800,
+              textAlign: "center",
+              color: "#fff",
+              lineHeight: 1.2,
+              marginBottom: 4,
+            }}
+          >
+            {p.name}
+          </div>
+          <div
+            style={{
+              fontSize: 9,
+              color: accent,
+              textAlign: "center",
+              textTransform: "uppercase",
+              letterSpacing: 1.5,
+              fontWeight: 700,
+              marginBottom: 20,
+            }}
+          >
+            {p.title}
+          </div>
+          <div
+            style={{ fontSize: 8.5, color: "#94a3b8", marginBottom: 4, display: "flex", alignItems: "center", gap: 4 }}
+          >
+            ✉ {p.email}
+          </div>
+          <div style={{ fontSize: 8.5, color: "#94a3b8", marginBottom: 4 }}>☎ {p.phone}</div>
+          <div style={{ fontSize: 8.5, color: "#94a3b8", marginBottom: 20 }}>⌖ {p.location}</div>
+          <div style={{ height: 1, background: "#334155", marginBottom: 14 }} />
+          <div
+            style={{
+              fontSize: 9,
+              color: accent,
+              fontWeight: 800,
+              textTransform: "uppercase",
+              letterSpacing: 1.5,
+              marginBottom: 10,
+            }}
+          >
+            Skills
+          </div>
+          {p.skills.map((s, i) => (
+            <div key={i} style={{ marginBottom: 8 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
+                <div style={{ fontSize: 8.5, color: "#cbd5e1" }}>{s}</div>
+              </div>
+              <div style={{ height: 3.5, background: "#334155", borderRadius: 2 }}>
+                <div
+                  style={{ height: "100%", width: `${88 - ((i * 9) % 38)}%`, background: accent, borderRadius: 2 }}
+                />
+              </div>
+            </div>
+          ))}
+          <div style={{ height: 1, background: "#334155", margin: "14px 0" }} />
+          <div
+            style={{
+              fontSize: 9,
+              color: accent,
+              fontWeight: 800,
+              textTransform: "uppercase",
+              letterSpacing: 1.5,
+              marginBottom: 10,
+            }}
+          >
+            Education
+          </div>
+          {p.education.map((e, i) => (
+            <div key={i} style={{ marginBottom: 10 }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: "#e2e8f0", lineHeight: 1.3 }}>{e.degree}</div>
+              <div style={{ fontSize: 8, color: "#94a3b8" }}>{e.school}</div>
+              <div style={{ fontSize: 8, color: accent }}>{e.year}</div>
+            </div>
+          ))}
+        </div>
+        {/* Main */}
+        <div style={{ flex: 1, padding: "32px 22px", background: "#fff", overflow: "hidden" }}>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 800,
+              color: "#0f172a",
+              textTransform: "uppercase",
+              letterSpacing: 1.5,
+              borderBottom: `1.5px solid ${accent}`,
+              paddingBottom: 5,
+              marginBottom: 10,
+            }}
+          >
+            Profile
+          </div>
+          <div style={{ fontSize: 9.5, color: "#475569", lineHeight: 1.7, marginBottom: 18 }}>{p.summary}</div>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 800,
+              color: "#0f172a",
+              textTransform: "uppercase",
+              letterSpacing: 1.5,
+              borderBottom: `1.5px solid ${accent}`,
+              paddingBottom: 5,
+              marginBottom: 10,
+            }}
+          >
+            Work Experience
+          </div>
+          {p.experience.map((exp, i) => (
+            <div key={i} style={{ marginBottom: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a", lineHeight: 1.2 }}>{exp.role}</span>
+                <span style={{ fontSize: 8, color: accent, fontWeight: 600, flexShrink: 0, marginLeft: 8 }}>
+                  {exp.dates}
+                </span>
+              </div>
+              <div style={{ fontSize: 9, color: "#64748b", fontWeight: 600, marginBottom: 5 }}>{exp.company}</div>
+              {exp.bullets.map((b, j) => (
+                <div
+                  key={j}
+                  style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, paddingLeft: 12, position: "relative" }}
+                >
+                  <span style={{ position: "absolute", left: 3, top: 0 }}>•</span>
+                  {b}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (template.layout === "two-column") {
+    return (
+      <div style={{ width: "100%", height: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
+        <div style={{ background: accent, padding: "24px 24px 18px" }}>
+          <div style={{ fontSize: 32, fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1 }}>
+            {p.name}
+          </div>
+          <div
+            style={{
+              fontSize: 13,
+              color: "rgba(255,255,255,0.88)",
+              textTransform: "uppercase",
+              letterSpacing: 2,
+              fontWeight: 600,
+              marginTop: 4,
+            }}
+          >
+            {p.title}
+          </div>
+          <div style={{ fontSize: 9, color: "rgba(255,255,255,0.65)", marginTop: 8 }}>
+            {p.email} · {p.phone} · {p.location}
+          </div>
+        </div>
+        <div style={{ display: "flex" }}>
+          <div style={{ flex: 1, padding: "20px 20px" }}>
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 800,
+                color: accent,
+                textTransform: "uppercase",
+                letterSpacing: 1.5,
+                borderBottom: `1.5px solid ${accent}`,
+                paddingBottom: 5,
+                marginBottom: 10,
+              }}
+            >
+              Profile
+            </div>
+            <div style={{ fontSize: 9.5, color: "#475569", lineHeight: 1.7, marginBottom: 16 }}>{p.summary}</div>
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 800,
+                color: accent,
+                textTransform: "uppercase",
+                letterSpacing: 1.5,
+                borderBottom: `1.5px solid ${accent}`,
+                paddingBottom: 5,
+                marginBottom: 10,
+              }}
+            >
+              Work Experience
+            </div>
+            {p.experience.map((exp, i) => (
+              <div key={i} style={{ marginBottom: 12 }}>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a" }}>{exp.role}</span>
+                  <span style={{ fontSize: 8, color: "#64748b" }}>{exp.dates}</span>
+                </div>
+                <div style={{ fontSize: 9, color: accent, fontWeight: 600, marginBottom: 4 }}>{exp.company}</div>
+                {exp.bullets.map((b, j) => (
+                  <div
+                    key={j}
+                    style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, paddingLeft: 12, position: "relative" }}
+                  >
+                    <span style={{ position: "absolute", left: 3 }}>•</span>
+                    {b}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          <div style={{ width: "32%", background: "#f8fafc", padding: "20px 14px", borderLeft: `3px solid ${accent}` }}>
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 800,
+                color: accent,
+                textTransform: "uppercase",
+                letterSpacing: 1.5,
+                marginBottom: 10,
+              }}
+            >
+              Skills
+            </div>
+            {p.skills.map((s, i) => (
+              <div
+                key={i}
+                style={{
+                  fontSize: 9,
+                  color: "#334155",
+                  lineHeight: 1.8,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                }}
+              >
+                <span
+                  style={{
+                    width: 5,
+                    height: 5,
+                    borderRadius: "50%",
+                    background: accent,
+                    display: "inline-block",
+                    flexShrink: 0,
+                  }}
+                />
+                {s}
+              </div>
+            ))}
+            <div style={{ height: 1, background: "#e2e8f0", margin: "14px 0" }} />
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 800,
+                color: accent,
+                textTransform: "uppercase",
+                letterSpacing: 1.5,
+                marginBottom: 10,
+              }}
+            >
+              Education
+            </div>
+            {p.education.map((e, i) => (
+              <div key={i} style={{ marginBottom: 10 }}>
+                <div style={{ fontSize: 9, fontWeight: 700, color: "#0f172a", lineHeight: 1.3 }}>{e.degree}</div>
+                <div style={{ fontSize: 8, color: "#64748b" }}>{e.school}</div>
+                <div style={{ fontSize: 8, color: accent, fontWeight: 600 }}>{e.year}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (template.layout === "photo") {
+    return (
+      <div style={{ width: "100%", height: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
+        <div style={{ background: "#1e293b", padding: "20px 24px", display: "flex", alignItems: "center", gap: 18 }}>
+          <div
+            style={{
+              width: 72,
+              height: 72,
+              borderRadius: "50%",
+              background: accent,
+              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 22,
+              fontWeight: 800,
+              color: "#fff",
+              border: "3px solid rgba(255,255,255,0.2)",
+            }}
+          >
+            {p.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")}
+          </div>
+          <div>
+            <div style={{ fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.3, lineHeight: 1 }}>
+              {p.name}
+            </div>
+            <div
+              style={{
+                fontSize: 11,
+                color: accent,
+                textTransform: "uppercase",
+                letterSpacing: 1.5,
+                fontWeight: 700,
+                marginTop: 4,
+              }}
+            >
+              {p.title}
+            </div>
+            <div style={{ fontSize: 8.5, color: "rgba(255,255,255,0.55)", marginTop: 5 }}>
+              {p.email} · {p.phone} · {p.location}
+            </div>
+          </div>
+        </div>
+        <div style={{ height: 4, background: `linear-gradient(90deg, ${accent}, ${accent}60)` }} />
+        <div style={{ padding: "18px 24px" }}>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 800,
+              color: "#0f172a",
+              textTransform: "uppercase",
+              letterSpacing: 1.5,
+              borderBottom: `1.5px solid ${accent}`,
+              paddingBottom: 5,
+              marginBottom: 10,
+            }}
+          >
+            Profile
+          </div>
+          <div style={{ fontSize: 9.5, color: "#475569", lineHeight: 1.7, marginBottom: 16 }}>{p.summary}</div>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 800,
+              color: "#0f172a",
+              textTransform: "uppercase",
+              letterSpacing: 1.5,
+              borderBottom: `1.5px solid ${accent}`,
+              paddingBottom: 5,
+              marginBottom: 10,
+            }}
+          >
+            Work Experience
+          </div>
+          {p.experience.map((exp, i) => (
+            <div key={i} style={{ marginBottom: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a" }}>{exp.role}</span>
+                <span style={{ fontSize: 8, color: accent, fontWeight: 600 }}>{exp.dates}</span>
+              </div>
+              <div style={{ fontSize: 9, color: accent, fontWeight: 600, marginBottom: 4 }}>{exp.company}</div>
+              {exp.bullets.map((b, j) => (
+                <div
+                  key={j}
+                  style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, paddingLeft: 12, position: "relative" }}
+                >
+                  <span style={{ position: "absolute", left: 3 }}>•</span>
+                  {b}
+                </div>
+              ))}
+            </div>
+          ))}
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 800,
+              color: "#0f172a",
+              textTransform: "uppercase",
+              letterSpacing: 1.5,
+              borderBottom: `1.5px solid ${accent}`,
+              paddingBottom: 5,
+              marginBottom: 10,
+              marginTop: 16,
+            }}
+          >
+            Education
+          </div>
+          {p.education.map((e, i) => (
+            <div key={i} style={{ fontSize: 9.5, color: "#334155", marginBottom: 5 }}>
+              <span style={{ fontWeight: 700 }}>{e.degree}</span> — {e.school} · {e.year}
+            </div>
+          ))}
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 800,
+              color: "#0f172a",
+              textTransform: "uppercase",
+              letterSpacing: 1.5,
+              borderBottom: `1.5px solid ${accent}`,
+              paddingBottom: 5,
+              marginBottom: 10,
+              marginTop: 16,
+            }}
+          >
+            Skills
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+            {p.skills.map((s, i) => (
+              <span
+                key={i}
+                style={{
+                  fontSize: 8,
+                  background: `${accent}18`,
+                  color: accent,
+                  padding: "3px 8px",
+                  borderRadius: 3,
+                  border: `1px solid ${accent}40`,
+                  fontWeight: 600,
+                }}
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── SINGLE ── */
+  return (
+    <div style={{ width: "100%", height: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
+      <div
+        style={{
+          background: headerBg,
+          padding: "22px 24px",
+          borderLeft: isATS ? `6px solid ${accent}` : "none",
+          borderBottom: isMinimalist ? `2px solid ${accent}` : "none",
+        }}
+      >
+        <div
+          style={{
+            fontSize: isExecutive ? 28 : 26,
+            fontWeight: 900,
+            color: headerText,
+            letterSpacing: isExecutive ? 3 : -0.3,
+            lineHeight: 1,
+          }}
+        >
+          {isExecutive ? p.name.toUpperCase() : p.name}
+        </div>
+        <div
+          style={{
+            fontSize: 12,
+            color: accentOnHeader,
+            textTransform: "uppercase",
+            letterSpacing: isExecutive ? 3 : 1.5,
+            fontWeight: 600,
+            marginTop: 5,
+          }}
+        >
+          {p.title}
+        </div>
+        <div style={{ fontSize: 8.5, color: headerBg === "#fff" ? "#64748b" : "rgba(255,255,255,0.6)", marginTop: 6 }}>
+          {p.email} · {p.phone} · {p.location}
+        </div>
+      </div>
+      {isExecutive && <div style={{ height: 4, background: "linear-gradient(90deg,#c9a84c,#f0d080,#c9a84c)" }} />}
+
+      <div style={{ padding: "18px 24px" }}>
+        <div
+          style={{
+            fontSize: 10,
+            fontWeight: 800,
+            color: sectionLabelColor,
+            textTransform: "uppercase",
+            letterSpacing: 1.5,
+            borderBottom: `1.5px solid ${bodyAccent}`,
+            paddingBottom: 5,
+            marginBottom: 10,
+          }}
+        >
+          {isExecutive ? "Executive Summary" : "Profile"}
+        </div>
+        <div style={{ fontSize: 9.5, color: "#475569", lineHeight: 1.7, marginBottom: 16 }}>{p.summary}</div>
+
+        <div
+          style={{
+            fontSize: 10,
+            fontWeight: 800,
+            color: sectionLabelColor,
+            textTransform: "uppercase",
+            letterSpacing: 1.5,
+            borderBottom: `1.5px solid ${bodyAccent}`,
+            paddingBottom: 5,
+            marginBottom: 10,
+          }}
+        >
+          {isExecutive ? "Leadership Experience" : "Work Experience"}
+        </div>
+        {p.experience.map((exp, i) => (
+          <div key={i} style={{ marginBottom: 13 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a", flex: 1, lineHeight: 1.2 }}>
+                {exp.role}
+              </span>
+              <span style={{ fontSize: 8, color: bodyAccent, fontWeight: 600, flexShrink: 0, marginLeft: 8 }}>
+                {exp.dates}
+              </span>
+            </div>
+            <div style={{ fontSize: 9, color: bodyAccent, fontWeight: 600, marginBottom: 4 }}>{exp.company}</div>
+            {exp.bullets.map((b, j) => (
+              <div
+                key={j}
+                style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, paddingLeft: 12, position: "relative" }}
+              >
+                <span style={{ position: "absolute", left: 3 }}>•</span>
+                {b}
+              </div>
+            ))}
+          </div>
+        ))}
+
+        <div
+          style={{
+            fontSize: 10,
+            fontWeight: 800,
+            color: sectionLabelColor,
+            textTransform: "uppercase",
+            letterSpacing: 1.5,
+            borderBottom: `1.5px solid ${bodyAccent}`,
+            paddingBottom: 5,
+            marginBottom: 10,
+            marginTop: 16,
+          }}
+        >
+          Education
+        </div>
+        {p.education.map((e, i) => (
+          <div key={i} style={{ fontSize: 9.5, color: "#334155", marginBottom: 5 }}>
+            <span style={{ fontWeight: 700 }}>{e.degree}</span> — {e.school} · {e.year}
+          </div>
+        ))}
+
+        <div
+          style={{
+            fontSize: 10,
+            fontWeight: 800,
+            color: sectionLabelColor,
+            textTransform: "uppercase",
+            letterSpacing: 1.5,
+            borderBottom: `1.5px solid ${bodyAccent}`,
+            paddingBottom: 5,
+            marginBottom: 10,
+            marginTop: 16,
+          }}
+        >
+          Skills
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+          {p.skills.map((s, i) => (
+            <span
+              key={i}
+              style={{
+                fontSize: 8,
+                background: isExecutive ? "#0f172a" : isMinimalist ? "#f3f4f6" : `${accent}15`,
+                color: isExecutive ? "#c9a84c" : isMinimalist ? "#374151" : accent,
+                padding: "3px 8px",
+                borderRadius: 3,
+                border: `1px solid ${isExecutive ? "#c9a84c40" : isMinimalist ? "#e5e7eb" : accent + "40"}`,
+                fontWeight: 600,
+              }}
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Template Card ── */
 function TemplateCard({ template }: { template: TemplateInfo }) {
   const navigate = useNavigate();
   const [selectedColor, setSelectedColor] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.315);
+
+  useEffect(() => {
+    const updateScale = () => {
+      if (containerRef.current) {
+        const w = containerRef.current.offsetWidth;
+        setScale(w / 794);
+      }
+    };
+    updateScale();
+    window.addEventListener("resize", updateScale);
+    return () => window.removeEventListener("resize", updateScale);
+  }, []);
 
   return (
     <motion.div
@@ -1764,8 +2397,19 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
       onClick={() => navigate(`/cv-editor/${template.id}`)}
     >
       {/* CV Preview */}
-      <div className="relative aspect-[3/4] bg-white overflow-hidden">
-        <div className="absolute inset-0 scale-[1] origin-top-left">
+      <div ref={containerRef} className="relative aspect-[3/4] bg-white overflow-hidden">
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: 794,
+            height: 1123,
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+            pointerEvents: "none",
+          }}
+        >
           <MiniCVPreview template={template} />
         </div>
         {/* Hover overlay */}
@@ -1778,7 +2422,6 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
 
       {/* Card footer */}
       <div className="p-3 space-y-2">
-        {/* Color swatches */}
         <div className="flex items-center gap-1.5">
           {template.colors.map((color, i) => (
             <button
@@ -1806,8 +2449,6 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
             </span>
           </div>
         </div>
-
-        {/* Name & description */}
         <div>
           <h3 className="font-bold text-sm text-foreground">{template.name}</h3>
           <p className="text-xs text-muted-foreground">{template.description}</p>
