@@ -1195,10 +1195,10 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
           >
             {p.title}
           </div>
-          <div style={{ fontSize: 9, color: "#94a3b8", marginBottom: 5 }}>✉ {p.email}</div>
-          <div style={{ fontSize: 9, color: "#94a3b8", marginBottom: 5 }}>☎ {p.phone}</div>
+          <div style={{ fontSize: 9, color: "#94a3b8", marginBottom: 3 }}>✉ {p.email}</div>
+          <div style={{ fontSize: 9, color: "#94a3b8", marginBottom: 3 }}>☎ {p.phone}</div>
           <div style={{ fontSize: 9, color: "#94a3b8", marginBottom: 18 }}>⌖ {p.location}</div>
-          <div style={{ height: 1, background: "#334155", marginBottom: 12 }} />
+          <div style={{ height: 1, background: "#334155", marginBottom: 7 }} />
           <div
             style={{
               fontSize: 10,
@@ -1206,7 +1206,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               fontWeight: 800,
               textTransform: "uppercase",
               letterSpacing: 1,
-              marginBottom: 10,
+              marginBottom: 6,
             }}
           >
             Skills
@@ -1229,13 +1229,13 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               fontWeight: 800,
               textTransform: "uppercase",
               letterSpacing: 1,
-              marginBottom: 10,
+              marginBottom: 6,
             }}
           >
             Education
           </div>
           {p.education.map((e, i) => (
-            <div key={i} style={{ marginBottom: 10 }}>
+            <div key={i} style={{ marginBottom: 6 }}>
               <div style={{ fontSize: 9, fontWeight: 700, color: "#e2e8f0", lineHeight: 1.3 }}>{e.degree}</div>
               <div style={{ fontSize: 8, color: "#94a3b8" }}>
                 {e.school} · {e.year}
@@ -1253,12 +1253,12 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               letterSpacing: 1.5,
               borderBottom: `2px solid ${accent}`,
               paddingBottom: 6,
-              marginBottom: 10,
+              marginBottom: 6,
             }}
           >
             Profile
           </div>
-          <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.7, marginBottom: 16 }}>{p.summary}</div>
+          <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.5, marginBottom: 16 }}>{p.summary}</div>
           <div
             style={{
               fontSize: 11,
@@ -1268,7 +1268,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               letterSpacing: 1.5,
               borderBottom: `2px solid ${accent}`,
               paddingBottom: 6,
-              marginBottom: 10,
+              marginBottom: 6,
             }}
           >
             Work Experience
@@ -1279,7 +1279,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
                 <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a", lineHeight: 1.2 }}>{exp.role}</span>
                 <span style={{ fontSize: 9, color: accent, fontWeight: 600 }}>{exp.dates}</span>
               </div>
-              <div style={{ fontSize: 10, color: "#64748b", fontWeight: 600, marginBottom: 5 }}>{exp.company}</div>
+              <div style={{ fontSize: 10, color: "#64748b", fontWeight: 600, marginBottom: 3 }}>{exp.company}</div>
               {exp.bullets.map((b, j) => (
                 <div
                   key={j}
@@ -1330,12 +1330,12 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
                 letterSpacing: 1.5,
                 borderBottom: `2px solid ${accent}`,
                 paddingBottom: 5,
-                marginBottom: 10,
+                marginBottom: 6,
               }}
             >
               Profile
             </div>
-            <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.7, marginBottom: 14 }}>{p.summary}</div>
+            <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.5, marginBottom: 8 }}>{p.summary}</div>
             <div
               style={{
                 fontSize: 11,
@@ -1345,13 +1345,13 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
                 letterSpacing: 1.5,
                 borderBottom: `2px solid ${accent}`,
                 paddingBottom: 5,
-                marginBottom: 10,
+                marginBottom: 6,
               }}
             >
               Work Experience
             </div>
             {p.experience.map((exp, i) => (
-              <div key={i} style={{ marginBottom: 12 }}>
+              <div key={i} style={{ marginBottom: 7 }}>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a" }}>{exp.role}</span>
                   <span style={{ fontSize: 9, color: "#64748b" }}>{exp.dates}</span>
@@ -1377,7 +1377,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
                 color: accent,
                 textTransform: "uppercase",
                 letterSpacing: 1,
-                marginBottom: 10,
+                marginBottom: 6,
               }}
             >
               Skills
@@ -1415,13 +1415,13 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
                 color: accent,
                 textTransform: "uppercase",
                 letterSpacing: 1,
-                marginBottom: 10,
+                marginBottom: 6,
               }}
             >
               Education
             </div>
             {p.education.map((e, i) => (
-              <div key={i} style={{ marginBottom: 10 }}>
+              <div key={i} style={{ marginBottom: 6 }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: "#0f172a", lineHeight: 1.3 }}>{e.degree}</div>
                 <div style={{ fontSize: 9, color: "#64748b" }}>{e.school}</div>
                 <div style={{ fontSize: 9, color: accent, fontWeight: 600 }}>{e.year}</div>
@@ -1480,7 +1480,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
           </div>
         </div>
         <div style={{ height: 4, background: `linear-gradient(90deg, ${accent}, ${accent}60)` }} />
-        <div style={{ padding: "16px 22px" }}>
+        <div style={{ padding: "10px 16px" }}>
           <div
             style={{
               fontSize: 11,
@@ -1490,12 +1490,12 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               letterSpacing: 1.5,
               borderBottom: `2px solid ${accent}`,
               paddingBottom: 5,
-              marginBottom: 10,
+              marginBottom: 6,
             }}
           >
             Profile
           </div>
-          <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.7, marginBottom: 14 }}>{p.summary}</div>
+          <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.5, marginBottom: 8 }}>{p.summary}</div>
           <div
             style={{
               fontSize: 11,
@@ -1505,13 +1505,13 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               letterSpacing: 1.5,
               borderBottom: `2px solid ${accent}`,
               paddingBottom: 5,
-              marginBottom: 10,
+              marginBottom: 6,
             }}
           >
             Work Experience
           </div>
           {p.experience.map((exp, i) => (
-            <div key={i} style={{ marginBottom: 12 }}>
+            <div key={i} style={{ marginBottom: 7 }}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a" }}>{exp.role}</span>
                 <span style={{ fontSize: 9, color: accent, fontWeight: 600 }}>{exp.dates}</span>
@@ -1537,14 +1537,14 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               letterSpacing: 1.5,
               borderBottom: `2px solid ${accent}`,
               paddingBottom: 5,
-              marginBottom: 10,
+              marginBottom: 6,
               marginTop: 14,
             }}
           >
             Education
           </div>
           {p.education.map((e, i) => (
-            <div key={i} style={{ fontSize: 10, color: "#334155", marginBottom: 5 }}>
+            <div key={i} style={{ fontSize: 10, color: "#334155", marginBottom: 3 }}>
               <span style={{ fontWeight: 700 }}>{e.degree}</span> — {e.school} · {e.year}
             </div>
           ))}
@@ -1557,7 +1557,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               letterSpacing: 1.5,
               borderBottom: `2px solid ${accent}`,
               paddingBottom: 5,
-              marginBottom: 10,
+              marginBottom: 6,
               marginTop: 14,
             }}
           >
@@ -1598,7 +1598,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
       <div
         style={{
           background: headerBg,
-          padding: "20px 22px",
+          padding: "12px 16px",
           borderLeft: isATS ? `6px solid ${accent}` : "none",
           borderBottom: isMinimalist ? `2px solid ${accent}` : "none",
         }}
@@ -1632,7 +1632,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
       </div>
       {isExecutive && <div style={{ height: 4, background: "linear-gradient(90deg,#c9a84c,#f0d080,#c9a84c)" }} />}
 
-      <div style={{ padding: "16px 22px" }}>
+      <div style={{ padding: "10px 16px" }}>
         <div
           style={{
             fontSize: 11,
@@ -1642,12 +1642,12 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
             letterSpacing: 1.5,
             borderBottom: `2px solid ${bodyAccent}`,
             paddingBottom: 5,
-            marginBottom: 10,
+            marginBottom: 6,
           }}
         >
           {isExecutive ? "Executive Summary" : "Profile"}
         </div>
-        <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.7, marginBottom: 14 }}>{p.summary}</div>
+        <div style={{ fontSize: 10, color: "#475569", lineHeight: 1.5, marginBottom: 8 }}>{p.summary}</div>
 
         <div
           style={{
@@ -1658,13 +1658,13 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
             letterSpacing: 1.5,
             borderBottom: `2px solid ${bodyAccent}`,
             paddingBottom: 5,
-            marginBottom: 10,
+            marginBottom: 6,
           }}
         >
           {isExecutive ? "Leadership Experience" : "Work Experience"}
         </div>
         {p.experience.map((exp, i) => (
-          <div key={i} style={{ marginBottom: 12 }}>
+          <div key={i} style={{ marginBottom: 7 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <span style={{ fontSize: 11, fontWeight: 700, color: "#0f172a", flex: 1, lineHeight: 1.2 }}>
                 {exp.role}
@@ -1695,14 +1695,14 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
             letterSpacing: 1.5,
             borderBottom: `2px solid ${bodyAccent}`,
             paddingBottom: 5,
-            marginBottom: 10,
+            marginBottom: 6,
             marginTop: 14,
           }}
         >
           Education
         </div>
         {p.education.map((e, i) => (
-          <div key={i} style={{ fontSize: 10, color: "#334155", marginBottom: 5 }}>
+          <div key={i} style={{ fontSize: 10, color: "#334155", marginBottom: 3 }}>
             <span style={{ fontWeight: 700 }}>{e.degree}</span> — {e.school} · {e.year}
           </div>
         ))}
@@ -1716,7 +1716,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
             letterSpacing: 1.5,
             borderBottom: `2px solid ${bodyAccent}`,
             paddingBottom: 5,
-            marginBottom: 10,
+            marginBottom: 6,
             marginTop: 14,
           }}
         >
@@ -1774,7 +1774,7 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
       onClick={() => navigate(`/cv-editor/${template.id}`)}
     >
       {/* CV Preview */}
-      <div ref={containerRef} className="relative aspect-[3/4] bg-white overflow-hidden">
+      <div ref={containerRef} className="relative aspect-[2/3] bg-white overflow-hidden">
         <div
           style={{
             position: "absolute",
