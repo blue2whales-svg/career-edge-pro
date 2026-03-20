@@ -30,8 +30,7 @@ interface PageLayoutProps {
 const DOCK_LINKS = [
   { to: "/", icon: Home, label: "Home" },
   { to: "/jobs", icon: Briefcase, label: "Jobs" },
-  { to: "/cv-builder", icon: FileText, label: "CV Builder" },
-  { to: "/samples", icon: Layout, label: "Templates" },
+  { to: "/templates", icon: Layout, label: "Templates" },
   { to: "/cover-letter", icon: FileText, label: "Cover Letter" },
   { to: "/ats-checker", icon: Target, label: "ATS Check" },
   { to: "/pricing", icon: CreditCard, label: "Pricing" },
@@ -117,8 +116,8 @@ export default function PageLayout({ children }: PageLayoutProps) {
             <div>
               <h4 className="font-semibold text-sm mb-3">AI Tools</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/cv-builder" className="block text-primary hover:text-primary/80 transition-colors">
-                  CV Builder
+                <Link to="/templates" className="block text-primary hover:text-primary/80 transition-colors">
+                  Templates
                 </Link>
                 <Link to="/cover-letter" className="block text-primary hover:text-primary/80 transition-colors">
                   Cover Letter
