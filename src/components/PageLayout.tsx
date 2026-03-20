@@ -116,8 +116,8 @@ export default function PageLayout({ children }: PageLayoutProps) {
             <div>
               <h4 className="font-semibold text-sm mb-3">AI Tools</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/cv-builder" className="block text-primary hover:text-primary/80 transition-colors">
-                  CV Builder
+                <Link to="/templates" className="block text-primary hover:text-primary/80 transition-colors">
+                  Templates
                 </Link>
                 <Link to="/cover-letter" className="block text-primary hover:text-primary/80 transition-colors">
                   Cover Letter

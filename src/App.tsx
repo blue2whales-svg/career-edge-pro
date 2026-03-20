@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ScrollToTop from "@/components/ScrollToTop";
 import AuthGuard from "@/components/AuthGuard";
 import LandingPage from "./pages/LandingPage";
@@ -17,8 +17,8 @@ import AboutPage from "./pages/AboutPage";
 import OrderPage from "./pages/OrderPage";
 import ContactPage from "./pages/ContactPage";
 import DocumentReviewPage from "./pages/DocumentReviewPage";
-import CVBuilderPage from "./pages/CVBuilderPage";
-import CVEditorPage from "./pages/CVEditorPage";
+import TemplatesPage from "./pages/TemplatesPage";
+import NewCVEditorPage from "./pages/NewCVEditorPage";
 import CoverLetterPage from "./pages/CoverLetterPage";
 import ATSCheckerPage from "./pages/ATSCheckerPage";
 import TrackerPage from "./pages/TrackerPage";
@@ -59,8 +59,9 @@ const App = () => (
           <Route path="/about" element={<AboutPage />} />
           <Route path="/order" element={<OrderPage />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/cv-builder" element={<CVBuilderPage />} />
-          <Route path="/cv-editor/:templateId" element={<CVEditorPage />} />
+          <Route path="/templates" element={<TemplatesPage />} />
+          <Route path="/cv-builder" element={<Navigate to="/templates" replace />} />
+          <Route path="/cv-editor/:templateId" element={<NewCVEditorPage />} />
           <Route path="/cover-letter" element={<CoverLetterPage />} />
           <Route path="/ats-checker" element={<ATSCheckerPage />} />
           <Route path="/tracker" element={<TrackerPage />} />
