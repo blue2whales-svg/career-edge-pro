@@ -1760,7 +1760,7 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
     const updateScale = () => {
       if (containerRef.current) {
         const w = containerRef.current.offsetWidth;
-        setScale(w / 794);
+        setScale(w / 480);
       }
     };
     updateScale();
@@ -1784,8 +1784,8 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
             position: "absolute",
             top: 0,
             left: 0,
-            width: 794,
-            height: 1123,
+            width: 480,
+            height: 640,
             transform: `scale(${scale})`,
             transformOrigin: "top left",
             pointerEvents: "none",
