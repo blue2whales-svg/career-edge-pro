@@ -69,6 +69,7 @@ const defaultCV: CVData = {
   certifications: "CPA-K, Google Analytics Certificate",
 };
 
+// ─── PREVIEW: TRADITIONAL (single-column, serif) ────────────────────────────
 function PreviewTraditional({ cv }: { cv: CVData }) {
   return (
     <div
@@ -146,14 +147,26 @@ function PreviewTraditional({ cv }: { cv: CVData }) {
           >
             Languages
           </div>
-          <div style={{ fontSize: 8, color: "#444" }}>{cv.languages}</div>
+          <div style={{ fontSize: 8, color: "#444", marginBottom: 8 }}>{cv.languages}</div>
+        </>
+      )}
+      {cv.certifications && (
+        <>
+          <div style={{ borderTop: "0.5px solid #999", margin: "8px 0" }} />
+          <div
+            style={{ fontSize: 8, fontWeight: "bold", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}
+          >
+            Certifications
+          </div>
+          <div style={{ fontSize: 8, color: "#444" }}>{cv.certifications}</div>
         </>
       )}
     </div>
   );
 }
 
-function PreviewSidebar({ cv }: { cv: CVData }) {
+// ─── PREVIEW: SIDEBAR (dark left panel + light right) ───────────────────────
+function PreviewSidebar({ cv, accent = "#38bdf8" }: { cv: CVData; accent?: string }) {
   return (
     <div style={{ background: "#fff", fontFamily: "Arial, sans-serif", fontSize: 8, display: "flex", minHeight: 700 }}>
       <div style={{ width: 180, background: "#1e293b", padding: "24px 14px", flexShrink: 0 }}>
@@ -162,7 +175,7 @@ function PreviewSidebar({ cv }: { cv: CVData }) {
             width: 60,
             height: 60,
             borderRadius: "50%",
-            background: "#38bdf8",
+            background: accent,
             margin: "0 auto 12px",
             display: "flex",
             alignItems: "center",
@@ -184,7 +197,7 @@ function PreviewSidebar({ cv }: { cv: CVData }) {
         <div
           style={{
             fontSize: 7,
-            color: "#90cdf4",
+            color: accent,
             fontWeight: "bold",
             textTransform: "uppercase",
             letterSpacing: 0.5,
@@ -196,12 +209,12 @@ function PreviewSidebar({ cv }: { cv: CVData }) {
         <div style={{ fontSize: 7.5, color: "#cbd5e1", lineHeight: 1.8 }}>{cv.email}</div>
         <div style={{ fontSize: 7.5, color: "#cbd5e1", lineHeight: 1.8 }}>{cv.phone}</div>
         <div style={{ fontSize: 7.5, color: "#cbd5e1", lineHeight: 1.8 }}>{cv.location}</div>
-        <div style={{ fontSize: 7.5, color: "#90cdf4", lineHeight: 1.8 }}>{cv.linkedin}</div>
+        <div style={{ fontSize: 7.5, color: accent, lineHeight: 1.8 }}>{cv.linkedin}</div>
         <div style={{ height: 0.5, background: "#334155", margin: "10px 0" }} />
         <div
           style={{
             fontSize: 7,
-            color: "#90cdf4",
+            color: accent,
             fontWeight: "bold",
             textTransform: "uppercase",
             letterSpacing: 0.5,
@@ -221,7 +234,7 @@ function PreviewSidebar({ cv }: { cv: CVData }) {
             <div
               style={{
                 fontSize: 7,
-                color: "#90cdf4",
+                color: accent,
                 fontWeight: "bold",
                 textTransform: "uppercase",
                 letterSpacing: 0.5,
@@ -239,7 +252,7 @@ function PreviewSidebar({ cv }: { cv: CVData }) {
             <div
               style={{
                 fontSize: 7,
-                color: "#90cdf4",
+                color: accent,
                 fontWeight: "bold",
                 textTransform: "uppercase",
                 letterSpacing: 0.5,
@@ -255,7 +268,7 @@ function PreviewSidebar({ cv }: { cv: CVData }) {
         <div
           style={{
             fontSize: 7,
-            color: "#90cdf4",
+            color: accent,
             fontWeight: "bold",
             textTransform: "uppercase",
             letterSpacing: 0.5,
@@ -277,7 +290,7 @@ function PreviewSidebar({ cv }: { cv: CVData }) {
       </div>
       <div style={{ flex: 1, padding: "24px 20px" }}>
         <div style={{ fontSize: 18, fontWeight: "bold", color: "#0f172a" }}>{cv.name}</div>
-        <div style={{ fontSize: 9, color: "#38bdf8", marginBottom: 14 }}>{cv.title}</div>
+        <div style={{ fontSize: 9, color: accent, marginBottom: 14 }}>{cv.title}</div>
         <div
           style={{
             fontSize: 7,
@@ -285,7 +298,7 @@ function PreviewSidebar({ cv }: { cv: CVData }) {
             color: "#1e293b",
             textTransform: "uppercase",
             letterSpacing: 1,
-            borderBottom: "1px solid #e2e8f0",
+            borderBottom: `1px solid ${accent}`,
             paddingBottom: 2,
             marginBottom: 6,
           }}
@@ -300,7 +313,7 @@ function PreviewSidebar({ cv }: { cv: CVData }) {
             color: "#1e293b",
             textTransform: "uppercase",
             letterSpacing: 1,
-            borderBottom: "1px solid #e2e8f0",
+            borderBottom: `1px solid ${accent}`,
             paddingBottom: 2,
             marginBottom: 6,
           }}
@@ -311,7 +324,7 @@ function PreviewSidebar({ cv }: { cv: CVData }) {
           <div key={i} style={{ marginBottom: 10 }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span style={{ fontWeight: "bold", fontSize: 8.5, color: "#0f172a" }}>{exp.title}</span>
-              <span style={{ fontSize: 7.5, color: "#38bdf8" }}>
+              <span style={{ fontSize: 7.5, color: accent }}>
                 {exp.from} – {exp.to}
               </span>
             </div>
@@ -333,16 +346,25 @@ function PreviewSidebar({ cv }: { cv: CVData }) {
   );
 }
 
-function PreviewExecutive({ cv }: { cv: CVData }) {
+// ─── PREVIEW: EXECUTIVE (dark header + gold accents) ────────────────────────
+function PreviewExecutive({
+  cv,
+  accentColor = "#c9a84c",
+  headerBg = "#0f172a",
+}: {
+  cv: CVData;
+  accentColor?: string;
+  headerBg?: string;
+}) {
   return (
     <div style={{ background: "#fff", fontFamily: "Georgia, serif", fontSize: 8, minHeight: 700 }}>
-      <div style={{ background: "#0f172a", padding: "20px 28px" }}>
+      <div style={{ background: headerBg, padding: "20px 28px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <div style={{ fontSize: 20, fontWeight: "bold", color: "#f8fafc", letterSpacing: 1 }}>
               {cv.name.toUpperCase()}
             </div>
-            <div style={{ fontSize: 9, color: "#c9a84c", marginTop: 3, letterSpacing: 2 }}>
+            <div style={{ fontSize: 9, color: accentColor, marginTop: 3, letterSpacing: 2 }}>
               {cv.title.toUpperCase()}
             </div>
             <div style={{ fontSize: 7.5, color: "#94a3b8", marginTop: 5 }}>
@@ -354,11 +376,11 @@ function PreviewExecutive({ cv }: { cv: CVData }) {
               width: 50,
               height: 50,
               borderRadius: "50%",
-              background: "#c9a84c",
+              background: accentColor,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "#0f172a",
+              color: headerBg,
               fontSize: 16,
               fontWeight: "bold",
             }}
@@ -371,7 +393,7 @@ function PreviewExecutive({ cv }: { cv: CVData }) {
           </div>
         </div>
       </div>
-      <div style={{ height: 3, background: "linear-gradient(90deg,#c9a84c,#f0d080,#c9a84c)" }} />
+      <div style={{ height: 3, background: `linear-gradient(90deg,${accentColor},#f0d080,${accentColor})` }} />
       <div style={{ padding: "16px 28px" }}>
         <div
           style={{
@@ -380,7 +402,7 @@ function PreviewExecutive({ cv }: { cv: CVData }) {
             color: "#0f172a",
             textTransform: "uppercase",
             letterSpacing: 2,
-            borderBottom: "0.5px solid #c9a84c",
+            borderBottom: `0.5px solid ${accentColor}`,
             paddingBottom: 2,
             marginBottom: 6,
           }}
@@ -395,7 +417,7 @@ function PreviewExecutive({ cv }: { cv: CVData }) {
             color: "#0f172a",
             textTransform: "uppercase",
             letterSpacing: 2,
-            borderBottom: "0.5px solid #c9a84c",
+            borderBottom: `0.5px solid ${accentColor}`,
             paddingBottom: 2,
             marginBottom: 6,
           }}
@@ -408,7 +430,7 @@ function PreviewExecutive({ cv }: { cv: CVData }) {
               <span style={{ fontWeight: "bold", fontSize: 9.5, color: "#0f172a" }}>
                 {exp.title} — {exp.company}
               </span>
-              <span style={{ fontSize: 8, color: "#c9a84c" }}>
+              <span style={{ fontSize: 8, color: accentColor }}>
                 {exp.from} – {exp.to}
               </span>
             </div>
@@ -430,7 +452,7 @@ function PreviewExecutive({ cv }: { cv: CVData }) {
             color: "#0f172a",
             textTransform: "uppercase",
             letterSpacing: 2,
-            borderBottom: "0.5px solid #c9a84c",
+            borderBottom: `0.5px solid ${accentColor}`,
             paddingBottom: 2,
             margin: "10px 0 6px",
           }}
@@ -450,35 +472,904 @@ function PreviewExecutive({ cv }: { cv: CVData }) {
             color: "#0f172a",
             textTransform: "uppercase",
             letterSpacing: 2,
-            borderBottom: "0.5px solid #c9a84c",
+            borderBottom: `0.5px solid ${accentColor}`,
             paddingBottom: 2,
             margin: "10px 0 6px",
           }}
         >
           Core Competencies
         </div>
-        <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 10 }}>
           {cv.skills.split(",").map((s) => (
             <span
               key={s}
-              style={{ fontSize: 7.5, background: "#0f172a", color: "#c9a84c", padding: "2px 8px", borderRadius: 2 }}
+              style={{ fontSize: 7.5, background: headerBg, color: accentColor, padding: "2px 8px", borderRadius: 2 }}
             >
               {s.trim()}
             </span>
           ))}
+        </div>
+        {cv.languages && (
+          <>
+            <div
+              style={{
+                fontSize: 8,
+                fontWeight: "bold",
+                color: "#0f172a",
+                textTransform: "uppercase",
+                letterSpacing: 2,
+                borderBottom: `0.5px solid ${accentColor}`,
+                paddingBottom: 2,
+                margin: "10px 0 6px",
+              }}
+            >
+              Languages
+            </div>
+            <div style={{ fontSize: 8, color: "#475569" }}>{cv.languages}</div>
+          </>
+        )}
+        {cv.certifications && (
+          <>
+            <div
+              style={{
+                fontSize: 8,
+                fontWeight: "bold",
+                color: "#0f172a",
+                textTransform: "uppercase",
+                letterSpacing: 2,
+                borderBottom: `0.5px solid ${accentColor}`,
+                paddingBottom: 2,
+                margin: "10px 0 6px",
+              }}
+            >
+              Certifications
+            </div>
+            <div style={{ fontSize: 8, color: "#475569" }}>{cv.certifications}</div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── PREVIEW: TWO-COLUMN (bold header + right sidebar) ──────────────────────
+function PreviewTwoColumn({ cv, accent = "#2563eb" }: { cv: CVData; accent?: string }) {
+  return (
+    <div style={{ background: "#fff", fontFamily: "Georgia, serif", fontSize: 8, minHeight: 700 }}>
+      <div style={{ background: accent, padding: "18px 20px 14px" }}>
+        <div style={{ fontSize: 22, fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1 }}>
+          {cv.name}
+        </div>
+        <div
+          style={{
+            fontSize: 10,
+            color: "rgba(255,255,255,0.88)",
+            textTransform: "uppercase",
+            letterSpacing: 2,
+            fontWeight: 600,
+            marginTop: 4,
+          }}
+        >
+          {cv.title}
+        </div>
+        <div style={{ fontSize: 8, color: "rgba(255,255,255,0.65)", marginTop: 5 }}>
+          {cv.email} · {cv.phone} · {cv.location}
+        </div>
+      </div>
+      <div style={{ display: "flex" }}>
+        <div style={{ flex: 1, padding: "14px 16px" }}>
+          <div
+            style={{
+              fontSize: 8,
+              fontWeight: "bold",
+              color: accent,
+              textTransform: "uppercase",
+              letterSpacing: 1,
+              borderBottom: `2px solid ${accent}`,
+              paddingBottom: 3,
+              marginBottom: 6,
+            }}
+          >
+            Profile
+          </div>
+          <div style={{ fontSize: 8, color: "#475569", lineHeight: 1.7, marginBottom: 12 }}>{cv.summary}</div>
+          <div
+            style={{
+              fontSize: 8,
+              fontWeight: "bold",
+              color: accent,
+              textTransform: "uppercase",
+              letterSpacing: 1,
+              borderBottom: `2px solid ${accent}`,
+              paddingBottom: 3,
+              marginBottom: 6,
+            }}
+          >
+            Work Experience
+          </div>
+          {cv.experiences.map((exp, i) => (
+            <div key={i} style={{ marginBottom: 10 }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ fontWeight: "bold", fontSize: 9, color: "#0f172a" }}>{exp.title}</span>
+                <span style={{ fontSize: 7.5, color: "#64748b" }}>
+                  {exp.from} – {exp.to}
+                </span>
+              </div>
+              <div style={{ fontSize: 8, color: accent, fontWeight: 600, marginBottom: 2 }}>
+                {exp.company} · {exp.location}
+              </div>
+              {exp.bullets.split("\n").map(
+                (b, j) =>
+                  b && (
+                    <div key={j} style={{ fontSize: 7.5, color: "#475569", lineHeight: 1.6 }}>
+                      {b}
+                    </div>
+                  ),
+              )}
+            </div>
+          ))}
+        </div>
+        <div style={{ width: "32%", background: "#f8fafc", padding: "14px 12px", borderLeft: `3px solid ${accent}` }}>
+          <div
+            style={{
+              fontSize: 8,
+              fontWeight: "bold",
+              color: accent,
+              textTransform: "uppercase",
+              letterSpacing: 1,
+              marginBottom: 6,
+            }}
+          >
+            Skills
+          </div>
+          {cv.skills.split(",").map((s) => (
+            <div
+              key={s}
+              style={{ fontSize: 8, color: "#334155", lineHeight: 1.9, display: "flex", alignItems: "center", gap: 4 }}
+            >
+              <span
+                style={{
+                  width: 4,
+                  height: 4,
+                  borderRadius: "50%",
+                  background: accent,
+                  display: "inline-block",
+                  flexShrink: 0,
+                }}
+              />
+              {s.trim()}
+            </div>
+          ))}
+          <div style={{ height: 1, background: "#e2e8f0", margin: "8px 0" }} />
+          <div
+            style={{
+              fontSize: 8,
+              fontWeight: "bold",
+              color: accent,
+              textTransform: "uppercase",
+              letterSpacing: 1,
+              marginBottom: 6,
+            }}
+          >
+            Education
+          </div>
+          {cv.educations.map((edu, i) => (
+            <div key={i} style={{ marginBottom: 6 }}>
+              <div style={{ fontSize: 8, fontWeight: "bold", color: "#0f172a", lineHeight: 1.3 }}>{edu.degree}</div>
+              <div style={{ fontSize: 7.5, color: "#64748b" }}>
+                {edu.school} · {edu.year}
+              </div>
+            </div>
+          ))}
+          {cv.languages && (
+            <>
+              <div style={{ height: 1, background: "#e2e8f0", margin: "8px 0" }} />
+              <div
+                style={{
+                  fontSize: 8,
+                  fontWeight: "bold",
+                  color: accent,
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                  marginBottom: 4,
+                }}
+              >
+                Languages
+              </div>
+              {cv.languages.split(",").map((l) => (
+                <div key={l} style={{ fontSize: 7.5, color: "#475569", lineHeight: 1.7 }}>
+                  • {l.trim()}
+                </div>
+              ))}
+            </>
+          )}
+          {cv.certifications && (
+            <>
+              <div style={{ height: 1, background: "#e2e8f0", margin: "8px 0" }} />
+              <div
+                style={{
+                  fontSize: 8,
+                  fontWeight: "bold",
+                  color: accent,
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                  marginBottom: 4,
+                }}
+              >
+                Certifications
+              </div>
+              {cv.certifications.split(",").map((c) => (
+                <div key={c} style={{ fontSize: 7.5, color: "#475569", lineHeight: 1.7 }}>
+                  ✓ {c.trim()}
+                </div>
+              ))}
+            </>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
+// ─── PREVIEW: PHOTO (dark header with initials avatar) ──────────────────────
+function PreviewPhoto({ cv, accent = "#2563eb" }: { cv: CVData; accent?: string }) {
+  return (
+    <div style={{ background: "#fff", fontFamily: "Georgia, serif", fontSize: 8, minHeight: 700 }}>
+      <div style={{ background: "#1e293b", padding: "16px 20px", display: "flex", alignItems: "center", gap: 14 }}>
+        <div
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: "50%",
+            background: accent,
+            flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 20,
+            fontWeight: 800,
+            color: "#fff",
+            border: "3px solid rgba(255,255,255,0.2)",
+          }}
+        >
+          {cv.name
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .slice(0, 2)}
+        </div>
+        <div>
+          <div style={{ fontSize: 20, fontWeight: 900, color: "#fff", letterSpacing: -0.3, lineHeight: 1 }}>
+            {cv.name}
+          </div>
+          <div
+            style={{
+              fontSize: 9,
+              color: accent,
+              textTransform: "uppercase",
+              letterSpacing: 1.5,
+              fontWeight: 700,
+              marginTop: 4,
+            }}
+          >
+            {cv.title}
+          </div>
+          <div style={{ fontSize: 7.5, color: "rgba(255,255,255,0.55)", marginTop: 4 }}>
+            {cv.email} · {cv.phone} · {cv.location}
+          </div>
+        </div>
+      </div>
+      <div style={{ height: 3, background: `linear-gradient(90deg, ${accent}, ${accent}60)` }} />
+      <div style={{ padding: "12px 20px" }}>
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: "bold",
+            color: "#0f172a",
+            textTransform: "uppercase",
+            letterSpacing: 1.5,
+            borderBottom: `2px solid ${accent}`,
+            paddingBottom: 3,
+            marginBottom: 6,
+          }}
+        >
+          Profile
+        </div>
+        <div style={{ fontSize: 8, color: "#475569", lineHeight: 1.7, marginBottom: 10 }}>{cv.summary}</div>
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: "bold",
+            color: "#0f172a",
+            textTransform: "uppercase",
+            letterSpacing: 1.5,
+            borderBottom: `2px solid ${accent}`,
+            paddingBottom: 3,
+            marginBottom: 6,
+          }}
+        >
+          Work Experience
+        </div>
+        {cv.experiences.map((exp, i) => (
+          <div key={i} style={{ marginBottom: 10 }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ fontWeight: "bold", fontSize: 9, color: "#0f172a" }}>{exp.title}</span>
+              <span style={{ fontSize: 7.5, color: accent, fontWeight: 600 }}>
+                {exp.from} – {exp.to}
+              </span>
+            </div>
+            <div style={{ fontSize: 8, color: accent, fontWeight: 600, marginBottom: 2 }}>
+              {exp.company} · {exp.location}
+            </div>
+            {exp.bullets.split("\n").map(
+              (b, j) =>
+                b && (
+                  <div key={j} style={{ fontSize: 8, color: "#475569", lineHeight: 1.6 }}>
+                    {b}
+                  </div>
+                ),
+            )}
+          </div>
+        ))}
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: "bold",
+            color: "#0f172a",
+            textTransform: "uppercase",
+            letterSpacing: 1.5,
+            borderBottom: `2px solid ${accent}`,
+            paddingBottom: 3,
+            marginBottom: 6,
+          }}
+        >
+          Education
+        </div>
+        {cv.educations.map((edu, i) => (
+          <div key={i} style={{ fontSize: 8.5, marginBottom: 4 }}>
+            <span style={{ fontWeight: "bold", color: "#0f172a" }}>{edu.degree}</span>
+            <span style={{ color: "#64748b" }}>
+              {" "}
+              — {edu.school} · {edu.year}
+              {edu.grade ? ` · ${edu.grade}` : ""}
+            </span>
+          </div>
+        ))}
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: "bold",
+            color: "#0f172a",
+            textTransform: "uppercase",
+            letterSpacing: 1.5,
+            borderBottom: `2px solid ${accent}`,
+            paddingBottom: 3,
+            margin: "8px 0 6px",
+          }}
+        >
+          Skills
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>
+          {cv.skills.split(",").map((s) => (
+            <span
+              key={s}
+              style={{
+                fontSize: 7.5,
+                background: `${accent}18`,
+                color: accent,
+                padding: "2px 7px",
+                borderRadius: 3,
+                border: `1px solid ${accent}40`,
+                fontWeight: 600,
+              }}
+            >
+              {s.trim()}
+            </span>
+          ))}
+        </div>
+        {cv.certifications && (
+          <>
+            <div
+              style={{
+                fontSize: 8,
+                fontWeight: "bold",
+                color: "#0f172a",
+                textTransform: "uppercase",
+                letterSpacing: 1.5,
+                borderBottom: `2px solid ${accent}`,
+                paddingBottom: 3,
+                margin: "8px 0 6px",
+              }}
+            >
+              Certifications
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
+              {cv.certifications.split(",").map((c) => (
+                <div key={c} style={{ fontSize: 7.5, color: "#475569" }}>
+                  ✓ {c.trim()}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+        {cv.languages && (
+          <>
+            <div
+              style={{
+                fontSize: 8,
+                fontWeight: "bold",
+                color: "#0f172a",
+                textTransform: "uppercase",
+                letterSpacing: 1.5,
+                borderBottom: `2px solid ${accent}`,
+                paddingBottom: 3,
+                margin: "8px 0 6px",
+              }}
+            >
+              Languages
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+              {cv.languages.split(",").map((l) => (
+                <div key={l} style={{ fontSize: 7.5, color: "#475569" }}>
+                  • {l.trim()}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── PREVIEW: MINIMALIST (clean, monochrome, generous spacing) ───────────────
+function PreviewMinimalist({ cv }: { cv: CVData }) {
+  return (
+    <div
+      style={{
+        background: "#fff",
+        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        fontSize: 8,
+        padding: "32px 36px",
+        color: "#111",
+        minHeight: 700,
+      }}
+    >
+      <div style={{ borderBottom: "2px solid #111", paddingBottom: 12, marginBottom: 14 }}>
+        <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: -1, lineHeight: 1 }}>{cv.name}</div>
+        <div style={{ fontSize: 9, color: "#555", marginTop: 4, letterSpacing: 2, textTransform: "uppercase" }}>
+          {cv.title}
+        </div>
+        <div style={{ fontSize: 7.5, color: "#888", marginTop: 6 }}>
+          {cv.email} · {cv.phone} · {cv.location}
+        </div>
+      </div>
+      <div
+        style={{
+          fontSize: 7,
+          fontWeight: 900,
+          textTransform: "uppercase",
+          letterSpacing: 2,
+          color: "#9ca3af",
+          marginBottom: 5,
+        }}
+      >
+        Profile
+      </div>
+      <div style={{ fontSize: 8.5, color: "#374151", lineHeight: 1.8, marginBottom: 14 }}>{cv.summary}</div>
+      <div style={{ height: "0.5px", background: "#e5e7eb", margin: "10px 0" }} />
+      <div
+        style={{
+          fontSize: 7,
+          fontWeight: 900,
+          textTransform: "uppercase",
+          letterSpacing: 2,
+          color: "#9ca3af",
+          marginBottom: 6,
+        }}
+      >
+        Experience
+      </div>
+      {cv.experiences.map((exp, i) => (
+        <div key={i} style={{ marginBottom: 10 }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <span style={{ fontWeight: 800, fontSize: 9 }}>{exp.title}</span>
+            <span style={{ fontSize: 7.5, color: "#6b7280" }}>
+              {exp.from} – {exp.to}
+            </span>
+          </div>
+          <div style={{ fontSize: 8, color: "#6b7280", marginBottom: 2 }}>
+            {exp.company} · {exp.location}
+          </div>
+          {exp.bullets.split("\n").map(
+            (b, j) =>
+              b && (
+                <div key={j} style={{ fontSize: 8, color: "#4b5563", lineHeight: 1.7 }}>
+                  {b}
+                </div>
+              ),
+          )}
+        </div>
+      ))}
+      <div style={{ height: "0.5px", background: "#e5e7eb", margin: "10px 0" }} />
+      <div
+        style={{
+          fontSize: 7,
+          fontWeight: 900,
+          textTransform: "uppercase",
+          letterSpacing: 2,
+          color: "#9ca3af",
+          marginBottom: 6,
+        }}
+      >
+        Education
+      </div>
+      {cv.educations.map((edu, i) => (
+        <div key={i} style={{ marginBottom: 5 }}>
+          <span style={{ fontWeight: 800, fontSize: 8.5 }}>{edu.degree}</span>
+          <span style={{ fontSize: 8, color: "#6b7280" }}>
+            {" "}
+            · {edu.school} · {edu.year}
+          </span>
+        </div>
+      ))}
+      <div style={{ height: "0.5px", background: "#e5e7eb", margin: "10px 0" }} />
+      <div
+        style={{
+          fontSize: 7,
+          fontWeight: 900,
+          textTransform: "uppercase",
+          letterSpacing: 2,
+          color: "#9ca3af",
+          marginBottom: 5,
+        }}
+      >
+        Skills
+      </div>
+      <div style={{ fontSize: 8, color: "#374151" }}>{cv.skills}</div>
+      {cv.languages && (
+        <>
+          <div style={{ height: "0.5px", background: "#e5e7eb", margin: "10px 0" }} />
+          <div
+            style={{
+              fontSize: 7,
+              fontWeight: 900,
+              textTransform: "uppercase",
+              letterSpacing: 2,
+              color: "#9ca3af",
+              marginBottom: 4,
+            }}
+          >
+            Languages
+          </div>
+          <div style={{ fontSize: 8, color: "#374151" }}>{cv.languages}</div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── PREVIEW: CREATIVE (bold accent header, colorful skill tags) ─────────────
+function PreviewCreative({ cv, accent = "#7c3aed" }: { cv: CVData; accent?: string }) {
+  return (
+    <div style={{ background: "#fff", fontFamily: "Arial, sans-serif", fontSize: 8, minHeight: 700 }}>
+      <div style={{ background: `linear-gradient(135deg, ${accent}, ${accent}cc)`, padding: "20px 24px" }}>
+        <div style={{ fontSize: 22, fontWeight: 900, color: "#fff", letterSpacing: -0.5 }}>{cv.name}</div>
+        <div style={{ fontSize: 10, color: "rgba(255,255,255,0.85)", marginTop: 3, letterSpacing: 1 }}>{cv.title}</div>
+        <div style={{ fontSize: 7.5, color: "rgba(255,255,255,0.65)", marginTop: 6 }}>
+          {cv.email} · {cv.phone} · {cv.location}
+        </div>
+      </div>
+      <div style={{ height: 4, background: `linear-gradient(90deg, ${accent}, #ec4899, #f59e0b)` }} />
+      <div style={{ padding: "14px 20px" }}>
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: 800,
+            color: accent,
+            textTransform: "uppercase",
+            letterSpacing: 1.5,
+            marginBottom: 5,
+          }}
+        >
+          About Me
+        </div>
+        <div style={{ fontSize: 8.5, color: "#374151", lineHeight: 1.8, marginBottom: 12 }}>{cv.summary}</div>
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: 800,
+            color: accent,
+            textTransform: "uppercase",
+            letterSpacing: 1.5,
+            borderBottom: `2px solid ${accent}`,
+            paddingBottom: 3,
+            marginBottom: 8,
+          }}
+        >
+          Experience
+        </div>
+        {cv.experiences.map((exp, i) => (
+          <div key={i} style={{ marginBottom: 10, paddingLeft: 10, borderLeft: `3px solid ${accent}` }}>
+            <div style={{ fontWeight: 800, fontSize: 9.5, color: "#0f172a" }}>{exp.title}</div>
+            <div style={{ fontSize: 8, color: accent, fontWeight: 600 }}>
+              {exp.company} · {exp.from} – {exp.to}
+            </div>
+            <div style={{ fontSize: 7.5, color: "#6b7280", marginBottom: 2 }}>{exp.location}</div>
+            {exp.bullets.split("\n").map(
+              (b, j) =>
+                b && (
+                  <div key={j} style={{ fontSize: 8, color: "#475569", lineHeight: 1.6 }}>
+                    {b}
+                  </div>
+                ),
+            )}
+          </div>
+        ))}
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: 800,
+            color: accent,
+            textTransform: "uppercase",
+            letterSpacing: 1.5,
+            borderBottom: `2px solid ${accent}`,
+            paddingBottom: 3,
+            margin: "10px 0 8px",
+          }}
+        >
+          Education
+        </div>
+        {cv.educations.map((edu, i) => (
+          <div key={i} style={{ marginBottom: 5 }}>
+            <span style={{ fontWeight: 800, fontSize: 8.5, color: "#0f172a" }}>{edu.degree}</span>
+            <span style={{ fontSize: 8, color: "#64748b" }}>
+              {" "}
+              · {edu.school} · {edu.year}
+            </span>
+          </div>
+        ))}
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: 800,
+            color: accent,
+            textTransform: "uppercase",
+            letterSpacing: 1.5,
+            margin: "10px 0 6px",
+          }}
+        >
+          Skills
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+          {cv.skills.split(",").map((s) => (
+            <span
+              key={s}
+              style={{
+                fontSize: 7.5,
+                background: `${accent}18`,
+                color: accent,
+                padding: "3px 8px",
+                borderRadius: 20,
+                border: `1px solid ${accent}50`,
+                fontWeight: 600,
+              }}
+            >
+              {s.trim()}
+            </span>
+          ))}
+        </div>
+        {cv.languages && (
+          <>
+            <div
+              style={{
+                fontSize: 8,
+                fontWeight: 800,
+                color: accent,
+                textTransform: "uppercase",
+                letterSpacing: 1.5,
+                margin: "10px 0 4px",
+              }}
+            >
+              Languages
+            </div>
+            <div style={{ fontSize: 8, color: "#475569" }}>{cv.languages}</div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── PREVIEW: ATS (plain, no color, maximum scanner compatibility) ────────────
+function PreviewATS({ cv, accent = "#1e40af" }: { cv: CVData; accent?: string }) {
+  return (
+    <div
+      style={{
+        background: "#fff",
+        fontFamily: "Arial, sans-serif",
+        fontSize: 8,
+        padding: "24px 28px",
+        color: "#111",
+        minHeight: 700,
+        borderLeft: `5px solid ${accent}`,
+      }}
+    >
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ fontSize: 18, fontWeight: "bold", color: "#000" }}>{cv.name}</div>
+        <div style={{ fontSize: 9, color: accent, fontWeight: "bold", marginTop: 2 }}>{cv.title}</div>
+        <div style={{ fontSize: 8, color: "#444", marginTop: 4 }}>
+          {cv.email} · {cv.phone} · {cv.location} · {cv.linkedin}
+        </div>
+      </div>
+      <div style={{ height: 1.5, background: accent, marginBottom: 10 }} />
+      <div
+        style={{
+          fontSize: 8,
+          fontWeight: "bold",
+          textTransform: "uppercase",
+          letterSpacing: 1,
+          color: accent,
+          marginBottom: 4,
+        }}
+      >
+        Professional Summary
+      </div>
+      <div style={{ fontSize: 8, color: "#333", lineHeight: 1.7, marginBottom: 10 }}>{cv.summary}</div>
+      <div style={{ height: 0.5, background: "#ccc", marginBottom: 8 }} />
+      <div
+        style={{
+          fontSize: 8,
+          fontWeight: "bold",
+          textTransform: "uppercase",
+          letterSpacing: 1,
+          color: accent,
+          marginBottom: 6,
+        }}
+      >
+        Work Experience
+      </div>
+      {cv.experiences.map((exp, i) => (
+        <div key={i} style={{ marginBottom: 9 }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <span style={{ fontWeight: "bold", fontSize: 9 }}>
+              {exp.title} | {exp.company}
+            </span>
+            <span style={{ fontSize: 7.5, color: "#555" }}>
+              {exp.from} – {exp.to}
+            </span>
+          </div>
+          <div style={{ fontSize: 7.5, color: "#777", marginBottom: 2 }}>{exp.location}</div>
+          {exp.bullets.split("\n").map(
+            (b, j) =>
+              b && (
+                <div key={j} style={{ fontSize: 8, color: "#333", lineHeight: 1.6 }}>
+                  {b}
+                </div>
+              ),
+          )}
+        </div>
+      ))}
+      <div style={{ height: 0.5, background: "#ccc", marginBottom: 8 }} />
+      <div
+        style={{
+          fontSize: 8,
+          fontWeight: "bold",
+          textTransform: "uppercase",
+          letterSpacing: 1,
+          color: accent,
+          marginBottom: 6,
+        }}
+      >
+        Education
+      </div>
+      {cv.educations.map((edu, i) => (
+        <div key={i} style={{ marginBottom: 5 }}>
+          <span style={{ fontWeight: "bold", fontSize: 8.5 }}>{edu.degree}</span>
+          <span style={{ fontSize: 8, color: "#555" }}>
+            {" "}
+            | {edu.school} | {edu.year}
+            {edu.grade ? ` | ${edu.grade}` : ""}
+          </span>
+        </div>
+      ))}
+      <div style={{ height: 0.5, background: "#ccc", marginBottom: 8 }} />
+      <div
+        style={{
+          fontSize: 8,
+          fontWeight: "bold",
+          textTransform: "uppercase",
+          letterSpacing: 1,
+          color: accent,
+          marginBottom: 4,
+        }}
+      >
+        Skills
+      </div>
+      <div style={{ fontSize: 8, color: "#333", marginBottom: 8 }}>{cv.skills}</div>
+      {cv.certifications && (
+        <>
+          <div style={{ height: 0.5, background: "#ccc", marginBottom: 8 }} />
+          <div
+            style={{
+              fontSize: 8,
+              fontWeight: "bold",
+              textTransform: "uppercase",
+              letterSpacing: 1,
+              color: accent,
+              marginBottom: 4,
+            }}
+          >
+            Certifications
+          </div>
+          <div style={{ fontSize: 8, color: "#333", marginBottom: 8 }}>{cv.certifications}</div>
+        </>
+      )}
+      {cv.languages && (
+        <>
+          <div style={{ height: 0.5, background: "#ccc", marginBottom: 8 }} />
+          <div
+            style={{
+              fontSize: 8,
+              fontWeight: "bold",
+              textTransform: "uppercase",
+              letterSpacing: 1,
+              color: accent,
+              marginBottom: 4,
+            }}
+          >
+            Languages
+          </div>
+          <div style={{ fontSize: 8, color: "#333" }}>{cv.languages}</div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ─── MASTER PREVIEW MAP ──────────────────────────────────────────────────────
+// Maps every template ID from TemplatesPage to the correct preview component
 const PREVIEWS: Record<string, (cv: CVData) => JSX.Element> = {
+  // ── Simple / single-column ──────────────────────────────────────────────
+  classic: (cv) => <PreviewTraditional cv={cv} />,
   traditional: (cv) => <PreviewTraditional cv={cv} />,
-  centered: (cv) => <PreviewTraditional cv={cv} />,
-  twocol: (cv) => <PreviewExecutive cv={cv} />,
-  sidebar: (cv) => <PreviewSidebar cv={cv} />,
-  minimal: (cv) => <PreviewTraditional cv={cv} />,
-  executive: (cv) => <PreviewExecutive cv={cv} />,
+  clean: (cv) => <PreviewTraditional cv={cv} />,
+  basic: (cv) => <PreviewTraditional cv={cv} />,
+  modern: (cv) => <PreviewTraditional cv={cv} />,
+  "modern-dark": (cv) => <PreviewTraditional cv={cv} />,
+
+  // ── ATS ─────────────────────────────────────────────────────────────────
+  "ats-pro": (cv) => <PreviewATS cv={cv} accent="#1e40af" />,
+  "ats-classic": (cv) => <PreviewATS cv={cv} accent="#1a2332" />,
+  "ats-modern": (cv) => <PreviewATS cv={cv} accent="#1e40af" />,
+  "ats-executive": (cv) => <PreviewATS cv={cv} accent="#0f172a" />,
+
+  // ── Minimalist ──────────────────────────────────────────────────────────
+  minimal: (cv) => <PreviewMinimalist cv={cv} />,
+  "minimalist-pro": (cv) => <PreviewMinimalist cv={cv} />,
+
+  // ── Creative ────────────────────────────────────────────────────────────
+  creative: (cv) => <PreviewCreative cv={cv} accent="#7c3aed" />,
+  "creative-bold": (cv) => <PreviewCreative cv={cv} accent="#ec4899" />,
+  "creative-minimal": (cv) => <PreviewCreative cv={cv} accent="#6366f1" />,
+
+  // ── Executive ───────────────────────────────────────────────────────────
+  "executive-classic": (cv) => <PreviewExecutive cv={cv} accentColor="#c9a84c" headerBg="#0f172a" />,
+  "executive-gold": (cv) => <PreviewExecutive cv={cv} accentColor="#c9a84c" headerBg="#0f172a" />,
+  "executive-navy": (cv) => <PreviewExecutive cv={cv} accentColor="#93c5fd" headerBg="#1e3a5f" />,
+
+  // ── Sidebar ─────────────────────────────────────────────────────────────
+  sidebar: (cv) => <PreviewSidebar cv={cv} accent="#38bdf8" />,
+  "two-column-creative": (cv) => <PreviewSidebar cv={cv} accent="#7c3aed" />,
+
+  // ── Two-Column ──────────────────────────────────────────────────────────
+  "two-column": (cv) => <PreviewTwoColumn cv={cv} accent="#2563eb" />,
+  "two-column-pro": (cv) => <PreviewTwoColumn cv={cv} accent="#c9a84c" />,
+
+  // ── Photo / Picture ─────────────────────────────────────────────────────
+  picture: (cv) => <PreviewPhoto cv={cv} accent="#2563eb" />,
+  "picture-classic": (cv) => <PreviewPhoto cv={cv} accent="#2563eb" />,
+  "picture-modern": (cv) => <PreviewPhoto cv={cv} accent="#0ea5e9" />,
 };
 
 export default function CVEditorPage() {
@@ -518,7 +1409,11 @@ export default function CVEditorPage() {
   const removeEdu = (i: number) =>
     setCv((prev) => ({ ...prev, educations: prev.educations.filter((_, idx) => idx !== i) }));
 
-  const preview = PREVIEWS[templateId || "traditional"] || PREVIEWS["traditional"];
+  // Resolve the correct preview renderer — falls back to classic if ID unknown
+  const preview = PREVIEWS[templateId ?? "classic"] ?? PREVIEWS["classic"];
+
+  // Human-readable label for the header
+  const templateLabel = templateId ? templateId.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Classic";
 
   return (
     <div className="cv-editor-root">
@@ -530,7 +1425,7 @@ export default function CVEditorPage() {
           >
             <ArrowLeft className="h-4 w-4" /> Back to templates
           </button>
-          <h1 className="text-xl font-bold capitalize">{templateId} Template Editor</h1>
+          <h1 className="text-xl font-bold">{templateLabel} Template Editor</h1>
         </div>
         <div className="grid lg:grid-cols-2 gap-8">
           {/* FORM */}
@@ -680,7 +1575,7 @@ export default function CVEditorPage() {
               </div>
             </div>
 
-            {/* Extra */}
+            {/* Additional */}
             <div className="rounded-xl border border-border bg-card p-5 space-y-3">
               <h2 className="font-bold text-base mb-1">Additional Information</h2>
               <div>
