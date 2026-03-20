@@ -5,29 +5,44 @@ import { Check, FileText, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PageLayout from "@/components/PageLayout";
 
-interface TemplateInfo {
+export interface TemplatePersonExperience {
+  role: string;
+  company: string;
+  dates: string;
+  bullets: string[];
+}
+
+export interface TemplatePersonEducation {
+  degree: string;
+  school: string;
+  year: string;
+}
+
+export interface TemplatePerson {
+  name: string;
+  title: string;
+  email: string;
+  phone: string;
+  location: string;
+  summary: string;
+  skills: string[];
+  experience: TemplatePersonExperience[];
+  education: TemplatePersonEducation[];
+  certifications: string[];
+  languages: string[];
+}
+
+export interface TemplateInfo {
   id: string;
   name: string;
   category: string;
   description: string;
   colors: string[];
-  person: {
-    name: string;
-    title: string;
-    email: string;
-    phone: string;
-    location: string;
-    summary: string;
-    skills: string[];
-    experience: { role: string; company: string; dates: string; bullets: string[] }[];
-    education: { degree: string; school: string; year: string }[];
-    certifications: string[];
-    languages: string[];
-  };
+  person: TemplatePerson;
   layout: "single" | "sidebar" | "two-column" | "photo";
 }
 
-const PEOPLE = [
+export const PEOPLE: TemplatePerson[] = [
   {
     name: "James Mitchell",
     title: "Senior Marketing Manager",
@@ -1234,7 +1249,7 @@ const PEOPLE = [
   },
 ];
 
-const TEMPLATES: TemplateInfo[] = [
+export const TEMPLATES: TemplateInfo[] = [
   {
     id: "classic",
     name: "Classic",
@@ -1985,13 +2000,11 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
         </div>
       </div>
       {isExecutive && <div style={{ height: 3, background: "linear-gradient(90deg,#c9a84c,#f0d080,#c9a84c)" }} />}
-
       <div style={{ padding: "10px 16px" }}>
         <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
           {isExecutive ? "Executive Summary" : "Profile"}
         </SectionLabel>
         <div style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, marginBottom: 2 }}>{p.summary}</div>
-
         <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
           {isExecutive ? "Leadership Experience" : "Work Experience"}
         </SectionLabel>
@@ -2017,7 +2030,6 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
             ))}
           </div>
         ))}
-
         <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
           Education
         </SectionLabel>
@@ -2026,7 +2038,6 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
             <span style={{ fontWeight: 700 }}>{e.degree}</span> — {e.school} · {e.year}
           </div>
         ))}
-
         <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
           Skills
         </SectionLabel>
@@ -2048,7 +2059,6 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
             </span>
           ))}
         </div>
-
         <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
           Certifications
         </SectionLabel>
@@ -2059,7 +2069,6 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
             </div>
           ))}
         </div>
-
         <SectionLabel color={sectionLabelColor} borderColor={bodyAccent}>
           Languages
         </SectionLabel>
