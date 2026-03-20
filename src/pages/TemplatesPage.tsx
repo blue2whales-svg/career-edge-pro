@@ -1785,7 +1785,6 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
             top: 0,
             left: 0,
             width: 480,
-            height: 640,
             transform: `scale(${scale})`,
             transformOrigin: "top left",
             pointerEvents: "none",
