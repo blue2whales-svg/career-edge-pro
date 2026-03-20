@@ -3,8 +3,19 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Trash2, Download, ArrowLeft } from "lucide-react";
-import { TEMPLATES } from "./TemplatesPage"; // adjust path if your file is elsewhere
+import {
+  Plus,
+  Trash2,
+  Download,
+  ArrowLeft,
+  X,
+  Smartphone,
+  CheckCircle2,
+  Target,
+  TrendingUp,
+  AlertCircle,
+} from "lucide-react";
+import { TEMPLATES } from "./TemplatesPage";
 
 interface Experience {
   title: string;
@@ -70,7 +81,6 @@ const defaultCV: CVData = {
   certifications: "CPA-K, Google Analytics Certificate",
 };
 
-// Build a CVData object from a template's person data
 function buildCVFromTemplate(templateId: string): CVData {
   const template = TEMPLATES.find((t) => t.id === templateId);
   if (!template) return defaultCV;
@@ -103,7 +113,320 @@ function buildCVFromTemplate(templateId: string): CVData {
   };
 }
 
-// ─── PREVIEW: TRADITIONAL ────────────────────────────────────────────────────
+// ─── JOB SCORE MATCH SECTION ─────────────────────────────────────────────────
+function JobScoreMatch({ cv }: { cv: CVData }) {
+  const [jobDesc, setJobDesc] = useState("");
+  const [score, setScore] = useState<null | {
+    overall: number;
+    keywords: number;
+    experience: number;
+    skills: number;
+    missing: string[];
+    matched: string[];
+  }>(null);
+  const [loading, setLoading] = useState(false);
+
+  const analyzeMatch = () => {
+    if (!jobDesc.trim()) return;
+    setLoading(true);
+    setTimeout(() => {
+      // Extract keywords from job description
+      const jdWords = jobDesc
+        .toLowerCase()
+        .split(/\W+/)
+        .filter((w) => w.length > 3);
+      const cvText =
+        `${cv.title} ${cv.summary} ${cv.skills} ${cv.experiences.map((e) => `${e.title} ${e.company} ${e.bullets}`).join(" ")}`.toLowerCase();
+      const cvWords = cvText.split(/\W+/).filter((w) => w.length > 3);
+
+      // Find matched and missing keywords
+      const importantJdWords = [
+        ...new Set(
+          jdWords.filter(
+            (w) =>
+              ![
+                "that",
+                "with",
+                "this",
+                "will",
+                "have",
+                "from",
+                "they",
+                "your",
+                "must",
+                "able",
+                "been",
+                "also",
+                "into",
+                "their",
+                "more",
+                "about",
+                "over",
+              ].includes(w),
+          ),
+        ),
+      ];
+      const matched = importantJdWords.filter((w) => cvWords.includes(w)).slice(0, 8);
+      const missing = importantJdWords.filter((w) => !cvWords.includes(w)).slice(0, 6);
+
+      const keywordScore = Math.min(
+        100,
+        Math.round((matched.length / Math.max(importantJdWords.length, 1)) * 100 * 2.5),
+      );
+      const expScore = cv.experiences.length >= 3 ? 85 : cv.experiences.length >= 2 ? 70 : 55;
+      const skillsScore = Math.min(100, cv.skills.split(",").length * 14);
+      const overall = Math.round(keywordScore * 0.45 + expScore * 0.3 + skillsScore * 0.25);
+
+      setScore({ overall, keywords: keywordScore, experience: expScore, skills: skillsScore, matched, missing });
+      setLoading(false);
+    }, 1200);
+  };
+
+  const getScoreColor = (s: number) => (s >= 75 ? "#059669" : s >= 50 ? "#d97706" : "#dc2626");
+  const getScoreLabel = (s: number) => (s >= 75 ? "Strong Match" : s >= 50 ? "Moderate Match" : "Weak Match");
+
+  return (
+    <div className="rounded-xl border border-border bg-card p-5">
+      <div className="flex items-center gap-2 mb-1">
+        <Target className="h-4 w-4 text-primary" />
+        <h2 className="font-bold text-base">Job Score Match</h2>
+      </div>
+      <p className="text-xs text-muted-foreground mb-4">
+        Paste a job description to see how well your CV matches the role.
+      </p>
+
+      <Textarea
+        placeholder="Paste the job description here..."
+        value={jobDesc}
+        onChange={(e) => {
+          setJobDesc(e.target.value);
+          setScore(null);
+        }}
+        rows={5}
+        className="mb-3 text-xs"
+      />
+      <Button
+        onClick={analyzeMatch}
+        disabled={!jobDesc.trim() || loading}
+        className="w-full bg-gradient-brand border-0 font-semibold gold-shimmer h-10 mb-4"
+      >
+        {loading ? "Analysing..." : "Analyse Match"}
+      </Button>
+
+      {score && (
+        <div className="space-y-4">
+          {/* Overall score */}
+          <div
+            className="flex items-center justify-between p-4 rounded-xl border-2"
+            style={{ borderColor: getScoreColor(score.overall), background: `${getScoreColor(score.overall)}08` }}
+          >
+            <div>
+              <div className="text-xs text-muted-foreground mb-0.5">Overall Match Score</div>
+              <div className="font-bold text-lg" style={{ color: getScoreColor(score.overall) }}>
+                {getScoreLabel(score.overall)}
+              </div>
+            </div>
+            <div className="text-4xl font-black" style={{ color: getScoreColor(score.overall) }}>
+              {score.overall}%
+            </div>
+          </div>
+
+          {/* Sub scores */}
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { label: "Keywords", value: score.keywords },
+              { label: "Experience", value: score.experience },
+              { label: "Skills", value: score.skills },
+            ].map(({ label, value }) => (
+              <div key={label} className="rounded-lg border border-border p-3 text-center">
+                <div className="text-xs text-muted-foreground mb-1">{label}</div>
+                <div className="font-bold text-base" style={{ color: getScoreColor(value) }}>
+                  {value}%
+                </div>
+                <div className="mt-1.5 h-1.5 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all"
+                    style={{ width: `${value}%`, background: getScoreColor(value) }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Matched keywords */}
+          {score.matched.length > 0 && (
+            <div>
+              <div className="flex items-center gap-1.5 mb-2">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                <span className="text-xs font-semibold text-emerald-600">Matched Keywords</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {score.matched.map((w) => (
+                  <span
+                    key={w}
+                    className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-medium"
+                  >
+                    {w}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Missing keywords */}
+          {score.missing.length > 0 && (
+            <div>
+              <div className="flex items-center gap-1.5 mb-2">
+                <AlertCircle className="h-3.5 w-3.5 text-amber-500" />
+                <span className="text-xs font-semibold text-amber-600">Consider Adding</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {score.missing.map((w) => (
+                  <span
+                    key={w}
+                    className="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-medium"
+                  >
+                    {w}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Tip */}
+          <div className="flex items-start gap-2 p-3 rounded-lg bg-muted/50 border border-border">
+            <TrendingUp className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              {score.overall >= 75
+                ? "Great match! Your CV aligns well with this role. Download and apply with confidence."
+                : score.overall >= 50
+                  ? "Decent match. Consider weaving the missing keywords naturally into your summary or experience bullets."
+                  : "Low match. Update your skills and summary to reflect the key requirements in the job description."}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── MPESA PAYMENT MODAL ──────────────────────────────────────────────────────
+function MpesaModal({ onClose }: { onClose: () => void }) {
+  const [phone, setPhone] = useState("");
+  const [step, setStep] = useState<"enter" | "waiting" | "success">("enter");
+
+  const handlePay = () => {
+    if (!phone.trim()) return;
+    setStep("waiting");
+    // Simulate STK push delay then success
+    setTimeout(() => setStep("success"), 3500);
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
+    >
+      <div className="relative w-full max-w-sm rounded-2xl border border-border bg-card shadow-2xl overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-[#00a651] to-[#007a3d] px-6 py-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                <Smartphone className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <div className="text-white font-bold text-base">M-Pesa Payment</div>
+                <div className="text-white/75 text-xs">Secure · Instant · Easy</div>
+              </div>
+            </div>
+            <button onClick={onClose} className="text-white/70 hover:text-white transition-colors">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+
+        <div className="p-6">
+          {step === "enter" && (
+            <>
+              <div className="text-center mb-6">
+                <div className="text-2xl font-black text-foreground mb-1">KES 299</div>
+                <div className="text-xs text-muted-foreground">One-time payment · PDF + DOCX download</div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs font-semibold text-foreground mb-1.5 block">M-Pesa Phone Number</label>
+                  <Input
+                    placeholder="e.g. 0712 345 678"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="h-11 text-sm"
+                  />
+                  <p className="text-[11px] text-muted-foreground mt-1">Enter the number registered with M-Pesa</p>
+                </div>
+                <Button
+                  onClick={handlePay}
+                  disabled={!phone.trim()}
+                  className="w-full h-11 font-bold text-sm"
+                  style={{ background: "linear-gradient(135deg, #00a651, #007a3d)", border: "none", color: "#fff" }}
+                >
+                  Send STK Push → Pay KES 299
+                </Button>
+                <p className="text-[11px] text-center text-muted-foreground">
+                  You'll receive an M-Pesa prompt on your phone. Enter your PIN to complete payment.
+                </p>
+              </div>
+            </>
+          )}
+
+          {step === "waiting" && (
+            <div className="text-center py-6 space-y-4">
+              <div className="w-16 h-16 rounded-full border-4 border-[#00a651] border-t-transparent animate-spin mx-auto" />
+              <div>
+                <div className="font-bold text-foreground mb-1">STK Push Sent!</div>
+                <div className="text-sm text-muted-foreground">
+                  Check your phone <span className="font-semibold text-foreground">{phone}</span> and enter your M-Pesa
+                  PIN to complete payment.
+                </div>
+              </div>
+              <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#00a651] animate-pulse" />
+                Waiting for confirmation...
+              </div>
+            </div>
+          )}
+
+          {step === "success" && (
+            <div className="text-center py-6 space-y-4">
+              <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">
+                <CheckCircle2 className="h-9 w-9 text-emerald-600" />
+              </div>
+              <div>
+                <div className="font-bold text-foreground text-lg mb-1">Payment Confirmed!</div>
+                <div className="text-sm text-muted-foreground">KES 299 received. Your CV is ready to download.</div>
+              </div>
+              <div className="space-y-2">
+                <Button
+                  className="w-full h-11 font-bold"
+                  style={{ background: "linear-gradient(135deg, #00a651, #007a3d)", border: "none", color: "#fff" }}
+                  onClick={onClose}
+                >
+                  <Download className="mr-2 h-4 w-4" /> Download PDF
+                </Button>
+                <Button variant="outline" className="w-full h-11 font-semibold" onClick={onClose}>
+                  <Download className="mr-2 h-4 w-4" /> Download DOCX
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── PREVIEW COMPONENTS ───────────────────────────────────────────────────────
+
 function PreviewTraditional({ cv }: { cv: CVData }) {
   return (
     <div
@@ -199,7 +522,6 @@ function PreviewTraditional({ cv }: { cv: CVData }) {
   );
 }
 
-// ─── PREVIEW: SIDEBAR ────────────────────────────────────────────────────────
 function PreviewSidebar({ cv, accent = "#38bdf8" }: { cv: CVData; accent?: string }) {
   return (
     <div style={{ background: "#fff", fontFamily: "Arial, sans-serif", fontSize: 8, display: "flex", minHeight: 700 }}>
@@ -380,7 +702,6 @@ function PreviewSidebar({ cv, accent = "#38bdf8" }: { cv: CVData; accent?: strin
   );
 }
 
-// ─── PREVIEW: EXECUTIVE ──────────────────────────────────────────────────────
 function PreviewExecutive({
   cv,
   accentColor = "#c9a84c",
@@ -566,7 +887,6 @@ function PreviewExecutive({
   );
 }
 
-// ─── PREVIEW: TWO-COLUMN ─────────────────────────────────────────────────────
 function PreviewTwoColumn({ cv, accent = "#2563eb" }: { cv: CVData; accent?: string }) {
   return (
     <div style={{ background: "#fff", fontFamily: "Georgia, serif", fontSize: 8, minHeight: 700 }}>
@@ -745,7 +1065,6 @@ function PreviewTwoColumn({ cv, accent = "#2563eb" }: { cv: CVData; accent?: str
   );
 }
 
-// ─── PREVIEW: PHOTO ──────────────────────────────────────────────────────────
 function PreviewPhoto({ cv, accent = "#2563eb" }: { cv: CVData; accent?: string }) {
   return (
     <div style={{ background: "#fff", fontFamily: "Georgia, serif", fontSize: 8, minHeight: 700 }}>
@@ -956,7 +1275,6 @@ function PreviewPhoto({ cv, accent = "#2563eb" }: { cv: CVData; accent?: string 
   );
 }
 
-// ─── PREVIEW: MINIMALIST ─────────────────────────────────────────────────────
 function PreviewMinimalist({ cv }: { cv: CVData }) {
   return (
     <div
@@ -1083,7 +1401,6 @@ function PreviewMinimalist({ cv }: { cv: CVData }) {
   );
 }
 
-// ─── PREVIEW: CREATIVE ───────────────────────────────────────────────────────
 function PreviewCreative({ cv, accent = "#7c3aed" }: { cv: CVData; accent?: string }) {
   return (
     <div style={{ background: "#fff", fontFamily: "Arial, sans-serif", fontSize: 8, minHeight: 700 }}>
@@ -1215,7 +1532,6 @@ function PreviewCreative({ cv, accent = "#7c3aed" }: { cv: CVData; accent?: stri
   );
 }
 
-// ─── PREVIEW: ATS ────────────────────────────────────────────────────────────
 function PreviewATS({ cv, accent = "#1e40af" }: { cv: CVData; accent?: string }) {
   return (
     <div
@@ -1390,12 +1706,12 @@ const PREVIEWS: Record<string, (cv: CVData) => JSX.Element> = {
   "picture-modern": (cv) => <PreviewPhoto cv={cv} accent="#0ea5e9" />,
 };
 
+// ─── MAIN EDITOR ─────────────────────────────────────────────────────────────
 export default function CVEditorPage() {
   const { templateId } = useParams<{ templateId: string }>();
   const navigate = useNavigate();
-
-  // Pre-fill the form with the selected template's sample person data
   const [cv, setCv] = useState<CVData>(() => buildCVFromTemplate(templateId ?? "classic"));
+  const [showMpesa, setShowMpesa] = useState(false);
 
   const update = (field: keyof CVData, value: string) => setCv((prev) => ({ ...prev, [field]: value }));
 
@@ -1404,13 +1720,11 @@ export default function CVEditorPage() {
     exps[i] = { ...exps[i], [field]: value };
     setCv((prev) => ({ ...prev, experiences: exps }));
   };
-
   const addExp = () =>
     setCv((prev) => ({
       ...prev,
       experiences: [...prev.experiences, { title: "", company: "", location: "", from: "", to: "", bullets: "" }],
     }));
-
   const removeExp = (i: number) =>
     setCv((prev) => ({ ...prev, experiences: prev.experiences.filter((_, idx) => idx !== i) }));
 
@@ -1419,227 +1733,240 @@ export default function CVEditorPage() {
     edus[i] = { ...edus[i], [field]: value };
     setCv((prev) => ({ ...prev, educations: edus }));
   };
-
   const addEdu = () =>
-    setCv((prev) => ({
-      ...prev,
-      educations: [...prev.educations, { degree: "", school: "", year: "", grade: "" }],
-    }));
-
+    setCv((prev) => ({ ...prev, educations: [...prev.educations, { degree: "", school: "", year: "", grade: "" }] }));
   const removeEdu = (i: number) =>
     setCv((prev) => ({ ...prev, educations: cv.educations.filter((_, idx) => idx !== i) }));
 
   const preview = PREVIEWS[templateId ?? "classic"] ?? PREVIEWS["classic"];
-
   const templateLabel = templateId ? templateId.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Classic";
 
   return (
-    <div className="cv-editor-root">
-      <div className="container max-w-7xl mx-auto">
-        <div className="flex items-center gap-4 mb-6">
-          <button
-            onClick={() => navigate("/cv-builder")}
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" /> Back to templates
-          </button>
-          <h1 className="text-xl font-bold">{templateLabel} Template Editor</h1>
-        </div>
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* FORM */}
-          <div className="space-y-6 max-h-[85vh] overflow-y-auto pr-2">
-            <div className="rounded-xl border border-border bg-card p-5">
-              <h2 className="font-bold text-base mb-4">Personal Details</h2>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="col-span-2">
-                  <Input placeholder="Full Name" value={cv.name} onChange={(e) => update("name", e.target.value)} />
-                </div>
-                <div className="col-span-2">
-                  <Input
-                    placeholder="Professional Title"
-                    value={cv.title}
-                    onChange={(e) => update("title", e.target.value)}
-                  />
-                </div>
-                <Input placeholder="Email" value={cv.email} onChange={(e) => update("email", e.target.value)} />
-                <Input placeholder="Phone" value={cv.phone} onChange={(e) => update("phone", e.target.value)} />
-                <Input
-                  placeholder="Location"
-                  value={cv.location}
-                  onChange={(e) => update("location", e.target.value)}
-                />
-                <Input
-                  placeholder="LinkedIn URL"
-                  value={cv.linkedin}
-                  onChange={(e) => update("linkedin", e.target.value)}
-                />
-              </div>
-            </div>
+    <>
+      {showMpesa && <MpesaModal onClose={() => setShowMpesa(false)} />}
 
-            <div className="rounded-xl border border-border bg-card p-5">
-              <h2 className="font-bold text-base mb-3">Professional Summary</h2>
-              <Textarea
-                placeholder="Write your professional summary..."
-                value={cv.summary}
-                onChange={(e) => update("summary", e.target.value)}
-                rows={4}
-              />
-            </div>
-
-            <div className="rounded-xl border border-border bg-card p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-bold text-base">Work Experience</h2>
-                <button onClick={addExp} className="flex items-center gap-1 text-xs text-primary hover:underline">
-                  <Plus className="h-3 w-3" /> Add
-                </button>
-              </div>
-              <div className="space-y-5">
-                {cv.experiences.map((exp, i) => (
-                  <div key={i} className="border border-border rounded-lg p-4 space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs font-semibold text-muted-foreground">Position {i + 1}</span>
-                      {cv.experiences.length > 1 && (
-                        <button onClick={() => removeExp(i)} className="text-destructive hover:opacity-70">
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Input
-                        placeholder="Job Title"
-                        value={exp.title}
-                        onChange={(e) => updateExp(i, "title", e.target.value)}
-                      />
-                      <Input
-                        placeholder="Company"
-                        value={exp.company}
-                        onChange={(e) => updateExp(i, "company", e.target.value)}
-                      />
-                      <Input
-                        placeholder="Location"
-                        value={exp.location}
-                        onChange={(e) => updateExp(i, "location", e.target.value)}
-                      />
-                      <div className="grid grid-cols-2 gap-1">
-                        <Input
-                          placeholder="From"
-                          value={exp.from}
-                          onChange={(e) => updateExp(i, "from", e.target.value)}
-                        />
-                        <Input placeholder="To" value={exp.to} onChange={(e) => updateExp(i, "to", e.target.value)} />
-                      </div>
-                    </div>
-                    <Textarea
-                      placeholder={"· Achievement one\n· Achievement two\n· Achievement three"}
-                      value={exp.bullets}
-                      onChange={(e) => updateExp(i, "bullets", e.target.value)}
-                      rows={4}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-border bg-card p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-bold text-base">Education</h2>
-                <button onClick={addEdu} className="flex items-center gap-1 text-xs text-primary hover:underline">
-                  <Plus className="h-3 w-3" /> Add
-                </button>
-              </div>
-              <div className="space-y-4">
-                {cv.educations.map((edu, i) => (
-                  <div key={i} className="border border-border rounded-lg p-4 space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-xs font-semibold text-muted-foreground">Qualification {i + 1}</span>
-                      {cv.educations.length > 1 && (
-                        <button onClick={() => removeEdu(i)} className="text-destructive hover:opacity-70">
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div className="col-span-2">
-                        <Input
-                          placeholder="Degree / Qualification"
-                          value={edu.degree}
-                          onChange={(e) => updateEdu(i, "degree", e.target.value)}
-                        />
-                      </div>
-                      <Input
-                        placeholder="School / University"
-                        value={edu.school}
-                        onChange={(e) => updateEdu(i, "school", e.target.value)}
-                      />
-                      <Input
-                        placeholder="Year"
-                        value={edu.year}
-                        onChange={(e) => updateEdu(i, "year", e.target.value)}
-                      />
-                      <div className="col-span-2">
-                        <Input
-                          placeholder="Grade / Honours (optional)"
-                          value={edu.grade}
-                          onChange={(e) => updateEdu(i, "grade", e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-border bg-card p-5 space-y-3">
-              <h2 className="font-bold text-base mb-1">Additional Information</h2>
-              <div>
-                <label className="text-xs text-muted-foreground mb-1 block">Skills (comma separated)</label>
-                <Textarea
-                  placeholder="React, Node.js, Leadership..."
-                  value={cv.skills}
-                  onChange={(e) => update("skills", e.target.value)}
-                  rows={2}
-                />
-              </div>
-              <div>
-                <label className="text-xs text-muted-foreground mb-1 block">Languages</label>
-                <Input
-                  placeholder="English (Fluent), Kiswahili (Native)"
-                  value={cv.languages}
-                  onChange={(e) => update("languages", e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="text-xs text-muted-foreground mb-1 block">Certifications</label>
-                <Input
-                  placeholder="CPA-K, AWS Solutions Architect..."
-                  value={cv.certifications}
-                  onChange={(e) => update("certifications", e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-3">
-              <Button className="flex-1 bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer h-12">
-                <Download className="mr-2 h-4 w-4" /> Download CV
-              </Button>
-            </div>
+      <div className="cv-editor-root">
+        <div className="container max-w-7xl mx-auto">
+          <div className="flex items-center gap-4 mb-6">
+            <button
+              onClick={() => navigate("/cv-builder")}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" /> Back to templates
+            </button>
+            <h1 className="text-xl font-bold">{templateLabel} Template Editor</h1>
           </div>
 
-          {/* PREVIEW */}
-          <div className="sticky top-24">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-semibold text-muted-foreground">Live Preview</span>
-              <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">Updates as you type</span>
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* ── FORM ── */}
+            <div className="space-y-6 max-h-[85vh] overflow-y-auto pr-2">
+              {/* Personal Details */}
+              <div className="rounded-xl border border-border bg-card p-5">
+                <h2 className="font-bold text-base mb-4">Personal Details</h2>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="col-span-2">
+                    <Input placeholder="Full Name" value={cv.name} onChange={(e) => update("name", e.target.value)} />
+                  </div>
+                  <div className="col-span-2">
+                    <Input
+                      placeholder="Professional Title"
+                      value={cv.title}
+                      onChange={(e) => update("title", e.target.value)}
+                    />
+                  </div>
+                  <Input placeholder="Email" value={cv.email} onChange={(e) => update("email", e.target.value)} />
+                  <Input placeholder="Phone" value={cv.phone} onChange={(e) => update("phone", e.target.value)} />
+                  <Input
+                    placeholder="Location"
+                    value={cv.location}
+                    onChange={(e) => update("location", e.target.value)}
+                  />
+                  <Input
+                    placeholder="LinkedIn URL"
+                    value={cv.linkedin}
+                    onChange={(e) => update("linkedin", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* Summary */}
+              <div className="rounded-xl border border-border bg-card p-5">
+                <h2 className="font-bold text-base mb-3">Professional Summary</h2>
+                <Textarea
+                  placeholder="Write your professional summary..."
+                  value={cv.summary}
+                  onChange={(e) => update("summary", e.target.value)}
+                  rows={4}
+                />
+              </div>
+
+              {/* Experience */}
+              <div className="rounded-xl border border-border bg-card p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-bold text-base">Work Experience</h2>
+                  <button onClick={addExp} className="flex items-center gap-1 text-xs text-primary hover:underline">
+                    <Plus className="h-3 w-3" /> Add
+                  </button>
+                </div>
+                <div className="space-y-5">
+                  {cv.experiences.map((exp, i) => (
+                    <div key={i} className="border border-border rounded-lg p-4 space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-semibold text-muted-foreground">Position {i + 1}</span>
+                        {cv.experiences.length > 1 && (
+                          <button onClick={() => removeExp(i)} className="text-destructive hover:opacity-70">
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Input
+                          placeholder="Job Title"
+                          value={exp.title}
+                          onChange={(e) => updateExp(i, "title", e.target.value)}
+                        />
+                        <Input
+                          placeholder="Company"
+                          value={exp.company}
+                          onChange={(e) => updateExp(i, "company", e.target.value)}
+                        />
+                        <Input
+                          placeholder="Location"
+                          value={exp.location}
+                          onChange={(e) => updateExp(i, "location", e.target.value)}
+                        />
+                        <div className="grid grid-cols-2 gap-1">
+                          <Input
+                            placeholder="From"
+                            value={exp.from}
+                            onChange={(e) => updateExp(i, "from", e.target.value)}
+                          />
+                          <Input placeholder="To" value={exp.to} onChange={(e) => updateExp(i, "to", e.target.value)} />
+                        </div>
+                      </div>
+                      <Textarea
+                        placeholder={"· Achievement one\n· Achievement two\n· Achievement three"}
+                        value={exp.bullets}
+                        onChange={(e) => updateExp(i, "bullets", e.target.value)}
+                        rows={4}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Education */}
+              <div className="rounded-xl border border-border bg-card p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-bold text-base">Education</h2>
+                  <button onClick={addEdu} className="flex items-center gap-1 text-xs text-primary hover:underline">
+                    <Plus className="h-3 w-3" /> Add
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  {cv.educations.map((edu, i) => (
+                    <div key={i} className="border border-border rounded-lg p-4 space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-xs font-semibold text-muted-foreground">Qualification {i + 1}</span>
+                        {cv.educations.length > 1 && (
+                          <button onClick={() => removeEdu(i)} className="text-destructive hover:opacity-70">
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="col-span-2">
+                          <Input
+                            placeholder="Degree / Qualification"
+                            value={edu.degree}
+                            onChange={(e) => updateEdu(i, "degree", e.target.value)}
+                          />
+                        </div>
+                        <Input
+                          placeholder="School / University"
+                          value={edu.school}
+                          onChange={(e) => updateEdu(i, "school", e.target.value)}
+                        />
+                        <Input
+                          placeholder="Year"
+                          value={edu.year}
+                          onChange={(e) => updateEdu(i, "year", e.target.value)}
+                        />
+                        <div className="col-span-2">
+                          <Input
+                            placeholder="Grade / Honours (optional)"
+                            value={edu.grade}
+                            onChange={(e) => updateEdu(i, "grade", e.target.value)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Additional */}
+              <div className="rounded-xl border border-border bg-card p-5 space-y-3">
+                <h2 className="font-bold text-base mb-1">Additional Information</h2>
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1 block">Skills (comma separated)</label>
+                  <Textarea
+                    placeholder="React, Node.js, Leadership..."
+                    value={cv.skills}
+                    onChange={(e) => update("skills", e.target.value)}
+                    rows={2}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1 block">Languages</label>
+                  <Input
+                    placeholder="English (Fluent), Kiswahili (Native)"
+                    value={cv.languages}
+                    onChange={(e) => update("languages", e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1 block">Certifications</label>
+                  <Input
+                    placeholder="CPA-K, AWS Solutions Architect..."
+                    value={cv.certifications}
+                    onChange={(e) => update("certifications", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* ── JOB SCORE MATCH ── */}
+              <JobScoreMatch cv={cv} />
+
+              {/* ── DOWNLOAD BUTTON → M-PESA ── */}
+              <div className="flex gap-3 pb-6">
+                <Button
+                  onClick={() => setShowMpesa(true)}
+                  className="flex-1 bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer h-12 text-base"
+                >
+                  <Download className="mr-2 h-4 w-4" /> Download CV — KES 299
+                </Button>
+              </div>
             </div>
-            <div
-              className="rounded-xl border border-border overflow-hidden shadow-lg"
-              style={{ maxHeight: "80vh", overflowY: "auto" }}
-            >
-              {preview(cv)}
+
+            {/* ── PREVIEW ── */}
+            <div className="sticky top-24">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-semibold text-muted-foreground">Live Preview</span>
+                <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                  Updates as you type
+                </span>
+              </div>
+              <div
+                className="rounded-xl border border-border overflow-hidden shadow-lg"
+                style={{ maxHeight: "80vh", overflowY: "auto" }}
+              >
+                {preview(cv)}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
