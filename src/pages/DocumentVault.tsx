@@ -219,14 +219,32 @@ export default function DocumentVault() {
 
   // ── Save ─────────────────────────────────────────────────────────────────
 
-  const handleSave = () => {
-    // In Lovable: replace this with your Supabase upsert
-    // await supabase.from("vault_profiles").upsert({ user_id: user.id, ...profile });
-    localStorage.setItem("cvEdgeVault", JSON.stringify(profile));
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
-  };
+  const handleSave = async () => {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
 
+  await supabase.from("vault_profiles").upsert({
+    user_id: user.id,
+    full_name: profile.fullName,
+    email: profile.email,
+    phone: profile.phone,
+    location: profile.location,
+    linkedin: profile.linkedin,
+    portfolio: profile.portfolio,
+    target_roles: profile.targetRoles,
+    career_summary: profile.careerSummary,
+    roles: profile.roles,
+    education: profile.education,
+    technical_skills: profile.technicalSkills,
+    soft_skills: profile.softSkills,
+    languages: profile.languages,
+    certifications: profile.certifications,
+    updated_at: new Date().toISOString(),
+  });
+
+  setSaved(true);
+  setTimeout(() => setSaved(false), 3000);
+};
   // ── Load saved ───────────────────────────────────────────────────────────
 
   useEffect(() => {
