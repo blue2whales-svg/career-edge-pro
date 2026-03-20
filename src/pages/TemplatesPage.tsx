@@ -889,7 +889,22 @@ const PEOPLE = [
           { degree: "BSc Information Technology", school: "Strathmore University", year: "2017" },
           { degree: "Microsoft Azure Administrator", school: "Microsoft Certified", year: "2020" },
         ],
-    },
+      },
+      {
+        role: "Counsellor",
+        company: "Kisumu County Government",
+        dates: "2017 – 2020",
+        bullets: [
+          "Provided psychosocial support to 300+ clients monthly",
+          "Trained 50 community health workers in basic counselling",
+        ],
+      },
+    ],
+    education: [
+      { degree: "BSc Social Work", school: "Maseno University", year: "2017" },
+      { degree: "Diploma Counselling Psychology", school: "KCA University", year: "2019" },
+    ],
+  },
 ];
 
 const TEMPLATES: TemplateInfo[] = [
