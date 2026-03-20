@@ -13,8 +13,8 @@ serve(async (req) => {
   try {
     const { cv, coverLetter, jobDescription } = await req.json();
 
-    const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
-    if (!ANTHROPIC_API_KEY) throw new Error("Missing ANTHROPIC_API_KEY");
+    const GROQ_API_KEY = Deno.env.get("GROQ_API_KEY");
+    if (!GROQ_API_KEY) throw new Error("Missing GROQ_API_KEY");
 
     const prompt = `
 You are a senior CV quality auditor. Score the following CV and cover letter against the job description.
@@ -43,22 +43,23 @@ Score each dimension from 0 to 10 and return ONLY valid JSON, no extra text:
 }
     `.trim();
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
+        "Authorization": `Bearer ${GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "llama-3.3-70b-versatile",
         max_tokens: 1000,
-        messages: [{ role: "user", content: prompt }],
+        messages: [
+          { role: "user", content: prompt }
+        ],
       }),
     });
 
     const data = await response.json();
-    const text = data.content?.[0]?.text ?? "{}";
+    const text = data.choices?.[0]?.message?.content ?? "{}";
     const clean = text.replace(/```json|```/g, "").trim();
     const scores = JSON.parse(clean);
 
