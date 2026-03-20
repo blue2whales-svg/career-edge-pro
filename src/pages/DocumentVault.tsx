@@ -3,7 +3,7 @@
 // Route: <Route path="/document-vault" element={<DocumentVault />} />
 
 import { useState, useEffect } from "react";
-
+import { supabase } from "@/integrations/supabase/client";
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface WorkRole {
