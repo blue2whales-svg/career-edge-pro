@@ -7,8 +7,7 @@ import cvedgeLogo from "@/assets/cvedge-logo.png";
 
 const NAV_LINKS = [
   { label: "Jobs", to: "/jobs" },
-  { label: "CV Builder", to: "/cv-builder" },
-  { label: "Templates", to: "/samples" },
+  { label: "Templates", to: "/templates" },
   { label: "Cover Letter", to: "/cover-letter" },
   { label: "ATS Checker", to: "/ats-checker" },
   { label: "Pricing", to: "/pricing" },
@@ -42,7 +41,11 @@ export function MobileNav() {
           {/* Top Hot Jobs CTA */}
           <div className="px-5 pt-4">
             <Link to="/jobs?industry=%F0%9F%94%A5+Hot+Abroad" onClick={() => setOpen(false)}>
-              <Button size="sm" variant="outline" className="w-full border-destructive/40 text-destructive hover:bg-destructive/10 font-semibold gap-1.5">
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full border-destructive/40 text-destructive hover:bg-destructive/10 font-semibold gap-1.5"
+              >
                 <Flame className="h-4 w-4" />
                 View Hot Jobs
               </Button>
