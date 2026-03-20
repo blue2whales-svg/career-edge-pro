@@ -18,7 +18,7 @@ import OrderPage from "./pages/OrderPage";
 import ContactPage from "./pages/ContactPage";
 import DocumentReviewPage from "./pages/DocumentReviewPage";
 import TemplatesPage from "./pages/TemplatesPage";
-import NewCVEditorPage from "./pages/NewCVEditorPage";
+import NewCVEditorPage from "./pages/CVEditorPage";
 import CoverLetterPage from "./pages/CoverLetterPage";
 import ATSCheckerPage from "./pages/ATSCheckerPage";
 import TrackerPage from "./pages/TrackerPage";
