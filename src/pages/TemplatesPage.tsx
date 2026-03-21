@@ -1377,7 +1377,6 @@ export const TEMPLATES: TemplateInfo[] = [
     layout: "single",
   },
   {
-    {
     id: "ats-executive",
     name: "ATS Executive",
     category: "ATS",
