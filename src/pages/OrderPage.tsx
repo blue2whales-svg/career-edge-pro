@@ -30,7 +30,7 @@ import PageLayout from "@/components/PageLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import ServiceQuestions from "@/components/order/ServiceQuestions";
-import MpesaModal from "@/components/order/MpesaModal";
+
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
@@ -312,13 +312,15 @@ export default function OrderPage() {
       // Trigger M-Pesa STK Push
       try {
         const { data: stkData, error: stkError } = await supabase.functions.invoke("mpesa-stk-push", {
-  body: {
-    phone: formatPhone(phone.trim()),
-    amount: total,
-    reference: order.id,
-    description: isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", "),
-  },
-});
+          body: {
+            orderId: order.id,
+            phone: formatPhone(phone.trim()),
+            amount: total,
+            packageName: isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", "),
+            fullName: name.trim(),
+            email: email.trim(),
+          },
+        });
 
         if (stkError) {
           console.error("STK push error:", stkError);
