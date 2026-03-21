@@ -23,6 +23,7 @@ import CoverLetterPage from "./pages/CoverLetterPage";
 import ATSCheckerPage from "./pages/ATSCheckerPage";
 import TrackerPage from "./pages/TrackerPage";
 import VaultPage from "./pages/VaultPage";
+import DocumentVaultPage from "./pages/DocumentVaultPage";
 import ProPage from "./pages/ProPage";
 import RecruitersPage from "./pages/RecruitersPage";
 import GlobalServicePage from "./pages/GlobalServicePage";
@@ -66,6 +67,7 @@ const App = () => (
           <Route path="/ats-checker" element={<ATSCheckerPage />} />
           <Route path="/tracker" element={<TrackerPage />} />
           <Route path="/vault" element={<VaultPage />} />
+          <Route path="/document-vault" element={<AuthGuard><DocumentVaultPage /></AuthGuard>} />
           <Route path="/pro" element={<ProPage />} />
           <Route path="/recruiters" element={<RecruitersPage />} />
           <Route path="/global-service" element={<GlobalServicePage />} />
