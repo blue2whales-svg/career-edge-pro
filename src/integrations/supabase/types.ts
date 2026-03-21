@@ -278,6 +278,69 @@ export type Database = {
           },
         ]
       }
+      vault_profiles: {
+        Row: {
+          career_summary: string
+          certifications: string
+          created_at: string
+          education: Json
+          email: string
+          full_name: string
+          id: string
+          languages: string
+          linkedin: string
+          location: string
+          phone: string
+          portfolio: string
+          roles: Json
+          soft_skills: string
+          target_roles: string
+          technical_skills: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          career_summary?: string
+          certifications?: string
+          created_at?: string
+          education?: Json
+          email?: string
+          full_name?: string
+          id?: string
+          languages?: string
+          linkedin?: string
+          location?: string
+          phone?: string
+          portfolio?: string
+          roles?: Json
+          soft_skills?: string
+          target_roles?: string
+          technical_skills?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          career_summary?: string
+          certifications?: string
+          created_at?: string
+          education?: Json
+          email?: string
+          full_name?: string
+          id?: string
+          languages?: string
+          linkedin?: string
+          location?: string
+          phone?: string
+          portfolio?: string
+          roles?: Json
+          soft_skills?: string
+          target_roles?: string
+          technical_skills?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
