@@ -408,7 +408,7 @@ export default function DocumentVaultPage() {
                           hasMetric(ach) ? (
                             <CheckCircle2 className="w-5 h-5 text-green-400 shrink-0" />
                           ) : (
-                            <AlertTriangle className="w-5 h-5 text-yellow-500 shrink-0" title="Add a number or metric for more impact" />
+                            <AlertTriangle className="w-5 h-5 text-yellow-500 shrink-0" />
                           )
                         )}
                         {role.achievements.length > 3 && (
