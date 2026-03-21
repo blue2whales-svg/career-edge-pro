@@ -241,7 +241,7 @@ export default function DocumentVaultPage() {
 
     const { error } = await supabase
       .from("vault_profiles")
-      .upsert(payload, { onConflict: "user_id" });
+      .upsert(payload as any, { onConflict: "user_id" });
 
     setSaving(false);
     if (error) { toast.error("Failed to save: " + error.message); return; }
