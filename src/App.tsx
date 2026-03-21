@@ -67,6 +67,7 @@ const App = () => (
           <Route path="/ats-checker" element={<ATSCheckerPage />} />
           <Route path="/tracker" element={<TrackerPage />} />
           <Route path="/vault" element={<VaultPage />} />
+          <Route path="/document-vault" element={<AuthGuard><DocumentVaultPage /></AuthGuard>} />
           <Route path="/pro" element={<ProPage />} />
           <Route path="/recruiters" element={<RecruitersPage />} />
           <Route path="/global-service" element={<GlobalServicePage />} />
