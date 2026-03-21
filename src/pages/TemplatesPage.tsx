@@ -2366,8 +2366,9 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
       </div>
     );
   }
+}
 
-
+function TemplateCard({ template }: { template: TemplateInfo }) {
   const navigate = useNavigate();
   const [selectedColor, setSelectedColor] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
