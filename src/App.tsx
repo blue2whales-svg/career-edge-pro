@@ -23,6 +23,7 @@ import CoverLetterPage from "./pages/CoverLetterPage";
 import ATSCheckerPage from "./pages/ATSCheckerPage";
 import TrackerPage from "./pages/TrackerPage";
 import VaultPage from "./pages/VaultPage";
+import DocumentVaultPage from "./pages/DocumentVaultPage";
 import ProPage from "./pages/ProPage";
 import RecruitersPage from "./pages/RecruitersPage";
 import GlobalServicePage from "./pages/GlobalServicePage";
