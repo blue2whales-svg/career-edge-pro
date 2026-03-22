@@ -1923,7 +1923,7 @@ export default function CVEditorPage() {
 
   return (
     <>
-      {showMpesa && <MpesaModal onClose={() => setShowMpesa(false)} />}
+      <MpesaPaymentModal open={showMpesa} onClose={() => setShowMpesa(false)} defaultPackage="starter" />
       <div className="cv-editor-root">
         <div className="container max-w-7xl mx-auto">
           <div className="flex items-center gap-4 mb-6">
