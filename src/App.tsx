@@ -29,6 +29,7 @@ import RecruitersPage from "./pages/RecruitersPage";
 import GlobalServicePage from "./pages/GlobalServicePage";
 import OptimizePage from "./pages/OptimizePage";
 import SamplesPage from "./pages/SamplesPage";
+import GenerateCVPage from "./pages/GenerateCVPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import PortalLayout from "./components/PortalLayout";
 import PortalDashboard from "./pages/PortalDashboard";
@@ -74,6 +75,7 @@ const App = () => (
           <Route path="/optimize" element={<OptimizePage />} />
           <Route path="/samples" element={<Navigate to="/templates" replace />} />
           <Route path="/payment-success" element={<PaymentSuccessPage />} />
+          <Route path="/generate-cv" element={<AuthGuard><GenerateCVPage /></AuthGuard>} />
           <Route path="/review/:orderId" element={<DocumentReviewPage />} />
 
           {/* Client Portal (auth-protected) */}
