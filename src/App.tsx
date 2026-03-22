@@ -75,6 +75,7 @@ const App = () => (
           <Route path="/optimize" element={<OptimizePage />} />
           <Route path="/samples" element={<Navigate to="/templates" replace />} />
           <Route path="/payment-success" element={<PaymentSuccessPage />} />
+          <Route path="/generate-cv" element={<AuthGuard><GenerateCVPage /></AuthGuard>} />
           <Route path="/review/:orderId" element={<DocumentReviewPage />} />
 
           {/* Client Portal (auth-protected) */}
