@@ -29,6 +29,7 @@ import RecruitersPage from "./pages/RecruitersPage";
 import GlobalServicePage from "./pages/GlobalServicePage";
 import OptimizePage from "./pages/OptimizePage";
 import SamplesPage from "./pages/SamplesPage";
+import GenerateCVPage from "./pages/GenerateCVPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 import PortalLayout from "./components/PortalLayout";
 import PortalDashboard from "./pages/PortalDashboard";
