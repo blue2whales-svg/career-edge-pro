@@ -67,7 +67,7 @@ const App = () => (
           <Route path="/cover-letter" element={<CoverLetterPage />} />
           <Route path="/ats-checker" element={<ATSCheckerPage />} />
           <Route path="/tracker" element={<TrackerPage />} />
-          <Route path="/vault" element={<VaultPage />} />
+          <Route path="/vault" element={<Navigate to="/document-vault" replace />} />
           <Route path="/document-vault" element={<AuthGuard><DocumentVaultPage /></AuthGuard>} />
           <Route path="/pro" element={<ProPage />} />
           <Route path="/recruiters" element={<RecruitersPage />} />
