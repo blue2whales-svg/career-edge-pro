@@ -16,6 +16,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { TEMPLATES } from "./TemplatesPage";
+import MpesaPaymentModal from "@/components/MpesaPaymentModal";
 
 interface Experience {
   title: string;
