@@ -1,23 +1,23 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Check, FileText, FileDown } from "lucide-react";
+import { Check, FileText, FileDown, Sparkles, Globe, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PageLayout from "@/components/PageLayout";
+import MpesaPaymentModal from "@/components/MpesaPaymentModal";
 
+// ─── TYPES (unchanged — keeping full compatibility) ──────────────────────────
 export interface TemplatePersonExperience {
   role: string;
   company: string;
   dates: string;
   bullets: string[];
 }
-
 export interface TemplatePersonEducation {
   degree: string;
   school: string;
   year: string;
 }
-
 export interface TemplatePerson {
   name: string;
   title: string;
@@ -31,7 +31,6 @@ export interface TemplatePerson {
   certifications: string[];
   languages: string[];
 }
-
 export interface TemplateInfo {
   id: string;
   name: string;
@@ -40,9 +39,13 @@ export interface TemplateInfo {
   colors: string[];
   person: TemplatePerson;
   layout: "single" | "sidebar" | "two-column" | "photo";
+  isNew?: boolean;
+  badge?: string;
 }
 
+// ─── PEOPLE DATA (original 25 + new people for new templates) ────────────────
 export const PEOPLE: TemplatePerson[] = [
+  // ── Original 25 people (indices 0–24) ──
   {
     name: "James Mitchell",
     title: "Senior Marketing Manager",
@@ -1247,9 +1250,532 @@ export const PEOPLE: TemplatePerson[] = [
     certifications: ["Microsoft Azure Administrator", "CompTIA Security+", "ITIL v4 Foundation"],
     languages: ["English (Fluent)", "Swahili (Native)", "Kikuyu (Native)"],
   },
+
+  // ── NEW people for new templates (indices 25–34) ──
+  // 25 – Swiss Minimalist
+  {
+    name: "Elena Müller",
+    title: "Strategic Consultant",
+    email: "elena.m@consulting.com",
+    phone: "+49 170 000 1234",
+    location: "Berlin, Germany",
+    summary:
+      "Senior management consultant with 9+ years advising DAX-listed companies on digital transformation, operational efficiency, and market expansion across Europe and Sub-Saharan Africa.",
+    skills: [
+      "Strategy",
+      "Digital Transformation",
+      "Change Management",
+      "Data Analytics",
+      "Stakeholder Engagement",
+      "P&L Management",
+    ],
+    experience: [
+      {
+        role: "Principal Consultant",
+        company: "McKinsey & Company",
+        dates: "2019 – Present",
+        bullets: [
+          "Led €200M digital transformation for automotive client across 12 markets",
+          "Delivered €45M in annual operational savings through process redesign",
+          "Built and managed cross-functional project team of 28 consultants",
+        ],
+      },
+      {
+        role: "Senior Consultant",
+        company: "Roland Berger",
+        dates: "2016 – 2019",
+        bullets: [
+          "Advised 3 African telecoms on growth strategy and market entry",
+          "Developed go-to-market playbook generating €80M in new revenue",
+          "Facilitated C-suite workshops for Fortune 500 clients",
+        ],
+      },
+      {
+        role: "Analyst",
+        company: "Deloitte Germany",
+        dates: "2014 – 2016",
+        bullets: [
+          "Conducted financial due diligence for 12 M&A transactions",
+          "Built financial models and board-level presentations",
+        ],
+      },
+    ],
+    education: [
+      { degree: "MBA, Strategy & Finance", school: "INSEAD", year: "2016" },
+      { degree: "BSc Economics", school: "Humboldt-Universität Berlin", year: "2013" },
+    ],
+    certifications: ["PMP Certified", "Six Sigma Black Belt", "Agile Certified Practitioner"],
+    languages: ["German (Native)", "English (Fluent)", "French (Fluent)", "Spanish (Intermediate)"],
+  },
+  // 26 – International EU
+  {
+    name: "Sophie Laurent",
+    title: "International Project Manager",
+    email: "sophie.l@eu.com",
+    phone: "+33 6 12 34 56 78",
+    location: "Paris, France",
+    summary:
+      "Multilingual project manager with 8 years leading cross-border initiatives for EU institutions and multinational corporations. PMP-certified with deep expertise in stakeholder management and EU regulatory frameworks.",
+    skills: [
+      "Project Management",
+      "EU Policy",
+      "Stakeholder Engagement",
+      "Risk Management",
+      "Agile",
+      "Multilingual Communication",
+    ],
+    experience: [
+      {
+        role: "Senior Project Manager",
+        company: "European Commission",
+        dates: "2020 – Present",
+        bullets: [
+          "Directed €50M cross-border infrastructure project across 6 EU member states",
+          "Coordinated 120+ stakeholders including government ministries and NGOs",
+          "Achieved 100% on-time delivery of 3 major EU-funded programmes",
+        ],
+      },
+      {
+        role: "Project Manager",
+        company: "Airbus Group",
+        dates: "2017 – 2020",
+        bullets: [
+          "Managed Airbus A321 component supply chain across 8 European factories",
+          "Reduced production delays by 30% through agile process improvements",
+          "Led cross-cultural teams of 40+ across France, Germany, and Spain",
+        ],
+      },
+      {
+        role: "Project Coordinator",
+        company: "UNESCO Paris",
+        dates: "2015 – 2017",
+        bullets: [
+          "Coordinated cultural heritage preservation projects in 5 countries",
+          "Managed project documentation and reporting for €15M budget",
+        ],
+      },
+    ],
+    education: [
+      { degree: "MSc International Project Management", school: "Sciences Po Paris", year: "2015" },
+      { degree: "BA Political Science", school: "Université Paris-Sorbonne", year: "2013" },
+    ],
+    certifications: ["PMP Certified", "PRINCE2 Practitioner", "EU Project Manager Certificate"],
+    languages: ["French (Native)", "English (Fluent)", "German (Fluent)", "Spanish (Intermediate)"],
+  },
+  // 27 – ATS Stealth (ultra minimal black)
+  {
+    name: "Marcus Johnson",
+    title: "Senior Software Engineer",
+    email: "marcus.j@tech.com",
+    phone: "+1 415 000 1234",
+    location: "San Francisco, CA",
+    summary:
+      "Full-stack engineer with 7+ years building high-scale distributed systems at top-tier tech companies. Expert in Go, Kubernetes, and cloud-native architecture. Passionate about developer tooling and open-source contributions.",
+    skills: ["Go", "Kubernetes", "React", "AWS", "PostgreSQL", "Distributed Systems"],
+    experience: [
+      {
+        role: "Senior Software Engineer",
+        company: "Stripe",
+        dates: "2021 – Present",
+        bullets: [
+          "Built payment processing system handling $1B+ monthly transactions",
+          "Reduced API latency by 40% through distributed caching architecture",
+          "Led migration of monolithic service to 12 independent microservices",
+        ],
+      },
+      {
+        role: "Software Engineer",
+        company: "Airbnb",
+        dates: "2018 – 2021",
+        bullets: [
+          "Developed real-time availability system for 7M+ listings globally",
+          "Built ML-powered search ranking improving booking conversion by 18%",
+          "Contributed 50+ PRs to internal infrastructure open-source projects",
+        ],
+      },
+      {
+        role: "Junior Engineer",
+        company: "Palantir Technologies",
+        dates: "2016 – 2018",
+        bullets: [
+          "Built data pipeline processing 10TB+ daily for government clients",
+          "Developed internal developer tooling used across all engineering teams",
+        ],
+      },
+    ],
+    education: [
+      { degree: "BSc Computer Science", school: "Stanford University", year: "2016" },
+      { degree: "AWS Solutions Architect Professional", school: "Amazon Web Services", year: "2019" },
+    ],
+    certifications: [
+      "AWS Certified Solutions Architect Pro",
+      "Certified Kubernetes Administrator",
+      "Google Cloud Professional",
+    ],
+    languages: ["English (Native)", "Spanish (Conversational)"],
+  },
+  // 28 – ATS Banner Cobalt
+  {
+    name: "Rachel Okonkwo",
+    title: "Chief Financial Officer",
+    email: "rachel.o@finance.com",
+    phone: "+234 801 000 1234",
+    location: "Lagos, Nigeria",
+    summary:
+      "CFA charterholder and CFO with 12+ years in corporate finance and investment banking across Sub-Saharan Africa. Track record of building world-class finance functions and driving shareholder value.",
+    skills: ["Corporate Finance", "Capital Markets", "IFRS", "SAP S/4HANA", "M&A", "Investor Relations"],
+    experience: [
+      {
+        role: "Chief Financial Officer",
+        company: "Dangote Group",
+        dates: "2020 – Present",
+        bullets: [
+          "Oversaw $4B annual finance operations across 17 African countries",
+          "Led $800M Eurobond issuance — largest in West African private sector",
+          "Reduced working capital cycle by 22 days saving $120M annually",
+        ],
+      },
+      {
+        role: "VP Finance",
+        company: "Access Bank PLC",
+        dates: "2016 – 2020",
+        bullets: [
+          "Built finance function for $1.2B division from ground up",
+          "Managed investor relations for 15,000+ institutional shareholders",
+          "Implemented SAP S/4HANA across 350+ finance staff",
+        ],
+      },
+      {
+        role: "Investment Banker",
+        company: "Goldman Sachs Lagos",
+        dates: "2012 – 2016",
+        bullets: [
+          "Executed 18 M&A transactions with combined value of $3.5B",
+          "Modelled and structured project finance for infrastructure deals",
+        ],
+      },
+    ],
+    education: [
+      { degree: "MBA Finance", school: "London Business School", year: "2012" },
+      { degree: "BSc Economics", school: "University of Lagos", year: "2009" },
+    ],
+    certifications: ["CFA Charterholder", "ACCA Fellow", "CIMA Strategic Level"],
+    languages: ["English (Native)", "Igbo (Native)", "French (Fluent)"],
+  },
+  // 29 – Creative Vibrant
+  {
+    name: "Kofi Mensah",
+    title: "Creative Director",
+    email: "kofi@studio.io",
+    phone: "+233 24 000 1234",
+    location: "Accra, Ghana",
+    summary:
+      "Award-winning creative director with 10+ years shaping brand identities for global companies and African startups. Specialist in visual storytelling, brand strategy, and immersive digital experiences.",
+    skills: ["Brand Strategy", "Art Direction", "Figma", "Cinema 4D", "Motion Design", "Campaign Development"],
+    experience: [
+      {
+        role: "Creative Director",
+        company: "WPP Africa",
+        dates: "2020 – Present",
+        bullets: [
+          "Led creative strategy for 8 global brands in African markets",
+          "Directed Cannes Lion-winning campaign reaching 50M+ consumers",
+          "Built and mentored award-winning team of 20+ creatives",
+        ],
+      },
+      {
+        role: "Senior Art Director",
+        company: "TBWA South Africa",
+        dates: "2017 – 2020",
+        bullets: [
+          "Concepted pan-African campaigns for Diageo and Nike",
+          "Won 3 Loeries and 1 Cannes Lions during tenure",
+          "Directed TV commercials, digital experiences, and OOH across 10 markets",
+        ],
+      },
+      {
+        role: "Designer",
+        company: "Nandos Africa",
+        dates: "2014 – 2017",
+        bullets: [
+          "Redesigned global brand identity for African market rollout",
+          "Created visual system used across 500+ restaurant locations",
+        ],
+      },
+    ],
+    education: [
+      { degree: "BA Fine Art & Design", school: "University of Ghana", year: "2014" },
+      { degree: "Certificate Brand Strategy", school: "Miami Ad School", year: "2016" },
+    ],
+    certifications: ["Adobe Certified Expert", "Google UX Design", "Canva Brand Ambassador"],
+    languages: ["English (Fluent)", "Twi (Native)", "French (Intermediate)"],
+  },
+  // 30 – Executive Obsidian
+  {
+    name: "Sir David Thornton",
+    title: "Chief Executive Officer",
+    email: "d.thornton@thornton.com",
+    phone: "+44 207 000 0001",
+    location: "London, United Kingdom",
+    summary:
+      "Transformational FTSE 100 CEO with 20+ years at the helm of global enterprises. Delivered cumulative shareholder value of £8B+ through bold strategy, acquisitions, and operational reinvention. Board-level experience across 6 continents.",
+    skills: [
+      "Corporate Strategy",
+      "M&A",
+      "P&L Leadership",
+      "Board Governance",
+      "Capital Allocation",
+      "Global Operations",
+    ],
+    experience: [
+      {
+        role: "Chief Executive Officer",
+        company: "Thornton Global PLC",
+        dates: "2017 – Present",
+        bullets: [
+          "Grew group revenue from £1.2B to £4.8B through organic growth and 5 strategic acquisitions",
+          "Delivered TSR of 340% outperforming FTSE 100 benchmark by 180%",
+          "Led IPO raising £650M — largest London listing in sector in a decade",
+        ],
+      },
+      {
+        role: "Chief Operating Officer",
+        company: "Meridian Capital Group",
+        dates: "2012 – 2017",
+        bullets: [
+          "Restructured 6 portfolio companies adding £1.8B in enterprise value",
+          "Built world-class management teams across North America and EMEA",
+          "Spearheaded digital transformation programme saving £120M annually",
+        ],
+      },
+      {
+        role: "Managing Director",
+        company: "Barclays Capital",
+        dates: "2007 – 2012",
+        bullets: [
+          "Ran EMEA investment banking division with $800M revenue book",
+          "Advised sovereign wealth funds and FTSE 50 boards on M&A strategy",
+        ],
+      },
+    ],
+    education: [
+      { degree: "MBA", school: "Harvard Business School", year: "2005" },
+      { degree: "MA Economics", school: "Oxford University", year: "2002" },
+    ],
+    certifications: ["FCA Authorised Person", "FCSI Fellow", "Institute of Directors Chartered Director"],
+    languages: ["English (Native)", "French (Fluent)", "Mandarin (Business)"],
+  },
+  // 31 – Minimalist Architect
+  {
+    name: "Yuki Tanaka",
+    title: "UX Research Lead",
+    email: "yuki.t@ux.design",
+    phone: "+81 90 0000 1234",
+    location: "Tokyo, Japan",
+    summary:
+      "User experience researcher with 7+ years uncovering deep human insights that transform product strategy. Practitioner of mixed-method research, design sprints, and accessibility-first design thinking.",
+    skills: ["UX Research", "Usability Testing", "Figma", "Design Thinking", "Accessibility", "Behavioural Analysis"],
+    experience: [
+      {
+        role: "UX Research Lead",
+        company: "Sony Interactive Entertainment",
+        dates: "2021 – Present",
+        bullets: [
+          "Directed research programme shaping PlayStation 6 UX strategy",
+          "Conducted 400+ user interviews across 12 global markets",
+          "Reduced UI error rates by 55% through iterative usability testing",
+        ],
+      },
+      {
+        role: "Senior UX Researcher",
+        company: "LINE Corporation",
+        dates: "2018 – 2021",
+        bullets: [
+          "Ran ethnographic research across Southeast Asia for 250M+ users",
+          "Built design research practice from scratch — grew team from 2 to 14",
+          "Delivered research insights that drove 3 flagship product redesigns",
+        ],
+      },
+      {
+        role: "UX Designer",
+        company: "Recruit Holdings",
+        dates: "2016 – 2018",
+        bullets: [
+          "Designed accessible interfaces for 40M+ monthly active users",
+          "Facilitated over 80 design sprint workshops",
+        ],
+      },
+    ],
+    education: [
+      { degree: "MSc Human-Computer Interaction", school: "Keio University", year: "2016" },
+      { degree: "BA Cognitive Science", school: "University of Tokyo", year: "2014" },
+    ],
+    certifications: ["Nielsen Norman UX Certified", "CPACC Accessibility Certified", "Google UX Design Professional"],
+    languages: ["Japanese (Native)", "English (Fluent)", "Mandarin (Intermediate)"],
+  },
+  // 32 – Two-Column Slate (dark premium sidebar)
+  {
+    name: "Adaeze Okafor",
+    title: "Investment Banking Associate",
+    email: "adaeze.o@bank.com",
+    phone: "+234 803 000 1234",
+    location: "Lagos, Nigeria",
+    summary:
+      "CFA candidate and investment banker with 5+ years executing M&A, ECM, and DCM transactions across Sub-Saharan Africa. Analytical, client-focused, and deal-driven with a track record of closing complex cross-border transactions.",
+    skills: ["Financial Modelling", "M&A Advisory", "DCM", "Valuation", "Bloomberg", "Capital Markets"],
+    experience: [
+      {
+        role: "Associate, Investment Banking",
+        company: "Stanbic IBTC",
+        dates: "2021 – Present",
+        bullets: [
+          "Co-led $350M Eurobond issuance for Nigerian state government",
+          "Built complex LBO and DCF models for 20+ live mandates",
+          "Managed client relationships with 8 Tier-1 corporate accounts",
+        ],
+      },
+      {
+        role: "Analyst",
+        company: "Rand Merchant Bank Nigeria",
+        dates: "2018 – 2021",
+        bullets: [
+          "Executed 14 M&A and capital markets transactions totalling $1.8B",
+          "Prepared pitchbooks, IMs, and board presentations for senior coverage",
+          "Ranked top analyst 2 years running by MD performance review",
+        ],
+      },
+      {
+        role: "Intern Analyst",
+        company: "United Capital PLC",
+        dates: "2017 – 2018",
+        bullets: [
+          "Supported equity research on 25+ Nigerian listed companies",
+          "Modelled financial statements and prepared sector reports",
+        ],
+      },
+    ],
+    education: [
+      { degree: "MSc Finance", school: "London School of Economics", year: "2018" },
+      { degree: "BSc Economics", school: "University of Lagos", year: "2016" },
+    ],
+    certifications: ["CFA Level 3 Candidate", "CISI Capital Markets Certificate", "SII Investment Advice Diploma"],
+    languages: ["English (Native)", "Igbo (Native)", "French (Intermediate)"],
+  },
+  // 33 – Two-Column Ember (warm premium)
+  {
+    name: "Isabelle Fontaine",
+    title: "Marketing Director",
+    email: "isabelle.f@luxury.com",
+    phone: "+33 6 98 76 54 32",
+    location: "Paris, France",
+    summary:
+      "Luxury brand marketing director with 11+ years building iconic prestige brands for LVMH and independent maisons. Expert in omnichannel storytelling, high-net-worth consumer strategy, and global brand positioning.",
+    skills: [
+      "Luxury Brand Strategy",
+      "Digital Marketing",
+      "Content Direction",
+      "CRM",
+      "Influencer Strategy",
+      "Global Campaigns",
+    ],
+    experience: [
+      {
+        role: "Global Marketing Director",
+        company: "Louis Vuitton (LVMH)",
+        dates: "2019 – Present",
+        bullets: [
+          "Directed global brand campaigns reaching 200M+ across 50 countries",
+          "Increased digital engagement by 95% through immersive content strategy",
+          "Led launch of 4 blockbuster product lines generating €600M in Year 1",
+        ],
+      },
+      {
+        role: "Senior Brand Manager",
+        company: "Chanel",
+        dates: "2015 – 2019",
+        bullets: [
+          "Managed €80M annual marketing budget for fragrance division",
+          "Developed influencer programme generating 500M+ earned media impressions",
+          "Orchestrated Asia-Pacific market entry strategy for 12 new stores",
+        ],
+      },
+      {
+        role: "Brand Consultant",
+        company: "Kering Group",
+        dates: "2013 – 2015",
+        bullets: [
+          "Developed positioning frameworks for Bottega Veneta and Balenciaga",
+          "Produced quarterly brand health reports for CEO and Board",
+        ],
+      },
+    ],
+    education: [
+      { degree: "MSc Luxury Brand Management", school: "ESSEC Business School", year: "2013" },
+      { degree: "BA Fashion Communication", school: "École Nationale Supérieure des Arts Décoratifs", year: "2011" },
+    ],
+    certifications: ["Google Analytics Certified", "IAB Digital Marketing Certified", "CIM Diploma Marketing"],
+    languages: ["French (Native)", "English (Fluent)", "Italian (Fluent)", "Mandarin (Basic)"],
+  },
+  // 34 – Picture Prestige
+  {
+    name: "Dr. Nadia Al-Rashid",
+    title: "Consultant Cardiologist",
+    email: "nadia.r@medcenter.ae",
+    phone: "+971 50 000 1234",
+    location: "Dubai, UAE",
+    summary:
+      "Board-certified cardiologist with 14 years of clinical excellence across the UAE, UK, and USA. Fellowship-trained in interventional cardiology with 2,000+ catheterisation procedures. Published researcher and international conference speaker.",
+    skills: [
+      "Interventional Cardiology",
+      "Echocardiography",
+      "Clinical Research",
+      "Patient Care",
+      "Medical Education",
+      "TAVI Procedures",
+    ],
+    experience: [
+      {
+        role: "Consultant Cardiologist",
+        company: "Cleveland Clinic Abu Dhabi",
+        dates: "2018 – Present",
+        bullets: [
+          "Performed 400+ TAVI and complex PCI procedures annually",
+          "Led research team publishing 8 peer-reviewed cardiology papers",
+          "Built interventional cardiology programme serving 15,000+ patients per year",
+        ],
+      },
+      {
+        role: "Specialist Registrar",
+        company: "Hammersmith Hospital, London",
+        dates: "2014 – 2018",
+        bullets: [
+          "Trained under world-renowned TAVI programme team",
+          "Completed 600+ supervised catheterisation procedures",
+          "Received BCS Young Investigator Award 2016",
+        ],
+      },
+      {
+        role: "Medical Officer",
+        company: "Johns Hopkins Aramco Healthcare",
+        dates: "2011 – 2014",
+        bullets: [
+          "Provided cardiac care for 60,000-strong industrial workforce",
+          "Managed acute cardiac unit with 95% target compliance rate",
+        ],
+      },
+    ],
+    education: [
+      { degree: "FRCP (Cardiology)", school: "Royal College of Physicians, London", year: "2017" },
+      { degree: "MBBCh", school: "Cairo University Faculty of Medicine", year: "2009" },
+    ],
+    certifications: ["FRCP Fellow", "FESC Fellow", "TAVI Proctor Certification", "ACC International Fellow"],
+    languages: ["Arabic (Native)", "English (Fluent)", "French (Intermediate)"],
+  },
 ];
 
+// ─── TEMPLATES ARRAY (original 25 + 10 new = 35 total) ───────────────────────
 export const TEMPLATES: TemplateInfo[] = [
+  // ── ORIGINAL 25 (unchanged) ──
   {
     id: "classic",
     name: "Classic",
@@ -1484,31 +2010,146 @@ export const TEMPLATES: TemplateInfo[] = [
     person: PEOPLE[24],
     layout: "single",
   },
+
+  // ── NEW TEMPLATES (10 brand-new stunning designs) ──
+  {
+    id: "swiss-minimalist",
+    name: "Swiss Minimalist",
+    category: "Minimalist",
+    description: "Editorial grid layout with razor-thin rules & typographic precision",
+    colors: ["#111827", "#374151", "#1e40af", "#059669", "#7c3aed"],
+    person: PEOPLE[25],
+    layout: "single",
+    isNew: true,
+    badge: "Swiss",
+  },
+  {
+    id: "international-eu",
+    name: "International / EU",
+    category: "International",
+    description: "Europass-style with photo, DOB & nationality — accepted worldwide",
+    colors: ["#1e3a5f", "#3b82f6", "#059669", "#7c3aed", "#dc2626"],
+    person: PEOPLE[26],
+    layout: "photo",
+    isNew: true,
+    badge: "EU",
+  },
+  {
+    id: "ats-stealth",
+    name: "ATS Stealth",
+    category: "ATS",
+    description: "Maximum keyword density, zero formatting risk — invisible to ATS",
+    colors: ["#111827", "#1f2937", "#374151", "#1e40af", "#475569"],
+    person: PEOPLE[27],
+    layout: "single",
+    isNew: true,
+    badge: "ATS+",
+  },
+  {
+    id: "ats-banner-cobalt",
+    name: "ATS Banner Cobalt",
+    category: "ATS",
+    description: "Cobalt blue banner strips — bold yet 100% ATS-safe",
+    colors: ["#1e40af", "#1e3a5f", "#0f172a", "#3b82f6", "#111827"],
+    person: PEOPLE[28],
+    layout: "single",
+    isNew: true,
+    badge: "ATS+",
+  },
+  {
+    id: "creative-vibrant",
+    name: "Creative Vibrant",
+    category: "Creative",
+    description: "High-impact color blocking for bold creative professionals",
+    colors: ["#f59e0b", "#ec4899", "#8b5cf6", "#06b6d4", "#10b981"],
+    person: PEOPLE[29],
+    layout: "sidebar",
+    isNew: true,
+    badge: "Creative",
+  },
+  {
+    id: "executive-obsidian",
+    name: "Executive Obsidian",
+    category: "Executive",
+    description: "Ultra-dark luxury — obsidian & gold for C-suite powerbrokers",
+    colors: ["#c9a84c", "#0a0a0f", "#1a1a24", "#d4a843", "#92400e"],
+    person: PEOPLE[30],
+    layout: "single",
+    isNew: true,
+    badge: "Premium",
+  },
+  {
+    id: "minimalist-architect",
+    name: "Minimalist Architect",
+    category: "Minimalist",
+    description: "Architectural proportions with surgical white space",
+    colors: ["#0f172a", "#374151", "#6b7280", "#1e40af", "#9ca3af"],
+    person: PEOPLE[31],
+    layout: "single",
+    isNew: true,
+    badge: "Minimal",
+  },
+  {
+    id: "two-column-slate",
+    name: "Two-Column Slate",
+    category: "Two-Column",
+    description: "Dark slate sidebar with premium typography hierarchy",
+    colors: ["#1e293b", "#334155", "#0ea5e9", "#38bdf8", "#7c3aed"],
+    person: PEOPLE[32],
+    layout: "sidebar",
+    isNew: true,
+    badge: "Premium",
+  },
+  {
+    id: "two-column-ember",
+    name: "Two-Column Ember",
+    category: "Two-Column",
+    description: "Warm amber tones — sophisticated, refined, unforgettable",
+    colors: ["#92400e", "#b45309", "#d97706", "#f59e0b", "#059669"],
+    person: PEOPLE[33],
+    layout: "two-column",
+    isNew: true,
+    badge: "Luxury",
+  },
+  {
+    id: "picture-prestige",
+    name: "Picture Prestige",
+    category: "Picture",
+    description: "Luxury picture template for senior professionals & executives",
+    colors: ["#c9a84c", "#0f172a", "#1e3a5f", "#b8960c", "#374151"],
+    person: PEOPLE[34],
+    layout: "photo",
+    isNew: true,
+    badge: "Prestige",
+  },
 ];
 
-const CATEGORIES = ["All", "Simple", "ATS", "Two-Column", "Picture", "Executive", "Creative", "Minimalist"];
+const CATEGORIES = [
+  "All",
+  "Simple",
+  "ATS",
+  "Two-Column",
+  "Picture",
+  "Executive",
+  "Creative",
+  "Minimalist",
+  "International",
+];
 
-function SectionLabel({
-  children,
-  color,
-  borderColor,
-}: {
-  children: React.ReactNode;
-  color: string;
-  borderColor: string;
-}) {
+// ─── SHARED SECTION LABEL ────────────────────────────────────────────────────
+function SL({ children, color, border }: { children: React.ReactNode; color: string; border: string }) {
   return (
     <div
       style={{
-        fontSize: 10,
+        fontSize: 9,
         fontWeight: 800,
         color,
-        textTransform: "uppercase",
+        textTransform: "uppercase" as const,
         letterSpacing: 1.5,
-        borderBottom: `2px solid ${borderColor}`,
-        paddingBottom: 4,
-        marginBottom: 6,
-        marginTop: 10,
+        borderBottom: `1.5px solid ${border}`,
+        paddingBottom: 3,
+        marginBottom: 5,
+        marginTop: 9,
       }}
     >
       {children}
@@ -1516,8 +2157,1574 @@ function SectionLabel({
   );
 }
 
-// ─── ATS MINI PREVIEWS — each with its own distinct look ─────────────────────
+// ─── ALL MINI PREVIEW RENDERERS ──────────────────────────────────────────────
 
+/** SWISS MINIMALIST — editorial two-column grid with thin rules */
+function MiniSwissMinimalist({ p, accent }: { p: TemplatePerson; accent: string }) {
+  return (
+    <div style={{ width: "100%", background: "#fff", fontFamily: "Georgia, serif", padding: "20px 18px" }}>
+      <div style={{ fontSize: 26, fontWeight: 900, color: "#0f172a", letterSpacing: -1, lineHeight: 1 }}>{p.name}</div>
+      <div
+        style={{
+          fontSize: 8,
+          color: "#9ca3af",
+          letterSpacing: 4,
+          textTransform: "uppercase" as const,
+          marginTop: 4,
+          fontFamily: "Arial, sans-serif",
+        }}
+      >
+        {p.title}
+      </div>
+      <div style={{ height: 0.5, background: "#0f172a", margin: "10px 0 6px" }} />
+      <div
+        style={{
+          fontSize: 6.5,
+          color: "#6b7280",
+          display: "flex",
+          gap: 12,
+          fontFamily: "Arial, sans-serif",
+          marginBottom: 14,
+        }}
+      >
+        <span>{p.email}</span>
+        <span>·</span>
+        <span>{p.phone}</span>
+        <span>·</span>
+        <span>{p.location}</span>
+      </div>
+      {[
+        {
+          label: "Profile",
+          content: <div style={{ fontSize: 7.5, color: "#374151", lineHeight: 1.7 }}>{p.summary}</div>,
+        },
+        {
+          label: "Experience",
+          content: (
+            <div>
+              {p.experience.map((e, i) => (
+                <div key={i} style={{ marginBottom: 8 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: 8.5, fontWeight: 700, color: "#0f172a" }}>{e.role}</span>
+                    <span style={{ fontSize: 6.5, color: "#9ca3af", fontFamily: "Arial, sans-serif" }}>{e.dates}</span>
+                  </div>
+                  <div style={{ fontSize: 7.5, color: "#6b7280", fontStyle: "italic", marginBottom: 2 }}>
+                    {e.company}
+                  </div>
+                  {e.bullets.slice(0, 2).map((b, j) => (
+                    <div
+                      key={j}
+                      style={{
+                        fontSize: 7,
+                        color: "#4b5563",
+                        paddingLeft: 10,
+                        position: "relative" as const,
+                        lineHeight: 1.6,
+                        fontFamily: "Arial, sans-serif",
+                      }}
+                    >
+                      <span style={{ position: "absolute" as const, left: 0, color: "#9ca3af" }}>—</span>
+                      {b}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          ),
+        },
+        {
+          label: "Skills",
+          content: (
+            <div style={{ display: "flex", flexWrap: "wrap" as const, gap: 3 }}>
+              {p.skills.map((s) => (
+                <span
+                  key={s}
+                  style={{
+                    fontSize: 6.5,
+                    border: "0.5px solid #d1d5db",
+                    padding: "2px 6px",
+                    color: "#374151",
+                    fontFamily: "Arial, sans-serif",
+                  }}
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
+          ),
+        },
+        {
+          label: "Education",
+          content: (
+            <div>
+              {p.education.map((e, i) => (
+                <div key={i} style={{ marginBottom: 5 }}>
+                  <div style={{ fontSize: 8, fontWeight: 700, color: "#0f172a" }}>{e.degree}</div>
+                  <div style={{ fontSize: 7, color: "#6b7280", fontFamily: "Arial, sans-serif" }}>
+                    {e.school} · {e.year}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ),
+        },
+        {
+          label: "Languages",
+          content: (
+            <div style={{ fontSize: 7.5, color: "#374151", fontFamily: "Arial, sans-serif" }}>
+              {p.languages.join(" · ")}
+            </div>
+          ),
+        },
+      ].map(({ label, content }) => (
+        <div key={label} style={{ display: "grid", gridTemplateColumns: "80px 1fr", gap: "0 14px", marginBottom: 8 }}>
+          <div
+            style={{
+              fontSize: 6,
+              fontWeight: 700,
+              textTransform: "uppercase" as const,
+              letterSpacing: 2,
+              color: "#9ca3af",
+              paddingTop: 2,
+              textAlign: "right" as const,
+              fontFamily: "Arial, sans-serif",
+            }}
+          >
+            {label}
+          </div>
+          <div>{content}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** INTERNATIONAL EU — dark navy header, photo avatar, personal details block */
+function MiniInternationalEU({ p, accent }: { p: TemplatePerson; accent: string }) {
+  const initials = p.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
+  return (
+    <div style={{ width: "100%", background: "#fff", fontFamily: "Arial, sans-serif" }}>
+      <div style={{ background: "#1e3a5f", padding: "16px 18px", display: "flex", alignItems: "center", gap: 12 }}>
+        <div
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: "50%",
+            background: accent,
+            flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 18,
+            fontWeight: 900,
+            color: "#fff",
+            border: "2.5px solid rgba(255,255,255,0.25)",
+          }}
+        >
+          {initials}
+        </div>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 900, color: "#fff", lineHeight: 1 }}>{p.name}</div>
+          <div
+            style={{
+              fontSize: 7.5,
+              color: "#93c5fd",
+              textTransform: "uppercase" as const,
+              letterSpacing: 2,
+              fontWeight: 600,
+              marginTop: 3,
+            }}
+          >
+            {p.title}
+          </div>
+          <div style={{ fontSize: 6.5, color: "rgba(255,255,255,0.5)", marginTop: 4 }}>
+            {p.email} · {p.phone} · {p.location}
+          </div>
+        </div>
+      </div>
+      <div style={{ display: "flex" }}>
+        <div
+          style={{
+            width: 145,
+            background: "#f0f4f8",
+            padding: "12px 11px",
+            flexShrink: 0,
+            borderRight: "2px solid #e2e8f0",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 6,
+              fontWeight: 900,
+              textTransform: "uppercase" as const,
+              letterSpacing: 2,
+              color: "#1e3a5f",
+              marginBottom: 4,
+            }}
+          >
+            Personal Details
+          </div>
+          <div
+            style={{
+              border: "0.5px solid #e2e8f0",
+              borderRadius: 3,
+              padding: "5px 7px",
+              marginBottom: 8,
+              background: "#f9fafb",
+            }}
+          >
+            <div style={{ fontSize: 5.5, color: "#9ca3af" }}>Date of Birth</div>
+            <div style={{ fontSize: 6.5, color: "#374151", marginBottom: 3 }}>15 June 1987</div>
+            <div style={{ fontSize: 5.5, color: "#9ca3af" }}>Nationality</div>
+            <div style={{ fontSize: 6.5, color: "#374151", marginBottom: 3 }}>French</div>
+            <div style={{ fontSize: 5.5, color: "#9ca3af" }}>Driving Licence</div>
+            <div style={{ fontSize: 6.5, color: "#374151" }}>Category B</div>
+          </div>
+          <div
+            style={{
+              fontSize: 6,
+              fontWeight: 900,
+              textTransform: "uppercase" as const,
+              letterSpacing: 2,
+              color: "#1e3a5f",
+              marginBottom: 4,
+            }}
+          >
+            Skills
+          </div>
+          {p.skills.map((s) => (
+            <div key={s} style={{ fontSize: 6.5, color: "#374151", lineHeight: 1.8 }}>
+              {s}
+            </div>
+          ))}
+          <div style={{ height: 0.5, background: "#e2e8f0", margin: "7px 0" }} />
+          <div
+            style={{
+              fontSize: 6,
+              fontWeight: 900,
+              textTransform: "uppercase" as const,
+              letterSpacing: 2,
+              color: "#1e3a5f",
+              marginBottom: 4,
+            }}
+          >
+            Languages
+          </div>
+          {p.languages.map((l, i) => (
+            <div key={i} style={{ marginBottom: 4 }}>
+              <div style={{ fontSize: 6.5, color: "#374151" }}>{l.split(" ")[0]}</div>
+              <div style={{ height: 3, background: "#e2e8f0", borderRadius: 2, marginTop: 1 }}>
+                <div style={{ height: "100%", width: `${95 - i * 8}%`, background: "#1e3a5f", borderRadius: 2 }} />
+              </div>
+            </div>
+          ))}
+          <div style={{ height: 0.5, background: "#e2e8f0", margin: "7px 0" }} />
+          <div
+            style={{
+              fontSize: 6,
+              fontWeight: 900,
+              textTransform: "uppercase" as const,
+              letterSpacing: 2,
+              color: "#1e3a5f",
+              marginBottom: 4,
+            }}
+          >
+            Education
+          </div>
+          {p.education.map((e, i) => (
+            <div key={i} style={{ marginBottom: 5 }}>
+              <div style={{ fontSize: 7, fontWeight: 700, color: "#0f172a", lineHeight: 1.3 }}>{e.degree}</div>
+              <div style={{ fontSize: 6, color: "#9ca3af" }}>
+                {e.school} · {e.year}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div style={{ flex: 1, padding: "12px 13px" }}>
+          <div
+            style={{
+              fontSize: 6,
+              fontWeight: 900,
+              textTransform: "uppercase" as const,
+              letterSpacing: 2,
+              color: "#1e3a5f",
+              marginBottom: 5,
+            }}
+          >
+            Profile
+          </div>
+          <div style={{ fontSize: 7, color: "#374151", lineHeight: 1.65, marginBottom: 10 }}>{p.summary}</div>
+          <div
+            style={{
+              fontSize: 6,
+              fontWeight: 900,
+              textTransform: "uppercase" as const,
+              letterSpacing: 2,
+              color: "#1e3a5f",
+              marginBottom: 5,
+            }}
+          >
+            Work Experience
+          </div>
+          {p.experience.map((e, i) => (
+            <div key={i} style={{ marginBottom: 8 }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ fontSize: 8, fontWeight: 700, color: "#0f172a" }}>{e.role}</span>
+                <span style={{ fontSize: 6.5, color: "#9ca3af" }}>{e.dates}</span>
+              </div>
+              <div style={{ fontSize: 7, color: "#3b82f6", fontWeight: 600, marginBottom: 2 }}>{e.company}</div>
+              {e.bullets.slice(0, 2).map((b, j) => (
+                <div
+                  key={j}
+                  style={{
+                    fontSize: 6.5,
+                    color: "#4b5563",
+                    paddingLeft: 7,
+                    position: "relative" as const,
+                    lineHeight: 1.55,
+                  }}
+                >
+                  <span style={{ position: "absolute" as const, left: 0, color: "#1e3a5f", fontSize: 6 }}>▸</span>
+                  {b}
+                </div>
+              ))}
+            </div>
+          ))}
+          <div
+            style={{
+              fontSize: 6,
+              fontWeight: 900,
+              textTransform: "uppercase" as const,
+              letterSpacing: 2,
+              color: "#1e3a5f",
+              marginTop: 8,
+              marginBottom: 4,
+            }}
+          >
+            Certifications
+          </div>
+          {p.certifications.map((c) => (
+            <div key={c} style={{ fontSize: 6.5, color: "#374151", lineHeight: 1.7 }}>
+              {c}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** ATS STEALTH — pure text, maximum parsability, dark minimal header */
+function MiniATSStealth({ p, accent }: { p: TemplatePerson; accent: string }) {
+  const SH = ({ label }: { label: string }) => (
+    <div
+      style={{
+        fontSize: 7.5,
+        fontWeight: 900,
+        color: "#0f172a",
+        textTransform: "uppercase" as const,
+        letterSpacing: 2.5,
+        borderBottom: "1px solid #0f172a",
+        paddingBottom: 2,
+        margin: "9px 0 5px",
+      }}
+    >
+      {label}
+    </div>
+  );
+  return (
+    <div style={{ width: "100%", background: "#fff", fontFamily: "Arial, sans-serif", fontSize: 7.5 }}>
+      <div style={{ background: "#0f172a", padding: "14px 16px" }}>
+        <div style={{ fontSize: 18, fontWeight: 900, color: "#f8fafc", letterSpacing: 1 }}>{p.name}</div>
+        <div
+          style={{
+            fontSize: 7.5,
+            color: "#94a3b8",
+            textTransform: "uppercase" as const,
+            letterSpacing: 2,
+            marginTop: 3,
+          }}
+        >
+          {p.title}
+        </div>
+        <div style={{ fontSize: 6.5, color: "#64748b", marginTop: 4 }}>
+          {p.email} | {p.phone} | {p.location}
+        </div>
+      </div>
+      <div style={{ padding: "10px 16px 14px" }}>
+        <SH label="Professional Summary" />
+        <div style={{ fontSize: 7, color: "#374151", lineHeight: 1.7 }}>{p.summary}</div>
+        <SH label="Core Competencies" />
+        <div style={{ display: "flex", flexWrap: "wrap" as const, gap: 2 }}>
+          {p.skills.map((s) => (
+            <span
+              key={s}
+              style={{
+                fontSize: 6.5,
+                background: "#f1f5f9",
+                color: "#334155",
+                border: "0.5px solid #cbd5e1",
+                padding: "1.5px 6px",
+                borderRadius: 2,
+                fontWeight: 600,
+              }}
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+        <SH label="Professional Experience" />
+        {p.experience.map((e, i) => (
+          <div key={i} style={{ marginBottom: 8 }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ fontWeight: 700, fontSize: 8, color: "#0f172a" }}>
+                {e.role} | {e.company}
+              </span>
+              <span style={{ fontSize: 6.5, color: "#64748b" }}>{e.dates}</span>
+            </div>
+            {e.bullets.slice(0, 2).map((b, j) => (
+              <div
+                key={j}
+                style={{
+                  fontSize: 7,
+                  color: "#374151",
+                  paddingLeft: 9,
+                  position: "relative" as const,
+                  lineHeight: 1.6,
+                }}
+              >
+                <span style={{ position: "absolute" as const, left: 0, color: "#64748b" }}>•</span>
+                {b}
+              </div>
+            ))}
+          </div>
+        ))}
+        <SH label="Education" />
+        {p.education.map((e, i) => (
+          <div
+            key={i}
+            style={{ fontSize: 7, color: "#374151", display: "flex", justifyContent: "space-between", marginBottom: 3 }}
+          >
+            <span style={{ fontWeight: 700, color: "#0f172a" }}>
+              {e.degree} — {e.school}
+            </span>
+            <span style={{ color: "#64748b" }}>{e.year}</span>
+          </div>
+        ))}
+        <SH label="Certifications" />
+        <div style={{ fontSize: 7, color: "#374151" }}>{p.certifications.join(" | ")}</div>
+      </div>
+    </div>
+  );
+}
+
+/** ATS BANNER COBALT — cobalt blue banner headers, bold ATS-safe */
+function MiniATSBannerCobalt({ p, accent }: { p: TemplatePerson; accent: string }) {
+  const SH = ({ label }: { label: string }) => (
+    <div
+      style={{
+        background: "#1e40af",
+        padding: "3px 10px",
+        margin: "9px -16px 5px",
+        fontSize: 7,
+        fontWeight: 900,
+        color: "#fff",
+        textTransform: "uppercase" as const,
+        letterSpacing: 2,
+      }}
+    >
+      {label}
+    </div>
+  );
+  return (
+    <div style={{ width: "100%", background: "#fff", fontFamily: "Arial, sans-serif", fontSize: 7.5 }}>
+      <div style={{ background: "#f8fafc", borderBottom: "3px solid #1e40af", padding: "14px 16px" }}>
+        <div style={{ fontSize: 20, fontWeight: 900, color: "#0f172a", letterSpacing: -0.3, lineHeight: 1 }}>
+          {p.name}
+        </div>
+        <div
+          style={{
+            fontSize: 8,
+            color: "#1e40af",
+            fontWeight: 700,
+            textTransform: "uppercase" as const,
+            letterSpacing: 2,
+            marginTop: 4,
+          }}
+        >
+          {p.title}
+        </div>
+        <div style={{ fontSize: 6.5, color: "#64748b", marginTop: 4 }}>
+          {p.email} · {p.phone} · {p.location}
+        </div>
+      </div>
+      <div style={{ padding: "0 16px 14px" }}>
+        <SH label="Summary" />
+        <div style={{ fontSize: 7, color: "#374151", lineHeight: 1.7 }}>{p.summary}</div>
+        <SH label="Experience" />
+        {p.experience.map((e, i) => (
+          <div key={i} style={{ marginBottom: 8 }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ fontWeight: 700, fontSize: 8, color: "#0f172a" }}>{e.role}</span>
+              <span style={{ fontSize: 6.5, color: "#94a3b8" }}>{e.dates}</span>
+            </div>
+            <div style={{ fontSize: 7, color: "#1e40af", fontWeight: 600, marginBottom: 2 }}>{e.company}</div>
+            {e.bullets.slice(0, 2).map((b, j) => (
+              <div
+                key={j}
+                style={{
+                  fontSize: 7,
+                  color: "#374151",
+                  paddingLeft: 9,
+                  position: "relative" as const,
+                  lineHeight: 1.6,
+                }}
+              >
+                <span style={{ position: "absolute" as const, left: 0, color: "#1e40af" }}>▸</span>
+                {b}
+              </div>
+            ))}
+          </div>
+        ))}
+        <SH label="Skills" />
+        <div style={{ fontSize: 7, color: "#374151" }}>{p.skills.join(" · ")}</div>
+        <SH label="Education" />
+        {p.education.map((e, i) => (
+          <div key={i} style={{ fontSize: 7, color: "#374151", marginBottom: 3 }}>
+            <span style={{ fontWeight: 700, color: "#0f172a" }}>{e.degree}</span> — {e.school}, {e.year}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** CREATIVE VIBRANT — vivid color-blocked sidebar, bold typography */
+function MiniCreativeVibrant({ p, accent }: { p: TemplatePerson; accent: string }) {
+  const initials = p.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
+  const sideColors = ["#f59e0b", "#ec4899", "#8b5cf6", "#06b6d4", "#10b981"];
+  const sc = sideColors[0];
+  return (
+    <div style={{ display: "flex", width: "100%", fontFamily: "Arial, sans-serif", background: "#fff" }}>
+      <div style={{ width: "38%", background: sc, padding: "20px 12px", color: "#fff", flexShrink: 0 }}>
+        <div
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: "50%",
+            background: "rgba(255,255,255,0.25)",
+            margin: "0 auto 10px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 20,
+            fontWeight: 900,
+            color: "#fff",
+            border: "2px solid rgba(255,255,255,0.5)",
+          }}
+        >
+          {initials}
+        </div>
+        <div style={{ fontSize: 14, fontWeight: 900, textAlign: "center" as const, lineHeight: 1.2, marginBottom: 3 }}>
+          {p.name}
+        </div>
+        <div
+          style={{
+            fontSize: 7.5,
+            textAlign: "center" as const,
+            textTransform: "uppercase" as const,
+            letterSpacing: 1.5,
+            fontWeight: 700,
+            marginBottom: 14,
+            opacity: 0.85,
+          }}
+        >
+          {p.title}
+        </div>
+        <div style={{ height: 1, background: "rgba(255,255,255,0.3)", marginBottom: 10 }} />
+        <div style={{ fontSize: 7, opacity: 0.8, marginBottom: 2 }}>✉ {p.email}</div>
+        <div style={{ fontSize: 7, opacity: 0.8, marginBottom: 2 }}>☎ {p.phone}</div>
+        <div style={{ fontSize: 7, opacity: 0.8, marginBottom: 12 }}>⌖ {p.location}</div>
+        <div style={{ height: 1, background: "rgba(255,255,255,0.3)", marginBottom: 8 }} />
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: 900,
+            textTransform: "uppercase" as const,
+            letterSpacing: 1.5,
+            marginBottom: 7,
+            opacity: 0.9,
+          }}
+        >
+          Skills
+        </div>
+        {p.skills.map((s, i) => (
+          <div key={i} style={{ marginBottom: 5 }}>
+            <div style={{ fontSize: 7.5, marginBottom: 2, fontWeight: 600 }}>{s}</div>
+            <div style={{ height: 4, background: "rgba(255,255,255,0.25)", borderRadius: 2 }}>
+              <div
+                style={{
+                  height: "100%",
+                  width: `${92 - i * 6}%`,
+                  background: "rgba(255,255,255,0.85)",
+                  borderRadius: 2,
+                }}
+              />
+            </div>
+          </div>
+        ))}
+        <div style={{ height: 1, background: "rgba(255,255,255,0.3)", margin: "10px 0 8px" }} />
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: 900,
+            textTransform: "uppercase" as const,
+            letterSpacing: 1.5,
+            marginBottom: 6,
+            opacity: 0.9,
+          }}
+        >
+          Education
+        </div>
+        {p.education.map((e, i) => (
+          <div key={i} style={{ marginBottom: 5 }}>
+            <div style={{ fontSize: 8, fontWeight: 700, lineHeight: 1.3 }}>{e.degree}</div>
+            <div style={{ fontSize: 7, opacity: 0.75 }}>
+              {e.school} · {e.year}
+            </div>
+          </div>
+        ))}
+        <div style={{ height: 1, background: "rgba(255,255,255,0.3)", margin: "8px 0 7px" }} />
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: 900,
+            textTransform: "uppercase" as const,
+            letterSpacing: 1.5,
+            marginBottom: 5,
+            opacity: 0.9,
+          }}
+        >
+          Languages
+        </div>
+        {p.languages.map((l) => (
+          <div key={l} style={{ fontSize: 7, marginBottom: 2, opacity: 0.85 }}>
+            {l}
+          </div>
+        ))}
+      </div>
+      <div style={{ flex: 1, padding: "20px 14px", background: "#fff" }}>
+        <SL color={sc} border={sc}>
+          Profile
+        </SL>
+        <div style={{ fontSize: 8, color: "#374151", lineHeight: 1.65, marginBottom: 4 }}>{p.summary}</div>
+        <SL color={sc} border={sc}>
+          Work Experience
+        </SL>
+        {p.experience.map((e, i) => (
+          <div key={i} style={{ marginBottom: 9 }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ fontSize: 9.5, fontWeight: 700, color: "#0f172a" }}>{e.role}</span>
+              <span style={{ fontSize: 7.5, color: sc, fontWeight: 600 }}>{e.dates}</span>
+            </div>
+            <div style={{ fontSize: 8.5, color: "#64748b", fontWeight: 600, marginBottom: 2 }}>{e.company}</div>
+            {e.bullets.map((b, j) => (
+              <div
+                key={j}
+                style={{
+                  fontSize: 7.5,
+                  color: "#475569",
+                  lineHeight: 1.55,
+                  paddingLeft: 10,
+                  position: "relative" as const,
+                }}
+              >
+                <span style={{ position: "absolute" as const, left: 2, color: sc }}>•</span>
+                {b}
+              </div>
+            ))}
+          </div>
+        ))}
+        <SL color={sc} border={sc}>
+          Certifications
+        </SL>
+        {p.certifications.map((c) => (
+          <div
+            key={c}
+            style={{ fontSize: 7.5, color: "#374151", lineHeight: 1.7, display: "flex", alignItems: "center", gap: 4 }}
+          >
+            <span
+              style={{
+                width: 5,
+                height: 5,
+                borderRadius: "50%",
+                background: sc,
+                display: "inline-block",
+                flexShrink: 0,
+              }}
+            />
+            {c}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** EXECUTIVE OBSIDIAN — ultra-dark luxury with gold accents */
+function MiniExecutiveObsidian({ p, accent }: { p: TemplatePerson; accent: string }) {
+  const gold = "#c9a84c";
+  return (
+    <div style={{ width: "100%", background: "#0a0a0f", fontFamily: "Georgia, serif" }}>
+      <div
+        style={{
+          background: "linear-gradient(135deg,#0a0a0f 0%,#1a1a24 100%)",
+          padding: "24px 20px 18px",
+          borderBottom: `1px solid ${gold}33`,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 9,
+            color: gold,
+            textTransform: "uppercase" as const,
+            letterSpacing: 5,
+            fontFamily: "Arial, sans-serif",
+            marginBottom: 8,
+            fontWeight: 700,
+          }}
+        >
+          {p.title}
+        </div>
+        <div style={{ fontSize: 28, fontWeight: 900, color: "#f8fafc", letterSpacing: -0.5, lineHeight: 1 }}>
+          {p.name}
+        </div>
+        <div style={{ height: 1.5, background: `linear-gradient(90deg,${gold},${gold}20)`, margin: "12px 0 10px" }} />
+        <div style={{ fontSize: 7, color: "#64748b", display: "flex", gap: 12, fontFamily: "Arial, sans-serif" }}>
+          <span>{p.email}</span>
+          <span style={{ color: gold }}>·</span>
+          <span>{p.phone}</span>
+          <span style={{ color: gold }}>·</span>
+          <span>{p.location}</span>
+        </div>
+      </div>
+      <div style={{ padding: "14px 20px 18px" }}>
+        <div
+          style={{
+            fontSize: 6.5,
+            fontWeight: 700,
+            color: gold,
+            textTransform: "uppercase" as const,
+            letterSpacing: 3,
+            fontFamily: "Arial, sans-serif",
+            margin: "0 0 5px",
+          }}
+        >
+          Executive Profile
+        </div>
+        <div
+          style={{
+            fontSize: 8,
+            color: "#94a3b8",
+            lineHeight: 1.8,
+            borderLeft: `2px solid ${gold}`,
+            paddingLeft: 10,
+            marginBottom: 12,
+          }}
+        >
+          {p.summary}
+        </div>
+        <div
+          style={{
+            fontSize: 6.5,
+            fontWeight: 700,
+            color: gold,
+            textTransform: "uppercase" as const,
+            letterSpacing: 3,
+            fontFamily: "Arial, sans-serif",
+            marginBottom: 8,
+          }}
+        >
+          Leadership Experience
+        </div>
+        {p.experience.map((e, i) => (
+          <div key={i} style={{ marginBottom: 10, paddingLeft: 10, borderLeft: `1px solid #1e3a5f` }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ fontSize: 9, fontWeight: 700, color: "#f8fafc" }}>{e.role}</span>
+              <span style={{ fontSize: 7, color: gold, fontFamily: "Arial, sans-serif" }}>{e.dates}</span>
+            </div>
+            <div
+              style={{
+                fontSize: 8,
+                color: "#64748b",
+                fontStyle: "italic",
+                marginBottom: 3,
+                fontFamily: "Arial, sans-serif",
+              }}
+            >
+              {e.company}
+            </div>
+            {e.bullets.slice(0, 2).map((b, j) => (
+              <div
+                key={j}
+                style={{
+                  fontSize: 7.5,
+                  color: "#94a3b8",
+                  paddingLeft: 8,
+                  position: "relative" as const,
+                  lineHeight: 1.7,
+                  fontFamily: "Arial, sans-serif",
+                }}
+              >
+                <span style={{ position: "absolute" as const, left: 0, color: gold, fontSize: 9 }}>›</span>
+                {b}
+              </div>
+            ))}
+          </div>
+        ))}
+        <div style={{ height: 0.5, background: `${gold}30`, margin: "10px 0 8px" }} />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 16px" }}>
+          <div>
+            <div
+              style={{
+                fontSize: 6.5,
+                fontWeight: 700,
+                color: gold,
+                textTransform: "uppercase" as const,
+                letterSpacing: 3,
+                fontFamily: "Arial, sans-serif",
+                marginBottom: 5,
+              }}
+            >
+              Core Competencies
+            </div>
+            {p.skills.map((s) => (
+              <div
+                key={s}
+                style={{
+                  fontSize: 7.5,
+                  color: "#94a3b8",
+                  lineHeight: 1.8,
+                  fontFamily: "Arial, sans-serif",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                }}
+              >
+                <span style={{ width: 3, height: 3, background: gold, display: "inline-block", flexShrink: 0 }} />
+                {s}
+              </div>
+            ))}
+          </div>
+          <div>
+            <div
+              style={{
+                fontSize: 6.5,
+                fontWeight: 700,
+                color: gold,
+                textTransform: "uppercase" as const,
+                letterSpacing: 3,
+                fontFamily: "Arial, sans-serif",
+                marginBottom: 5,
+              }}
+            >
+              Education & Credentials
+            </div>
+            {p.education.map((e, i) => (
+              <div key={i} style={{ marginBottom: 5 }}>
+                <div style={{ fontSize: 8, fontWeight: 700, color: "#e2e8f0" }}>{e.degree}</div>
+                <div style={{ fontSize: 7, color: "#64748b", fontFamily: "Arial, sans-serif" }}>
+                  {e.school} · {e.year}
+                </div>
+              </div>
+            ))}
+            <div style={{ marginTop: 6 }}>
+              {p.certifications.map((c) => (
+                <div
+                  key={c}
+                  style={{ fontSize: 7, color: "#64748b", lineHeight: 1.7, fontFamily: "Arial, sans-serif" }}
+                >
+                  {c}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** MINIMALIST ARCHITECT — surgical spacing, monochromatic mastery */
+function MiniMinimalistArchitect({ p, accent }: { p: TemplatePerson; accent: string }) {
+  return (
+    <div style={{ width: "100%", background: "#fff", fontFamily: "Arial, sans-serif", padding: "22px 20px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 12 }}>
+        <div>
+          <div style={{ fontSize: 24, fontWeight: 900, color: "#0f172a", letterSpacing: -1, lineHeight: 1 }}>
+            {p.name}
+          </div>
+          <div
+            style={{
+              fontSize: 8,
+              color: "#6b7280",
+              textTransform: "uppercase" as const,
+              letterSpacing: 3,
+              marginTop: 5,
+            }}
+          >
+            {p.title}
+          </div>
+        </div>
+        <div style={{ textAlign: "right" as const }}>
+          <div style={{ fontSize: 7, color: "#9ca3af", lineHeight: 1.8 }}>{p.email}</div>
+          <div style={{ fontSize: 7, color: "#9ca3af", lineHeight: 1.8 }}>{p.phone}</div>
+          <div style={{ fontSize: 7, color: "#9ca3af", lineHeight: 1.8 }}>{p.location}</div>
+        </div>
+      </div>
+      <div style={{ height: 1, background: "#0f172a", marginBottom: 12 }} />
+      <div
+        style={{
+          fontSize: 8,
+          color: "#374151",
+          lineHeight: 1.8,
+          marginBottom: 14,
+          borderLeft: "2px solid #e5e7eb",
+          paddingLeft: 10,
+        }}
+      >
+        {p.summary}
+      </div>
+      <div style={{ height: 0.5, background: "#e5e7eb", marginBottom: 10 }} />
+      <div
+        style={{
+          fontSize: 7,
+          fontWeight: 700,
+          textTransform: "uppercase" as const,
+          letterSpacing: 3,
+          color: "#9ca3af",
+          marginBottom: 8,
+        }}
+      >
+        Experience
+      </div>
+      {p.experience.map((e, i) => (
+        <div key={i} style={{ marginBottom: 10, display: "grid", gridTemplateColumns: "100px 1fr", gap: "0 14px" }}>
+          <div style={{ paddingTop: 2 }}>
+            <div style={{ fontSize: 7, color: "#9ca3af", lineHeight: 1.5 }}>{e.dates}</div>
+            <div style={{ fontSize: 7.5, color: "#374151", fontStyle: "italic" }}>{e.company}</div>
+          </div>
+          <div>
+            <div style={{ fontSize: 9, fontWeight: 700, color: "#0f172a", marginBottom: 2 }}>{e.role}</div>
+            {e.bullets.slice(0, 2).map((b, j) => (
+              <div
+                key={j}
+                style={{
+                  fontSize: 7,
+                  color: "#4b5563",
+                  lineHeight: 1.6,
+                  paddingLeft: 8,
+                  position: "relative" as const,
+                }}
+              >
+                <span style={{ position: "absolute" as const, left: 0, color: "#9ca3af" }}>·</span>
+                {b}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+      <div style={{ height: 0.5, background: "#e5e7eb", margin: "8px 0" }} />
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 16px" }}>
+        <div>
+          <div
+            style={{
+              fontSize: 7,
+              fontWeight: 700,
+              textTransform: "uppercase" as const,
+              letterSpacing: 3,
+              color: "#9ca3af",
+              marginBottom: 6,
+            }}
+          >
+            Skills
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap" as const, gap: 3 }}>
+            {p.skills.map((s) => (
+              <span
+                key={s}
+                style={{ fontSize: 6.5, border: "0.5px solid #d1d5db", padding: "1.5px 5px", color: "#374151" }}
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div
+            style={{
+              fontSize: 7,
+              fontWeight: 700,
+              textTransform: "uppercase" as const,
+              letterSpacing: 3,
+              color: "#9ca3af",
+              marginBottom: 6,
+            }}
+          >
+            Education
+          </div>
+          {p.education.map((e, i) => (
+            <div key={i} style={{ marginBottom: 5 }}>
+              <div style={{ fontSize: 8, fontWeight: 700, color: "#0f172a" }}>{e.degree}</div>
+              <div style={{ fontSize: 7, color: "#6b7280" }}>
+                {e.school} · {e.year}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** TWO-COLUMN SLATE — dark slate sidebar, premium blue accents */
+function MiniTwoColumnSlate({ p, accent }: { p: TemplatePerson; accent: string }) {
+  const initials = p.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
+  return (
+    <div style={{ display: "flex", width: "100%", fontFamily: "Arial, sans-serif", background: "#fff" }}>
+      <div style={{ width: "36%", background: "#1e293b", padding: "20px 13px", color: "#fff", flexShrink: 0 }}>
+        <div
+          style={{
+            width: 52,
+            height: 52,
+            borderRadius: "50%",
+            background: "#0ea5e9",
+            margin: "0 auto 10px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 18,
+            fontWeight: 900,
+            color: "#fff",
+          }}
+        >
+          {initials}
+        </div>
+        <div
+          style={{
+            fontSize: 13,
+            fontWeight: 900,
+            textAlign: "center" as const,
+            color: "#fff",
+            lineHeight: 1.2,
+            marginBottom: 3,
+          }}
+        >
+          {p.name}
+        </div>
+        <div
+          style={{
+            fontSize: 7,
+            color: "#0ea5e9",
+            textAlign: "center" as const,
+            textTransform: "uppercase" as const,
+            letterSpacing: 1.5,
+            fontWeight: 700,
+            marginBottom: 12,
+          }}
+        >
+          {p.title}
+        </div>
+        <div style={{ height: 0.5, background: "#334155", marginBottom: 10 }} />
+        <div style={{ fontSize: 7, color: "#94a3b8", marginBottom: 2 }}>{p.email}</div>
+        <div style={{ fontSize: 7, color: "#94a3b8", marginBottom: 2 }}>{p.phone}</div>
+        <div style={{ fontSize: 7, color: "#94a3b8", marginBottom: 12 }}>{p.location}</div>
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: 800,
+            color: "#0ea5e9",
+            textTransform: "uppercase" as const,
+            letterSpacing: 1.5,
+            marginBottom: 6,
+          }}
+        >
+          Skills
+        </div>
+        {p.skills.map((s, i) => (
+          <div key={i} style={{ marginBottom: 5 }}>
+            <div style={{ fontSize: 7.5, color: "#cbd5e1", marginBottom: 2 }}>{s}</div>
+            <div style={{ height: 3, background: "#334155", borderRadius: 2 }}>
+              <div style={{ height: "100%", width: `${90 - i * 7}%`, background: "#0ea5e9", borderRadius: 2 }} />
+            </div>
+          </div>
+        ))}
+        <div style={{ height: 0.5, background: "#334155", margin: "10px 0 8px" }} />
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: 800,
+            color: "#0ea5e9",
+            textTransform: "uppercase" as const,
+            letterSpacing: 1.5,
+            marginBottom: 6,
+          }}
+        >
+          Education
+        </div>
+        {p.education.map((e, i) => (
+          <div key={i} style={{ marginBottom: 5 }}>
+            <div style={{ fontSize: 7.5, fontWeight: 700, color: "#e2e8f0", lineHeight: 1.3 }}>{e.degree}</div>
+            <div style={{ fontSize: 6.5, color: "#64748b" }}>
+              {e.school} · {e.year}
+            </div>
+          </div>
+        ))}
+        <div style={{ height: 0.5, background: "#334155", margin: "8px 0 7px" }} />
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: 800,
+            color: "#0ea5e9",
+            textTransform: "uppercase" as const,
+            letterSpacing: 1.5,
+            marginBottom: 5,
+          }}
+        >
+          Languages
+        </div>
+        {p.languages.map((l) => (
+          <div key={l} style={{ fontSize: 7, color: "#94a3b8", lineHeight: 1.7 }}>
+            {l}
+          </div>
+        ))}
+      </div>
+      <div style={{ flex: 1, padding: "20px 14px" }}>
+        <SL color="#0ea5e9" border="#0ea5e9">
+          Profile
+        </SL>
+        <div style={{ fontSize: 8, color: "#374151", lineHeight: 1.7, marginBottom: 4 }}>{p.summary}</div>
+        <SL color="#0ea5e9" border="#0ea5e9">
+          Work Experience
+        </SL>
+        {p.experience.map((e, i) => (
+          <div key={i} style={{ marginBottom: 9 }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ fontSize: 9.5, fontWeight: 700, color: "#0f172a" }}>{e.role}</span>
+              <span style={{ fontSize: 7.5, color: "#0ea5e9", fontWeight: 600 }}>{e.dates}</span>
+            </div>
+            <div style={{ fontSize: 8.5, color: "#64748b", fontWeight: 600, marginBottom: 2 }}>{e.company}</div>
+            {e.bullets.map((b, j) => (
+              <div
+                key={j}
+                style={{
+                  fontSize: 7.5,
+                  color: "#475569",
+                  lineHeight: 1.55,
+                  paddingLeft: 10,
+                  position: "relative" as const,
+                }}
+              >
+                <span style={{ position: "absolute" as const, left: 2, color: "#0ea5e9" }}>•</span>
+                {b}
+              </div>
+            ))}
+          </div>
+        ))}
+        <SL color="#0ea5e9" border="#0ea5e9">
+          Certifications
+        </SL>
+        {p.certifications.map((c) => (
+          <div
+            key={c}
+            style={{ fontSize: 7.5, color: "#374151", lineHeight: 1.7, display: "flex", gap: 5, alignItems: "center" }}
+          >
+            <span
+              style={{
+                width: 4,
+                height: 4,
+                borderRadius: "50%",
+                background: "#0ea5e9",
+                display: "inline-block",
+                flexShrink: 0,
+              }}
+            />
+            {c}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** TWO-COLUMN EMBER — warm amber luxury, refined and memorable */
+function MiniTwoColumnEmber({ p, accent }: { p: TemplatePerson; accent: string }) {
+  const amber = "#d97706";
+  return (
+    <div style={{ width: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
+      <div style={{ background: "linear-gradient(135deg,#92400e 0%,#d97706 100%)", padding: "18px 20px 14px" }}>
+        <div style={{ fontSize: 26, fontWeight: 900, color: "#fff", letterSpacing: -0.5, lineHeight: 1 }}>{p.name}</div>
+        <div
+          style={{
+            fontSize: 9,
+            color: "rgba(255,255,255,0.85)",
+            textTransform: "uppercase" as const,
+            letterSpacing: 2.5,
+            fontFamily: "Arial, sans-serif",
+            fontWeight: 600,
+            marginTop: 4,
+          }}
+        >
+          {p.title}
+        </div>
+        <div style={{ fontSize: 7.5, color: "rgba(255,255,255,0.6)", marginTop: 5, fontFamily: "Arial, sans-serif" }}>
+          {p.email} · {p.phone} · {p.location}
+        </div>
+      </div>
+      <div style={{ height: 3, background: "#fef3c7" }} />
+      <div style={{ display: "flex" }}>
+        <div style={{ flex: 1, padding: "14px 16px" }}>
+          <SL color={amber} border={amber}>
+            Profile
+          </SL>
+          <div style={{ fontSize: 8, color: "#374151", lineHeight: 1.7, marginBottom: 4 }}>{p.summary}</div>
+          <SL color={amber} border={amber}>
+            Work Experience
+          </SL>
+          {p.experience.map((e, i) => (
+            <div key={i} style={{ marginBottom: 8 }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ fontSize: 9.5, fontWeight: 700, color: "#0f172a" }}>{e.role}</span>
+                <span style={{ fontSize: 7.5, color: "#6b7280" }}>{e.dates}</span>
+              </div>
+              <div style={{ fontSize: 8.5, color: amber, fontWeight: 700, marginBottom: 3 }}>{e.company}</div>
+              {e.bullets.map((b, j) => (
+                <div
+                  key={j}
+                  style={{
+                    fontSize: 7.5,
+                    color: "#475569",
+                    lineHeight: 1.55,
+                    paddingLeft: 10,
+                    position: "relative" as const,
+                  }}
+                >
+                  <span style={{ position: "absolute" as const, left: 2, color: amber }}>•</span>
+                  {b}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+        <div style={{ width: "32%", background: "#fffbeb", padding: "14px 12px", borderLeft: `3px solid ${amber}` }}>
+          <div
+            style={{
+              fontSize: 8,
+              fontWeight: 800,
+              color: amber,
+              textTransform: "uppercase" as const,
+              letterSpacing: 1,
+              marginBottom: 6,
+            }}
+          >
+            Skills
+          </div>
+          {p.skills.map((s, i) => (
+            <div
+              key={i}
+              style={{ fontSize: 8, color: "#374151", lineHeight: 1.9, display: "flex", alignItems: "center", gap: 5 }}
+            >
+              <span
+                style={{
+                  width: 4,
+                  height: 4,
+                  borderRadius: "50%",
+                  background: amber,
+                  display: "inline-block",
+                  flexShrink: 0,
+                }}
+              />
+              {s}
+            </div>
+          ))}
+          <div style={{ height: 0.5, background: "#fde68a", margin: "8px 0" }} />
+          <div
+            style={{
+              fontSize: 8,
+              fontWeight: 800,
+              color: amber,
+              textTransform: "uppercase" as const,
+              letterSpacing: 1,
+              marginBottom: 6,
+            }}
+          >
+            Education
+          </div>
+          {p.education.map((e, i) => (
+            <div key={i} style={{ marginBottom: 5 }}>
+              <div style={{ fontSize: 8, fontWeight: 700, color: "#0f172a", lineHeight: 1.3 }}>{e.degree}</div>
+              <div style={{ fontSize: 7, color: "#6b7280" }}>
+                {e.school} · {e.year}
+              </div>
+            </div>
+          ))}
+          <div style={{ height: 0.5, background: "#fde68a", margin: "8px 0" }} />
+          <div
+            style={{
+              fontSize: 8,
+              fontWeight: 800,
+              color: amber,
+              textTransform: "uppercase" as const,
+              letterSpacing: 1,
+              marginBottom: 5,
+            }}
+          >
+            Certifications
+          </div>
+          {p.certifications.map((c) => (
+            <div key={c} style={{ fontSize: 7, color: "#374151", lineHeight: 1.8 }}>
+              {c}
+            </div>
+          ))}
+          <div style={{ height: 0.5, background: "#fde68a", margin: "8px 0" }} />
+          <div
+            style={{
+              fontSize: 8,
+              fontWeight: 800,
+              color: amber,
+              textTransform: "uppercase" as const,
+              letterSpacing: 1,
+              marginBottom: 5,
+            }}
+          >
+            Languages
+          </div>
+          {p.languages.map((l) => (
+            <div key={l} style={{ fontSize: 7, color: "#374151", lineHeight: 1.7 }}>
+              {l}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** PICTURE PRESTIGE — luxury gold/navy for senior professionals */
+function MiniPicturePrestige({ p, accent }: { p: TemplatePerson; accent: string }) {
+  const gold = "#c9a84c";
+  const initials = p.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
+  return (
+    <div style={{ width: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
+      <div style={{ background: "#0f172a", padding: "18px 20px", display: "flex", alignItems: "center", gap: 14 }}>
+        <div
+          style={{
+            width: 64,
+            height: 64,
+            borderRadius: "50%",
+            background: gold,
+            flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 22,
+            fontWeight: 900,
+            color: "#0f172a",
+            border: `3px solid ${gold}`,
+          }}
+        >
+          {initials}
+        </div>
+        <div>
+          <div
+            style={{
+              fontSize: 8,
+              color: gold,
+              textTransform: "uppercase" as const,
+              letterSpacing: 4,
+              fontFamily: "Arial, sans-serif",
+              fontWeight: 700,
+              marginBottom: 4,
+            }}
+          >
+            {p.title}
+          </div>
+          <div style={{ fontSize: 22, fontWeight: 900, color: "#f8fafc", letterSpacing: -0.3, lineHeight: 1 }}>
+            {p.name}
+          </div>
+          <div style={{ height: 1, background: `linear-gradient(90deg,${gold},transparent)`, margin: "8px 0 6px" }} />
+          <div style={{ fontSize: 7, color: "#64748b", fontFamily: "Arial, sans-serif" }}>
+            {p.email} · {p.phone} · {p.location}
+          </div>
+        </div>
+      </div>
+      <div style={{ height: 3, background: `linear-gradient(90deg,${gold},${gold}40)` }} />
+      <div style={{ padding: "12px 18px" }}>
+        <div
+          style={{
+            fontSize: 6.5,
+            fontWeight: 700,
+            color: gold,
+            textTransform: "uppercase" as const,
+            letterSpacing: 3,
+            fontFamily: "Arial, sans-serif",
+            marginBottom: 5,
+          }}
+        >
+          Executive Summary
+        </div>
+        <div
+          style={{
+            fontSize: 8,
+            color: "#374151",
+            lineHeight: 1.8,
+            borderLeft: `2px solid ${gold}`,
+            paddingLeft: 10,
+            marginBottom: 10,
+          }}
+        >
+          {p.summary}
+        </div>
+        <div style={{ height: 0.5, background: `${gold}40`, marginBottom: 8 }} />
+        <div
+          style={{
+            fontSize: 6.5,
+            fontWeight: 700,
+            color: gold,
+            textTransform: "uppercase" as const,
+            letterSpacing: 3,
+            fontFamily: "Arial, sans-serif",
+            marginBottom: 8,
+          }}
+        >
+          Career History
+        </div>
+        {p.experience.map((e, i) => (
+          <div key={i} style={{ marginBottom: 9 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <span style={{ fontSize: 9.5, fontWeight: 700, color: "#0f172a" }}>{e.role}</span>
+              <span style={{ fontSize: 7, color: gold, fontFamily: "Arial, sans-serif", fontWeight: 600 }}>
+                {e.dates}
+              </span>
+            </div>
+            <div style={{ fontSize: 8.5, color: "#64748b", fontStyle: "italic", marginBottom: 3 }}>{e.company}</div>
+            {e.bullets.slice(0, 2).map((b, j) => (
+              <div
+                key={j}
+                style={{
+                  fontSize: 7.5,
+                  color: "#475569",
+                  lineHeight: 1.6,
+                  paddingLeft: 10,
+                  position: "relative" as const,
+                  fontFamily: "Arial, sans-serif",
+                }}
+              >
+                <span style={{ position: "absolute" as const, left: 0, color: gold, fontSize: 9 }}>›</span>
+                {b}
+              </div>
+            ))}
+          </div>
+        ))}
+        <div style={{ height: 0.5, background: `${gold}40`, margin: "8px 0" }} />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 14px" }}>
+          <div>
+            <div
+              style={{
+                fontSize: 6.5,
+                fontWeight: 700,
+                color: gold,
+                textTransform: "uppercase" as const,
+                letterSpacing: 3,
+                fontFamily: "Arial, sans-serif",
+                marginBottom: 5,
+              }}
+            >
+              Core Skills
+            </div>
+            {p.skills.map((s) => (
+              <div
+                key={s}
+                style={{
+                  fontSize: 7.5,
+                  color: "#374151",
+                  lineHeight: 1.8,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  fontFamily: "Arial, sans-serif",
+                }}
+              >
+                <span style={{ width: 3, height: 3, background: gold, display: "inline-block" }} />
+                {s}
+              </div>
+            ))}
+          </div>
+          <div>
+            <div
+              style={{
+                fontSize: 6.5,
+                fontWeight: 700,
+                color: gold,
+                textTransform: "uppercase" as const,
+                letterSpacing: 3,
+                fontFamily: "Arial, sans-serif",
+                marginBottom: 5,
+              }}
+            >
+              Education
+            </div>
+            {p.education.map((e, i) => (
+              <div key={i} style={{ marginBottom: 5 }}>
+                <div style={{ fontSize: 8, fontWeight: 700, color: "#0f172a" }}>{e.degree}</div>
+                <div style={{ fontSize: 7, color: "#6b7280", fontFamily: "Arial, sans-serif" }}>
+                  {e.school} · {e.year}
+                </div>
+              </div>
+            ))}
+            <div style={{ marginTop: 6 }}>
+              <div
+                style={{
+                  fontSize: 6.5,
+                  fontWeight: 700,
+                  color: gold,
+                  textTransform: "uppercase" as const,
+                  letterSpacing: 3,
+                  fontFamily: "Arial, sans-serif",
+                  marginBottom: 4,
+                }}
+              >
+                Languages
+              </div>
+              {p.languages.map((l) => (
+                <div
+                  key={l}
+                  style={{ fontSize: 7, color: "#374151", lineHeight: 1.7, fontFamily: "Arial, sans-serif" }}
+                >
+                  {l}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── ORIGINAL MINI PREVIEW COMPONENTS (unchanged) ────────────────────────────
 function MiniATSPro({ p }: { p: TemplatePerson }) {
   const acc = "#1e40af";
   const SH = ({ label }: { label: string }) => (
@@ -1528,7 +3735,7 @@ function MiniATSPro({ p }: { p: TemplatePerson }) {
           color: "#fff",
           fontSize: 6,
           fontWeight: 800,
-          textTransform: "uppercase",
+          textTransform: "uppercase" as const,
           letterSpacing: 1,
           padding: "1.5px 6px",
           borderRadius: 2,
@@ -1551,15 +3758,14 @@ function MiniATSPro({ p }: { p: TemplatePerson }) {
         padding: "16px 14px",
       }}
     >
-      {/* CENTRED header */}
-      <div style={{ textAlign: "center", marginBottom: 10 }}>
+      <div style={{ textAlign: "center" as const, marginBottom: 10 }}>
         <div
           style={{
             fontSize: 17,
             fontWeight: 900,
             color: "#0f172a",
             letterSpacing: 2,
-            textTransform: "uppercase",
+            textTransform: "uppercase" as const,
             lineHeight: 1,
           }}
         >
@@ -1571,7 +3777,7 @@ function MiniATSPro({ p }: { p: TemplatePerson }) {
             color: acc,
             fontWeight: 700,
             letterSpacing: 2,
-            textTransform: "uppercase",
+            textTransform: "uppercase" as const,
             marginTop: 3,
           }}
         >
@@ -1582,7 +3788,6 @@ function MiniATSPro({ p }: { p: TemplatePerson }) {
         </div>
       </div>
       <div style={{ height: 1.5, background: acc, marginBottom: 2 }} />
-      {/* LEFT-ALIGNED body */}
       <SH label="Professional Summary" />
       <div style={{ fontSize: 7, color: "#475569", lineHeight: 1.6, marginBottom: 4 }}>{p.summary}</div>
       <SH label="Work Experience" />
@@ -1597,16 +3802,22 @@ function MiniATSPro({ p }: { p: TemplatePerson }) {
           {exp.bullets.slice(0, 2).map((b, j) => (
             <div
               key={j}
-              style={{ fontSize: 6.5, color: "#475569", paddingLeft: 9, position: "relative", lineHeight: 1.5 }}
+              style={{
+                fontSize: 6.5,
+                color: "#475569",
+                paddingLeft: 9,
+                position: "relative" as const,
+                lineHeight: 1.5,
+              }}
             >
-              <span style={{ position: "absolute", left: 0, color: acc, fontSize: 7 }}>▸</span>
+              <span style={{ position: "absolute" as const, left: 0, color: acc, fontSize: 7 }}>▸</span>
               {b}
             </div>
           ))}
         </div>
       ))}
       <SH label="Core Skills" />
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+      <div style={{ display: "flex", flexWrap: "wrap" as const, gap: 2 }}>
         {p.skills.map((s) => (
           <span
             key={s}
@@ -1635,7 +3846,7 @@ function MiniATSClassic({ p }: { p: TemplatePerson }) {
         fontSize: 7.5,
         fontWeight: 900,
         color: "#0f172a",
-        textTransform: "uppercase",
+        textTransform: "uppercase" as const,
         letterSpacing: 2,
         borderBottom: "1.5px solid #0f172a",
         paddingBottom: 2,
@@ -1655,12 +3866,13 @@ function MiniATSClassic({ p }: { p: TemplatePerson }) {
         padding: "16px 16px",
       }}
     >
-      {/* CENTRED header */}
-      <div style={{ textAlign: "center", marginBottom: 8 }}>
+      <div style={{ textAlign: "center" as const, marginBottom: 8 }}>
         <div style={{ fontSize: 18, fontWeight: 900, color: "#0f172a", letterSpacing: -0.3, lineHeight: 1 }}>
           {p.name}
         </div>
-        <div style={{ fontSize: 7, color: "#475569", letterSpacing: 2, textTransform: "uppercase", marginTop: 3 }}>
+        <div
+          style={{ fontSize: 7, color: "#475569", letterSpacing: 2, textTransform: "uppercase" as const, marginTop: 3 }}
+        >
           {p.title}
         </div>
         <div style={{ height: 1, background: "#e2e8f0", margin: "5px auto", width: "60%" }} />
@@ -1668,7 +3880,6 @@ function MiniATSClassic({ p }: { p: TemplatePerson }) {
           {p.email} · {p.phone} · {p.location}
         </div>
       </div>
-      {/* LEFT-ALIGNED body */}
       <SH label="Experience" />
       {p.experience.slice(0, 2).map((exp, i) => (
         <div key={i} style={{ marginBottom: 7 }}>
@@ -1680,9 +3891,15 @@ function MiniATSClassic({ p }: { p: TemplatePerson }) {
           {exp.bullets.slice(0, 2).map((b, j) => (
             <div
               key={j}
-              style={{ fontSize: 6.5, color: "#475569", paddingLeft: 8, position: "relative", lineHeight: 1.5 }}
+              style={{
+                fontSize: 6.5,
+                color: "#475569",
+                paddingLeft: 8,
+                position: "relative" as const,
+                lineHeight: 1.5,
+              }}
             >
-              <span style={{ position: "absolute", left: 0, color: "#94a3b8" }}>–</span>
+              <span style={{ position: "absolute" as const, left: 0, color: "#94a3b8" }}>–</span>
               {b}
             </div>
           ))}
@@ -1699,7 +3916,15 @@ function MiniATSModern({ p }: { p: TemplatePerson }) {
   const SH = ({ label }: { label: string }) => (
     <div style={{ display: "flex", alignItems: "center", gap: 4, margin: "8px 0 4px" }}>
       <div style={{ width: 5, height: 5, borderRadius: "50%", background: acc, flexShrink: 0 }} />
-      <span style={{ fontSize: 7, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, color: "#0f172a" }}>
+      <span
+        style={{
+          fontSize: 7,
+          fontWeight: 800,
+          textTransform: "uppercase" as const,
+          letterSpacing: 1,
+          color: "#0f172a",
+        }}
+      >
         {label}
       </span>
       <div style={{ flex: 1, height: 0.5, background: "#e2e8f0" }} />
@@ -1707,10 +3932,17 @@ function MiniATSModern({ p }: { p: TemplatePerson }) {
   );
   return (
     <div style={{ width: "100%", background: "#fafafa", fontFamily: "Arial, sans-serif", fontSize: 7.5 }}>
-      {/* LEFT-ALIGNED dark header */}
       <div style={{ background: "#1e293b", padding: "12px 14px" }}>
         <div style={{ fontSize: 15, fontWeight: 900, color: "#f8fafc", letterSpacing: 0.5 }}>{p.name}</div>
-        <div style={{ fontSize: 7, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 1.5, marginTop: 2 }}>
+        <div
+          style={{
+            fontSize: 7,
+            color: "#94a3b8",
+            textTransform: "uppercase" as const,
+            letterSpacing: 1.5,
+            marginTop: 2,
+          }}
+        >
           {p.title}
         </div>
       </div>
@@ -1719,7 +3951,7 @@ function MiniATSModern({ p }: { p: TemplatePerson }) {
           background: "#f1f5f9",
           padding: "3px 14px",
           display: "flex",
-          flexWrap: "wrap",
+          flexWrap: "wrap" as const,
           gap: 6,
           borderBottom: "1px solid #e2e8f0",
         }}
@@ -1744,11 +3976,17 @@ function MiniATSModern({ p }: { p: TemplatePerson }) {
             {exp.bullets.slice(0, 2).map((b, j) => (
               <div
                 key={j}
-                style={{ fontSize: 6.5, color: "#475569", paddingLeft: 10, position: "relative", lineHeight: 1.5 }}
+                style={{
+                  fontSize: 6.5,
+                  color: "#475569",
+                  paddingLeft: 10,
+                  position: "relative" as const,
+                  lineHeight: 1.5,
+                }}
               >
                 <span
                   style={{
-                    position: "absolute",
+                    position: "absolute" as const,
                     left: 2,
                     top: 4,
                     width: 3,
@@ -1776,7 +4014,7 @@ function MiniATSExecutive({ p }: { p: TemplatePerson }) {
       style={{
         fontSize: 6.5,
         fontWeight: 900,
-        textTransform: "uppercase",
+        textTransform: "uppercase" as const,
         letterSpacing: 2.5,
         color: "#94a3b8",
         margin: "9px 0 4px",
@@ -1795,7 +4033,6 @@ function MiniATSExecutive({ p }: { p: TemplatePerson }) {
         padding: "16px 16px",
       }}
     >
-      {/* LEFT-ALIGNED header */}
       <div style={{ marginBottom: 6 }}>
         <div
           style={{
@@ -1803,13 +4040,21 @@ function MiniATSExecutive({ p }: { p: TemplatePerson }) {
             fontWeight: 900,
             color: "#0f172a",
             letterSpacing: -0.5,
-            textTransform: "uppercase",
+            textTransform: "uppercase" as const,
             lineHeight: 1,
           }}
         >
           {p.name}
         </div>
-        <div style={{ fontSize: 7, color: "#64748b", letterSpacing: 2.5, textTransform: "uppercase", marginTop: 4 }}>
+        <div
+          style={{
+            fontSize: 7,
+            color: "#64748b",
+            letterSpacing: 2.5,
+            textTransform: "uppercase" as const,
+            marginTop: 4,
+          }}
+        >
           {p.title}
         </div>
         <div
@@ -1826,7 +4071,6 @@ function MiniATSExecutive({ p }: { p: TemplatePerson }) {
           <span>{p.location}</span>
         </div>
       </div>
-      {/* LEFT-ALIGNED body */}
       <SH label="Professional Summary" />
       <div
         style={{
@@ -1851,9 +4095,17 @@ function MiniATSExecutive({ p }: { p: TemplatePerson }) {
           {exp.bullets.slice(0, 2).map((b, j) => (
             <div
               key={j}
-              style={{ fontSize: 6.5, color: "#475569", paddingLeft: 7, position: "relative", lineHeight: 1.5 }}
+              style={{
+                fontSize: 6.5,
+                color: "#475569",
+                paddingLeft: 7,
+                position: "relative" as const,
+                lineHeight: 1.5,
+              }}
             >
-              <span style={{ position: "absolute", left: 0, color: "#0f172a", fontSize: 9, lineHeight: 1.2 }}>·</span>
+              <span style={{ position: "absolute" as const, left: 0, color: "#0f172a", fontSize: 9, lineHeight: 1.2 }}>
+                ·
+              </span>
               {b}
             </div>
           ))}
@@ -1865,20 +4117,30 @@ function MiniATSExecutive({ p }: { p: TemplatePerson }) {
   );
 }
 
-// ─── MAIN MINI CV PREVIEW ─────────────────────────────────────────────────────
+// ─── MAIN MINI CV ROUTER ──────────────────────────────────────────────────────
 function MiniCVPreview({ template }: { template: TemplateInfo }) {
   const p = template.person;
   const accent = template.colors[0];
-  const isExecutive = template.category === "Executive";
-  const isCreative = template.category === "Creative";
-  const isMinimalist = template.category === "Minimalist";
 
-  // ── Route ATS templates to their own distinct mini previews ──
+  // Route new template IDs to their dedicated renderers
+  if (template.id === "swiss-minimalist") return <MiniSwissMinimalist p={p} accent={accent} />;
+  if (template.id === "international-eu") return <MiniInternationalEU p={p} accent={accent} />;
+  if (template.id === "ats-stealth") return <MiniATSStealth p={p} accent={accent} />;
+  if (template.id === "ats-banner-cobalt") return <MiniATSBannerCobalt p={p} accent={accent} />;
+  if (template.id === "creative-vibrant") return <MiniCreativeVibrant p={p} accent={accent} />;
+  if (template.id === "executive-obsidian") return <MiniExecutiveObsidian p={p} accent={accent} />;
+  if (template.id === "minimalist-architect") return <MiniMinimalistArchitect p={p} accent={accent} />;
+  if (template.id === "two-column-slate") return <MiniTwoColumnSlate p={p} accent={accent} />;
+  if (template.id === "two-column-ember") return <MiniTwoColumnEmber p={p} accent={accent} />;
+  if (template.id === "picture-prestige") return <MiniPicturePrestige p={p} accent={accent} />;
+
+  // Route original ATS templates
   if (template.id === "ats-pro") return <MiniATSPro p={p} />;
   if (template.id === "ats-classic") return <MiniATSClassic p={p} />;
   if (template.id === "ats-modern") return <MiniATSModern p={p} />;
   if (template.id === "ats-executive") return <MiniATSExecutive p={p} />;
 
+  // ── Original sidebar layout ──
   if (template.layout === "sidebar") {
     return (
       <div style={{ display: "flex", width: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
@@ -1907,7 +4169,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
             style={{
               fontSize: 14,
               fontWeight: 800,
-              textAlign: "center",
+              textAlign: "center" as const,
               color: "#fff",
               lineHeight: 1.2,
               marginBottom: 3,
@@ -1919,8 +4181,8 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
             style={{
               fontSize: 9,
               color: accent,
-              textAlign: "center",
-              textTransform: "uppercase",
+              textAlign: "center" as const,
+              textTransform: "uppercase" as const,
               letterSpacing: 1,
               fontWeight: 700,
               marginBottom: 14,
@@ -1937,7 +4199,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               fontSize: 9,
               color: accent,
               fontWeight: 800,
-              textTransform: "uppercase",
+              textTransform: "uppercase" as const,
               letterSpacing: 1,
               marginBottom: 6,
             }}
@@ -1960,7 +4222,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               fontSize: 9,
               color: accent,
               fontWeight: 800,
-              textTransform: "uppercase",
+              textTransform: "uppercase" as const,
               letterSpacing: 1,
               marginBottom: 5,
             }}
@@ -1977,13 +4239,13 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
           ))}
         </div>
         <div style={{ flex: 1, padding: "22px 16px", background: "#fff" }}>
-          <SectionLabel color="#0f172a" borderColor={accent}>
+          <SL color="#0f172a" border={accent}>
             Profile
-          </SectionLabel>
+          </SL>
           <div style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, marginBottom: 2 }}>{p.summary}</div>
-          <SectionLabel color="#0f172a" borderColor={accent}>
+          <SL color="#0f172a" border={accent}>
             Work Experience
-          </SectionLabel>
+          </SL>
           {p.experience.map((exp, i) => (
             <div key={i} style={{ marginBottom: 9 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -1994,9 +4256,15 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               {exp.bullets.map((b, j) => (
                 <div
                   key={j}
-                  style={{ fontSize: 8, color: "#475569", lineHeight: 1.5, paddingLeft: 10, position: "relative" }}
+                  style={{
+                    fontSize: 8,
+                    color: "#475569",
+                    lineHeight: 1.5,
+                    paddingLeft: 10,
+                    position: "relative" as const,
+                  }}
                 >
-                  <span style={{ position: "absolute", left: 2 }}>•</span>
+                  <span style={{ position: "absolute" as const, left: 2 }}>•</span>
                   {b}
                 </div>
               ))}
@@ -2007,6 +4275,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
     );
   }
 
+  // ── Original two-column layout ──
   if (template.layout === "two-column") {
     return (
       <div style={{ width: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
@@ -2018,7 +4287,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
             style={{
               fontSize: 11,
               color: "rgba(255,255,255,0.88)",
-              textTransform: "uppercase",
+              textTransform: "uppercase" as const,
               letterSpacing: 2,
               fontWeight: 600,
               marginTop: 4,
@@ -2032,13 +4301,13 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
         </div>
         <div style={{ display: "flex" }}>
           <div style={{ flex: 1, padding: "14px 16px" }}>
-            <SectionLabel color={accent} borderColor={accent}>
+            <SL color={accent} border={accent}>
               Profile
-            </SectionLabel>
+            </SL>
             <div style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, marginBottom: 2 }}>{p.summary}</div>
-            <SectionLabel color={accent} borderColor={accent}>
+            <SL color={accent} border={accent}>
               Work Experience
-            </SectionLabel>
+            </SL>
             {p.experience.map((exp, i) => (
               <div key={i} style={{ marginBottom: 8 }}>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -2049,9 +4318,15 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
                 {exp.bullets.map((b, j) => (
                   <div
                     key={j}
-                    style={{ fontSize: 8, color: "#475569", lineHeight: 1.5, paddingLeft: 10, position: "relative" }}
+                    style={{
+                      fontSize: 8,
+                      color: "#475569",
+                      lineHeight: 1.5,
+                      paddingLeft: 10,
+                      position: "relative" as const,
+                    }}
                   >
-                    <span style={{ position: "absolute", left: 2 }}>•</span>
+                    <span style={{ position: "absolute" as const, left: 2 }}>•</span>
                     {b}
                   </div>
                 ))}
@@ -2064,7 +4339,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
                 fontSize: 10,
                 fontWeight: 800,
                 color: accent,
-                textTransform: "uppercase",
+                textTransform: "uppercase" as const,
                 letterSpacing: 1,
                 marginBottom: 6,
               }}
@@ -2102,7 +4377,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
                 fontSize: 10,
                 fontWeight: 800,
                 color: accent,
-                textTransform: "uppercase",
+                textTransform: "uppercase" as const,
                 letterSpacing: 1,
                 marginBottom: 6,
               }}
@@ -2123,6 +4398,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
     );
   }
 
+  // ── Original photo layout ──
   if (template.layout === "photo") {
     return (
       <div style={{ width: "100%", fontFamily: "Georgia, serif", background: "#fff" }}>
@@ -2156,7 +4432,7 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               style={{
                 fontSize: 10,
                 color: accent,
-                textTransform: "uppercase",
+                textTransform: "uppercase" as const,
                 letterSpacing: 1.5,
                 fontWeight: 700,
                 marginTop: 4,
@@ -2171,13 +4447,13 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
         </div>
         <div style={{ height: 3, background: `linear-gradient(90deg, ${accent}, ${accent}60)` }} />
         <div style={{ padding: "10px 16px" }}>
-          <SectionLabel color="#0f172a" borderColor={accent}>
+          <SL color="#0f172a" border={accent}>
             Profile
-          </SectionLabel>
+          </SL>
           <div style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, marginBottom: 2 }}>{p.summary}</div>
-          <SectionLabel color="#0f172a" borderColor={accent}>
+          <SL color="#0f172a" border={accent}>
             Work Experience
-          </SectionLabel>
+          </SL>
           {p.experience.map((exp, i) => (
             <div key={i} style={{ marginBottom: 8 }}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -2188,9 +4464,15 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
               {exp.bullets.map((b, j) => (
                 <div
                   key={j}
-                  style={{ fontSize: 8, color: "#475569", lineHeight: 1.5, paddingLeft: 10, position: "relative" }}
+                  style={{
+                    fontSize: 8,
+                    color: "#475569",
+                    lineHeight: 1.5,
+                    paddingLeft: 10,
+                    position: "relative" as const,
+                  }}
                 >
-                  <span style={{ position: "absolute", left: 2 }}>•</span>
+                  <span style={{ position: "absolute" as const, left: 2 }}>•</span>
                   {b}
                 </div>
               ))}
@@ -2201,12 +4483,25 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
     );
   }
 
-  // Fallback single-column
+  // ── Original single-column fallback ──
   return (
     <div style={{ width: "100%", fontFamily: "Georgia, serif", background: "#fff", padding: "16px 18px" }}>
       <div style={{ fontSize: 22, fontWeight: 900, color: "#0f172a", lineHeight: 1 }}>{p.name}</div>
-      <div style={{ fontSize: 10, color: accent, textTransform: "uppercase" as const, letterSpacing: 1.5, fontWeight: 700, marginTop: 4 }}>{p.title}</div>
-      <div style={{ fontSize: 8, color: "#94a3b8", marginTop: 4 }}>{p.email} · {p.phone} · {p.location}</div>
+      <div
+        style={{
+          fontSize: 10,
+          color: accent,
+          textTransform: "uppercase" as const,
+          letterSpacing: 1.5,
+          fontWeight: 700,
+          marginTop: 4,
+        }}
+      >
+        {p.title}
+      </div>
+      <div style={{ fontSize: 8, color: "#94a3b8", marginTop: 4 }}>
+        {p.email} · {p.phone} · {p.location}
+      </div>
       <div style={{ height: 2, background: accent, margin: "10px 0" }} />
       <div style={{ fontSize: 9, color: "#475569", lineHeight: 1.6, marginBottom: 8 }}>{p.summary}</div>
       {p.experience.map((exp, i) => (
@@ -2217,8 +4512,12 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
           </div>
           <div style={{ fontSize: 9, color: accent, fontWeight: 600, marginBottom: 3 }}>{exp.company}</div>
           {exp.bullets.map((b, j) => (
-            <div key={j} style={{ fontSize: 8, color: "#475569", lineHeight: 1.5, paddingLeft: 10, position: "relative" as const }}>
-              <span style={{ position: "absolute" as const, left: 2 }}>•</span>{b}
+            <div
+              key={j}
+              style={{ fontSize: 8, color: "#475569", lineHeight: 1.5, paddingLeft: 10, position: "relative" as const }}
+            >
+              <span style={{ position: "absolute" as const, left: 2 }}>•</span>
+              {b}
             </div>
           ))}
         </div>
@@ -2227,34 +4526,54 @@ function MiniCVPreview({ template }: { template: TemplateInfo }) {
   );
 }
 
-
-function TemplateCard({ template }: { template: TemplateInfo }) {
+// ─── TEMPLATE CARD ────────────────────────────────────────────────────────────
+function TemplateCard({ template, onPay }: { template: TemplateInfo; onPay: (pkg: string) => void }) {
   const navigate = useNavigate();
   const [selectedColor, setSelectedColor] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.4);
 
   useEffect(() => {
-    const updateScale = () => {
-      if (containerRef.current) {
-        const w = containerRef.current.offsetWidth;
-        setScale(w / 600);
-      }
+    const update = () => {
+      if (containerRef.current) setScale(containerRef.current.offsetWidth / 600);
     };
-    updateScale();
-    window.addEventListener("resize", updateScale);
-    return () => window.removeEventListener("resize", updateScale);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
+
+  const handleUse = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Premium templates open payment modal; standard ones go straight to editor
+    const premiumIds = [
+      "executive-obsidian",
+      "picture-prestige",
+      "swiss-minimalist",
+      "two-column-ember",
+      "creative-vibrant",
+      "international-eu",
+      "ats-stealth",
+      "ats-banner-cobalt",
+      "minimalist-architect",
+      "two-column-slate",
+    ];
+    if (premiumIds.includes(template.id)) {
+      onPay("professional");
+    } else {
+      navigate(`/cv-editor/${template.id}`);
+    }
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -6, boxShadow: "0 12px 40px -8px hsl(43 55% 54% / 0.3)" }}
+      whileHover={{ y: -6, boxShadow: "0 16px 48px -8px hsl(43 55% 54% / 0.35)" }}
       transition={{ duration: 0.25 }}
       className="group cursor-pointer rounded-xl border border-border bg-card overflow-hidden"
       onClick={() => navigate(`/cv-editor/${template.id}`)}
     >
+      {/* Preview area */}
       <div ref={containerRef} className="relative aspect-[3/4] bg-white overflow-hidden">
         <div
           style={{
@@ -2269,12 +4588,52 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
         >
           <MiniCVPreview template={template} />
         </div>
+
+        {/* NEW badge */}
+        {template.isNew && (
+          <div className="absolute top-2 left-2 z-10">
+            <span className="inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full bg-gradient-brand text-primary-foreground shadow-glow-sm">
+              <Sparkles className="h-2.5 w-2.5" /> NEW
+            </span>
+          </div>
+        )}
+
+        {/* Category badge */}
+        {template.badge && (
+          <div className="absolute top-2 right-2 z-10">
+            <span className="text-[8px] font-bold px-2 py-0.5 rounded-full bg-black/60 text-white backdrop-blur-sm border border-white/10">
+              {template.badge}
+            </span>
+          </div>
+        )}
+
+        {/* International globe icon */}
+        {template.category === "International" && (
+          <div className="absolute bottom-2 left-2 z-10">
+            <span className="inline-flex items-center gap-1 text-[8px] font-bold px-2 py-0.5 rounded-full bg-blue-600/90 text-white">
+              <Globe className="h-2.5 w-2.5" /> Worldwide
+            </span>
+          </div>
+        )}
+
+        {/* ATS badge */}
+        {template.category === "ATS" && (
+          <div className="absolute bottom-2 left-2 z-10">
+            <span className="inline-flex items-center gap-1 text-[8px] font-bold px-2 py-0.5 rounded-full bg-emerald-600/90 text-white">
+              <Zap className="h-2.5 w-2.5" /> ATS Safe
+            </span>
+          </div>
+        )}
+
+        {/* Hover overlay */}
         <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-          <Button size="sm" className="bg-gradient-brand border-0 font-semibold gold-shimmer">
+          <Button size="sm" className="bg-gradient-brand border-0 font-semibold gold-shimmer" onClick={handleUse}>
             Use This Template
           </Button>
         </div>
       </div>
+
+      {/* Card footer */}
       <div className="p-3 space-y-2">
         <div className="flex items-center gap-1.5">
           {template.colors.map((color, i) => (
@@ -2304,7 +4663,12 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
           </div>
         </div>
         <div>
-          <h3 className="font-bold text-sm text-foreground">{template.name}</h3>
+          <h3 className="font-bold text-sm text-foreground flex items-center gap-1.5">
+            {template.name}
+            {template.isNew && (
+              <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-primary/15 text-primary">NEW</span>
+            )}
+          </h3>
           <p className="text-xs text-muted-foreground">{template.description}</p>
         </div>
       </div>
@@ -2312,15 +4676,31 @@ function TemplateCard({ template }: { template: TemplateInfo }) {
   );
 }
 
+// ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 export default function TemplatesPage() {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [payModalOpen, setPayModalOpen] = useState(false);
+  const [payPackage, setPayPackage] = useState("professional");
   const navigate = useNavigate();
+
   const filtered = activeCategory === "All" ? TEMPLATES : TEMPLATES.filter((t) => t.category === activeCategory);
+
+  const newCount = TEMPLATES.filter((t) => t.isNew).length;
+
+  const handlePay = (pkg: string) => {
+    setPayPackage(pkg);
+    setPayModalOpen(true);
+  };
 
   return (
     <PageLayout>
       <div className="relative z-10">
+        {/* Hero */}
         <section className="py-16 md:py-20 text-center px-4">
+          <div className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary mb-5">
+            <Sparkles className="h-3 w-3" />
+            {newCount} New Templates Just Added
+          </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             CV <span className="text-gradient">Templates</span>
           </h1>
@@ -2343,13 +4723,22 @@ export default function TemplatesPage() {
             </Button>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-            {["36+ Templates", "ATS-Optimised", "PDF & DOCX", "Used by 10,000+ professionals"].map((badge) => (
+            {[
+              "35+ Templates",
+              "ATS-Optimised",
+              "PDF & DOCX",
+              "International Formats",
+              "Used by 10,000+ professionals",
+            ].map((badge) => (
               <span key={badge} className="flex items-center gap-1.5">
-                <Check className="h-4 w-4 text-primary" /> {badge}
+                <Check className="h-4 w-4 text-primary" />
+                {badge}
               </span>
             ))}
           </div>
         </section>
+
+        {/* Category filter */}
         <div className="sticky top-16 z-30 surface-glass border-b border-border/30 py-3">
           <div className="container max-w-6xl mx-auto px-4">
             <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
@@ -2357,18 +4746,29 @@ export default function TemplatesPage() {
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${activeCategory === cat ? "bg-gradient-brand text-primary-foreground shadow-glow-sm" : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"}`}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                    activeCategory === cat
+                      ? "bg-gradient-brand text-primary-foreground shadow-glow-sm"
+                      : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
                 >
                   {cat}
+                  {cat === "International" && (
+                    <span className="ml-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-blue-600/20 text-blue-400">
+                      NEW
+                    </span>
+                  )}
                 </button>
               ))}
             </div>
           </div>
         </div>
+
+        {/* Grid */}
         <section className="container max-w-6xl mx-auto px-4 py-10">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {filtered.map((template) => (
-              <TemplateCard key={template.id} template={template} />
+              <TemplateCard key={template.id} template={template} onPay={handlePay} />
             ))}
           </div>
           {filtered.length === 0 && (
@@ -2378,6 +4778,9 @@ export default function TemplatesPage() {
           )}
         </section>
       </div>
+
+      {/* Payment Modal — connected to existing MpesaPaymentModal */}
+      <MpesaPaymentModal open={payModalOpen} onClose={() => setPayModalOpen(false)} defaultPackage={payPackage} />
     </PageLayout>
   );
 }
