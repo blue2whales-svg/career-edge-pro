@@ -4544,11 +4544,9 @@ function TemplateCard({ template, onPay }: { template: TemplateInfo; onPay: (pkg
 
   const handleUse = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigate(`/cv-editor/${template.id}`);
-    // Premium (NEW) templates: open editor AND show payment modal simultaneously
-    if (template.isNew) {
-      onPay("professional");
-    }
+    const color = encodeURIComponent(template.colors[selectedColor] ?? template.colors[0]);
+    navigate(`/cv-editor/${template.id}?color=${color}`);
+    if (template.isNew) onPay("professional");
   };
 
   return (
@@ -4559,7 +4557,8 @@ function TemplateCard({ template, onPay }: { template: TemplateInfo; onPay: (pkg
       transition={{ duration: 0.25 }}
       className="group cursor-pointer rounded-xl border border-border bg-card overflow-hidden"
       onClick={() => {
-        navigate(`/cv-editor/${template.id}`);
+        const color = encodeURIComponent(template.colors[selectedColor] ?? template.colors[0]);
+        navigate(`/cv-editor/${template.id}?color=${color}`);
         if (template.isNew) onPay("professional");
       }}
     >
