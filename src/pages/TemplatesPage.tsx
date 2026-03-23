@@ -4710,15 +4710,50 @@ export default function TemplatesPage() {
                 id="cv-upload"
                 accept=".pdf,.docx"
                 style={{ display: "none" }}
-                onChange={(e) => {
+                onChange={async (e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
-                  sessionStorage.setItem("uploadedCVName", file.name);
-                  // We'll add Claude parsing here in the next step
-                  toast.success(`CV uploaded successfully!`, {
-                    description: `${file.name} is ready. Now pick a template below.`,
-                    duration: 4000,
-                  });
+
+                  toast.loading("Reading your CV...");
+
+                  try {
+                    let rawText = "";
+
+                    if (file.name.endsWith(".pdf")) {
+                      const pdfjsLib = await import("pdfjs-dist");
+                      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+                      const arrayBuffer = await file.arrayBuffer();
+                      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                      for (let i = 1; i <= pdf.numPages; i++) {
+                        const page = await pdf.getPage(i);
+                        const content = await page.getTextContent();
+                        rawText += content.items.map((item: any) => item.str).join(" ") + "\n";
+                      }
+                    } else if (file.name.endsWith(".docx")) {
+                      const mammoth = await import("mammoth");
+                      const arrayBuffer = await file.arrayBuffer();
+                      const result = await mammoth.extractRawText({ arrayBuffer });
+                      rawText = result.value;
+                    }
+
+                    // Store everything for next step
+                    sessionStorage.setItem("uploadedCVName", file.name);
+                    sessionStorage.setItem("cvRawText", rawText);
+
+                    toast.dismiss();
+                    toast.success("CV uploaded successfully!", {
+                      description: `${file.name} is ready. Now pick a template below.`,
+                      duration: 4000,
+                    });
+
+                    console.log("Extracted text preview:", rawText.substring(0, 300));
+                  } catch (error) {
+                    toast.dismiss();
+                    toast.error("Could not read file.", {
+                      description: "Please upload a valid PDF or DOCX file.",
+                    });
+                    console.error(error);
+                  }
                 }}
               />
               <Button
