@@ -34,8 +34,8 @@ const PACKAGES = [
     package: "starter",
   },
   {
-    name: "Professional",
-    price: "KES 2,490",
+    name: "ATS Optimized CV",
+    price: "KES 1,490",
     period: "one-time",
     desc: "Our most popular package — everything you need to land interviews.",
     icon: Star,
