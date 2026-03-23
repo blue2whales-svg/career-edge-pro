@@ -1874,9 +1874,51 @@ export default function CVEditorPage() {
   const accent = accentFromUrl || fallbackAccent;
 
   // ── FIX 2: Reset CV data whenever templateId changes (useState only runs once) ──
-  const [cv, setCv] = useState<CVData>(() => buildCVFromTemplate(templateId ?? "classic"));
+  const [cv, setCv] = useState<CVData>(() => {
+    const saved = sessionStorage.getItem("parsedCVProfile");
+    if (saved) {
+      const p = JSON.parse(saved);
+      return {
+        name: p.name ?? "",
+        title: p.title ?? "",
+        email: p.email ?? "",
+        phone: p.phone ?? "",
+        location: p.location ?? "",
+        linkedin: p.linkedin ?? "",
+        summary: p.careerSummary ?? "",
+        experiences: p.experience
+          ? [
+              {
+                title: "",
+                company: p.experience,
+                location: p.location ?? "",
+                from: "",
+                to: "Present",
+                bullets: p.experience,
+              },
+            ]
+          : buildCVFromTemplate(templateId ?? "classic").experiences,
+        educations: p.education
+          ? [
+              {
+                degree: p.education,
+                school: "",
+                year: "",
+                grade: "",
+              },
+            ]
+          : buildCVFromTemplate(templateId ?? "classic").educations,
+        skills: p.skills ?? "",
+        languages: p.languages ?? "",
+        certifications: p.certifications ?? "",
+      };
+    }
+    return buildCVFromTemplate(templateId ?? "classic");
+  });
+
   useEffect(() => {
-    setCv(buildCVFromTemplate(templateId ?? "classic"));
+    const saved = sessionStorage.getItem("parsedCVProfile");
+    if (!saved) setCv(buildCVFromTemplate(templateId ?? "classic"));
   }, [templateId]);
 
   const [showMpesa, setShowMpesa] = useState(false);
