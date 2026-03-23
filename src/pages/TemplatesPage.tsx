@@ -4748,6 +4748,26 @@ export default function TemplatesPage() {
                     });
 
                     console.log("Extracted text preview:", rawText.substring(0, 300));
+                    // Send to Claude for parsing
+                    toast.loading("Analysing your CV with AI...");
+
+                    const { data, error } = await supabase.functions.invoke("parse-cv", {
+                      body: { rawText },
+                    });
+
+                    if (error) throw error;
+                    if (data?.error) throw new Error(data.error);
+
+                    // Store parsed profile in sessionStorage
+                    sessionStorage.setItem("parsedCVProfile", JSON.stringify(data.profile));
+
+                    toast.dismiss();
+                    toast.success("CV analysed!", {
+                      description: "Now pick a template below to generate your CV.",
+                      duration: 5000,
+                    });
+
+                    console.log("Parsed profile:", data.profile);
                   } catch (error) {
                     toast.dismiss();
                     toast.error("Could not read file.", {
