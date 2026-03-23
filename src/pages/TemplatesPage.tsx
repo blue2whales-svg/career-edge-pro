@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -4714,7 +4715,10 @@ export default function TemplatesPage() {
                   if (!file) return;
                   sessionStorage.setItem("uploadedCVName", file.name);
                   // We'll add Claude parsing here in the next step
-                  alert(`CV received: ${file.name} ✓`);
+                  toast.success(`CV uploaded successfully!`, {
+                    description: `${file.name} is ready. Now pick a template below.`,
+                    duration: 4000,
+                  });
                 }}
               />
               <Button
