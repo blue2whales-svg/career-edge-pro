@@ -99,7 +99,7 @@ export default function BeforeAfterSection() {
         <div className="cvba-col">
           <span className="cvba-tag cvba-tag-before">
             <span className="cvba-tag-dot" />
-            Before CVEdge
+            Before CV Edge
           </span>
           <div className="cvba-outer cvba-outer-before">
             <div className="cvba-badge cvba-badge-x">✕</div>
@@ -145,7 +145,7 @@ export default function BeforeAfterSection() {
         <div className="cvba-col">
           <span className="cvba-tag cvba-tag-after">
             <span className="cvba-tag-dot" />
-            After CVEdge ✓
+            After CV Edge ✓
           </span>
           <div className="cvba-outer cvba-outer-after">
             <div className="cvba-badge cvba-badge-check">✓</div>
@@ -225,7 +225,7 @@ export default function BeforeAfterSection() {
                 </div>
                 <p className="cvba-m-jobco">University of Nairobi</p>
                 <div className="cvba-added-box">
-                  <p className="cvba-added-title">What CVEdge added</p>
+                  <p className="cvba-added-title">What CV Edge added</p>
                   {addedItems.map((item) => (
                     <div key={item} className="cvba-added-item">
                       {item}

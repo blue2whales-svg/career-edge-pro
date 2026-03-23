@@ -55,10 +55,10 @@ export default function PageLayout({ children }: PageLayoutProps) {
           <Link to="/" className="flex items-center gap-2.5">
             <img
               src={cvedgeLogo}
-              alt="CVEdge Logo"
+              alt="CV Edge Logo"
               className="w-10 h-10 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20"
             />
-            <span className="font-bold text-lg tracking-tight">CVEdge</span>
+            <span className="font-bold text-lg tracking-tight">CV Edge</span>
           </Link>
           <div className="flex items-center gap-2">
             <Link to="/jobs?industry=%F0%9F%94%A5+Hot+Abroad">
@@ -100,10 +100,10 @@ export default function PageLayout({ children }: PageLayoutProps) {
               <Link to="/" className="flex items-center gap-2.5 mb-3">
                 <img
                   src={cvedgeLogo}
-                  alt="CVEdge Logo"
+                  alt="CV Edge Logo"
                   className="w-9 h-9 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20"
                 />
-                <span className="font-bold">CVEdge</span>
+                <span className="font-bold">CV Edge</span>
               </Link>
               <p className="text-xs text-muted-foreground mb-2">Your Career's Secret Weapon</p>
               <a
@@ -166,7 +166,7 @@ export default function PageLayout({ children }: PageLayoutProps) {
             </div>
           </div>
           <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} CVEdge. All rights reserved.</p>
+            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} CV Edge. All rights reserved.</p>
             <p className="text-xs text-muted-foreground">Professional career documents for 90+ countries worldwide.</p>
           </div>
           {/* Extra bottom padding for bottom nav */}

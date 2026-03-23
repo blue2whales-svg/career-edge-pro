@@ -48,8 +48,8 @@ export default function PortalLayout() {
       {isMobile && (
         <header className="fixed top-0 left-0 right-0 z-40 h-14 bg-card border-b border-border flex items-center justify-between px-4">
           <Link to="/" className="flex items-center gap-2">
-            <img src={cvedgeLogo} alt="CVEdge" className="w-7 h-7 object-contain rounded-full ring-1 ring-primary/20" />
-            <span className="font-bold text-foreground text-sm">CVEdge</span>
+            <img src={cvedgeLogo} alt="CV Edge" className="w-7 h-7 object-contain rounded-full ring-1 ring-primary/20" />
+            <span className="font-bold text-foreground text-sm">CV Edge</span>
           </Link>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -78,8 +78,8 @@ export default function PortalLayout() {
         {/* Logo */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-border shrink-0">
           <Link to="/" className="flex items-center gap-2.5">
-            <img src={cvedgeLogo} alt="CVEdge" className="w-8 h-8 object-contain rounded-full ring-1 ring-primary/20" />
-            {(isMobile || !collapsed) && <span className="font-bold text-foreground">CVEdge</span>}
+            <img src={cvedgeLogo} alt="CV Edge" className="w-8 h-8 object-contain rounded-full ring-1 ring-primary/20" />
+            {(isMobile || !collapsed) && <span className="font-bold text-foreground">CV Edge</span>}
           </Link>
           {isMobile && (
             <Button variant="ghost" size="icon" onClick={() => setMobileOpen(false)}>

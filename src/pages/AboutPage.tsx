@@ -56,7 +56,7 @@ export default function AboutPage() {
               <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={1}
                 className="text-base sm:text-lg text-muted-foreground mb-6 leading-relaxed"
               >
-                CVEdge is a global career document agency trusted by professionals, executives, and scholars in 90+ countries. We don't just write CVs — we craft career-defining documents that open doors.
+                CV Edge is a global career document agency trusted by professionals, executives, and scholars in 90+ countries. We don't just write CVs — we craft career-defining documents that open doors.
               </motion.p>
               <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={2}
                 className="text-base text-muted-foreground mb-8 leading-relaxed"
@@ -76,7 +76,7 @@ export default function AboutPage() {
             >
               <div className="relative">
                 <div className="w-48 h-48 sm:w-64 sm:h-64 rounded-3xl bg-gradient-brand-subtle border border-primary/20 flex items-center justify-center shadow-glow">
-                  <img src={cvedgeLogo} alt="CVEdge" className="w-32 h-32 sm:w-44 sm:h-44 object-contain rounded-full" />
+                  <img src={cvedgeLogo} alt="CV Edge" className="w-32 h-32 sm:w-44 sm:h-44 object-contain rounded-full" />
                 </div>
                 <div className="absolute -bottom-4 -right-4 rounded-xl border border-border bg-card px-4 py-3 shadow-lg">
                   <div className="text-2xl font-bold text-primary">12K+</div>
@@ -153,7 +153,7 @@ export default function AboutPage() {
             className="rounded-2xl border border-primary/20 bg-gradient-brand-subtle p-10 sm:p-14"
           >
             <h2 className="text-3xl sm:text-4xl font-serif font-bold mb-4">
-              Ready to experience the <span className="text-gradient">CVEdge difference</span>?
+              Ready to experience the <span className="text-gradient">CV Edge difference</span>?
             </h2>
             <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
               Join 12,000+ professionals who've trusted us with their most important career documents.

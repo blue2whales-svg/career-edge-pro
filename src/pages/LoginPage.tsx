@@ -36,7 +36,7 @@ export default function LoginPage() {
             <span className="text-lg font-bold text-background">CE</span>
           </div>
           <h1 className="text-2xl font-bold">Welcome back</h1>
-          <p className="text-sm text-muted-foreground mt-1">Sign in to your CVEdge account</p>
+          <p className="text-sm text-muted-foreground mt-1">Sign in to your CV Edge account</p>
         </div>
         <form className="space-y-4" onSubmit={handleLogin}>
           <Input placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="h-11 bg-muted/50" />

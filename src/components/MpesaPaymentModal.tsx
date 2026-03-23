@@ -17,8 +17,8 @@ const PACKAGES = [
   { value: "cover-letter", label: "Cover Letter Only — KES 1,000", amount: 1000 },
   { value: "cv-review", label: "Expert CV Review — KES 1,000", amount: 1000 },
   { value: "global", label: "Global Assistance — KES 20,000", amount: 20000 },
-  { value: "pro-monthly", label: "CVEdge Pro — KES 2,000/month", amount: 2000 },
-  { value: "pro-plus", label: "CVEdge Pro Plus — KES 2,500/month", amount: 2500 },
+  { value: "pro-monthly", label: "CV Edge Pro — KES 2,000/month", amount: 2000 },
+  { value: "pro-plus", label: "CV Edge Pro Plus — KES 2,500/month", amount: 2500 },
   { value: "recruiter-basic", label: "Basic Job Post — KES 3,000", amount: 3000 },
   { value: "recruiter-featured", label: "Featured Job Post — KES 10,000", amount: 10000 },
   { value: "recruiter-pro", label: "Recruiter Pro — KES 25,000/month", amount: 25000 },
@@ -386,7 +386,7 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                       <CheckCircle className="h-4 w-4" /> I Paid via Paybill
                     </Button>
                     <a
-                      href={`https://wa.me/254700000000?text=Hi%20CVEdge!%20I%20need%20help%20with%20payment.%20Order:%20${orderId}`}
+                      href={`https://wa.me/254700000000?text=Hi%20CV Edge!%20I%20need%20help%20with%20payment.%20Order:%20${orderId}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -468,7 +468,7 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                     Try Again
                   </Button>
                   <a
-                    href={`https://wa.me/254700000000?text=Hi%20CVEdge!%20I%20need%20help%20with%20payment.%20Order:%20${orderId}`}
+                    href={`https://wa.me/254700000000?text=Hi%20CV Edge!%20I%20need%20help%20with%20payment.%20Order:%20${orderId}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

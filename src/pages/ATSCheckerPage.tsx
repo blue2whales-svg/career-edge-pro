@@ -73,7 +73,7 @@ export default function ATSCheckerPage() {
     const text = `I just scored ${result.score}/100 (Grade ${result.grade}) on my ATS Check! 🎯\nSee how your CV scores at https://cvedge.live/ats-checker`;
     try {
       if (navigator.share) {
-        await navigator.share({ title: "My ATS Score — CVEdge", text });
+        await navigator.share({ title: "My ATS Score — CV Edge", text });
       } else {
         await navigator.clipboard.writeText(text);
         setShared(true);

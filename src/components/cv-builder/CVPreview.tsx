@@ -422,7 +422,7 @@ export default function CVPreview({ data, isPaid = false, template = "executive"
             className="text-[48px] font-bold tracking-[0.2em] whitespace-nowrap select-none"
             style={{ transform: "rotate(-38deg)", color: "rgba(201,168,76,0.08)", fontSize: "clamp(32px,6vw,64px)" }}
           >
-            CVEdge Preview
+            CV Edge Preview
           </span>
         </div>
       )}
