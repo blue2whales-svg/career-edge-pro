@@ -1888,12 +1888,28 @@ const PREVIEWS: Record<string, (cv: CVData) => JSX.Element> = {
   "picture-modern": (cv) => <PreviewPhoto cv={cv} accent="#0ea5e9" />,
 };
 
+// ─── TEMPLATE PRICING ────────────────────────────────────────────────────────
+function getTemplatePrice(templateId: string): { label: string; amount: number } {
+  if (templateId.startsWith("ats")) return { label: "KES 1,490", amount: 1490 };
+  if (templateId.startsWith("executive")) return { label: "KES 2,500", amount: 2500 };
+  if (templateId.startsWith("minimal")) return { label: "KES 1,300", amount: 1300 };
+  if (templateId === "sidebar" || templateId.startsWith("two-column-creative")) return { label: "KES 1,200", amount: 1200 };
+  if (templateId === "modern" || templateId.startsWith("modern")) return { label: "KES 1,200", amount: 1200 };
+  if (templateId === "traditional") return { label: "KES 1,400", amount: 1400 };
+  if (templateId === "classic" || templateId === "clean" || templateId === "basic") return { label: "KES 1,400", amount: 1400 };
+  if (templateId === "creative" || templateId.startsWith("creative")) return { label: "KES 1,300", amount: 1300 };
+  if (templateId.startsWith("picture")) return { label: "KES 1,400", amount: 1400 };
+  return { label: "KES 1,400", amount: 1400 };
+}
+
 // ─── MAIN EDITOR ─────────────────────────────────────────────────────────────
 export default function CVEditorPage() {
   const { templateId } = useParams<{ templateId: string }>();
   const navigate = useNavigate();
   const [cv, setCv] = useState<CVData>(() => buildCVFromTemplate(templateId ?? "classic"));
   const [showMpesa, setShowMpesa] = useState(false);
+
+  const templatePrice = getTemplatePrice(templateId ?? "classic");
 
   const update = (field: keyof CVData, value: string) => setCv((prev) => ({ ...prev, [field]: value }));
   const updateExp = (i: number, field: keyof Experience, value: string) => {
