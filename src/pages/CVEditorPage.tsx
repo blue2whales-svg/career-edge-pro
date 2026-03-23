@@ -2119,16 +2119,35 @@ export default function CVEditorPage() {
                 </div>
               </div>
               <JobScoreMatch cv={cv} />
+
+              {/* Mobile: Preview shown above payment button */}
+              <div className="lg:hidden">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-semibold text-muted-foreground">Live Preview</span>
+                  <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                    Updates as you type
+                  </span>
+                </div>
+                <div
+                  className="rounded-xl border border-border overflow-hidden shadow-lg mb-4"
+                  style={{ maxHeight: "60vh", overflowY: "auto" }}
+                >
+                  {preview(cv)}
+                </div>
+              </div>
+
               <div className="flex gap-3 pb-6">
                 <Button
                   onClick={() => setShowMpesa(true)}
                   className="flex-1 bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer h-12 text-base"
                 >
-                  <Download className="mr-2 h-4 w-4" /> Download CV — KES 299
+                  <Download className="mr-2 h-4 w-4" /> Download CV — {templatePrice.label}
                 </Button>
               </div>
             </div>
-            <div className="sticky top-24">
+
+            {/* Desktop: Sticky preview on the right */}
+            <div className="hidden lg:block sticky top-24">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-semibold text-muted-foreground">Live Preview</span>
                 <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">

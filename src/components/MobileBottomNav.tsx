@@ -1,12 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, FileText, CreditCard, Briefcase, ShoppingCart, PenSquare } from "lucide-react";
+import { Home, FileText, Briefcase, ShoppingCart, PenSquare, FolderLock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { to: "/", icon: Home, label: "Home" },
   { to: "/cv-builder", icon: PenSquare, label: "CV Builder" },
   { to: "/order", icon: ShoppingCart, label: "Order" },
-  { to: "/templates", icon: FileText, label: "Templates" },
+  { to: "/document-vault", icon: FolderLock, label: "Vault" },
   { to: "/jobs", icon: Briefcase, label: "Jobs" },
 ];
 

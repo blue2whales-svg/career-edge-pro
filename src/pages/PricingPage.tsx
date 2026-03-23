@@ -53,9 +53,9 @@ const PACKAGES = [
     package: "professional",
   },
   {
-    name: "Going Abroad ✈️",
-    price: "KES 4,490",
-    oldPrice: "KES 6,500",
+    name: "International CV ✈️",
+    price: "KES 2,000",
+    oldPrice: "KES 4,490",
     period: "one-time",
     desc: "ATS CV + Cover Letter + LinkedIn Revamp — tailored for Gulf, UK & EU markets.",
     icon: Globe,
