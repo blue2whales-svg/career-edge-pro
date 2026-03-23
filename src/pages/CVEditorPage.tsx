@@ -2143,10 +2143,31 @@ export default function CVEditorPage() {
                   </span>
                 </div>
                 <div
-                  className="rounded-xl border border-border overflow-hidden shadow-lg mb-4"
+                  className="relative rounded-xl border border-border overflow-hidden shadow-lg mb-4"
                   style={{ maxHeight: "60vh", overflowY: "auto" }}
                 >
                   {preview}
+                  <div
+                    style={{
+                      position: "sticky",
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: "45%",
+                      background: "linear-gradient(to bottom, transparent, rgba(0,0,0,0.7))",
+                      backdropFilter: "blur(4px)",
+                      WebkitBackdropFilter: "blur(4px)",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
+                      pointerEvents: "none",
+                    }}
+                  >
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>🔒 Download to see full CV</div>
+                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>Professional format · PDF & DOCX</div>
+                  </div>
                 </div>
               </div>
 
