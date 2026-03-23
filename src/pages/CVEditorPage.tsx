@@ -1,20 +1,9 @@
-import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Plus,
-  Trash2,
-  Download,
-  ArrowLeft,
-  X,
-  Smartphone,
-  CheckCircle2,
-  Target,
-  TrendingUp,
-  AlertCircle,
-} from "lucide-react";
+import { Plus, Trash2, Download, ArrowLeft, CheckCircle2, Target, TrendingUp, AlertCircle } from "lucide-react";
 import { TEMPLATES } from "./TemplatesPage";
 import MpesaPaymentModal from "@/components/MpesaPaymentModal";
 
@@ -282,7 +271,7 @@ function JobScoreMatch({ cv }: { cv: CVData }) {
   );
 }
 
-// ─── NON-ATS PREVIEWS ────────────────────────────────────────────────────────
+// ─── PREVIEW COMPONENTS ───────────────────────────────────────────────────────
 function PreviewTraditional({ cv }: { cv: CVData }) {
   return (
     <div
@@ -1388,9 +1377,7 @@ function PreviewCreative({ cv, accent = "#7c3aed" }: { cv: CVData; accent?: stri
   );
 }
 
-// ─── 4 ATS PREVIEWS ──────────────────────────────────────────────────────────
-
-// ① ATS PRO — CENTRED header, colour-block section labels, body left-aligned
+// ─── ATS PREVIEWS ─────────────────────────────────────────────────────────────
 function PreviewATSPro({ cv }: { cv: CVData }) {
   const acc = "#1e40af";
   const SH = ({ label }: { label: string }) => (
@@ -1425,7 +1412,6 @@ function PreviewATSPro({ cv }: { cv: CVData }) {
         borderLeft: `5px solid ${acc}`,
       }}
     >
-      {/* CENTRED header */}
       <div style={{ textAlign: "center", marginBottom: 12 }}>
         <div
           style={{
@@ -1451,14 +1437,13 @@ function PreviewATSPro({ cv }: { cv: CVData }) {
         >
           {cv.title}
         </div>
-        <div style={{ fontSize: 7, color: "#94a3b8", marginTop: 5, letterSpacing: 0.3 }}>
+        <div style={{ fontSize: 7, color: "#94a3b8", marginTop: 5 }}>
           {cv.email} · {cv.phone} · {cv.location} · {cv.linkedin}
         </div>
       </div>
       <div style={{ height: 1.5, background: acc, marginBottom: 2 }} />
-      {/* LEFT-ALIGNED body */}
       <SH label="Professional Summary" />
-      <div style={{ fontSize: 7.5, color: "#475569", lineHeight: 1.7, marginBottom: 2 }}>{cv.summary}</div>
+      <div style={{ fontSize: 7.5, color: "#475569", lineHeight: 1.7 }}>{cv.summary}</div>
       <SH label="Work Experience" />
       {cv.experiences.map((exp, i) => (
         <div key={i} style={{ marginBottom: 9 }}>
@@ -1504,7 +1489,7 @@ function PreviewATSPro({ cv }: { cv: CVData }) {
               fontSize: 7,
               background: "#eff6ff",
               color: acc,
-              border: `1px solid #bfdbfe`,
+              border: "1px solid #bfdbfe",
               borderRadius: 2,
               padding: "1.5px 6px",
               fontWeight: 600,
@@ -1530,7 +1515,6 @@ function PreviewATSPro({ cv }: { cv: CVData }) {
   );
 }
 
-// ② ATS CLASSIC — CENTRED header, bold underline section labels, body left-aligned
 function PreviewATSClassic({ cv }: { cv: CVData }) {
   const SH = ({ label }: { label: string }) => (
     <div
@@ -1559,7 +1543,6 @@ function PreviewATSClassic({ cv }: { cv: CVData }) {
         minHeight: 700,
       }}
     >
-      {/* CENTRED header */}
       <div style={{ textAlign: "center", marginBottom: 10 }}>
         <div style={{ fontSize: 20, fontWeight: 900, color: "#0f172a", letterSpacing: -0.3, lineHeight: 1 }}>
           {cv.name}
@@ -1572,7 +1555,6 @@ function PreviewATSClassic({ cv }: { cv: CVData }) {
           {cv.email} · {cv.phone} · {cv.location}
         </div>
       </div>
-      {/* LEFT-ALIGNED body */}
       <SH label="Experience" />
       {cv.experiences.map((exp, i) => (
         <div key={i} style={{ marginBottom: 9 }}>
@@ -1627,7 +1609,6 @@ function PreviewATSClassic({ cv }: { cv: CVData }) {
   );
 }
 
-// ③ ATS MODERN — LEFT-ALIGNED header, dot accent section labels
 function PreviewATSModern({ cv }: { cv: CVData }) {
   const acc = "#1e40af";
   const SH = ({ label }: { label: string }) => (
@@ -1641,7 +1622,6 @@ function PreviewATSModern({ cv }: { cv: CVData }) {
   );
   return (
     <div style={{ background: "#fafafa", fontFamily: "Arial, sans-serif", fontSize: 8, minHeight: 700 }}>
-      {/* LEFT-ALIGNED dark header */}
       <div style={{ background: "#1e293b", padding: "16px 20px" }}>
         <div style={{ fontSize: 17, fontWeight: 900, color: "#f8fafc", letterSpacing: 0.5 }}>{cv.name}</div>
         <div style={{ fontSize: 7.5, color: "#94a3b8", textTransform: "uppercase", letterSpacing: 1.5, marginTop: 3 }}>
@@ -1663,12 +1643,10 @@ function PreviewATSModern({ cv }: { cv: CVData }) {
         <span style={{ fontSize: 7, color: "#64748b" }}>{cv.phone}</span>
         <span style={{ fontSize: 7, color: "#cbd5e1" }}>·</span>
         <span style={{ fontSize: 7, color: "#64748b" }}>{cv.location}</span>
-        <span style={{ fontSize: 7, color: "#cbd5e1" }}>·</span>
-        <span style={{ fontSize: 7, color: "#64748b" }}>{cv.linkedin}</span>
       </div>
       <div style={{ padding: "8px 20px 14px" }}>
         <SH label="Summary" />
-        <div style={{ fontSize: 7.5, color: "#475569", lineHeight: 1.7, marginBottom: 2 }}>{cv.summary}</div>
+        <div style={{ fontSize: 7.5, color: "#475569", lineHeight: 1.7 }}>{cv.summary}</div>
         <SH label="Experience" />
         {cv.experiences.map((exp, i) => (
           <div key={i} style={{ marginBottom: 9 }}>
@@ -1734,7 +1712,6 @@ function PreviewATSModern({ cv }: { cv: CVData }) {
   );
 }
 
-// ④ ATS EXECUTIVE — LEFT-ALIGNED header, spaced grey uppercase labels, no lines
 function PreviewATSExecutive({ cv }: { cv: CVData }) {
   const SH = ({ label }: { label: string }) => (
     <div
@@ -1761,7 +1738,6 @@ function PreviewATSExecutive({ cv }: { cv: CVData }) {
         minHeight: 700,
       }}
     >
-      {/* LEFT-ALIGNED header */}
       <div style={{ marginBottom: 8 }}>
         <div
           style={{
@@ -1792,17 +1768,9 @@ function PreviewATSExecutive({ cv }: { cv: CVData }) {
           <span>{cv.location}</span>
         </div>
       </div>
-      {/* LEFT-ALIGNED body */}
       <SH label="Professional Summary" />
       <div
-        style={{
-          fontSize: 7.5,
-          color: "#475569",
-          lineHeight: 1.8,
-          borderLeft: "2px solid #e2e8f0",
-          paddingLeft: 8,
-          marginBottom: 2,
-        }}
+        style={{ fontSize: 7.5, color: "#475569", lineHeight: 1.8, borderLeft: "2px solid #e2e8f0", paddingLeft: 8 }}
       >
         {cv.summary}
       </div>
@@ -1859,44 +1827,36 @@ function PreviewATSExecutive({ cv }: { cv: CVData }) {
   );
 }
 
-// ─── MASTER PREVIEW MAP ──────────────────────────────────────────────────────
-const PREVIEWS: Record<string, (cv: CVData) => JSX.Element> = {
-  classic: (cv) => <PreviewTraditional cv={cv} />,
-  traditional: (cv) => <PreviewTraditional cv={cv} />,
-  clean: (cv) => <PreviewTraditional cv={cv} />,
-  basic: (cv) => <PreviewTraditional cv={cv} />,
-  modern: (cv) => <PreviewTraditional cv={cv} />,
-  "modern-dark": (cv) => <PreviewTraditional cv={cv} />,
-  "ats-pro": (cv) => <PreviewATSPro cv={cv} />, // centred header
-  "ats-classic": (cv) => <PreviewATSClassic cv={cv} />, // centred header
-  "ats-modern": (cv) => <PreviewATSModern cv={cv} />, // left header
-  "ats-executive": (cv) => <PreviewATSExecutive cv={cv} />, // left header
-  minimal: (cv) => <PreviewMinimalist cv={cv} />,
-  "minimalist-pro": (cv) => <PreviewMinimalist cv={cv} />,
-  creative: (cv) => <PreviewCreative cv={cv} accent="#7c3aed" />,
-  "creative-bold": (cv) => <PreviewCreative cv={cv} accent="#ec4899" />,
-  "creative-minimal": (cv) => <PreviewCreative cv={cv} accent="#6366f1" />,
-  "executive-classic": (cv) => <PreviewExecutive cv={cv} accentColor="#c9a84c" headerBg="#0f172a" />,
-  "executive-gold": (cv) => <PreviewExecutive cv={cv} accentColor="#c9a84c" headerBg="#0f172a" />,
-  "executive-navy": (cv) => <PreviewExecutive cv={cv} accentColor="#93c5fd" headerBg="#1e3a5f" />,
-  sidebar: (cv) => <PreviewSidebar cv={cv} accent="#38bdf8" />,
-  "two-column-creative": (cv) => <PreviewSidebar cv={cv} accent="#7c3aed" />,
-  "two-column": (cv) => <PreviewTwoColumn cv={cv} accent="#2563eb" />,
-  "two-column-pro": (cv) => <PreviewTwoColumn cv={cv} accent="#c9a84c" />,
-  picture: (cv) => <PreviewPhoto cv={cv} accent="#2563eb" />,
-  "picture-classic": (cv) => <PreviewPhoto cv={cv} accent="#2563eb" />,
-  "picture-modern": (cv) => <PreviewPhoto cv={cv} accent="#0ea5e9" />,
-};
+// ─── MASTER PREVIEW ROUTER ───────────────────────────────────────────────────
+// Replaces the old static PREVIEWS map — now accepts accent color from URL param
+function getPreview(templateId: string, cv: CVData, accent: string): JSX.Element {
+  const id = templateId ?? "classic";
+  if (id === "ats-pro" || id === "ats-stealth") return <PreviewATSPro cv={cv} />;
+  if (id === "ats-classic") return <PreviewATSClassic cv={cv} />;
+  if (id === "ats-modern" || id === "ats-banner" || id === "ats-banner-cobalt") return <PreviewATSModern cv={cv} />;
+  if (id === "ats-executive") return <PreviewATSExecutive cv={cv} />;
+  if (id === "minimal" || id === "minimalist-pro" || id === "minimalist-architect" || id === "swiss-minimalist")
+    return <PreviewMinimalist cv={cv} />;
+  if (id.startsWith("executive")) return <PreviewExecutive cv={cv} accentColor={accent} headerBg="#0f172a" />;
+  if (id === "sidebar" || id === "two-column-creative" || id === "two-column-slate" || id === "international-eu")
+    return <PreviewSidebar cv={cv} accent={accent} />;
+  if (id.startsWith("two-column")) return <PreviewTwoColumn cv={cv} accent={accent} />;
+  if (id.startsWith("picture")) return <PreviewPhoto cv={cv} accent={accent} />;
+  if (id.startsWith("creative") || id === "creative-vibrant") return <PreviewCreative cv={cv} accent={accent} />;
+  return <PreviewTraditional cv={cv} />;
+}
 
 // ─── TEMPLATE PRICING ────────────────────────────────────────────────────────
 function getTemplatePrice(templateId: string): { label: string; amount: number } {
   if (templateId.startsWith("ats")) return { label: "KES 1,490", amount: 1490 };
   if (templateId.startsWith("executive")) return { label: "KES 2,500", amount: 2500 };
   if (templateId.startsWith("minimal")) return { label: "KES 1,300", amount: 1300 };
-  if (templateId === "sidebar" || templateId.startsWith("two-column-creative")) return { label: "KES 1,200", amount: 1200 };
+  if (templateId === "sidebar" || templateId.startsWith("two-column-creative"))
+    return { label: "KES 1,200", amount: 1200 };
   if (templateId === "modern" || templateId.startsWith("modern")) return { label: "KES 1,200", amount: 1200 };
   if (templateId === "traditional") return { label: "KES 1,400", amount: 1400 };
-  if (templateId === "classic" || templateId === "clean" || templateId === "basic") return { label: "KES 1,400", amount: 1400 };
+  if (templateId === "classic" || templateId === "clean" || templateId === "basic")
+    return { label: "KES 1,400", amount: 1400 };
   if (templateId === "creative" || templateId.startsWith("creative")) return { label: "KES 1,300", amount: 1300 };
   if (templateId.startsWith("picture")) return { label: "KES 1,400", amount: 1400 };
   return { label: "KES 1,400", amount: 1400 };
@@ -1905,10 +1865,21 @@ function getTemplatePrice(templateId: string): { label: string; amount: number }
 // ─── MAIN EDITOR ─────────────────────────────────────────────────────────────
 export default function CVEditorPage() {
   const { templateId } = useParams<{ templateId: string }>();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [cv, setCv] = useState<CVData>(() => buildCVFromTemplate(templateId ?? "classic"));
-  const [showMpesa, setShowMpesa] = useState(false);
 
+  // ── FIX 1: Read accent color from URL ?color= param sent by Templates.tsx ──
+  const accentFromUrl = searchParams.get("color") ?? "";
+  const fallbackAccent = TEMPLATES.find((t) => t.id === templateId)?.colors[0] ?? "#c9a84c";
+  const accent = accentFromUrl || fallbackAccent;
+
+  // ── FIX 2: Reset CV data whenever templateId changes (useState only runs once) ──
+  const [cv, setCv] = useState<CVData>(() => buildCVFromTemplate(templateId ?? "classic"));
+  useEffect(() => {
+    setCv(buildCVFromTemplate(templateId ?? "classic"));
+  }, [templateId]);
+
+  const [showMpesa, setShowMpesa] = useState(false);
   const templatePrice = getTemplatePrice(templateId ?? "classic");
 
   const update = (field: keyof CVData, value: string) => setCv((prev) => ({ ...prev, [field]: value }));
@@ -1934,8 +1905,8 @@ export default function CVEditorPage() {
   const removeEdu = (i: number) =>
     setCv((prev) => ({ ...prev, educations: cv.educations.filter((_, idx) => idx !== i) }));
 
-  const preview = PREVIEWS[templateId ?? "classic"] ?? PREVIEWS["classic"];
   const templateLabel = templateId ? templateId.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "Classic";
+  const preview = getPreview(templateId ?? "classic", cv, accent);
 
   return (
     <>
@@ -1952,6 +1923,7 @@ export default function CVEditorPage() {
             <h1 className="text-xl font-bold">{templateLabel} Template Editor</h1>
           </div>
           <div className="grid lg:grid-cols-2 gap-8">
+            {/* Left: form */}
             <div className="space-y-6 max-h-[85vh] overflow-y-auto pr-2">
               <div className="rounded-xl border border-border bg-card p-5">
                 <h2 className="font-bold text-base mb-4">Personal Details</h2>
@@ -2120,7 +2092,7 @@ export default function CVEditorPage() {
               </div>
               <JobScoreMatch cv={cv} />
 
-              {/* Mobile: Preview shown above payment button */}
+              {/* Mobile preview */}
               <div className="lg:hidden">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm font-semibold text-muted-foreground">Live Preview</span>
@@ -2132,7 +2104,7 @@ export default function CVEditorPage() {
                   className="rounded-xl border border-border overflow-hidden shadow-lg mb-4"
                   style={{ maxHeight: "60vh", overflowY: "auto" }}
                 >
-                  {preview(cv)}
+                  {preview}
                 </div>
               </div>
 
@@ -2146,7 +2118,7 @@ export default function CVEditorPage() {
               </div>
             </div>
 
-            {/* Desktop: Sticky preview on the right */}
+            {/* Desktop sticky preview */}
             <div className="hidden lg:block sticky top-24">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-semibold text-muted-foreground">Live Preview</span>
@@ -2158,7 +2130,7 @@ export default function CVEditorPage() {
                 className="rounded-xl border border-border overflow-hidden shadow-lg"
                 style={{ maxHeight: "80vh", overflowY: "auto" }}
               >
-                {preview(cv)}
+                {preview}
               </div>
             </div>
           </div>
