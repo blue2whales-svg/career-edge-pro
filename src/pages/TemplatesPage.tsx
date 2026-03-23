@@ -4742,10 +4742,6 @@ export default function TemplatesPage() {
                     sessionStorage.setItem("cvRawText", rawText);
 
                     toast.dismiss();
-                    toast.success("CV uploaded successfully!", {
-                      description: `${file.name} is ready. Now pick a template below.`,
-                      duration: 4000,
-                    });
 
                     console.log("Extracted text preview:", rawText.substring(0, 300));
                     // Send to Claude for parsing
