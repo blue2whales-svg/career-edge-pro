@@ -4544,23 +4544,10 @@ function TemplateCard({ template, onPay }: { template: TemplateInfo; onPay: (pkg
 
   const handleUse = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Premium templates open payment modal; standard ones go straight to editor
-    const premiumIds = [
-      "executive-obsidian",
-      "picture-prestige",
-      "swiss-minimalist",
-      "two-column-ember",
-      "creative-vibrant",
-      "international-eu",
-      "ats-stealth",
-      "ats-banner-cobalt",
-      "minimalist-architect",
-      "two-column-slate",
-    ];
-    if (premiumIds.includes(template.id)) {
+    navigate(`/cv-editor/${template.id}`);
+    // Premium (NEW) templates: open editor AND show payment modal simultaneously
+    if (template.isNew) {
       onPay("professional");
-    } else {
-      navigate(`/cv-editor/${template.id}`);
     }
   };
 
@@ -4571,7 +4558,10 @@ function TemplateCard({ template, onPay }: { template: TemplateInfo; onPay: (pkg
       whileHover={{ y: -6, boxShadow: "0 16px 48px -8px hsl(43 55% 54% / 0.35)" }}
       transition={{ duration: 0.25 }}
       className="group cursor-pointer rounded-xl border border-border bg-card overflow-hidden"
-      onClick={() => navigate(`/cv-editor/${template.id}`)}
+      onClick={() => {
+        navigate(`/cv-editor/${template.id}`);
+        if (template.isNew) onPay("professional");
+      }}
     >
       {/* Preview area */}
       <div ref={containerRef} className="relative aspect-[3/4] bg-white overflow-hidden">
