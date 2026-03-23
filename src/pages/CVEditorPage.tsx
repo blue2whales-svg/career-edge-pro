@@ -1888,12 +1888,28 @@ const PREVIEWS: Record<string, (cv: CVData) => JSX.Element> = {
   "picture-modern": (cv) => <PreviewPhoto cv={cv} accent="#0ea5e9" />,
 };
 
+// ─── TEMPLATE PRICING ────────────────────────────────────────────────────────
+function getTemplatePrice(templateId: string): { label: string; amount: number } {
+  if (templateId.startsWith("ats")) return { label: "KES 1,490", amount: 1490 };
+  if (templateId.startsWith("executive")) return { label: "KES 2,500", amount: 2500 };
+  if (templateId.startsWith("minimal")) return { label: "KES 1,300", amount: 1300 };
+  if (templateId === "sidebar" || templateId.startsWith("two-column-creative")) return { label: "KES 1,200", amount: 1200 };
+  if (templateId === "modern" || templateId.startsWith("modern")) return { label: "KES 1,200", amount: 1200 };
+  if (templateId === "traditional") return { label: "KES 1,400", amount: 1400 };
+  if (templateId === "classic" || templateId === "clean" || templateId === "basic") return { label: "KES 1,400", amount: 1400 };
+  if (templateId === "creative" || templateId.startsWith("creative")) return { label: "KES 1,300", amount: 1300 };
+  if (templateId.startsWith("picture")) return { label: "KES 1,400", amount: 1400 };
+  return { label: "KES 1,400", amount: 1400 };
+}
+
 // ─── MAIN EDITOR ─────────────────────────────────────────────────────────────
 export default function CVEditorPage() {
   const { templateId } = useParams<{ templateId: string }>();
   const navigate = useNavigate();
   const [cv, setCv] = useState<CVData>(() => buildCVFromTemplate(templateId ?? "classic"));
   const [showMpesa, setShowMpesa] = useState(false);
+
+  const templatePrice = getTemplatePrice(templateId ?? "classic");
 
   const update = (field: keyof CVData, value: string) => setCv((prev) => ({ ...prev, [field]: value }));
   const updateExp = (i: number, field: keyof Experience, value: string) => {
@@ -2103,16 +2119,35 @@ export default function CVEditorPage() {
                 </div>
               </div>
               <JobScoreMatch cv={cv} />
+
+              {/* Mobile: Preview shown above payment button */}
+              <div className="lg:hidden">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-semibold text-muted-foreground">Live Preview</span>
+                  <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                    Updates as you type
+                  </span>
+                </div>
+                <div
+                  className="rounded-xl border border-border overflow-hidden shadow-lg mb-4"
+                  style={{ maxHeight: "60vh", overflowY: "auto" }}
+                >
+                  {preview(cv)}
+                </div>
+              </div>
+
               <div className="flex gap-3 pb-6">
                 <Button
                   onClick={() => setShowMpesa(true)}
                   className="flex-1 bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer h-12 text-base"
                 >
-                  <Download className="mr-2 h-4 w-4" /> Download CV — KES 299
+                  <Download className="mr-2 h-4 w-4" /> Download CV — {templatePrice.label}
                 </Button>
               </div>
             </div>
-            <div className="sticky top-24">
+
+            {/* Desktop: Sticky preview on the right */}
+            <div className="hidden lg:block sticky top-24">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-semibold text-muted-foreground">Live Preview</span>
                 <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
