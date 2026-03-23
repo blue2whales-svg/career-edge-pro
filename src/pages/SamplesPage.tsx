@@ -1145,7 +1145,7 @@ function TemplateCard({ template }: { template: TemplateData }) {
 
 const FAQS = [
   {
-    q: "Are CVEdge templates ATS-compatible?",
+    q: "Are CV Edge templates ATS-compatible?",
     a: "Yes. All templates are tested against major ATS systems including Workday, Taleo, and Greenhouse. We use clean formatting, standard fonts, and proper heading hierarchy.",
   },
   {
@@ -1165,7 +1165,7 @@ const FAQS = [
     a: "Corporate/finance: Executive or ATS. Tech: ATS or Minimalist. Creative industries: Creative or Two-Column. Entry-level: Simple or Clean.",
   },
   {
-    q: "Are CVEdge templates free?",
+    q: "Are CV Edge templates free?",
     a: "You can build and preview your CV for free. Downloading the final PDF or DOCX requires a one-time payment from KES 500.",
   },
   {
@@ -1397,7 +1397,7 @@ export default function SamplesPage() {
               textAlign: "center" as const,
             }}
           >
-            Why use CVEdge templates?
+            Why use CV Edge templates?
           </h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "16px" }}>
             {[

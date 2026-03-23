@@ -35,8 +35,8 @@ export function MobileNav() {
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center gap-2.5 p-5 border-b border-border/50">
-            <img src={cvedgeLogo} alt="CVEdge" className="w-9 h-9 rounded-full shadow-glow-sm ring-1 ring-primary/20" />
-            <span className="font-bold text-lg">CVEdge</span>
+            <img src={cvedgeLogo} alt="CV Edge" className="w-9 h-9 rounded-full shadow-glow-sm ring-1 ring-primary/20" />
+            <span className="font-bold text-lg">CV Edge</span>
           </div>
 
           {/* Top Hot Jobs CTA */}

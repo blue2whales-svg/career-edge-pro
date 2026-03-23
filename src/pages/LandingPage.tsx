@@ -48,10 +48,10 @@ export default function LandingPage() {
           <div className="flex items-center gap-2.5">
             <img
               src={cvedgeLogo}
-              alt="CVEdge Logo"
+              alt="CV Edge Logo"
               className="w-10 h-10 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20"
             />
-            <span className="font-bold text-lg tracking-tight">CVEdge</span>
+            <span className="font-bold text-lg tracking-tight">CV Edge</span>
           </div>
           <div className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
             <Link to="/services" className="hover:text-foreground transition-colors">
@@ -187,7 +187,7 @@ export default function LandingPage() {
       {/* Services */}
       <ServicesSection />
 
-      {/* Why CVEdge */}
+      {/* Why CV Edge */}
       <WhySection />
 
       {/* Stats */}
@@ -229,7 +229,7 @@ export default function LandingPage() {
               Ready to Get the <span className="text-gradient">Edge</span>?
             </h2>
             <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
-              Join thousands of professionals worldwide who trust CVEdge with their career documents.
+              Join thousands of professionals worldwide who trust CV Edge with their career documents.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link to="/order">
@@ -258,10 +258,10 @@ export default function LandingPage() {
               <div className="flex items-center gap-2.5 mb-3">
                 <img
                   src={cvedgeLogo}
-                  alt="CVEdge Logo"
+                  alt="CV Edge Logo"
                   className="w-9 h-9 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20"
                 />
-                <span className="font-bold">CVEdge</span>
+                <span className="font-bold">CV Edge</span>
               </div>
               <p className="text-xs text-muted-foreground mb-2">Your Career's Secret Weapon</p>
               <a
@@ -321,7 +321,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} CVEdge. All rights reserved.</p>
+            <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} CV Edge. All rights reserved.</p>
             <p className="text-xs text-muted-foreground">Professional career documents for Kenyan professionals.</p>
           </div>
         </div>

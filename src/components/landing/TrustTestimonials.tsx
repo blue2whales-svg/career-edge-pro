@@ -14,13 +14,13 @@ const TESTIMONIALS = [
     name: "James M.",
     title: "Software Engineer",
     country: "Dubai 🇦🇪",
-    text: "Got my dream job in 3 days after submitting the CVEdge CV. The Dubai format was spot-on — recruiters said it was the most professional they'd seen.",
+    text: "Got my dream job in 3 days after submitting the CV Edge CV. The Dubai format was spot-on — recruiters said it was the most professional they'd seen.",
   },
   {
     name: "Aisha K.",
     title: "Registered Nurse",
     country: "United Kingdom 🇬🇧",
-    text: "My CV passed every ATS filter! I'd been rejected 12 times before CVEdge. Within a week of using their CV, I had 3 interview invites from NHS trusts.",
+    text: "My CV passed every ATS filter! I'd been rejected 12 times before CV Edge. Within a week of using their CV, I had 3 interview invites from NHS trusts.",
   },
   {
     name: "Brian O.",
@@ -32,13 +32,13 @@ const TESTIMONIALS = [
     name: "Grace W.",
     title: "Marketing Director",
     country: "Canada 🇨🇦",
-    text: "The cover letter was so persuasive, I got a callback within hours. CVEdge understood the Canadian market perfectly and tailored every detail.",
+    text: "The cover letter was so persuasive, I got a callback within hours. CV Edge understood the Canadian market perfectly and tailored every detail.",
   },
   {
     name: "Ahmed H.",
     title: "Civil Engineer",
     country: "Qatar 🇶🇦",
-    text: "I needed a Gulf-standard CV for my Qatar application and CVEdge delivered in under 3 hours. Landed the role at a tier-1 construction firm.",
+    text: "I needed a Gulf-standard CV for my Qatar application and CV Edge delivered in under 3 hours. Landed the role at a tier-1 construction firm.",
   },
   {
     name: "Linda N.",

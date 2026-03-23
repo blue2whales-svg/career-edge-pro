@@ -39,11 +39,11 @@ export default function ProPage() {
 
           <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={1}
             className="text-4xl sm:text-6xl font-serif font-bold mb-5">
-            CVEdge <span className="text-gradient">Pro</span>
+            CV Edge <span className="text-gradient">Pro</span>
           </motion.h1>
           <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={2}
             className="text-muted-foreground max-w-lg mx-auto mb-10">
-            Unlock unlimited access to all CVEdge tools. Build, scan, and optimize without limits.
+            Unlock unlimited access to all CV Edge tools. Build, scan, and optimize without limits.
           </motion.p>
 
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={3}
@@ -54,7 +54,7 @@ export default function ProPage() {
             }}>
             <div className="flex items-center justify-center gap-2 mb-2">
               <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
-              <span className="font-bold text-lg">CVEdge Pro</span>
+              <span className="font-bold text-lg">CV Edge Pro</span>
             </div>
             <div className="flex items-baseline justify-center gap-1 mb-6">
               <span className="text-4xl font-bold text-primary">KSh 2,000</span>

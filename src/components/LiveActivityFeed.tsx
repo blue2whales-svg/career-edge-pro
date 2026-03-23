@@ -83,7 +83,7 @@ export function LiveActivityFeed({ variant = "landing" }: LiveActivityFeedProps)
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
             <span className="text-muted-foreground font-mono">
-              {onlineCount.toLocaleString()} viewing CVEdge
+              {onlineCount.toLocaleString()} viewing CV Edge
             </span>
           </div>
           <AnimatePresence mode="wait">

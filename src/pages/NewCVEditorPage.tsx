@@ -506,7 +506,7 @@ export default function NewCVEditorPage() {
       <div className="relative">
         <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center">
           <span className="text-[40px] font-bold tracking-[0.2em] whitespace-nowrap select-none" style={{ transform: "rotate(-38deg)", color: "rgba(201,168,76,0.06)" }}>
-            CVEdge Preview
+            CV Edge Preview
           </span>
         </div>
         <CVPreviewRender cv={cv} colorIdx={colorIdx} templateId={templateId} />

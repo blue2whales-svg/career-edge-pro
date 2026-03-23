@@ -84,7 +84,7 @@ export function SamplePreviewModal({ item, onClose }: SamplePreviewModalProps) {
                 className="text-primary/[0.06] text-6xl sm:text-8xl font-serif font-bold whitespace-nowrap"
                 style={{ transform: "rotate(-25deg)" }}
               >
-                CVEdge Preview
+                CV Edge Preview
               </span>
             </div>
 

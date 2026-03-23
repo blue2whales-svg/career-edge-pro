@@ -25,7 +25,7 @@ export function WhySection() {
           initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
           className="text-primary font-mono text-sm text-center mb-3 tracking-wider uppercase"
         >
-          Why CVEdge
+          Why CV Edge
         </motion.p>
         <motion.h2
           initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}
