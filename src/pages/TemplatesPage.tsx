@@ -4702,14 +4702,28 @@ export default function TemplatesPage() {
               className="bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer h-12 px-8 text-base"
             >
               Build My CV
-            </Button>
-            <Button
-              variant="outline"
-              className="border-primary/40 text-primary hover:bg-primary/10 h-12 px-8 text-base font-semibold"
-              onClick={() => navigate("/order")}
-            >
-              Upload My CV
-            </Button>
+            <>
+  <input
+    type="file"
+    id="cv-upload"
+    accept=".pdf,.docx"
+    style={{ display: 'none' }}
+    onChange={(e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      sessionStorage.setItem('uploadedCVName', file.name);
+      // We'll add Claude parsing here in the next step
+      alert(`CV received: ${file.name} ✓`);
+    }}
+  />
+  <Button
+    variant="outline"
+    className="border-primary/40 text-primary hover:bg-primary/10 h-12 px-8"
+    onClick={() => document.getElementById('cv-upload')?.click()}
+  >
+    Upload My CV
+  </Button>
+</>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
             {[
