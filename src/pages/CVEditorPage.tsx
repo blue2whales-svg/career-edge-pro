@@ -1,9 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Trash2, Download, ArrowLeft, CheckCircle2, Target, TrendingUp, AlertCircle } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Download,
+  ArrowLeft,
+  CheckCircle2,
+  Target,
+  TrendingUp,
+  AlertCircle,
+  Loader2,
+} from "lucide-react";
 import { TEMPLATES } from "./TemplatesPage";
 import MpesaPaymentModal from "@/components/MpesaPaymentModal";
 
@@ -1827,8 +1837,7 @@ function PreviewATSExecutive({ cv }: { cv: CVData }) {
   );
 }
 
-// ─── MASTER PREVIEW ROUTER ───────────────────────────────────────────────────
-// Replaces the old static PREVIEWS map — now accepts accent color from URL param
+// ─── MASTER PREVIEW ROUTER ────────────────────────────────────────────────────
 function getPreview(templateId: string, cv: CVData, accent: string): JSX.Element {
   const id = templateId ?? "classic";
   if (id === "ats-pro" || id === "ats-stealth") return <PreviewATSPro cv={cv} />;
@@ -1846,7 +1855,7 @@ function getPreview(templateId: string, cv: CVData, accent: string): JSX.Element
   return <PreviewTraditional cv={cv} />;
 }
 
-// ─── TEMPLATE PRICING ────────────────────────────────────────────────────────
+// ─── TEMPLATE PRICING ─────────────────────────────────────────────────────────
 function getTemplatePrice(templateId: string): { label: string; amount: number } {
   if (templateId.startsWith("ats")) return { label: "KES 1,490", amount: 1490 };
   if (templateId.startsWith("executive")) return { label: "KES 2,500", amount: 2500 };
@@ -1862,18 +1871,43 @@ function getTemplatePrice(templateId: string): { label: string; amount: number }
   return { label: "KES 1,400", amount: 1400 };
 }
 
-// ─── MAIN EDITOR ─────────────────────────────────────────────────────────────
+// ─── BLUR OVERLAY ─────────────────────────────────────────────────────────────
+const BlurOverlay = () => (
+  <div
+    style={{
+      position: "sticky",
+      bottom: 0,
+      left: 0,
+      right: 0,
+      height: "45%",
+      background: "linear-gradient(to bottom, transparent, rgba(0,0,0,0.75))",
+      backdropFilter: "blur(4px)",
+      WebkitBackdropFilter: "blur(4px)",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 8,
+      pointerEvents: "none",
+    }}
+  >
+    <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>🔒 Download to see full CV</div>
+    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>Professional format · PDF & DOCX</div>
+  </div>
+);
+
+// ─── MAIN EDITOR ──────────────────────────────────────────────────────────────
 export default function CVEditorPage() {
   const { templateId } = useParams<{ templateId: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const previewRef = useRef<HTMLDivElement>(null);
 
-  // ── FIX 1: Read accent color from URL ?color= param sent by Templates.tsx ──
   const accentFromUrl = searchParams.get("color") ?? "";
   const fallbackAccent = TEMPLATES.find((t) => t.id === templateId)?.colors[0] ?? "#c9a84c";
   const accent = accentFromUrl || fallbackAccent;
 
-  // ── FIX 2: Reset CV data whenever templateId changes (useState only runs once) ──
+  // ── Load parsed CV from sessionStorage if available ──
   const [cv, setCv] = useState<CVData>(() => {
     const saved = sessionStorage.getItem("parsedCVProfile");
     if (saved) {
@@ -1899,14 +1933,7 @@ export default function CVEditorPage() {
             ]
           : buildCVFromTemplate(templateId ?? "classic").experiences,
         educations: p.education
-          ? [
-              {
-                degree: p.education,
-                school: "",
-                year: "",
-                grade: "",
-              },
-            ]
+          ? [{ degree: p.education, school: "", year: "", grade: "" }]
           : buildCVFromTemplate(templateId ?? "classic").educations,
         skills: p.skills ?? "",
         languages: p.languages ?? "",
@@ -1921,8 +1948,52 @@ export default function CVEditorPage() {
     if (!saved) setCv(buildCVFromTemplate(templateId ?? "classic"));
   }, [templateId]);
 
+  // ── Payment state ──
   const [showMpesa, setShowMpesa] = useState(false);
+  const [hasPaid, setHasPaid] = useState(() => sessionStorage.getItem("cvedge_payment_verified") === "true");
+  const [isGenerating, setIsGenerating] = useState(false);
   const templatePrice = getTemplatePrice(templateId ?? "classic");
+
+  // ── PDF download using html2canvas + jsPDF ──
+  const handleDownload = async () => {
+    if (!previewRef.current) return;
+    setIsGenerating(true);
+    try {
+      const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+        import("html2canvas"),
+        import("jspdf"),
+      ]);
+      const canvas = await html2canvas(previewRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      const fileName = `${cv.name.replace(/\s+/g, "_") || "CV"}_${templateId ?? "cv"}.pdf`;
+      pdf.save(fileName);
+      // Clear payment token after single use download
+      sessionStorage.removeItem("cvedge_payment_verified");
+      sessionStorage.removeItem("cvedge_payment_token");
+      setHasPaid(false);
+    } catch (err) {
+      console.error("PDF generation error:", err);
+      alert("Could not generate PDF. Please try again.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  // ── Called by MpesaPaymentModal after real payment confirmed ──
+  const onPaymentSuccess = () => {
+    setHasPaid(true);
+    // Auto-trigger download after modal closes
+    setTimeout(() => handleDownload(), 800);
+  };
 
   const update = (field: keyof CVData, value: string) => setCv((prev) => ({ ...prev, [field]: value }));
   const updateExp = (i: number, field: keyof Experience, value: string) => {
@@ -1952,7 +2023,12 @@ export default function CVEditorPage() {
 
   return (
     <>
-      <MpesaPaymentModal open={showMpesa} onClose={() => setShowMpesa(false)} defaultPackage="starter" />
+      <MpesaPaymentModal
+        open={showMpesa}
+        onClose={() => setShowMpesa(false)}
+        defaultPackage="starter"
+        onPaymentSuccess={onPaymentSuccess}
+      />
       <div className="cv-editor-root">
         <div className="container max-w-7xl mx-auto">
           <div className="flex items-center gap-4 mb-6">
@@ -1965,7 +2041,7 @@ export default function CVEditorPage() {
             <h1 className="text-xl font-bold">{templateLabel} Template Editor</h1>
           </div>
           <div className="grid lg:grid-cols-2 gap-8">
-            {/* Left: form */}
+            {/* ── Left: form ── */}
             <div className="space-y-6 max-h-[85vh] overflow-y-auto pr-2">
               <div className="rounded-xl border border-border bg-card p-5">
                 <h2 className="font-bold text-base mb-4">Personal Details</h2>
@@ -2147,41 +2223,41 @@ export default function CVEditorPage() {
                   style={{ maxHeight: "60vh", overflowY: "auto" }}
                 >
                   {preview}
-                  <div
-                    style={{
-                      position: "sticky",
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      height: "45%",
-                      background: "linear-gradient(to bottom, transparent, rgba(0,0,0,0.7))",
-                      backdropFilter: "blur(4px)",
-                      WebkitBackdropFilter: "blur(4px)",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                      pointerEvents: "none",
-                    }}
-                  >
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>🔒 Download to see full CV</div>
-                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>Professional format · PDF & DOCX</div>
-                  </div>
+                  <BlurOverlay />
                 </div>
               </div>
 
+              {/* ── DOWNLOAD BUTTON — payment gated ── */}
               <div className="flex gap-3 pb-6">
                 <Button
-                  onClick={() => setShowMpesa(true)}
+                  onClick={() => {
+                    if (hasPaid) {
+                      handleDownload();
+                    } else {
+                      setShowMpesa(true);
+                    }
+                  }}
+                  disabled={isGenerating}
                   className="flex-1 bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer h-12 text-base"
                 >
-                  <Download className="mr-2 h-4 w-4" /> Download CV — {templatePrice.label}
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating PDF...
+                    </>
+                  ) : hasPaid ? (
+                    <>
+                      <Download className="mr-2 h-4 w-4" /> Download Your CV
+                    </>
+                  ) : (
+                    <>
+                      <Download className="mr-2 h-4 w-4" /> Download CV — {templatePrice.label}
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
 
-            {/* Desktop sticky preview */}
+            {/* ── Desktop sticky preview ── */}
             <div className="hidden lg:block sticky top-24">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-semibold text-muted-foreground">Live Preview</span>
@@ -2193,30 +2269,12 @@ export default function CVEditorPage() {
                 className="relative rounded-xl border border-border overflow-hidden shadow-lg"
                 style={{ maxHeight: "80vh", overflowY: "auto" }}
               >
-                {preview}
-
-                {/* Blur overlay on bottom half */}
-                <div
-                  style={{
-                    position: "sticky",
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    height: "45%",
-                    background: "linear-gradient(to bottom, transparent, rgba(0,0,0,0.7))",
-                    backdropFilter: "blur(4px)",
-                    WebkitBackdropFilter: "blur(4px)",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                    pointerEvents: "none",
-                  }}
-                >
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>🔒 Download to see full CV</div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>Professional format · PDF & DOCX</div>
+                {/* Hidden full-resolution div used for PDF generation */}
+                <div ref={previewRef} style={{ position: "absolute", left: "-9999px", top: 0, width: 794 }}>
+                  {getPreview(templateId ?? "classic", cv, accent)}
                 </div>
+                {preview}
+                <BlurOverlay />
               </div>
             </div>
           </div>
