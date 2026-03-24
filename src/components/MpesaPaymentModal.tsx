@@ -115,9 +115,10 @@ interface MpesaPaymentModalProps {
   open: boolean;
   onClose: () => void;
   defaultPackage?: string;
+  onPaymentSuccess?: () => void;
 }
 
-export default function MpesaPaymentModal({ open, onClose, defaultPackage = "professional" }: MpesaPaymentModalProps) {
+export default function MpesaPaymentModal({ open, onClose, defaultPackage = "professional", onPaymentSuccess }: MpesaPaymentModalProps) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -167,6 +168,7 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
           }
           setTimelineStage("confirmed");
           setStep("success");
+          onPaymentSuccess?.();
         } else if (row?.status === "failed" || row?.status === "payment_failed") {
           clearInterval(pollRef.current!);
           clearTimeout(timeoutRef.current!);
