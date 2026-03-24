@@ -930,16 +930,23 @@ export default function OrderPage() {
                       )}
                     </div>
                     <div>
-                      <div className="flex gap-2">
-                        <div
-                          className={cn(
-                            "rounded-lg border bg-card px-3 flex items-center text-sm text-muted-foreground shrink-0 transition-all",
-                            validationErrors.phone ? "border-destructive" : "border-border",
-                          )}
-                        >
-                          +254
-                        </div>
-                        <Input
+                      <div>
+  <div className="flex gap-2">
+    <Input
+      ref={phoneRef}
+      placeholder="M-Pesa number *"
+      value={phone}
+      onChange={(e) => {
+        setPhone(e.target.value);
+        setValidationErrors((prev) => ({ ...prev, phone: false }));
+      }}
+      className={cn(
+        "h-12 bg-card border-border transition-all",
+        validationErrors.phone &&
+          "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
+      )}
+    />
+  </div>
                           ref={phoneRef}
                           placeholder="M-Pesa number *"
                           value={phone}
