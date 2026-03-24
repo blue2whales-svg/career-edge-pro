@@ -409,12 +409,23 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                   <PaymentTimeline stage={timelineStage} />
                 </div>
 
-                <div className="flex items-center justify-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: "0.3s" }} />
-                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: "0.6s" }} />
-                  <span className="text-sm text-muted-foreground ml-2">Waiting for confirmation...</span>
-                </div>
+                {retryCountdown > 0 ? (
+                  <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-3 text-center">
+                    <p className="text-sm font-medium text-amber-400">
+                      M-Pesa busy — Retrying in {retryCountdown}s… (Attempt {retryAttempt}/{maxRetries})
+                    </p>
+                    <div className="w-full bg-muted rounded-full h-1.5 mt-2">
+                      <div className="bg-amber-500 h-1.5 rounded-full transition-all duration-1000" style={{ width: `${(retryCountdown / 15) * 100}%` }} />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: "0.3s" }} />
+                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: "0.6s" }} />
+                    <span className="text-sm text-muted-foreground ml-2">Waiting for confirmation...</span>
+                  </div>
+                )}
 
                 <div className="border-t border-border pt-4 mt-4">
                   <p className="text-xs text-muted-foreground mb-3">Or pay manually via Paybill:</p>
