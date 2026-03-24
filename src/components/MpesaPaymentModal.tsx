@@ -115,9 +115,10 @@ interface MpesaPaymentModalProps {
   open: boolean;
   onClose: () => void;
   defaultPackage?: string;
+  onPaymentSuccess?: () => void;
 }
 
-export default function MpesaPaymentModal({ open, onClose, defaultPackage = "professional" }: MpesaPaymentModalProps) {
+export default function MpesaPaymentModal({ open, onClose, defaultPackage = "professional", onPaymentSuccess }: MpesaPaymentModalProps) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
