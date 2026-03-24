@@ -145,6 +145,8 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
       setLoading(false);
       setSelectedPackage(defaultPackage);
       setTimelineStage("initiated");
+      setRetryCountdown(0);
+      setRetryAttempt(0);
     }
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
