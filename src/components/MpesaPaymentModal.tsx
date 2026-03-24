@@ -168,6 +168,7 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
           }
           setTimelineStage("confirmed");
           setStep("success");
+          onPaymentSuccess?.();
         } else if (row?.status === "failed" || row?.status === "payment_failed") {
           clearInterval(pollRef.current!);
           clearTimeout(timeoutRef.current!);
