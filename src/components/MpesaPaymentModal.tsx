@@ -194,6 +194,88 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
     }, 120000);
   };
 
+  const isBusyError = (data: any): boolean => {
+    const code = String(data?.errorCode || data?.ResponseCode || "");
+    const msg = String(data?.errorMessage || data?.ResponseDescription || "").toLowerCase();
+    return code.includes("500.003") || msg.includes("busy") || code.includes("busy");
+  };
+
+  const fireStkPush = async (formattedPhone: string, generatedOrderId: string) => {
+    const STK_URL = `https://wspugvdwodqdlyamxzxj.supabase.co/functions/v1/mpesa-stk-push`;
+    const res = await fetch(STK_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+      },
+      body: JSON.stringify({
+        phone: formattedPhone,
+        amount: pkg.amount,
+        packageName: pkg.label,
+        orderId: generatedOrderId,
+        fullName: fullName.trim(),
+        email: email.trim(),
+      }),
+    });
+    return await res.json();
+  };
+
+  const startRetryCountdown = (formattedPhone: string, generatedOrderId: string, attempt: number) => {
+    let seconds = 15;
+    setRetryCountdown(seconds);
+    setRetryAttempt(attempt);
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    countdownRef.current = setInterval(() => {
+      seconds -= 1;
+      setRetryCountdown(seconds);
+      if (seconds <= 0) {
+        if (countdownRef.current) clearInterval(countdownRef.current);
+        attemptStkPush(formattedPhone, generatedOrderId, attempt);
+      }
+    }, 1000);
+  };
+
+  const attemptStkPush = async (formattedPhone: string, generatedOrderId: string, attempt: number) => {
+    try {
+      const data = await fireStkPush(formattedPhone, generatedOrderId);
+
+      if (data?.ResponseCode === "0") {
+        setCheckoutRequestId(data.CheckoutRequestID || "");
+        setTimelineStage("prompt_sent");
+        setRetryCountdown(0);
+        setRetryAttempt(0);
+        toast.success("Check your phone for the M-Pesa prompt 📱");
+        setTimeout(() => setTimelineStage("waiting_pin"), 3000);
+        if (data.CheckoutRequestID) startPolling(data.CheckoutRequestID);
+        return;
+      }
+
+      if (isBusyError(data) && attempt < maxRetries) {
+        toast.error(`M-Pesa busy — retrying (${attempt}/${maxRetries})...`);
+        startRetryCountdown(formattedPhone, generatedOrderId, attempt + 1);
+        return;
+      }
+
+      // All retries exhausted or non-busy error
+      console.error("STK push failed:", data);
+      setTimelineStage("failed");
+      setStep("failed");
+      setRetryCountdown(0);
+      toast.error("M-Pesa prompt failed. Please pay manually using Paybill below.");
+    } catch (err) {
+      console.error("Payment error:", err);
+      if (attempt < maxRetries) {
+        toast.error(`Connection error — retrying (${attempt}/${maxRetries})...`);
+        startRetryCountdown(formattedPhone, generatedOrderId, attempt + 1);
+        return;
+      }
+      setTimelineStage("failed");
+      setStep("failed");
+      setRetryCountdown(0);
+      toast.error("Could not reach payment service. Use Paybill below.");
+    }
+  };
+
   const handleSubmit = async () => {
     if (!fullName.trim() || !email.trim() || !phone.trim()) {
       toast.error("Please fill in all required fields");
@@ -207,59 +289,15 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
     }
 
     setLoading(true);
-    setTimelineStage("initiated");
+    setRetryAttempt(0);
+    setRetryCountdown(0);
     const generatedOrderId = "CVE-" + Date.now();
     setOrderId(generatedOrderId);
+    setStep("waiting");
+    setTimelineStage("initiated");
 
-    try {
-      const STK_URL = `https://wspugvdwodqdlyamxzxj.supabase.co/functions/v1/mpesa-stk-push`;
-
-      setStep("waiting");
-      setTimelineStage("initiated");
-
-      const res = await fetch(STK_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({
-          phone: formattedPhone,
-          amount: pkg.amount,
-          packageName: pkg.label,
-          orderId: generatedOrderId,
-          fullName: fullName.trim(),
-          email: email.trim(),
-        }),
-      });
-
-      const data = await res.json();
-
-      if (data?.ResponseCode === "0") {
-        setCheckoutRequestId(data.CheckoutRequestID || "");
-        setTimelineStage("prompt_sent");
-        toast.success("Check your phone for the M-Pesa prompt 📱");
-
-        // Move to waiting_pin after a short delay
-        setTimeout(() => setTimelineStage("waiting_pin"), 3000);
-
-        if (data.CheckoutRequestID) {
-          startPolling(data.CheckoutRequestID);
-        }
-      } else {
-        console.error("STK push failed:", data);
-        setTimelineStage("failed");
-        setStep("failed");
-        toast.error("M-Pesa prompt failed. Please pay manually using Paybill below.");
-      }
-    } catch (err) {
-      console.error("Payment error:", err);
-      setTimelineStage("failed");
-      setStep("failed");
-      toast.error("Could not reach payment service. Use Paybill below.");
-    } finally {
-      setLoading(false);
-    }
+    await attemptStkPush(formattedPhone, generatedOrderId, 1);
+    setLoading(false);
   };
 
   const handleClose = () => {
