@@ -1,6 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Lock, Smartphone, Phone, CheckCircle, AlertTriangle, Loader2, MessageCircle, Circle, Send, Clock, ShieldCheck, Users } from "lucide-react";
+import {
+  X,
+  Lock,
+  Smartphone,
+  Phone,
+  CheckCircle,
+  AlertTriangle,
+  Loader2,
+  MessageCircle,
+  Circle,
+  Send,
+  Clock,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -58,9 +72,10 @@ function TimelineIcon({ active, done, failed }: { active: boolean; done: boolean
 }
 
 function PaymentTimeline({ stage }: { stage: TimelineStage }) {
-  const stageIndex = stage === "failed"
-    ? TIMELINE_STEPS.findIndex(s => s.key === "waiting_pin")
-    : TIMELINE_STEPS.findIndex(s => s.key === stage);
+  const stageIndex =
+    stage === "failed"
+      ? TIMELINE_STEPS.findIndex((s) => s.key === "waiting_pin")
+      : TIMELINE_STEPS.findIndex((s) => s.key === stage);
 
   return (
     <div className="flex flex-col gap-0 text-left">
@@ -77,7 +92,9 @@ function PaymentTimeline({ stage }: { stage: TimelineStage }) {
                 <div className={`w-px h-5 ${isDone ? "bg-primary/60" : "bg-muted-foreground/20"}`} />
               )}
             </div>
-            <span className={`text-xs leading-4 pb-1 ${isDone ? "text-foreground font-medium" : isActive ? "text-foreground font-medium" : isFailed ? "text-destructive font-medium" : "text-muted-foreground"}`}>
+            <span
+              className={`text-xs leading-4 pb-1 ${isDone ? "text-foreground font-medium" : isActive ? "text-foreground font-medium" : isFailed ? "text-destructive font-medium" : "text-muted-foreground"}`}
+            >
               {isFailed ? "Payment failed or timed out" : step.label}
             </span>
           </div>
@@ -90,7 +107,9 @@ function PaymentTimeline({ stage }: { stage: TimelineStage }) {
 function PaybillCard({ orderId, amount }: { orderId: string; amount: number }) {
   return (
     <div className="rounded-xl border border-border bg-muted/30 p-4 text-left space-y-2 text-sm">
-      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Pay via Lipa na M-Pesa</p>
+      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+        Pay via Lipa na M-Pesa
+      </p>
       <div className="flex justify-between">
         <span className="text-muted-foreground">1. Go to</span>
         <span className="font-medium">M-Pesa → Pay Bill</span>
@@ -118,7 +137,12 @@ interface MpesaPaymentModalProps {
   onPaymentSuccess?: () => void;
 }
 
-export default function MpesaPaymentModal({ open, onClose, defaultPackage = "professional", onPaymentSuccess }: MpesaPaymentModalProps) {
+export default function MpesaPaymentModal({
+  open,
+  onClose,
+  defaultPackage = "professional",
+  onPaymentSuccess,
+}: MpesaPaymentModalProps) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -137,7 +161,7 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const pkg = PACKAGES.find(p => p.value === selectedPackage) || PACKAGES[1];
+  const pkg = PACKAGES.find((p) => p.value === selectedPackage) || PACKAGES[1];
 
   useEffect(() => {
     if (open) {
@@ -206,7 +230,7 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndzcHVndmR3b2RxZGx5YW14enhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzODE5OTQsImV4cCI6MjA4ODk1Nzk5NH0.nW2OFx1oZKzjU5G0SRoQLvdaLi9wQKb3h6zDuGDQbwU`,
+        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndzcHVndmR3b2RxZGx5YW14enhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzODE5OTQsImV4cCI6MjA4ODk1Nzk5NH0.nW2OFx1oZKzjU5G0SRoQLvdaLi9wQKb3h6zDuGDQbwU`,
       },
       body: JSON.stringify({
         phone: formattedPhone,
@@ -325,7 +349,10 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
             className="w-full max-w-[460px] rounded-2xl border border-border bg-card p-6 relative max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <button onClick={handleClose} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
+            <button
+              onClick={handleClose}
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+            >
               <X className="w-5 h-5" />
             </button>
 
@@ -338,15 +365,31 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                 <div className="space-y-4">
                   <div>
                     <Label className="text-sm">Full Name *</Label>
-                    <Input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="John Doe" className="mt-1" />
+                    <Input
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="John Doe"
+                      className="mt-1"
+                    />
                   </div>
                   <div>
                     <Label className="text-sm">Email Address *</Label>
-                    <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="john@example.com" className="mt-1" />
+                    <Input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="john@example.com"
+                      className="mt-1"
+                    />
                   </div>
                   <div>
                     <Label className="text-sm">M-Pesa Phone Number *</Label>
-                    <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="0712 345 678" className="mt-1" />
+                    <Input
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="0712 345 678"
+                      className="mt-1"
+                    />
                     <p className="text-xs text-muted-foreground mt-1">Kenyan number (07XX or 01XX)</p>
                   </div>
                   <div>
@@ -357,7 +400,9 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                       </SelectTrigger>
                       <SelectContent>
                         {PACKAGES.map((p) => (
-                          <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
+                          <SelectItem key={p.value} value={p.value}>
+                            {p.label}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -369,7 +414,9 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                     className="w-full h-12 font-bold text-base border-0 bg-gradient-brand gold-shimmer"
                   >
                     {loading ? (
-                      <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processing...</>
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processing...
+                      </>
                     ) : (
                       `Pay KES ${pkg.amount.toLocaleString()} via M-Pesa →`
                     )}
@@ -380,9 +427,15 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                     <span>Secured by Safaricom M-Pesa</span>
                   </div>
                   <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1"><Lock className="h-3 w-3 text-primary" /> Secure M-Pesa</span>
-                    <span className="flex items-center gap-1"><ShieldCheck className="h-3 w-3 text-primary" /> SSL Protected</span>
-                    <span className="flex items-center gap-1"><Users className="h-3 w-3 text-primary" /> 2,400+ Clients</span>
+                    <span className="flex items-center gap-1">
+                      <Lock className="h-3 w-3 text-primary" /> Secure M-Pesa
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <ShieldCheck className="h-3 w-3 text-primary" /> SSL Protected
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Users className="h-3 w-3 text-primary" /> 2,400+ Clients
+                    </span>
                   </div>
                   <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground">
                     <span>Paybill: {PAYBILL}</span>
@@ -415,14 +468,23 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                       M-Pesa busy — Retrying in {retryCountdown}s… (Attempt {retryAttempt}/{maxRetries})
                     </p>
                     <div className="w-full bg-muted rounded-full h-1.5 mt-2">
-                      <div className="bg-amber-500 h-1.5 rounded-full transition-all duration-1000" style={{ width: `${(retryCountdown / 15) * 100}%` }} />
+                      <div
+                        className="bg-amber-500 h-1.5 rounded-full transition-all duration-1000"
+                        style={{ width: `${(retryCountdown / 15) * 100}%` }}
+                      />
                     </div>
                   </div>
                 ) : (
                   <div className="flex items-center justify-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: "0.3s" }} />
-                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: "0.6s" }} />
+                    <span
+                      className="w-2 h-2 rounded-full bg-primary animate-pulse"
+                      style={{ animationDelay: "0.3s" }}
+                    />
+                    <span
+                      className="w-2 h-2 rounded-full bg-primary animate-pulse"
+                      style={{ animationDelay: "0.6s" }}
+                    />
                     <span className="text-sm text-muted-foreground ml-2">Waiting for confirmation...</span>
                   </div>
                 )}
@@ -436,7 +498,11 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                       variant="outline"
                       onClick={async () => {
                         if (!orderId) return;
-                        const { data } = await supabase.from("orders").select("status, mpesa_receipt").eq("id", orderId).maybeSingle();
+                        const { data } = await supabase
+                          .from("orders")
+                          .select("status, mpesa_receipt")
+                          .eq("id", orderId)
+                          .maybeSingle();
                         if (data?.status === "paid") {
                           setTimelineStage("confirmed");
                           setStep("success");
@@ -477,7 +543,9 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                     ✅ KES {(confirmedAmount || pkg.amount).toLocaleString()} received
                   </p>
                   {mpesaCode && (
-                    <p className="text-xs text-muted-foreground mt-1">M-Pesa Code: <strong>{mpesaCode}</strong></p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      M-Pesa Code: <strong>{mpesaCode}</strong>
+                    </p>
                   )}
                   <p className="text-sm text-muted-foreground mt-2">Welcome, {fullName.split(" ")[0]}!</p>
                 </div>
@@ -488,7 +556,10 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                 </div>
 
                 <Button
-                  onClick={() => { handleClose(); window.location.href = "/cv-builder"; }}
+                  onClick={() => {
+                    handleClose();
+                    window.location.href = "/cv-builder";
+                  }}
                   className="w-full h-12 font-bold border-0 bg-gradient-brand gold-shimmer"
                 >
                   🚀 Start Building My CV →
@@ -519,7 +590,11 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                     variant="outline"
                     onClick={async () => {
                       if (!orderId) return;
-                      const { data } = await supabase.from("orders").select("status, mpesa_receipt").eq("id", orderId).maybeSingle();
+                      const { data } = await supabase
+                        .from("orders")
+                        .select("status, mpesa_receipt")
+                        .eq("id", orderId)
+                        .maybeSingle();
                       if (data?.status === "paid") {
                         setTimelineStage("confirmed");
                         setStep("success");
@@ -536,7 +611,10 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={() => { setStep("form"); setTimelineStage("initiated"); }}
+                    onClick={() => {
+                      setStep("form");
+                      setTimelineStage("initiated");
+                    }}
                     className="w-full text-sm"
                   >
                     Try Again
