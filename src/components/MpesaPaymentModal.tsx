@@ -130,8 +130,12 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
   const [checkoutRequestId, setCheckoutRequestId] = useState("");
   const [mpesaCode, setMpesaCode] = useState("");
   const [confirmedAmount, setConfirmedAmount] = useState(0);
+  const [retryCountdown, setRetryCountdown] = useState(0);
+  const [retryAttempt, setRetryAttempt] = useState(0);
+  const [maxRetries] = useState(3);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const pkg = PACKAGES.find(p => p.value === selectedPackage) || PACKAGES[1];
 
