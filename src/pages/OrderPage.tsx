@@ -174,6 +174,9 @@ export default function OrderPage() {
   const [paymentError, setPaymentError] = useState<"credentials" | "network" | "generic" | null>(null);
   const [retryingPayment, setRetryingPayment] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({});
+  const [autoRetryCountdown, setAutoRetryCountdown] = useState(0);
+  const [autoRetryAttempt, setAutoRetryAttempt] = useState(0);
+  const maxAutoRetries = 3;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
