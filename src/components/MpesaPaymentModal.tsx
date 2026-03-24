@@ -205,7 +205,7 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
     setOrderId(generatedOrderId);
 
     try {
-      const STK_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID || "jxuqpxzsbkkywieughgh"}.supabase.co/functions/v1/mpesa-stk-push`;
+      const STK_URL = `https://wspugvdwodqdlyamxzxj.supabase.co/functions/v1/mpesa-stk-push`;
 
       setStep("waiting");
       setTimelineStage("initiated");
