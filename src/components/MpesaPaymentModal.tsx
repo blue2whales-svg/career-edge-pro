@@ -151,6 +151,7 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (countdownRef.current) clearInterval(countdownRef.current);
     };
   }, [open, defaultPackage]);
 
