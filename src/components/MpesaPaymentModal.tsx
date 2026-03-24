@@ -434,10 +434,18 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                   <div className="flex flex-col gap-2 mt-4">
                     <Button
                       variant="outline"
-                      onClick={() => {
-                        setTimelineStage("confirmed");
-                        setStep("success");
-                        toast.success("Thank you! We'll verify your payment shortly.");
+                      onClick={async () => {
+                        if (!orderId) return;
+                        const { data } = await supabase.from("orders").select("status, mpesa_receipt").eq("id", orderId).maybeSingle();
+                        if (data?.status === "paid") {
+                          setTimelineStage("confirmed");
+                          setStep("success");
+                          if (data.mpesa_receipt) setMpesaCode(data.mpesa_receipt);
+                          onPaymentSuccess?.();
+                          toast.success("Payment confirmed! 🎉");
+                        } else {
+                          toast.error("Payment not yet received. Please complete your M-Pesa payment and try again.");
+                        }
                       }}
                       className="w-full text-sm gap-1.5"
                     >
@@ -509,10 +517,18 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                 <div className="flex flex-col gap-2">
                   <Button
                     variant="outline"
-                    onClick={() => {
-                      setTimelineStage("confirmed");
-                      setStep("success");
-                      toast.success("Thank you! We'll verify your payment shortly.");
+                    onClick={async () => {
+                      if (!orderId) return;
+                      const { data } = await supabase.from("orders").select("status, mpesa_receipt").eq("id", orderId).maybeSingle();
+                      if (data?.status === "paid") {
+                        setTimelineStage("confirmed");
+                        setStep("success");
+                        if (data.mpesa_receipt) setMpesaCode(data.mpesa_receipt);
+                        onPaymentSuccess?.();
+                        toast.success("Payment confirmed! 🎉");
+                      } else {
+                        toast.error("Payment not yet received. Please complete your M-Pesa payment and try again.");
+                      }
                     }}
                     className="w-full text-sm gap-1.5"
                   >
