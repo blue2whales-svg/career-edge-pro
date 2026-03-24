@@ -133,9 +133,11 @@ const SERVICES = [
     desc: "Expert feedback on your current CV — detailed critique with actionable improvements.",
   },
 ];
+
 function formatKES(amount: number) {
   return `KES ${amount.toLocaleString()}`;
 }
+
 function formatPhone(phone: string): string {
   const cleaned = phone.replace(/\D/g, "");
   if (cleaned.startsWith("254") && cleaned.length === 12) {
@@ -174,14 +176,10 @@ export default function OrderPage() {
   const [paymentError, setPaymentError] = useState<"credentials" | "network" | "generic" | null>(null);
   const [retryingPayment, setRetryingPayment] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({});
-  const [autoRetryCountdown, setAutoRetryCountdown] = useState(0);
-  const [autoRetryAttempt, setAutoRetryAttempt] = useState(0);
-  const maxAutoRetries = 3;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
-  const autoRetryTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -195,14 +193,12 @@ export default function OrderPage() {
     const singleService = searchParams.get("service");
     if (pkg && PACKAGE_MAP[pkg]) {
       setSelectedServices(PACKAGE_MAP[pkg].services);
-      // Auto-set 2 pages for international package
       if (pkg === "international") {
         setFormValues((prev) => ({ ...prev, cvPages: "2" }));
       }
     } else if (singleService) {
       setSelectedServices((prev) => (prev.includes(singleService) ? prev : [...prev, singleService]));
     }
-    // Pre-fill job title if coming from jobs board
     if (jobFromQuery) {
       setFormValues((prev) => ({ ...prev, jobTitle: jobFromQuery, targetCompany: companyFromQuery || "" }));
     }
@@ -213,7 +209,6 @@ export default function OrderPage() {
   };
 
   const subtotal = SERVICES.filter((s) => selectedServices.includes(s.id)).reduce((sum, s) => sum + s.price, 0);
-  // If coming from a package, use the package price; otherwise use subtotal
   const total = isPackageMode && packageParam ? PACKAGE_MAP[packageParam].price : subtotal;
 
   const handleFormChange = (key: string, value: string) => {
@@ -242,10 +237,7 @@ export default function OrderPage() {
       setPaymentConfirmed(true);
       toast({ title: "Payment confirmed! 🎉" });
     } else {
-      toast({
-        title: "Payment not yet received. Please complete your M-Pesa payment and try again.",
-        variant: "destructive",
-      });
+      toast({ title: "Payment not yet received. Please check your phone and try again.", variant: "destructive" });
     }
     setPaymentChecking(false);
   };
@@ -263,12 +255,10 @@ export default function OrderPage() {
 
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
-      // Scroll to first error
       if (errors.name) nameRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       else if (errors.email) emailRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       else if (errors.phone) phoneRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       toast({ title: "Please fill in all required fields", variant: "destructive" });
-      // Clear errors after animation
       setTimeout(() => setValidationErrors({}), 3000);
       return;
     }
@@ -281,7 +271,6 @@ export default function OrderPage() {
         data: { user },
       } = await supabase.auth.getUser();
 
-      // Combine all form values into details JSON
       const allDetails = JSON.stringify(formValues);
 
       const { data: order, error } = await supabase
@@ -316,104 +305,53 @@ export default function OrderPage() {
       setOrderId(order.id);
       setOrderPlaced(true);
 
-      // Auto-retry STK push helper
-      const isBusyError = (data: any): boolean => {
-        const code = String(data?.errorCode || data?.ResponseCode || "");
-        const msg = String(data?.errorMessage || data?.ResponseDescription || "").toLowerCase();
-        return code.includes("500.003") || msg.includes("busy") || code.includes("busy");
-      };
-
-      const fireStkPush = async () => {
+      // Trigger M-Pesa STK Push
+      try {
         const { data: stkData, error: stkError } = await supabase.functions.invoke("mpesa-stk-push", {
           body: {
-            orderId: order.id,
             phone: formatPhone(phone.trim()),
             amount: total,
-            packageName: isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", "),
-            fullName: name.trim(),
-            email: email.trim(),
+            accountReference: order.id.slice(0, 12).toUpperCase(),
+            transactionDesc: isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", "),
           },
         });
-        return { stkData, stkError };
-      };
 
-      const attemptStk = async (attempt: number) => {
-        try {
-          const { stkData, stkError } = await fireStkPush();
-
-          if (stkError) {
-            if (attempt < maxAutoRetries) {
-              toast({ title: `Connection error — retrying (${attempt}/${maxAutoRetries})…`, variant: "destructive" });
-              await countdownAndRetry(attempt + 1);
-              return;
-            }
-            setPaymentError("network");
-            toast({
-              title: "Could not reach the payment service. Use the manual M-Pesa option below.",
-              variant: "destructive",
-            });
-            return;
-          }
-
-          if (stkData?.ResponseCode === "0") {
-            setStkSent(true);
-            setPaymentError(null);
-            setAutoRetryCountdown(0);
-            setAutoRetryAttempt(0);
-            toast({ title: "Check your phone for the M-Pesa payment prompt 📱" });
-            return;
-          }
-
+        if (stkError) {
+          console.error("STK push error:", stkError);
+          setPaymentError("network");
+          toast({
+            title: "Could not reach the payment service. Use the manual M-Pesa option below.",
+            variant: "destructive",
+          });
+        } else if (stkData?.success === true) {
+          setStkSent(true);
+          setPaymentError(null);
+          toast({ title: "Check your phone for the M-Pesa payment prompt 📱" });
+        } else {
+          console.error("STK response:", stkData);
           const errorCode = stkData?.errorCode || "";
-          if (isBusyError(stkData) && attempt < maxAutoRetries) {
-            toast({ title: `M-Pesa busy — retrying (${attempt}/${maxAutoRetries})…`, variant: "destructive" });
-            await countdownAndRetry(attempt + 1);
-            return;
-          }
-
-          // Non-retryable or exhausted retries
           if (errorCode.includes("1001") || errorCode.includes("credentials")) {
             setPaymentError("credentials");
             toast({
               title: "Payment service configuration issue. Please pay manually via M-Pesa below.",
               variant: "destructive",
             });
-          } else if (isBusyError(stkData)) {
+          } else if (errorCode.includes("500.003") || errorCode.includes("busy")) {
             setPaymentError("network");
-            toast({ title: "M-Pesa is still busy after retries. Please pay manually below.", variant: "destructive" });
+            toast({
+              title: "M-Pesa is busy right now. Please retry in a moment or pay manually.",
+              variant: "destructive",
+            });
           } else {
             setPaymentError("generic");
             toast({ title: "M-Pesa request failed. Please try again or pay manually.", variant: "destructive" });
           }
-        } catch (err) {
-          if (attempt < maxAutoRetries) {
-            toast({ title: `Error — retrying (${attempt}/${maxAutoRetries})…`, variant: "destructive" });
-            await countdownAndRetry(attempt + 1);
-            return;
-          }
-          setPaymentError("network");
-          toast({ title: "Could not reach payment service. Try the manual option below.", variant: "destructive" });
         }
-      };
-
-      const countdownAndRetry = (nextAttempt: number): Promise<void> => {
-        return new Promise((resolve) => {
-          let seconds = 15;
-          setAutoRetryCountdown(seconds);
-          setAutoRetryAttempt(nextAttempt);
-          if (autoRetryTimerRef.current) clearInterval(autoRetryTimerRef.current);
-          autoRetryTimerRef.current = setInterval(() => {
-            seconds -= 1;
-            setAutoRetryCountdown(seconds);
-            if (seconds <= 0) {
-              if (autoRetryTimerRef.current) clearInterval(autoRetryTimerRef.current);
-              attemptStk(nextAttempt).then(resolve);
-            }
-          }, 1000);
-        });
-      };
-
-      await attemptStk(1);
+      } catch (stkErr) {
+        console.error("STK invoke error:", stkErr);
+        setPaymentError("network");
+        toast({ title: "Could not reach payment service. Try the manual option below.", variant: "destructive" });
+      }
 
       // Trigger Zapier webhook (background)
       supabase.functions.invoke("notify-zapier", { body: { order } }).catch(console.error);
@@ -500,22 +438,6 @@ export default function OrderPage() {
                   </p>
                   <p className="text-sm font-mono text-primary mb-6">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
 
-                  {/* Auto-retry countdown */}
-                  {autoRetryCountdown > 0 && (
-                    <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 text-center mb-6">
-                      <p className="text-sm font-medium text-amber-400">
-                        M-Pesa busy — Retrying in {autoRetryCountdown}s… (Attempt {autoRetryAttempt}/{maxAutoRetries})
-                      </p>
-                      <div className="w-full bg-muted rounded-full h-1.5 mt-2">
-                        <div
-                          className="bg-amber-500 h-1.5 rounded-full transition-all duration-1000"
-                          style={{ width: `${(autoRetryCountdown / 15) * 100}%` }}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Contextual error banner */}
                   {paymentError && (
                     <div
                       className={`rounded-xl border p-4 text-left mb-6 ${
@@ -560,19 +482,17 @@ export default function OrderPage() {
                                     "mpesa-stk-push",
                                     {
                                       body: {
-                                        orderId,
                                         phone: formatPhone(phone.trim()),
                                         amount: total,
-                                        packageName:
+                                        accountReference: orderId.slice(0, 12).toUpperCase(),
+                                        transactionDesc:
                                           isPackageMode && packageParam
                                             ? PACKAGE_MAP[packageParam].label
                                             : selectedServices.join(", "),
-                                        fullName: name.trim(),
-                                        email: email.trim(),
                                       },
                                     },
                                   );
-                                  if (!stkError && stkData?.ResponseCode === "0") {
+                                  if (!stkError && stkData?.success === true) {
                                     setStkSent(true);
                                     setPaymentError(null);
                                     toast({ title: "Check your phone for the M-Pesa prompt 📱" });
@@ -704,7 +624,6 @@ export default function OrderPage() {
           <div className="grid lg:grid-cols-5 gap-8">
             {/* Main Form */}
             <div className="lg:col-span-3">
-              {/* Job context banner */}
               {jobFromQuery && (
                 <motion.div
                   initial="hidden"
@@ -724,7 +643,6 @@ export default function OrderPage() {
                 </motion.div>
               )}
 
-              {/* Recommended bundle when coming from a job */}
               {jobFromQuery && (
                 <motion.div
                   initial="hidden"
@@ -769,7 +687,6 @@ export default function OrderPage() {
                 </motion.div>
               )}
 
-              {/* International Bundle Promo — only show when not in package mode */}
               {!isPackageMode && (
                 <motion.div
                   initial="hidden"
@@ -811,7 +728,6 @@ export default function OrderPage() {
               )}
 
               <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}>
-                {/* Package Mode: Show selected package summary instead of service list */}
                 {isPackageMode && packageParam ? (
                   <div className="mb-6">
                     <div className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-4 sm:p-5">
@@ -942,38 +858,20 @@ export default function OrderPage() {
                       )}
                     </div>
                     <div>
-                      <div>
-                        <div className="flex gap-2">
-                          <Input
-                            ref={phoneRef}
-                            placeholder="M-Pesa number *"
-                            value={phone}
-                            onChange={(e) => {
-                              setPhone(e.target.value);
-                              setValidationErrors((prev) => ({ ...prev, phone: false }));
-                            }}
-                            className={cn(
-                              "h-12 bg-card border-border transition-all",
-                              validationErrors.phone &&
-                                "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
-                            )}
-                          />
-                        </div>
-                        <Input
-                          ref={phoneRef}
-                          placeholder="M-Pesa number *"
-                          value={phone}
-                          onChange={(e) => {
-                            setPhone(e.target.value);
-                            setValidationErrors((prev) => ({ ...prev, phone: false }));
-                          }}
-                          className={cn(
-                            "h-12 bg-card border-border transition-all",
-                            validationErrors.phone &&
-                              "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
-                          )}
-                        />
-                      </div>
+                      <Input
+                        ref={phoneRef}
+                        placeholder="M-Pesa number *"
+                        value={phone}
+                        onChange={(e) => {
+                          setPhone(e.target.value);
+                          setValidationErrors((prev) => ({ ...prev, phone: false }));
+                        }}
+                        className={cn(
+                          "h-12 bg-card border-border transition-all",
+                          validationErrors.phone &&
+                            "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
+                        )}
+                      />
                       {validationErrors.phone && (
                         <p className="text-xs text-destructive mt-1 animate-pulse font-medium">
                           ⚠ M-Pesa number is required for payment
@@ -1181,7 +1079,6 @@ export default function OrderPage() {
           </Button>
         </div>
       </div>
-      {/* Spacer so content isn't hidden behind sticky bar on mobile */}
       <div className="h-20 lg:hidden" />
     </PageLayout>
   );
