@@ -181,6 +181,7 @@ export default function OrderPage() {
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
+  const autoRetryTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
