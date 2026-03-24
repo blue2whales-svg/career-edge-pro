@@ -242,7 +242,7 @@ export default function OrderPage() {
       setPaymentConfirmed(true);
       toast({ title: "Payment confirmed! 🎉" });
     } else {
-      toast({ title: "Payment not yet received. Please check your phone and try again.", variant: "destructive" });
+      toast({ title: "Payment not yet received. Please complete your M-Pesa payment and try again.", variant: "destructive" });
     }
     setPaymentChecking(false);
   };
