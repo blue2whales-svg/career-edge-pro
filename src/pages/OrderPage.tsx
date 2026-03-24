@@ -313,8 +313,14 @@ export default function OrderPage() {
       setOrderId(order.id);
       setOrderPlaced(true);
 
-      // Trigger M-Pesa STK Push
-      try {
+      // Auto-retry STK push helper
+      const isBusyError = (data: any): boolean => {
+        const code = String(data?.errorCode || data?.ResponseCode || "");
+        const msg = String(data?.errorMessage || data?.ResponseDescription || "").toLowerCase();
+        return code.includes("500.003") || msg.includes("busy") || code.includes("busy");
+      };
+
+      const fireStkPush = async () => {
         const { data: stkData, error: stkError } = await supabase.functions.invoke("mpesa-stk-push", {
           body: {
             orderId: order.id,
@@ -325,43 +331,80 @@ export default function OrderPage() {
             email: email.trim(),
           },
         });
+        return { stkData, stkError };
+      };
 
-        if (stkError) {
-          console.error("STK push error:", stkError);
-          setPaymentError("network");
-          toast({
-            title: "Could not reach the payment service. Use the manual M-Pesa option below.",
-            variant: "destructive",
-          });
-        } else if (stkData?.ResponseCode === "0") {
-          setStkSent(true);
-          setPaymentError(null);
-          toast({ title: "Check your phone for the M-Pesa payment prompt 📱" });
-        } else {
-          console.error("STK response:", stkData);
+      const attemptStk = async (attempt: number) => {
+        try {
+          const { stkData, stkError } = await fireStkPush();
+
+          if (stkError) {
+            if (attempt < maxAutoRetries) {
+              toast({ title: `Connection error — retrying (${attempt}/${maxAutoRetries})…`, variant: "destructive" });
+              await countdownAndRetry(attempt + 1);
+              return;
+            }
+            setPaymentError("network");
+            toast({ title: "Could not reach the payment service. Use the manual M-Pesa option below.", variant: "destructive" });
+            return;
+          }
+
+          if (stkData?.ResponseCode === "0") {
+            setStkSent(true);
+            setPaymentError(null);
+            setAutoRetryCountdown(0);
+            setAutoRetryAttempt(0);
+            toast({ title: "Check your phone for the M-Pesa payment prompt 📱" });
+            return;
+          }
+
           const errorCode = stkData?.errorCode || "";
+          if (isBusyError(stkData) && attempt < maxAutoRetries) {
+            toast({ title: `M-Pesa busy — retrying (${attempt}/${maxAutoRetries})…`, variant: "destructive" });
+            await countdownAndRetry(attempt + 1);
+            return;
+          }
+
+          // Non-retryable or exhausted retries
           if (errorCode.includes("1001") || errorCode.includes("credentials")) {
             setPaymentError("credentials");
-            toast({
-              title: "Payment service configuration issue. Please pay manually via M-Pesa below.",
-              variant: "destructive",
-            });
-          } else if (errorCode.includes("500.003") || errorCode.includes("busy")) {
+            toast({ title: "Payment service configuration issue. Please pay manually via M-Pesa below.", variant: "destructive" });
+          } else if (isBusyError(stkData)) {
             setPaymentError("network");
-            toast({
-              title: "M-Pesa is busy right now. Please retry in a moment or pay manually.",
-              variant: "destructive",
-            });
+            toast({ title: "M-Pesa is still busy after retries. Please pay manually below.", variant: "destructive" });
           } else {
             setPaymentError("generic");
             toast({ title: "M-Pesa request failed. Please try again or pay manually.", variant: "destructive" });
           }
+        } catch (err) {
+          if (attempt < maxAutoRetries) {
+            toast({ title: `Error — retrying (${attempt}/${maxAutoRetries})…`, variant: "destructive" });
+            await countdownAndRetry(attempt + 1);
+            return;
+          }
+          setPaymentError("network");
+          toast({ title: "Could not reach payment service. Try the manual option below.", variant: "destructive" });
         }
-      } catch (stkErr) {
-        console.error("STK invoke error:", stkErr);
-        setPaymentError("network");
-        toast({ title: "Could not reach payment service. Try the manual option below.", variant: "destructive" });
-      }
+      };
+
+      const countdownAndRetry = (nextAttempt: number): Promise<void> => {
+        return new Promise((resolve) => {
+          let seconds = 15;
+          setAutoRetryCountdown(seconds);
+          setAutoRetryAttempt(nextAttempt);
+          if (autoRetryTimerRef.current) clearInterval(autoRetryTimerRef.current);
+          autoRetryTimerRef.current = setInterval(() => {
+            seconds -= 1;
+            setAutoRetryCountdown(seconds);
+            if (seconds <= 0) {
+              if (autoRetryTimerRef.current) clearInterval(autoRetryTimerRef.current);
+              attemptStk(nextAttempt).then(resolve);
+            }
+          }, 1000);
+        });
+      };
+
+      await attemptStk(1);
 
       // Trigger Zapier webhook (background)
       supabase.functions.invoke("notify-zapier", { body: { order } }).catch(console.error);
