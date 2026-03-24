@@ -491,6 +491,18 @@ export default function OrderPage() {
                   </p>
                   <p className="text-sm font-mono text-primary mb-6">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
 
+                  {/* Auto-retry countdown */}
+                  {autoRetryCountdown > 0 && (
+                    <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 text-center mb-6">
+                      <p className="text-sm font-medium text-amber-400">
+                        M-Pesa busy — Retrying in {autoRetryCountdown}s… (Attempt {autoRetryAttempt}/{maxAutoRetries})
+                      </p>
+                      <div className="w-full bg-muted rounded-full h-1.5 mt-2">
+                        <div className="bg-amber-500 h-1.5 rounded-full transition-all duration-1000" style={{ width: `${(autoRetryCountdown / 15) * 100}%` }} />
+                      </div>
+                    </div>
+                  )}
+
                   {/* Contextual error banner */}
                   {paymentError && (
                     <div
