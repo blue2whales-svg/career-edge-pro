@@ -206,7 +206,7 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndzcHVndmR3b2RxZGx5YW14enhjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDk4MjYwMDAsImV4cCI6MjAyNTQwMjAwMH0.placeholder`,
       },
       body: JSON.stringify({
         phone: formattedPhone,
