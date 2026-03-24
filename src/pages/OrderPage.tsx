@@ -242,7 +242,10 @@ export default function OrderPage() {
       setPaymentConfirmed(true);
       toast({ title: "Payment confirmed! 🎉" });
     } else {
-      toast({ title: "Payment not yet received. Please complete your M-Pesa payment and try again.", variant: "destructive" });
+      toast({
+        title: "Payment not yet received. Please complete your M-Pesa payment and try again.",
+        variant: "destructive",
+      });
     }
     setPaymentChecking(false);
   };
@@ -345,7 +348,10 @@ export default function OrderPage() {
               return;
             }
             setPaymentError("network");
-            toast({ title: "Could not reach the payment service. Use the manual M-Pesa option below.", variant: "destructive" });
+            toast({
+              title: "Could not reach the payment service. Use the manual M-Pesa option below.",
+              variant: "destructive",
+            });
             return;
           }
 
@@ -368,7 +374,10 @@ export default function OrderPage() {
           // Non-retryable or exhausted retries
           if (errorCode.includes("1001") || errorCode.includes("credentials")) {
             setPaymentError("credentials");
-            toast({ title: "Payment service configuration issue. Please pay manually via M-Pesa below.", variant: "destructive" });
+            toast({
+              title: "Payment service configuration issue. Please pay manually via M-Pesa below.",
+              variant: "destructive",
+            });
           } else if (isBusyError(stkData)) {
             setPaymentError("network");
             toast({ title: "M-Pesa is still busy after retries. Please pay manually below.", variant: "destructive" });
@@ -498,7 +507,10 @@ export default function OrderPage() {
                         M-Pesa busy — Retrying in {autoRetryCountdown}s… (Attempt {autoRetryAttempt}/{maxAutoRetries})
                       </p>
                       <div className="w-full bg-muted rounded-full h-1.5 mt-2">
-                        <div className="bg-amber-500 h-1.5 rounded-full transition-all duration-1000" style={{ width: `${(autoRetryCountdown / 15) * 100}%` }} />
+                        <div
+                          className="bg-amber-500 h-1.5 rounded-full transition-all duration-1000"
+                          style={{ width: `${(autoRetryCountdown / 15) * 100}%` }}
+                        />
                       </div>
                     </div>
                   )}
@@ -780,10 +792,10 @@ export default function OrderPage() {
                     </span>{" "}
                     — keyword-optimised for global portals, 2 professional pages, and a comprehensive LinkedIn makeover.
                   </p>
-                   <div className="flex items-center gap-3 mb-3">
-                     <span className="text-xs text-muted-foreground line-through">KES 6,500</span>
-                     <span className="text-lg font-bold text-primary">KES 4,490</span>
-                   </div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-xs text-muted-foreground line-through">KES 6,500</span>
+                    <span className="text-lg font-bold text-primary">KES 4,490</span>
+                  </div>
                   {packageParam === "international" ? (
                     <div className="inline-flex items-center gap-1.5 rounded-lg border border-primary bg-primary/10 px-4 py-2 text-xs font-semibold text-primary">
                       <Check className="h-3.5 w-3.5" /> Bundle Selected
@@ -931,22 +943,23 @@ export default function OrderPage() {
                     </div>
                     <div>
                       <div>
-  <div className="flex gap-2">
-    <Input
-      ref={phoneRef}
-      placeholder="M-Pesa number *"
-      value={phone}
-      onChange={(e) => {
-        setPhone(e.target.value);
-        setValidationErrors((prev) => ({ ...prev, phone: false }));
-      }}
-      className={cn(
-        "h-12 bg-card border-border transition-all",
-        validationErrors.phone &&
-          "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
-      )}
-    />
-  </div>
+                        <div className="flex gap-2">
+                          <Input
+                            ref={phoneRef}
+                            placeholder="M-Pesa number *"
+                            value={phone}
+                            onChange={(e) => {
+                              setPhone(e.target.value);
+                              setValidationErrors((prev) => ({ ...prev, phone: false }));
+                            }}
+                            className={cn(
+                              "h-12 bg-card border-border transition-all",
+                              validationErrors.phone &&
+                                "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
+                            )}
+                          />
+                        </div>
+                        <Input
                           ref={phoneRef}
                           placeholder="M-Pesa number *"
                           value={phone}
