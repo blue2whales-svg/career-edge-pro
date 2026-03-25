@@ -230,16 +230,34 @@ export default function OrderPage() {
   };
 
   const checkPaymentStatus = async (id: string) => {
-    setPaymentChecking(true);
-    const { data } = await supabase.from("orders").select("status").eq("id", id).maybeSingle();
+    try {
+      setPaymentChecking(true);
 
-    if (data?.status === "paid") {
-      setPaymentConfirmed(true);
-      toast({ title: "Payment confirmed! 🎉" });
-    } else {
-      toast({ title: "Payment not yet received. Please check your phone and try again.", variant: "destructive" });
+      const { data, error } = await supabase.from("orders").select("status").eq("id", id).maybeSingle();
+
+      if (error) {
+        console.warn("Orders query failed:", error);
+        toast({
+          title: "Payment check temporarily unavailable.",
+          description: "Please confirm payment on your phone.",
+        });
+        return;
+      }
+
+      if (data?.status === "paid") {
+        setPaymentConfirmed(true);
+        toast({ title: "Payment confirmed! 🎉" });
+      } else {
+        toast({
+          title: "Payment not yet received. Please check your phone and try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (err) {
+      console.error("Payment status check error:", err);
+    } finally {
+      setPaymentChecking(false);
     }
-    setPaymentChecking(false);
   };
 
   const handleSubmit = async () => {
@@ -312,7 +330,8 @@ export default function OrderPage() {
             phone: formatPhone(phone.trim()),
             amount: total,
             accountReference: order.id.slice(0, 12).toUpperCase(),
-            transactionDesc: isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", "),
+            transactionDesc:
+              isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", "),
           },
         });
 
