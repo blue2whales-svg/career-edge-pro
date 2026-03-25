@@ -291,24 +291,24 @@ export default function OrderPage() {
 
       const allDetails = JSON.stringify(formValues);
 
-      const { data: order, error } = await supabase
-        .from("orders")
-        .insert({
-          user_id: user?.id || null,
-          name: name.trim(),
-          email: email.trim(),
-          phone: formatPhone(phone.trim()) || null,
-          services: selectedServices,
-          details: allDetails,
-          total_amount: total,
-          status: "pending",
-          job_title: formValues.jobTitle?.trim() || formValues.coverLetterRole?.trim() || null,
-          experience: formValues.experience?.trim() || null,
-          skills: formValues.skills?.trim() || null,
-          education: formValues.education?.trim() || null,
-        } as any)
-        .select()
-        .single();
+      const phoneNumber = formatPhone(phone.trim());
+
+      const { data, error } = await supabase.functions.invoke("mpesa-stk-push", {
+        body: {
+          phone: phoneNumber,
+          amount: total,
+          accountReference: crypto.randomUUID().slice(0, 12).replace(/-/g, ""),
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "STK sent",
+        description: "Check your phone and enter your M-Pesa PIN.",
+      });
 
       if (error) throw error;
 
