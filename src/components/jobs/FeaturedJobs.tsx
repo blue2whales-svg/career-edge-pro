@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, DollarSign, Clock, Building2, ArrowRight, Flame, Ship } from "lucide-react";
+import { MapPin, DollarSign, Clock, Building2, ArrowRight, Flame, Ship, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { FEATURED_JOBS, type Job } from "@/data/jobs";
+import { type Job } from "@/data/jobs";
 import { JobDetailModal } from "./JobDetailModal";
+import { useJobs } from "@/hooks/useJobs";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -16,6 +17,8 @@ const fadeUp = {
 
 export function FeaturedJobs() {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const { data } = useJobs();
+  const featuredJobs = data?.featured ?? [];
 
   return (
     <>
@@ -28,12 +31,12 @@ export function FeaturedJobs() {
             <h2 className="text-xl sm:text-2xl font-serif font-bold">Hot Jobs Abroad</h2>
           </div>
           <span className="rounded-full bg-brand-red/10 border border-brand-red/20 px-3 py-1 text-[11px] font-mono text-brand-red">
-            Updated hourly
+            <Sparkles className="h-3 w-3 inline mr-1" />AI-ranked
           </span>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURED_JOBS.map((job, i) => (
+          {featuredJobs.slice(0, 6).map((job, i) => (
             <motion.div
               key={i}
               initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}
@@ -44,7 +47,7 @@ export function FeaturedJobs() {
               <div className="absolute top-3 right-3">
                 <span className="inline-flex items-center gap-1 rounded-full bg-brand-red/10 border border-brand-red/20 px-2.5 py-1 text-[10px] font-mono text-brand-red font-semibold">
                   {job.tag?.includes("Cruise") ? <Ship className="h-3 w-3" /> : <Flame className="h-3 w-3" />}
-                  {job.tag}
+                  {job.hot_score && job.hot_score >= 70 ? "🔥 HOT" : job.tag || "🔥 Hot"}
                 </span>
               </div>
 

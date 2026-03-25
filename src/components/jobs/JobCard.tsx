@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, DollarSign, Clock, Building2, ArrowRight, Ship, Flame } from "lucide-react";
+import { MapPin, DollarSign, Clock, Building2, ArrowRight, Ship, Flame, Shield, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Job } from "@/data/jobs";
 import { CVMatchBadge } from "./CVMatchBadge";
@@ -17,6 +17,8 @@ const fadeUp = {
 export function JobCard({ job, index, onClick }: { job: Job; index: number; onClick?: () => void }) {
   const isCruise = job.tag?.includes("Cruise");
   const isGulf = job.tag?.includes("Gulf");
+  const isVisa = job.visa_sponsorship;
+  const isHot = job.hot || (job.hot_score && job.hot_score >= 50);
   const [matchModalOpen, setMatchModalOpen] = useState(false);
   const jobKey = `${job.title}|${job.company}`;
 
@@ -25,7 +27,11 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
     <CVMatchModal job={job} open={matchModalOpen} onClose={() => setMatchModalOpen(false)} />
     <motion.div
       initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={index % 4}
-      className="group rounded-xl border border-border bg-card p-5 sm:p-6 hover:border-primary/30 hover:shadow-glow-sm transition-all duration-300 cursor-pointer"
+      className={`group rounded-xl border p-5 sm:p-6 hover:shadow-glow-sm transition-all duration-300 cursor-pointer ${
+        isHot
+          ? "border-brand-red/30 bg-card hover:border-brand-red/50"
+          : "border-border bg-card hover:border-primary/30"
+      }`}
       onClick={onClick}
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -41,9 +47,21 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
               )}
             </div>
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="font-semibold text-base sm:text-lg">{job.title}</h3>
-                {job.hot && <Flame className="h-3.5 w-3.5 text-brand-red" />}
+                {isHot && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-brand-red/10 border border-brand-red/20 px-2 py-0.5 text-[10px] font-mono text-brand-red font-semibold">
+                    <Flame className="h-3 w-3" /> HOT
+                  </span>
+                )}
+                {isVisa && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-mono text-emerald-400 font-semibold">
+                    ✈️ Visa
+                  </span>
+                )}
+                {job.verified && (
+                  <Shield className="h-3.5 w-3.5 text-primary" />
+                )}
               </div>
               <p className="text-sm text-muted-foreground">{job.company}</p>
               <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-muted-foreground">
@@ -61,6 +79,11 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
                     isCruise ? "border-blue-500/20 text-blue-400" : isGulf ? "border-brand-red/20 text-brand-red" : "border-border"
                   }`}>
                     {job.tag}
+                  </span>
+                )}
+                {job.category && (
+                  <span className="rounded-full border border-primary/20 bg-primary/5 px-2 py-0.5 text-[10px] font-mono text-primary">
+                    {job.category}
                   </span>
                 )}
                 <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-mono">

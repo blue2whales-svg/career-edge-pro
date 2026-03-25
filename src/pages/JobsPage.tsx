@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Globe } from "lucide-react";
+import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Globe, Shield, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useSearchParams } from "react-router-dom";
@@ -11,8 +11,9 @@ import { JobDetailModal } from "@/components/jobs/JobDetailModal";
 import { LiveStatusBar } from "@/components/jobs/LiveStatusBar";
 import { FeaturedCategories } from "@/components/jobs/FeaturedCategories";
 import { UpsellStrip } from "@/components/jobs/UpsellStrip";
-import { INDUSTRIES, MARKETS, type Job } from "@/data/jobs";
+import { INDUSTRIES, MARKETS, JOB_CATEGORIES, type Job } from "@/data/jobs";
 import { useJobs, triggerJobsFetch } from "@/hooks/useJobs";
+
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
@@ -25,10 +26,12 @@ export default function JobsPage() {
   const [searchParams] = useSearchParams();
   const initialIndustry = searchParams.get("industry") || "All";
   const initialMarket = searchParams.get("market") || "All Markets";
+  const initialCategory = searchParams.get("category") || "All Categories";
 
   const [search, setSearch] = useState("");
   const [selectedIndustry, setSelectedIndustry] = useState(initialIndustry);
   const [selectedMarket, setSelectedMarket] = useState(initialMarket);
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [isManualRefreshing, setIsManualRefreshing] = useState(false);
 
@@ -48,7 +51,6 @@ export default function JobsPage() {
     if (params.market) setSelectedMarket(params.market);
   }, []);
 
-  // Trigger a background refresh on first visit
   useEffect(() => {
     triggerJobsFetch();
   }, []);
@@ -58,23 +60,30 @@ export default function JobsPage() {
       job.company.toLowerCase().includes(search.toLowerCase());
     if (selectedIndustry === "🔥 Hot Abroad") {
       const matchMarket = selectedMarket === "All Markets" || job.market === selectedMarket;
-      return matchSearch && job.hot && matchMarket;
+      const matchCategory = selectedCategory === "All Categories" || job.category === selectedCategory;
+      return matchSearch && job.hot && matchMarket && matchCategory;
     }
     const matchIndustry = selectedIndustry === "All" || job.industry === selectedIndustry;
     const matchMarket = selectedMarket === "All Markets" || job.market === selectedMarket;
-    return matchSearch && matchIndustry && matchMarket;
+    const matchCategory = selectedCategory === "All Categories" || job.category === selectedCategory;
+    return matchSearch && matchIndustry && matchMarket && matchCategory;
   });
+
+  // Sort by hot_score descending
+  const sorted = [...filtered].sort((a, b) => (b.hot_score || 0) - (a.hot_score || 0));
 
   return (
     <PageLayout>
       <JobDetailModal job={selectedJob} open={!!selectedJob} onOpenChange={(open) => !open && setSelectedJob(null)} />
+      
+      {/* Hero */}
       <section className="relative z-10 pt-16 sm:pt-24 pb-10 px-4">
         <div className="container max-w-5xl mx-auto text-center">
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}
             className="inline-flex items-center gap-2 rounded-full border border-brand-red/20 bg-brand-red/5 px-4 py-1.5 mb-6"
           >
-            <Briefcase className="h-3.5 w-3.5 text-brand-red" />
-            <span className="text-xs font-mono text-brand-red">Live Jobs — Updated Hourly</span>
+            <Sparkles className="h-3.5 w-3.5 text-brand-red" />
+            <span className="text-xs font-mono text-brand-red">AI-Powered Job Discovery — Auto-Updated</span>
           </motion.div>
           <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={1}
             className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold leading-[1.08] mb-5"
@@ -85,14 +94,14 @@ export default function JobsPage() {
           <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={2}
             className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-4"
           >
-            Real jobs from cruise lines, Gulf states, and 10+ global markets — refreshed live. Find the role, we'll craft the perfect CV.
+            Fresh jobs from cruise lines, Gulf states, Kenya, and 10+ global markets — discovered automatically every 30 minutes.
           </motion.p>
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}
             className="inline-flex items-center gap-2 rounded-full bg-muted/60 border border-border px-4 py-1.5 mb-8"
           >
             <Flame className="h-3.5 w-3.5 text-brand-red" />
             <span className="text-xs text-muted-foreground font-mono">
-              {jobs.length} live roles · Cruise & Gulf trending
+              {jobs.length} live roles · Cruise & Gulf trending · Updated every 30 min
             </span>
           </motion.div>
 
@@ -102,7 +111,7 @@ export default function JobsPage() {
           >
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
-              placeholder="Search cruise, Gulf, or any job..."
+              placeholder="Search cruise, Gulf, Kenya, or any job..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="h-13 pl-12 bg-card border-border text-base"
@@ -131,12 +140,34 @@ export default function JobsPage() {
 
       {/* Featured Categories */}
       <FeaturedCategories jobs={jobs} onFilterChange={handleFilterChange} />
-      {/* Filters */}
+
+      {/* Category Filters */}
+      <section className="relative z-10 pb-2 px-4">
+        <div className="container max-w-5xl mx-auto">
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+            {JOB_CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                  selectedCategory === cat
+                    ? "bg-brand-red text-white"
+                    : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-brand-red/30"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Industry + Market Filters */}
       <section className="relative z-10 pb-6 px-4">
         <div className="container max-w-5xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
             <h2 className="text-lg font-serif font-bold">All Openings</h2>
-            <span className="text-xs text-muted-foreground font-mono">{filtered.length} roles</span>
+            <span className="text-xs text-muted-foreground font-mono">{sorted.length} roles</span>
             <Button
               variant="ghost"
               size="sm"
@@ -183,9 +214,8 @@ export default function JobsPage() {
       {/* Job Listings */}
       <section className="relative z-10 pb-24 px-4">
         <div className="container max-w-5xl mx-auto">
-          {/* Live Status Bar */}
           <div className="mb-4">
-            <LiveStatusBar jobCount={filtered.length} isRefreshing={isManualRefreshing} onRefresh={handleRefresh} />
+            <LiveStatusBar jobCount={sorted.length} isRefreshing={isManualRefreshing} onRefresh={handleRefresh} />
           </div>
 
           {isLoading ? (
@@ -195,7 +225,7 @@ export default function JobsPage() {
             </div>
           ) : (
             <div className="space-y-3">
-              {filtered.map((job, i) => (
+              {sorted.map((job, i) => (
                 <React.Fragment key={i}>
                   <JobCard job={job} index={i} onClick={() => setSelectedJob(job)} />
                   {i > 0 && (i + 1) % 6 === 0 && (
@@ -206,7 +236,7 @@ export default function JobsPage() {
             </div>
           )}
 
-          {!isLoading && filtered.length === 0 && (
+          {!isLoading && sorted.length === 0 && (
             <div className="text-center py-20">
               <p className="text-muted-foreground">No jobs found matching your search. Try a different filter.</p>
             </div>
