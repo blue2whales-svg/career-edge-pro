@@ -242,11 +242,14 @@ export default function OrderPage() {
         return;
       }
 
-      const { data, error } = await supabase
+      const response: any = await (supabase as any)
         .from("payments")
         .select("status, mpesa_code")
         .eq("checkout_request_id", checkoutRequestId)
         .maybeSingle();
+
+      const data = response?.data;
+      const error = response?.error;
 
       if (error) {
         console.warn("Payments query failed:", error);
@@ -337,7 +340,9 @@ export default function OrderPage() {
           setStkSent(true);
           setPaymentError(null);
           setCheckoutRequestId(stkData.checkoutRequestId || "");
-          toast({ title: "Check your phone for the M-Pesa payment prompt 📱" });
+          toast({
+            title: "Check your phone for the M-Pesa payment prompt 📱",
+          });
         } else {
           console.error("STK response:", stkData);
           const errorCode = stkData?.errorCode || "";
