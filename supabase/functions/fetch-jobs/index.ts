@@ -6,33 +6,58 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Search queries to cover all target markets
+// ─── Search queries covering all target markets ────────────────────────────
 const JSEARCH_QUERIES = [
-  // Cruise & hospitality
-  { query: "cruise ship jobs", market: "USA", industry: "Cruise & Hospitality", tag: "🚢 Cruise Line" },
-  { query: "cruise line careers", market: "UK", industry: "Cruise & Hospitality", tag: "🚢 Cruise Line" },
+  // Cruise & Hospitality
+  { query: "cruise ship jobs", market: "USA", industry: "Cruise & Hospitality", tag: "🚢 Cruise Line", category: "Cruise Jobs" },
+  { query: "cruise line careers", market: "UK", industry: "Cruise & Hospitality", tag: "🚢 Cruise Line", category: "Cruise Jobs" },
+  { query: "cruise ship chef jobs", market: "USA", industry: "Cruise & Hospitality", tag: "🚢 Cruise Line", category: "Cruise Jobs" },
+  { query: "cruise ship entertainment jobs", market: "USA", industry: "Cruise & Hospitality", tag: "🚢 Cruise Line", category: "Cruise Jobs" },
   // Domestic & Housekeeping
-  { query: "housemaid jobs Dubai UAE", market: "UAE", industry: "Domestic & Housekeeping", tag: "🔥 Gulf Hot" },
-  { query: "nanny jobs Saudi Arabia", market: "Saudi Arabia", industry: "Domestic & Housekeeping", tag: "🔥 Gulf Hot" },
-  { query: "housekeeper jobs Qatar", market: "Qatar", industry: "Domestic & Housekeeping", tag: "🔥 Gulf Hot" },
-  { query: "domestic worker jobs abroad", market: "UK", industry: "Domestic & Housekeeping", tag: null },
+  { query: "housemaid jobs Dubai UAE", market: "UAE", industry: "Domestic & Housekeeping", tag: "🔥 Gulf Hot", category: "Gulf Jobs" },
+  { query: "nanny jobs Saudi Arabia", market: "Saudi Arabia", industry: "Domestic & Housekeeping", tag: "🔥 Gulf Hot", category: "Gulf Jobs" },
+  { query: "housekeeper jobs Qatar", market: "Qatar", industry: "Domestic & Housekeeping", tag: "🔥 Gulf Hot", category: "Gulf Jobs" },
+  { query: "domestic worker jobs abroad", market: "UK", industry: "Domestic & Housekeeping", tag: null, category: "Hospitality Jobs" },
+  { query: "caregiver jobs Canada visa sponsorship", market: "Canada", industry: "Domestic & Housekeeping", tag: null, category: "Healthcare Jobs" },
   // Gulf / Middle East
-  { query: "jobs in Dubai UAE", market: "UAE", industry: null, tag: "🔥 Gulf Hot" },
-  { query: "jobs in Qatar Doha", market: "Qatar", industry: null, tag: "🔥 Gulf Hot" },
-  { query: "jobs in Saudi Arabia", market: "Saudi Arabia", industry: null, tag: "🔥 Gulf Hot" },
-  { query: "jobs in Oman Muscat", market: "Oman", industry: null, tag: "🔥 Gulf Hot" },
+  { query: "jobs in Dubai UAE", market: "UAE", industry: null, tag: "🔥 Gulf Hot", category: "Gulf Jobs" },
+  { query: "jobs in Qatar Doha", market: "Qatar", industry: null, tag: "🔥 Gulf Hot", category: "Gulf Jobs" },
+  { query: "jobs in Saudi Arabia", market: "Saudi Arabia", industry: null, tag: "🔥 Gulf Hot", category: "Gulf Jobs" },
+  { query: "jobs in Oman Muscat", market: "Oman", industry: null, tag: "🔥 Gulf Hot", category: "Gulf Jobs" },
+  { query: "hotel jobs Dubai", market: "UAE", industry: "Cruise & Hospitality", tag: "🔥 Gulf Hot", category: "Hospitality Jobs" },
+  { query: "construction jobs Qatar", market: "Qatar", industry: "Engineering", tag: "🔥 Gulf Hot", category: "Construction Jobs" },
+  { query: "driver jobs Dubai UAE", market: "UAE", industry: "Operations", tag: "🔥 Gulf Hot", category: "Drivers & Logistics" },
+  { query: "security guard jobs Saudi Arabia", market: "Saudi Arabia", industry: "Operations", tag: "🔥 Gulf Hot", category: "Gulf Jobs" },
   // Kenya local
-  { query: "jobs in Nairobi Kenya", market: "Kenya", industry: null, tag: null },
-  { query: "jobs in Mombasa Kenya", market: "Kenya", industry: null, tag: null },
-  // International
-  { query: "jobs in London UK for africans", market: "UK", industry: null, tag: null },
-  { query: "jobs in Canada for immigrants", market: "Canada", industry: null, tag: null },
-  { query: "jobs in Australia skilled workers", market: "Australia", industry: null, tag: null },
-  { query: "jobs in Germany engineering", market: "Germany", industry: null, tag: null },
-  { query: "nursing jobs abroad", market: "UK", industry: "Healthcare", tag: null },
+  { query: "jobs in Nairobi Kenya", market: "Kenya", industry: null, tag: null, category: "Kenya Jobs" },
+  { query: "jobs in Mombasa Kenya", market: "Kenya", industry: null, tag: null, category: "Kenya Jobs" },
+  { query: "NGO jobs Kenya", market: "Kenya", industry: "NGO", tag: null, category: "Kenya Jobs" },
+  { query: "accounting jobs Nairobi", market: "Kenya", industry: "Finance", tag: null, category: "Kenya Jobs" },
+  { query: "teaching jobs Kenya", market: "Kenya", industry: "Education", tag: null, category: "Kenya Jobs" },
+  // International with visa sponsorship
+  { query: "visa sponsorship jobs UK", market: "UK", industry: null, tag: "✈️ Visa Sponsor", category: "Remote Jobs" },
+  { query: "visa sponsorship jobs Canada", market: "Canada", industry: null, tag: "✈️ Visa Sponsor", category: "Remote Jobs" },
+  { query: "visa sponsorship jobs Australia", market: "Australia", industry: null, tag: "✈️ Visa Sponsor", category: "Remote Jobs" },
+  { query: "jobs in London UK for africans", market: "UK", industry: null, tag: null, category: "Remote Jobs" },
+  { query: "jobs in Canada for immigrants", market: "Canada", industry: null, tag: null, category: "Remote Jobs" },
+  { query: "jobs in Australia skilled workers", market: "Australia", industry: null, tag: null, category: "Remote Jobs" },
+  { query: "jobs in Germany engineering", market: "Germany", industry: "Engineering", tag: null, category: "Engineering Jobs" },
+  // Healthcare
+  { query: "nursing jobs abroad", market: "UK", industry: "Healthcare", tag: null, category: "Healthcare Jobs" },
+  { query: "nurse jobs Dubai", market: "UAE", industry: "Healthcare", tag: "🔥 Gulf Hot", category: "Healthcare Jobs" },
+  { query: "nurse jobs Saudi Arabia", market: "Saudi Arabia", industry: "Healthcare", tag: "🔥 Gulf Hot", category: "Healthcare Jobs" },
+  // Remote
+  { query: "remote jobs Africa", market: "Kenya", industry: "Technology", tag: "🌍 Remote", category: "Remote Jobs" },
+  { query: "remote customer service jobs", market: "Kenya", industry: "Operations", tag: "🌍 Remote", category: "Remote Jobs" },
+  // Engineering & Construction
+  { query: "civil engineer jobs Gulf", market: "UAE", industry: "Engineering", tag: "🔥 Gulf Hot", category: "Engineering Jobs" },
+  { query: "construction jobs Dubai", market: "UAE", industry: "Engineering", tag: "🔥 Gulf Hot", category: "Construction Jobs" },
+  // Drivers & Logistics
+  { query: "driver jobs abroad", market: "UAE", industry: "Operations", tag: null, category: "Drivers & Logistics" },
+  { query: "logistics jobs Dubai", market: "UAE", industry: "Operations", tag: "🔥 Gulf Hot", category: "Drivers & Logistics" },
 ];
 
-// Map JSearch employment types
+// ─── Helpers ────────────────────────────────────────────────────────────────
 function mapType(types: string[] | undefined): string {
   if (!types || types.length === 0) return "Full-time";
   if (types.includes("FULLTIME")) return "Full-time";
@@ -41,7 +66,6 @@ function mapType(types: string[] | undefined): string {
   return "Full-time";
 }
 
-// Guess industry from title/description
 function guessIndustry(title: string, employer: string): string {
   const t = (title + " " + employer).toLowerCase();
   if (/nurse|doctor|medical|health|hospital|pharma|dental|physio|radiol/i.test(t)) return "Healthcare";
@@ -58,19 +82,77 @@ function guessIndustry(title: string, employer: string): string {
   if (/ngo|unicef|world vision|red cross|amref/i.test(t)) return "NGO";
   if (/consult|advisory|mckinn|deloitt/i.test(t)) return "Consulting";
   if (/govern|public service|county/i.test(t)) return "Government";
+  if (/construct|mason|weld|plast|paint|carpen/i.test(t)) return "Engineering";
+  if (/driv|transport|logist|warehouse|dispatch/i.test(t)) return "Operations";
   return "Operations";
+}
+
+function guessCategory(industry: string, market: string, tag: string | null, title: string): string {
+  const t = title.toLowerCase();
+  if (tag?.includes("Cruise") || t.includes("cruise")) return "Cruise Jobs";
+  if (["UAE", "Qatar", "Saudi Arabia", "Oman", "Bahrain", "Kuwait"].includes(market)) return "Gulf Jobs";
+  if (market === "Kenya") return "Kenya Jobs";
+  if (t.includes("remote") || t.includes("work from home")) return "Remote Jobs";
+  if (industry === "Healthcare") return "Healthcare Jobs";
+  if (industry === "Engineering") return "Engineering Jobs";
+  if (/construct|mason|weld/i.test(t)) return "Construction Jobs";
+  if (industry === "Cruise & Hospitality") return "Hospitality Jobs";
+  if (/driv|transport|logist/i.test(t)) return "Drivers & Logistics";
+  return "Remote Jobs";
+}
+
+function detectVisaSponsorship(title: string, description: string): boolean {
+  const text = (title + " " + description).toLowerCase();
+  return /visa sponsor|relocation|work permit|sponsored visa|immigration support/i.test(text);
+}
+
+function computeHotScore(job: {
+  posted_at: string;
+  salary: string;
+  visa_sponsorship: boolean;
+  market: string;
+  tag: string | null;
+}): number {
+  let score = 0;
+  // Freshness: posted within 24h = +40, 48h = +25, 72h = +10
+  const hoursAgo = (Date.now() - new Date(job.posted_at).getTime()) / 3600000;
+  if (hoursAgo < 24) score += 40;
+  else if (hoursAgo < 48) score += 25;
+  else if (hoursAgo < 72) score += 10;
+
+  // Salary visible
+  if (job.salary && job.salary !== "Competitive" && job.salary !== "Competitive tax-free") score += 20;
+
+  // Visa sponsorship
+  if (job.visa_sponsorship) score += 25;
+
+  // International/Gulf/Cruise
+  if (["UAE", "Qatar", "Saudi Arabia", "Oman", "UK", "Canada", "Australia", "Germany"].includes(job.market)) score += 15;
+  if (job.tag?.includes("Cruise")) score += 10;
+
+  return score;
 }
 
 function timeAgo(dateStr: string | undefined): string {
   if (!dateStr) return "Recently";
   const diff = Date.now() - new Date(dateStr).getTime();
-  const hours = Math.floor(diff / 3600000);
-  if (hours < 1) return "Just now";
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins} min${mins > 1 ? "s" : ""} ago`;
+  const hours = Math.floor(mins / 60);
   if (hours < 24) return `${hours} hour${hours > 1 ? "s" : ""} ago`;
   const days = Math.floor(hours / 24);
   return `${days} day${days > 1 ? "s" : ""} ago`;
 }
 
+function extractCountry(location: string, market: string): string {
+  // Try to get country from location string
+  const parts = location.split(",").map((s) => s.trim());
+  if (parts.length > 1) return parts[parts.length - 1];
+  return market;
+}
+
+// ─── JSearch fetcher ────────────────────────────────────────────────────────
 async function fetchJSearchJobs(rapidApiKey: string): Promise<any[]> {
   const allJobs: any[] = [];
 
@@ -80,7 +162,7 @@ async function fetchJSearchJobs(rapidApiKey: string): Promise<any[]> {
       url.searchParams.set("query", q.query);
       url.searchParams.set("page", "1");
       url.searchParams.set("num_pages", "1");
-      url.searchParams.set("date_posted", "week");
+      url.searchParams.set("date_posted", "3days");
 
       const res = await fetch(url.toString(), {
         headers: {
@@ -101,27 +183,48 @@ async function fetchJSearchJobs(rapidApiKey: string): Promise<any[]> {
         const industry = q.industry || guessIndustry(job.job_title || "", job.employer_name || "");
         const isGulf = ["UAE", "Qatar", "Saudi Arabia", "Oman"].includes(q.market);
         const isCruise = industry === "Cruise & Hospitality" && (job.job_title || "").toLowerCase().includes("cruise");
+        const description = (job.job_description || "").substring(0, 3000);
+        const title = job.job_title || "";
+        const location = [job.job_city, job.job_state, job.job_country].filter(Boolean).join(", ") || q.market;
+        const salary = job.job_min_salary && job.job_max_salary
+          ? `KES ${Math.round(job.job_min_salary * 130).toLocaleString()}–${Math.round(job.job_max_salary * 130).toLocaleString()}/mo`
+          : isGulf ? "Competitive tax-free" : "Competitive";
+        const posted_at = job.job_posted_at_datetime_utc || new Date().toISOString();
+        const visa = detectVisaSponsorship(title, description);
+        const category = q.category || guessCategory(industry, q.market, q.tag || null, title);
+        const tag = q.tag || (isCruise ? "🚢 Cruise Line" : isGulf ? "🔥 Gulf Hot" : visa ? "✈️ Visa Sponsor" : null);
 
-        allJobs.push({
+        const jobObj = {
           external_id: job.job_id,
-          title: job.job_title,
+          title,
           company: job.employer_name || "Company",
-          location: [job.job_city, job.job_state, job.job_country].filter(Boolean).join(", ") || q.market,
-          salary: job.job_min_salary && job.job_max_salary
-            ? `KES ${Math.round(job.job_min_salary * 130).toLocaleString()}–${Math.round(job.job_max_salary * 130).toLocaleString()}/mo`
-            : isGulf ? "Competitive tax-free" : "Competitive",
+          location,
+          salary,
           type: mapType(job.job_employment_type ? [job.job_employment_type] : undefined),
           industry,
           market: q.market,
-          posted: timeAgo(job.job_posted_at_datetime_utc),
-          posted_at: job.job_posted_at_datetime_utc || new Date().toISOString(),
-          hot: isGulf || isCruise,
-          tag: q.tag || (isCruise ? "🚢 Cruise Line" : isGulf ? "🔥 Gulf Hot" : null),
+          posted: timeAgo(posted_at),
+          posted_at,
+          hot: false, // will be set by hot_score
+          tag,
           source: "jsearch",
           apply_url: job.job_apply_link || null,
-          description: (job.job_description || "").substring(0, 2000),
-        });
+          description,
+          country: extractCountry(location, q.market),
+          category,
+          visa_sponsorship: visa,
+          hot_score: 0, // computed below
+          verified: false,
+          featured: false,
+        };
+        jobObj.hot_score = computeHotScore(jobObj);
+        jobObj.hot = jobObj.hot_score >= 50;
+
+        allJobs.push(jobObj);
       }
+
+      // Rate limiting: small delay between queries
+      await new Promise((r) => setTimeout(r, 300));
     } catch (err) {
       console.error(`JSearch fetch error for "${q.query}":`, err);
     }
@@ -130,13 +233,13 @@ async function fetchJSearchJobs(rapidApiKey: string): Promise<any[]> {
   return allJobs;
 }
 
+// ─── Firecrawl fetcher ──────────────────────────────────────────────────────
 async function fetchFirecrawlJobs(firecrawlKey: string): Promise<any[]> {
   const allJobs: any[] = [];
 
-  // Scrape niche cruise/Gulf job boards
   const SCRAPE_TARGETS = [
-    { url: "https://www.allcruisejobs.com/search/", market: "USA", industry: "Cruise & Hospitality", tag: "🚢 Cruise Line" },
-    { url: "https://www.bayt.com/en/international/jobs/", market: "UAE", industry: null, tag: "🔥 Gulf Hot" },
+    { url: "https://www.allcruisejobs.com/search/", market: "USA", industry: "Cruise & Hospitality", tag: "🚢 Cruise Line", category: "Cruise Jobs" },
+    { url: "https://www.bayt.com/en/international/jobs/", market: "UAE", industry: null, tag: "🔥 Gulf Hot", category: "Gulf Jobs" },
   ];
 
   for (const target of SCRAPE_TARGETS) {
@@ -189,23 +292,38 @@ async function fetchFirecrawlJobs(firecrawlKey: string): Promise<any[]> {
       for (const job of extracted) {
         if (!job.title) continue;
         const industry = target.industry || guessIndustry(job.title, job.company || "");
-        allJobs.push({
+        const posted_at = new Date().toISOString();
+        const visa = detectVisaSponsorship(job.title, "");
+        const category = target.category || guessCategory(industry, target.market, target.tag, job.title);
+        const salary = job.salary || "Competitive";
+
+        const jobObj = {
           external_id: `fc-${target.market}-${job.title}`.replace(/\s+/g, "-").toLowerCase().substring(0, 100),
           title: job.title,
           company: job.company || "Company",
           location: job.location || target.market,
-          salary: job.salary || "Competitive",
+          salary,
           type: job.type || "Full-time",
           industry,
           market: target.market,
           posted: job.posted_date || "Recently",
-          posted_at: new Date().toISOString(),
-          hot: ["UAE", "Qatar", "Saudi Arabia", "Oman"].includes(target.market),
+          posted_at,
+          hot: false,
           tag: target.tag,
           source: "firecrawl",
           apply_url: null,
           description: null,
-        });
+          country: extractCountry(job.location || target.market, target.market),
+          category,
+          visa_sponsorship: visa,
+          hot_score: 0,
+          verified: false,
+          featured: false,
+        };
+        jobObj.hot_score = computeHotScore(jobObj);
+        jobObj.hot = jobObj.hot_score >= 50;
+
+        allJobs.push(jobObj);
       }
     } catch (err) {
       console.error(`Firecrawl error for ${target.url}:`, err);
@@ -215,6 +333,7 @@ async function fetchFirecrawlJobs(firecrawlKey: string): Promise<any[]> {
   return allJobs;
 }
 
+// ─── Main handler ───────────────────────────────────────────────────────────
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -230,7 +349,7 @@ Deno.serve(async (req) => {
 
     const allJobs: any[] = [];
 
-    // Fetch from both sources in parallel
+    // Fetch from all sources in parallel
     const promises: Promise<any[]>[] = [];
     if (rapidApiKey) promises.push(fetchJSearchJobs(rapidApiKey));
     if (firecrawlKey) promises.push(fetchFirecrawlJobs(firecrawlKey));
@@ -249,24 +368,53 @@ Deno.serve(async (req) => {
 
     console.log(`Fetched ${allJobs.length} total jobs`);
 
+    // Deduplicate before insert (title+company+location)
+    const seen = new Set<string>();
+    const uniqueJobs = allJobs.filter((j) => {
+      const key = `${j.title.toLowerCase()}|${j.company.toLowerCase()}|${j.location.toLowerCase()}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    console.log(`${uniqueJobs.length} unique jobs after dedup`);
+
     // Upsert into database
-    if (allJobs.length > 0) {
-      const { error } = await supabase.from("cached_jobs").upsert(allJobs, {
+    if (uniqueJobs.length > 0) {
+      // Use external_id+source upsert, and also handle conflicts gracefully
+      const { error } = await supabase.from("cached_jobs").upsert(uniqueJobs, {
         onConflict: "external_id,source",
-        ignoreDuplicates: false,
+        ignoreDuplicates: true,
       });
 
       if (error) {
         console.error("Upsert error:", error);
+        // Try individual inserts as fallback for uniqueness conflicts
+        let inserted = 0;
+        for (const job of uniqueJobs) {
+          const { error: insertErr } = await supabase.from("cached_jobs").upsert(job, {
+            onConflict: "external_id,source",
+            ignoreDuplicates: true,
+          });
+          if (!insertErr) inserted++;
+        }
+        console.log(`Fallback: inserted ${inserted}/${uniqueJobs.length}`);
       }
     }
 
-    // Clean up jobs older than 14 days
+    // Archive jobs older than 72 hours (mark as not hot, reduce score)
+    const threeDaysAgo = new Date(Date.now() - 72 * 3600000).toISOString();
+    await supabase
+      .from("cached_jobs")
+      .update({ hot: false, hot_score: 0 })
+      .lt("posted_at", threeDaysAgo);
+
+    // Delete jobs older than 14 days
     const twoWeeksAgo = new Date(Date.now() - 14 * 86400000).toISOString();
     await supabase.from("cached_jobs").delete().lt("created_at", twoWeeksAgo);
 
     return new Response(
-      JSON.stringify({ success: true, fetched: allJobs.length }),
+      JSON.stringify({ success: true, fetched: allJobs.length, unique: uniqueJobs.length }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {

@@ -17,11 +17,15 @@ export type Database = {
       cached_jobs: {
         Row: {
           apply_url: string | null
+          category: string | null
           company: string
+          country: string | null
           created_at: string
           description: string | null
           external_id: string | null
+          featured: boolean | null
           hot: boolean | null
+          hot_score: number | null
           id: string
           industry: string | null
           location: string
@@ -34,14 +38,20 @@ export type Database = {
           title: string
           type: string | null
           updated_at: string
+          verified: boolean | null
+          visa_sponsorship: boolean | null
         }
         Insert: {
           apply_url?: string | null
+          category?: string | null
           company: string
+          country?: string | null
           created_at?: string
           description?: string | null
           external_id?: string | null
+          featured?: boolean | null
           hot?: boolean | null
+          hot_score?: number | null
           id?: string
           industry?: string | null
           location: string
@@ -54,14 +64,20 @@ export type Database = {
           title: string
           type?: string | null
           updated_at?: string
+          verified?: boolean | null
+          visa_sponsorship?: boolean | null
         }
         Update: {
           apply_url?: string | null
+          category?: string | null
           company?: string
+          country?: string | null
           created_at?: string
           description?: string | null
           external_id?: string | null
+          featured?: boolean | null
           hot?: boolean | null
+          hot_score?: number | null
           id?: string
           industry?: string | null
           location?: string
@@ -74,6 +90,8 @@ export type Database = {
           title?: string
           type?: string | null
           updated_at?: string
+          verified?: boolean | null
+          visa_sponsorship?: boolean | null
         }
         Relationships: []
       }

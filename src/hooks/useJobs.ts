@@ -19,6 +19,12 @@ interface CachedJob {
   source: string;
   apply_url: string | null;
   description: string | null;
+  hot_score: number | null;
+  category: string | null;
+  country: string | null;
+  visa_sponsorship: boolean | null;
+  verified: boolean | null;
+  featured: boolean | null;
 }
 
 function mapCachedToJob(cj: CachedJob): Job {
@@ -33,9 +39,14 @@ function mapCachedToJob(cj: CachedJob): Job {
     posted: cj.posted || "Recently",
     hot: cj.hot || false,
     tag: cj.tag || undefined,
-    // Extra fields for live jobs
     apply_url: cj.apply_url || undefined,
     description: cj.description || undefined,
+    hot_score: cj.hot_score || 0,
+    category: cj.category || undefined,
+    country: cj.country || undefined,
+    visa_sponsorship: cj.visa_sponsorship || false,
+    verified: cj.verified || false,
+    featured: cj.featured || false,
   } as Job;
 }
 
@@ -43,21 +54,22 @@ async function fetchLiveJobs(): Promise<{ jobs: Job[]; featured: Job[] }> {
   const { data, error } = await supabase
     .from("cached_jobs")
     .select("*")
+    .order("hot_score", { ascending: false })
     .order("posted_at", { ascending: false })
-    .limit(200);
+    .limit(500);
 
   if (error || !data || data.length === 0) {
-    // Fallback to static data
     return { jobs: JOBS, featured: FEATURED_JOBS };
   }
 
-  const liveJobs = (data as CachedJob[]).map(mapCachedToJob);
-  const hotJobs = liveJobs.filter((j) => j.hot).slice(0, 6);
+  const liveJobs = (data as unknown as CachedJob[]).map(mapCachedToJob);
+  
+  // Featured: highest scoring hot jobs
+  const hotJobs = liveJobs.filter((j) => j.hot || (j.hot_score && j.hot_score >= 50)).slice(0, 6);
   const featured = hotJobs.length >= 3 ? hotJobs : FEATURED_JOBS;
 
   // Merge: live jobs first, then static as padding
   const combined = [...liveJobs, ...JOBS];
-  // Deduplicate by title+company
   const seen = new Set<string>();
   const deduped = combined.filter((j) => {
     const key = `${j.title.toLowerCase()}|${j.company.toLowerCase()}`;
@@ -73,12 +85,11 @@ export function useJobs() {
   return useQuery({
     queryKey: ["live-jobs"],
     queryFn: fetchLiveJobs,
-    staleTime: 1000 * 60 * 30, // 30 min
+    staleTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });
 }
 
-// Trigger a refresh from the edge function
 export async function triggerJobsFetch() {
   try {
     await supabase.functions.invoke("fetch-jobs");
