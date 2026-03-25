@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import PageLayout from "@/components/PageLayout";
 import { supabase } from "@/integrations/supabase/client";
@@ -176,12 +176,12 @@ export default function OrderPage() {
   const [paymentError, setPaymentError] = useState<"credentials" | "network" | "generic" | null>(null);
   const [retryingPayment, setRetryingPayment] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({});
+  const [checkoutRequestId, setCheckoutRequestId] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  const navigate = useNavigate();
 
   const jobFromQuery = searchParams.get("job_title");
   const companyFromQuery = searchParams.get("company");
@@ -202,7 +202,7 @@ export default function OrderPage() {
     if (jobFromQuery) {
       setFormValues((prev) => ({ ...prev, jobTitle: jobFromQuery, targetCompany: companyFromQuery || "" }));
     }
-  }, [searchParams]);
+  }, [searchParams, jobFromQuery, companyFromQuery]);
 
   const toggleService = (id: string) => {
     setSelectedServices((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]));
@@ -229,24 +229,40 @@ export default function OrderPage() {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const checkPaymentStatus = async (id: string) => {
+  const checkPaymentStatus = async () => {
     try {
       setPaymentChecking(true);
 
-      const { data, error } = await supabase.from("orders").select("status").eq("id", id).maybeSingle();
-
-      if (error) {
-        console.warn("Orders query failed:", error);
+      if (!checkoutRequestId) {
         toast({
-          title: "Payment check temporarily unavailable.",
-          description: "Please confirm payment on your phone.",
+          title: "Payment not yet linked",
+          description: "Please complete the M-Pesa prompt on your phone first.",
+          variant: "destructive",
         });
         return;
       }
 
-      if (data?.status === "paid") {
+      const { data, error } = await supabase
+        .from("payments")
+        .select("status, mpesa_code")
+        .eq("checkout_request_id", checkoutRequestId)
+        .maybeSingle();
+
+      if (error) {
+        console.warn("Payments query failed:", error);
+        toast({
+          title: "Payment check temporarily unavailable.",
+          description: "Please wait a few seconds and try again.",
+        });
+        return;
+      }
+
+      if (data?.status === "COMPLETED") {
         setPaymentConfirmed(true);
-        toast({ title: "Payment confirmed! 🎉" });
+        toast({
+          title: "Payment confirmed! 🎉",
+          description: data?.mpesa_code ? `Receipt: ${data.mpesa_code}` : undefined,
+        });
       } else {
         toast({
           title: "Payment not yet received. Please check your phone and try again.",
@@ -280,56 +296,31 @@ export default function OrderPage() {
       setTimeout(() => setValidationErrors({}), 3000);
       return;
     }
-    setValidationErrors({});
 
+    setValidationErrors({});
     setIsSubmitting(true);
 
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      const allDetails = JSON.stringify(formValues);
-
-      const { data: order, error } = await supabase
-        .from("orders")
-        .insert({
-          user_id: user?.id || null,
-          name: name.trim(),
-          email: email.trim(),
-          phone: formatPhone(phone.trim()) || null,
-          services: selectedServices,
-          details: allDetails,
-          total_amount: total,
-          status: "pending",
-          job_title: formValues.jobTitle?.trim() || formValues.coverLetterRole?.trim() || null,
-          experience: formValues.experience?.trim() || null,
-          skills: formValues.skills?.trim() || null,
-          education: formValues.education?.trim() || null,
-        } as any)
-        .select()
-        .single();
-
-      if (error) throw error;
+      const formattedPhone = formatPhone(phone.trim());
+      const paymentRef = crypto.randomUUID().replace(/-/g, "").slice(0, 12).toUpperCase();
 
       if (files.length > 0) {
         for (const file of files) {
-          const filePath = `${order.id}/${Date.now()}-${file.name}`;
+          const filePath = `${paymentRef}/${Date.now()}-${file.name}`;
           const { error: uploadError } = await supabase.storage.from("order-documents").upload(filePath, file);
           if (uploadError) console.error("Upload error:", uploadError);
         }
       }
 
-      setOrderId(order.id);
+      setOrderId(paymentRef);
       setOrderPlaced(true);
 
-      // Trigger M-Pesa STK Push
       try {
         const { data: stkData, error: stkError } = await supabase.functions.invoke("mpesa-stk-push", {
           body: {
-            phone: formatPhone(phone.trim()),
+            phone: formattedPhone,
             amount: total,
-            accountReference: order.id.slice(0, 12).toUpperCase(),
+            accountReference: paymentRef,
             transactionDesc:
               isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", "),
           },
@@ -345,6 +336,7 @@ export default function OrderPage() {
         } else if (stkData?.success === true) {
           setStkSent(true);
           setPaymentError(null);
+          setCheckoutRequestId(stkData.checkoutRequestId || "");
           toast({ title: "Check your phone for the M-Pesa payment prompt 📱" });
         } else {
           console.error("STK response:", stkData);
@@ -363,20 +355,52 @@ export default function OrderPage() {
             });
           } else {
             setPaymentError("generic");
-            toast({ title: "M-Pesa request failed. Please try again or pay manually.", variant: "destructive" });
+            toast({
+              title: "M-Pesa request failed. Please try again or pay manually.",
+              variant: "destructive",
+            });
           }
         }
       } catch (stkErr) {
         console.error("STK invoke error:", stkErr);
         setPaymentError("network");
-        toast({ title: "Could not reach payment service. Try the manual option below.", variant: "destructive" });
+        toast({
+          title: "Could not reach payment service. Try the manual option below.",
+          variant: "destructive",
+        });
       }
 
-      // Trigger Zapier webhook (background)
-      supabase.functions.invoke("notify-zapier", { body: { order } }).catch(console.error);
+      supabase.functions
+        .invoke("notify-zapier", {
+          body: {
+            order: {
+              id: paymentRef,
+              name: name.trim(),
+              email: email.trim(),
+              phone: formattedPhone,
+              services: selectedServices,
+              details: formValues,
+              total_amount: total,
+              status: "pending",
+            },
+          },
+        })
+        .catch(console.error);
 
-      // Trigger AI document generation (background)
-      supabase.functions.invoke("generate-cv", { body: { orderId: order.id } }).catch(console.error);
+      supabase.functions
+        .invoke("generate-cv", {
+          body: {
+            orderId: paymentRef,
+            customer: {
+              name: name.trim(),
+              email: email.trim(),
+              phone: formattedPhone,
+            },
+            services: selectedServices,
+            details: formValues,
+          },
+        })
+        .catch(console.error);
     } catch (error: any) {
       console.error("Order error:", error);
       toast({ title: "Something went wrong", description: error.message, variant: "destructive" });
@@ -503,7 +527,7 @@ export default function OrderPage() {
                                       body: {
                                         phone: formatPhone(phone.trim()),
                                         amount: total,
-                                        accountReference: orderId.slice(0, 12).toUpperCase(),
+                                        accountReference: orderId,
                                         transactionDesc:
                                           isPackageMode && packageParam
                                             ? PACKAGE_MAP[packageParam].label
@@ -511,9 +535,11 @@ export default function OrderPage() {
                                       },
                                     },
                                   );
+
                                   if (!stkError && stkData?.success === true) {
                                     setStkSent(true);
                                     setPaymentError(null);
+                                    setCheckoutRequestId(stkData.checkoutRequestId || "");
                                     toast({ title: "Check your phone for the M-Pesa prompt 📱" });
                                   } else {
                                     toast({
@@ -563,8 +589,7 @@ export default function OrderPage() {
                               2. Business Number: <span className="font-mono text-primary">4561075</span>
                             </p>
                             <p>
-                              3. Account Number:{" "}
-                              <span className="font-mono text-primary">{orderId.slice(0, 12).toUpperCase()}</span>
+                              3. Account Number: <span className="font-mono text-primary">{orderId}</span>
                             </p>
                             <p>
                               4. Amount: <span className="font-semibold text-primary">{formatKES(total)}</span>
@@ -577,7 +602,7 @@ export default function OrderPage() {
 
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <Button
-                      onClick={() => checkPaymentStatus(orderId)}
+                      onClick={() => checkPaymentStatus()}
                       disabled={paymentChecking}
                       className="bg-gradient-brand border-0 font-semibold gold-shimmer"
                     >
@@ -613,7 +638,6 @@ export default function OrderPage() {
 
   return (
     <PageLayout>
-      {/* Hero */}
       <section className="relative z-10 pt-8 sm:pt-16 pb-6 px-4">
         <div className="container max-w-4xl mx-auto text-center">
           <motion.h1
@@ -637,11 +661,9 @@ export default function OrderPage() {
         </div>
       </section>
 
-      {/* Order Form */}
       <section className="relative z-10 pb-32 md:pb-40 px-4">
         <div className="container max-w-4xl mx-auto">
           <div className="grid lg:grid-cols-5 gap-8">
-            {/* Main Form */}
             <div className="lg:col-span-3">
               {jobFromQuery && (
                 <motion.div
@@ -977,7 +999,6 @@ export default function OrderPage() {
               </motion.div>
             </div>
 
-            {/* Summary Sidebar */}
             <div className="lg:col-span-2">
               <motion.div
                 initial="hidden"
@@ -1072,7 +1093,6 @@ export default function OrderPage() {
         </div>
       </section>
 
-      {/* Mobile sticky bottom bar */}
       <div className="fixed bottom-16 left-0 right-0 z-30 lg:hidden border-t border-border/60 bg-card/95 backdrop-blur-xl px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.3)]">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
