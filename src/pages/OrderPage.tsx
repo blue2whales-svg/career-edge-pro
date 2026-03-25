@@ -177,6 +177,9 @@ export default function OrderPage() {
   const [retryingPayment, setRetryingPayment] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({});
   const [checkoutRequestId, setCheckoutRequestId] = useState("");
+  const [documentsGenerating, setDocumentsGenerating] = useState(false);
+  const [documentsGenerated, setDocumentsGenerated] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
@@ -229,6 +232,46 @@ export default function OrderPage() {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const runGenerateCv = async (formattedPhone?: string) => {
+    try {
+      setDocumentsGenerating(true);
+
+      const phoneToUse = formattedPhone || formatPhone(phone.trim());
+
+      const { error } = await supabase.functions.invoke("generate-cv", {
+        body: {
+          orderId,
+          customer: {
+            name: name.trim(),
+            email: email.trim(),
+            phone: phoneToUse,
+          },
+          services: selectedServices,
+          details: formValues,
+        },
+      });
+
+      if (error) {
+        console.error("generate-cv error:", error);
+        toast({
+          title: "Payment confirmed, but document generation is delayed.",
+          description: "Please wait a bit and refresh the review page shortly.",
+        });
+        return;
+      }
+
+      setDocumentsGenerated(true);
+    } catch (genErr) {
+      console.error("generate-cv invoke failed:", genErr);
+      toast({
+        title: "Payment confirmed, but document generation is delayed.",
+        description: "Please wait a bit and refresh the review page shortly.",
+      });
+    } finally {
+      setDocumentsGenerating(false);
+    }
+  };
+
   const checkPaymentStatus = async () => {
     try {
       setPaymentChecking(true);
@@ -262,6 +305,11 @@ export default function OrderPage() {
 
       if (data?.status === "COMPLETED") {
         setPaymentConfirmed(true);
+
+        if (!documentsGenerated && !documentsGenerating) {
+          await runGenerateCv();
+        }
+
         toast({
           title: "Payment confirmed! 🎉",
           description: data?.mpesa_code ? `Receipt: ${data.mpesa_code}` : undefined,
@@ -391,21 +439,6 @@ export default function OrderPage() {
           },
         })
         .catch(console.error);
-
-      supabase.functions
-        .invoke("generate-cv", {
-          body: {
-            orderId: paymentRef,
-            customer: {
-              name: name.trim(),
-              email: email.trim(),
-              phone: formattedPhone,
-            },
-            services: selectedServices,
-            details: formValues,
-          },
-        })
-        .catch(console.error);
     } catch (error: any) {
       console.error("Order error:", error);
       toast({ title: "Something went wrong", description: error.message, variant: "destructive" });
@@ -429,7 +462,9 @@ export default function OrderPage() {
                     Payment <span className="text-gradient">Confirmed!</span>
                   </h1>
                   <p className="text-sm text-muted-foreground mb-2">
-                    Your AI-powered documents are being generated now!
+                    {documentsGenerating
+                      ? "Your AI-powered documents are being generated now..."
+                      : "Your AI-powered documents are being generated now!"}
                   </p>
                   <p className="text-sm font-mono text-primary mb-8">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
 
@@ -629,8 +664,7 @@ export default function OrderPage() {
                   </div>
 
                   <p className="text-xs text-muted-foreground mt-4">
-                    Your documents are being generated in the background. Once payment is confirmed, you'll get full
-                    access to edit and download them.
+                    Your documents will be generated only after payment is confirmed.
                   </p>
                 </>
               )}
