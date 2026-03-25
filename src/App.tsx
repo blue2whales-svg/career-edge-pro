@@ -37,6 +37,7 @@ import OrderDetailPage from "./pages/OrderDetailPage";
 import PortalDocuments from "./pages/PortalDocuments";
 import PortalMessages from "./pages/PortalMessages";
 import PortalSettingsPage from "./pages/PortalSettingsPage";
+import AdminJobsPage from "./pages/AdminJobsPage";
 
 import NotFound from "./pages/NotFound";
 
@@ -94,6 +95,7 @@ const App = () => (
             <Route path="settings" element={<PortalSettingsPage />} />
           </Route>
 
+          <Route path="/admin/jobs" element={<AuthGuard><AdminJobsPage /></AuthGuard>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
