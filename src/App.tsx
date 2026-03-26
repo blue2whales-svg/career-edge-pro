@@ -52,14 +52,15 @@ const App = () => {
     script.type = "module";
     script.async = true;
 
-    const chatbot = document.createElement("zapier-interfaces-chatbot-embed");
-    chatbot.setAttribute("is-popup", "false");
-    chatbot.setAttribute("chatbot-id", "cmn7mjqup0043z045os1e5hcw");
-    chatbot.setAttribute("height", "600px");
-    chatbot.setAttribute("width", "400px");
+    script.onload = () => {
+      const chatbot = document.createElement("zapier-interfaces-chatbot-embed");
+      chatbot.setAttribute("is-popup", "true");
+      chatbot.setAttribute("chatbot-id", "cmn7mjqup0043z045os1e5hcw");
+
+      document.body.appendChild(chatbot);
+    };
 
     document.body.appendChild(script);
-    document.body.appendChild(chatbot);
   }, []);
 
   return (
