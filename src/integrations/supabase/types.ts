@@ -14,6 +14,76 @@ export type Database = {
   }
   public: {
     Tables: {
+      application_messages: {
+        Row: {
+          application_id: string
+          body: string
+          created_at: string | null
+          id: string
+          read: boolean | null
+          sender_id: string
+        }
+        Insert: {
+          application_id: string
+          body: string
+          created_at?: string | null
+          id?: string
+          read?: boolean | null
+          sender_id: string
+        }
+        Update: {
+          application_id?: string
+          body?: string
+          created_at?: string | null
+          id?: string
+          read?: boolean | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "application_messages_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      applications: {
+        Row: {
+          applied_at: string | null
+          candidate_id: string
+          cover_note: string | null
+          id: string
+          job_id: string
+          status: string | null
+        }
+        Insert: {
+          applied_at?: string | null
+          candidate_id: string
+          cover_note?: string | null
+          id?: string
+          job_id: string
+          status?: string | null
+        }
+        Update: {
+          applied_at?: string | null
+          candidate_id?: string
+          cover_note?: string | null
+          id?: string
+          job_id?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_postings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cached_jobs: {
         Row: {
           apply_url: string | null
@@ -95,6 +165,66 @@ export type Database = {
         }
         Relationships: []
       }
+      candidate_profiles: {
+        Row: {
+          created_at: string | null
+          cv_url: string | null
+          full_name: string | null
+          headline: string | null
+          id: string
+          location: string | null
+          phone: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          cv_url?: string | null
+          full_name?: string | null
+          headline?: string | null
+          id?: string
+          location?: string | null
+          phone?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          cv_url?: string | null
+          full_name?: string | null
+          headline?: string | null
+          id?: string
+          location?: string | null
+          phone?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      employer_profiles: {
+        Row: {
+          company_name: string | null
+          created_at: string | null
+          id: string
+          plan_expires_at: string | null
+          plan_pkg: string | null
+          user_id: string
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string | null
+          id?: string
+          plan_expires_at?: string | null
+          plan_pkg?: string | null
+          user_id: string
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string | null
+          id?: string
+          plan_expires_at?: string | null
+          plan_pkg?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       generated_documents: {
         Row: {
           content: string
@@ -132,6 +262,89 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      interviews: {
+        Row: {
+          application_id: string
+          created_at: string | null
+          id: string
+          meeting_link: string | null
+          notes: string | null
+          scheduled_at: string | null
+        }
+        Insert: {
+          application_id: string
+          created_at?: string | null
+          id?: string
+          meeting_link?: string | null
+          notes?: string | null
+          scheduled_at?: string | null
+        }
+        Update: {
+          application_id?: string
+          created_at?: string | null
+          id?: string
+          meeting_link?: string | null
+          notes?: string | null
+          scheduled_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interviews_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_postings: {
+        Row: {
+          company: string
+          created_at: string | null
+          description: string | null
+          employer_id: string
+          expires_at: string | null
+          id: string
+          industry: string | null
+          job_type: string | null
+          location: string | null
+          plan_pkg: string | null
+          salary: string | null
+          status: string | null
+          title: string
+        }
+        Insert: {
+          company: string
+          created_at?: string | null
+          description?: string | null
+          employer_id: string
+          expires_at?: string | null
+          id?: string
+          industry?: string | null
+          job_type?: string | null
+          location?: string | null
+          plan_pkg?: string | null
+          salary?: string | null
+          status?: string | null
+          title: string
+        }
+        Update: {
+          company?: string
+          created_at?: string | null
+          description?: string | null
+          employer_id?: string
+          expires_at?: string | null
+          id?: string
+          industry?: string | null
+          job_type?: string | null
+          location?: string | null
+          plan_pkg?: string | null
+          salary?: string | null
+          status?: string | null
+          title?: string
+        }
+        Relationships: []
       }
       messages: {
         Row: {

@@ -64,9 +64,14 @@ async function fetchLiveJobs(): Promise<{ jobs: Job[]; featured: Job[] }> {
 
   const liveJobs = (data as unknown as CachedJob[]).map(mapCachedToJob);
   
-  // Featured: highest scoring hot jobs
-  const hotJobs = liveJobs.filter((j) => j.hot || (j.hot_score && j.hot_score >= 50)).slice(0, 6);
-  const featured = hotJobs.length >= 3 ? hotJobs : FEATURED_JOBS;
+  // Featured: explicit > hot > top jobs
+  const featured = (() => {
+    const explicit = liveJobs.filter(j => j.featured === true);
+    if (explicit.length >= 3) return explicit.slice(0, 6);
+    const hot = liveJobs.filter(j => j.hot === true || (j.hot_score && j.hot_score >= 40));
+    if (hot.length >= 3) return hot.slice(0, 6);
+    return liveJobs.slice(0, 6);
+  })();
 
   // Merge: live jobs first, then static as padding
   const combined = [...liveJobs, ...JOBS];

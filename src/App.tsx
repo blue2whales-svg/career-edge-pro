@@ -23,6 +23,8 @@ import CoverLetterPage from "./pages/CoverLetterPage";
 import ATSCheckerPage from "./pages/ATSCheckerPage";
 import TrackerPage from "./pages/TrackerPage";
 import VaultPage from "./pages/VaultPage";
+import PostJobPage from "./pages/PostJobPage";
+import EmployerDashboard from "./pages/EmployerDashboard";
 import DocumentVaultPage from "./pages/DocumentVaultPage";
 import ProPage from "./pages/ProPage";
 import RecruitersPage from "./pages/RecruitersPage";
@@ -67,7 +69,9 @@ const App = () => (
           <Route path="/cv-editor/:templateId" element={<NewCVEditorPage />} />
           <Route path="/cover-letter" element={<CoverLetterPage />} />
           <Route path="/ats-checker" element={<ATSCheckerPage />} />
-          <Route path="/tracker" element={<TrackerPage />} />
+          <Route path="/tracker" element={<AuthGuard><TrackerPage /></AuthGuard>} />
+          <Route path="/post-job" element={<AuthGuard><PostJobPage /></AuthGuard>} />
+          <Route path="/employer-dashboard" element={<AuthGuard><EmployerDashboard /></AuthGuard>} />
           <Route path="/vault" element={<Navigate to="/document-vault" replace />} />
           <Route path="/document-vault" element={<AuthGuard><DocumentVaultPage /></AuthGuard>} />
           <Route path="/pro" element={<ProPage />} />
