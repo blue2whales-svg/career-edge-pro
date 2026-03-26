@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, FileText, Briefcase, ShoppingCart, PenSquare, FolderLock } from "lucide-react";
+import { Home, Briefcase, ShoppingCart, PenSquare, FolderLock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
@@ -16,11 +16,12 @@ export default function MobileBottomNav() {
   if (pathname.startsWith("/portal")) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden border-t border-border/40 surface-glass backdrop-blur-xl">
+    <nav className="fixed bottom-0 left-0 right-0 z-30 md:hidden border-t border-border/40 surface-glass backdrop-blur-xl mb-2">
       <div className="flex items-center justify-around h-16 px-1">
         {NAV_ITEMS.map((item) => {
           const isActive = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
           const isOrder = item.to === "/order";
+
           return (
             <Link
               key={item.to}
@@ -43,6 +44,8 @@ export default function MobileBottomNav() {
           );
         })}
       </div>
+
+      {/* Safe area for iPhone bottom spacing */}
       <div className="h-[env(safe-area-inset-bottom)]" />
     </nav>
   );
