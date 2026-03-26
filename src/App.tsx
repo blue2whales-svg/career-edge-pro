@@ -46,23 +46,6 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => {
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://interfaces.zapier.com/assets/web-components/zapier-interfaces/zapier-interfaces.esm.js";
-    script.type = "module";
-    script.async = true;
-
-    script.onload = () => {
-      const chatbot = document.createElement("zapier-interfaces-chatbot-embed");
-      chatbot.setAttribute("is-popup", "true");
-      chatbot.setAttribute("chatbot-id", "cmn7mjqup0043z045os1e5hcw");
-
-      document.body.appendChild(chatbot);
-    };
-
-    document.body.appendChild(script);
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
