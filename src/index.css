@@ -299,3 +299,64 @@
   background: hsl(var(--muted));
   border-radius: 2px;
 }
+/* ===============================
+   FLOATING WIDGET FIX (FINAL)
+   =============================== */
+
+/* WhatsApp button → LEFT side */
+a[href*="wa.me"],
+a[href*="whatsapp.com"] {
+  position: fixed !important;
+  left: 16px !important;
+  right: auto !important;
+  bottom: 90px !important; /* lifted above mobile nav */
+  z-index: 80 !important;
+}
+
+/* Desktop adjustment */
+@media (min-width: 768px) {
+  a[href*="wa.me"],
+  a[href*="whatsapp.com"] {
+    left: 24px !important;
+    bottom: 24px !important;
+  }
+}
+
+/* Chatbot launcher → RIGHT side */
+iframe[title*="chat"],
+iframe[title*="Chat"],
+iframe[title*="widget"],
+iframe[title*="Widget"],
+#tawkchat-container,
+#tawkchat-minified-box,
+.tawk-min-container,
+.tawk-button,
+.tawk-chat-bubble,
+div[class*="chat-widget"],
+div[class*="chat-launcher"],
+div[class*="widget-launcher"] {
+  position: fixed !important;
+  right: 16px !important;
+  left: auto !important;
+  bottom: 90px !important;
+  z-index: 90 !important;
+}
+
+/* Desktop chatbot */
+@media (min-width: 768px) {
+  iframe[title*="chat"],
+  iframe[title*="Chat"],
+  iframe[title*="widget"],
+  iframe[title*="Widget"],
+  #tawkchat-container,
+  #tawkchat-minified-box,
+  .tawk-min-container,
+  .tawk-button,
+  .tawk-chat-bubble,
+  div[class*="chat-widget"],
+  div[class*="chat-launcher"],
+  div[class*="widget-launcher"] {
+    right: 20px !important;
+    bottom: 24px !important;
+  }
+}
