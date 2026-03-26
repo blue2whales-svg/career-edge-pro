@@ -558,11 +558,15 @@ export default function MpesaPaymentModal({
                 <Button
                   onClick={() => {
                     handleClose();
-                    window.location.href = "/cv-builder";
+                    if (selectedPackage.startsWith("recruiter-")) {
+                      window.location.href = `/post-job?pkg=${selectedPackage}`;
+                    } else {
+                      window.location.href = "/cv-builder";
+                    }
                   }}
                   className="w-full h-12 font-bold border-0 bg-gradient-brand gold-shimmer"
                 >
-                  🚀 Start Building My CV →
+                  {selectedPackage.startsWith("recruiter-") ? "📝 Post Your Job →" : "🚀 Start Building My CV →"}
                 </Button>
               </div>
             )}

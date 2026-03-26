@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Plus, Edit3, Trash2, Search, Briefcase } from "lucide-react";
+import { Trash2, Search, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import PageLayout from "@/components/PageLayout";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface Application {
   id: string;
@@ -16,9 +15,7 @@ interface Application {
   jobTitle: string;
   country: string;
   dateApplied: string;
-  applicationLink: string;
   status: string;
-  notes: string;
 }
 
 const STATUSES = ["Applied", "Interview Requested", "Shortlisted", "Rejected", "Offer Received"];
@@ -30,20 +27,60 @@ const STATUS_COLORS: Record<string, string> = {
   "Offer Received": "bg-green-500/15 text-green-400 border-green-500/30 shadow-[0_0_8px_rgba(34,197,94,0.3)]",
 };
 
-const getApps = (): Application[] => {
-  try { return JSON.parse(localStorage.getItem("cvedge_applications") || "[]"); }
-  catch { return []; }
-};
-
 export default function TrackerPage() {
-  const [apps, setApps] = useState<Application[]>(getApps);
+  const navigate = useNavigate();
+  const [apps, setApps] = useState<Application[]>([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editApp, setEditApp] = useState<Application | null>(null);
-  const [form, setForm] = useState({ company: "", jobTitle: "", country: "", dateApplied: new Date().toISOString().split("T")[0], applicationLink: "", status: "Applied", notes: "" });
+  const [userId, setUserId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => { localStorage.setItem("cvedge_applications", JSON.stringify(apps)); }, [apps]);
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user) { navigate("/login"); return; }
+      setUserId(data.user.id);
+      loadApplications(data.user.id);
+    });
+  }, [navigate]);
+
+  const loadApplications = async (uid: string) => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("applications")
+      .select("id, status, applied_at, cover_note, job_id, candidate_id, job_postings(title, company, location)")
+      .eq("candidate_id", uid)
+      .order("applied_at", { ascending: false });
+
+    if (!error && data) {
+      const mapped: Application[] = (data as any[]).map(a => ({
+        id: a.id,
+        company: a.job_postings?.company || "Unknown",
+        jobTitle: a.job_postings?.title || "Unknown",
+        country: a.job_postings?.location || "—",
+        dateApplied: new Date(a.applied_at).toISOString().split("T")[0],
+        status: a.status,
+      }));
+      setApps(mapped);
+    }
+    setLoading(false);
+  };
+
+  // Realtime subscription for status changes
+  useEffect(() => {
+    if (!userId) return;
+    const channel = supabase
+      .channel("tracker-apps")
+      .on("postgres_changes", {
+        event: "UPDATE",
+        schema: "public",
+        table: "applications",
+        filter: `candidate_id=eq.${userId}`,
+      }, (payload) => {
+        setApps(prev => prev.map(a => a.id === (payload.new as any).id ? { ...a, status: (payload.new as any).status } : a));
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [userId]);
 
   const filtered = apps.filter(a => {
     const matchSearch = a.company.toLowerCase().includes(search.toLowerCase()) || a.jobTitle.toLowerCase().includes(search.toLowerCase());
@@ -58,56 +95,14 @@ export default function TrackerPage() {
     offers: apps.filter(a => a.status === "Offer Received").length,
   };
 
-  const handleSave = () => {
-    if (!form.company || !form.jobTitle || !form.country) { toast.error("Fill in required fields"); return; }
-    if (editApp) {
-      setApps(prev => prev.map(a => a.id === editApp.id ? { ...a, ...form } : a));
-      toast.success("Application updated!");
-    } else {
-      setApps(prev => [...prev, { ...form, id: Date.now().toString() }]);
-      toast.success("Application added!");
-    }
-    setModalOpen(false);
-    setEditApp(null);
-    setForm({ company: "", jobTitle: "", country: "", dateApplied: new Date().toISOString().split("T")[0], applicationLink: "", status: "Applied", notes: "" });
-  };
-
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
+    await supabase.from("applications").delete().eq("id", id);
     setApps(prev => prev.filter(a => a.id !== id));
-    toast.success("Application removed");
-  };
-
-  const openEdit = (app: Application) => {
-    setEditApp(app);
-    setForm(app);
-    setModalOpen(true);
+    toast.success("Application withdrawn");
   };
 
   return (
     <PageLayout>
-      <Dialog open={modalOpen} onOpenChange={(open) => { setModalOpen(open); if (!open) setEditApp(null); }}>
-        <DialogContent className="max-w-md">
-          <DialogHeader><DialogTitle>{editApp ? "Edit" : "Add"} Application</DialogTitle></DialogHeader>
-          <div className="space-y-3">
-            <div><Label>Company *</Label><Input value={form.company} onChange={e => setForm(f => ({ ...f, company: e.target.value }))} className="mt-1" /></div>
-            <div><Label>Job Title *</Label><Input value={form.jobTitle} onChange={e => setForm(f => ({ ...f, jobTitle: e.target.value }))} className="mt-1" /></div>
-            <div><Label>Country *</Label><Input value={form.country} onChange={e => setForm(f => ({ ...f, country: e.target.value }))} className="mt-1" /></div>
-            <div><Label>Date Applied</Label><Input type="date" value={form.dateApplied} onChange={e => setForm(f => ({ ...f, dateApplied: e.target.value }))} className="mt-1" /></div>
-            <div><Label>Application Link</Label><Input value={form.applicationLink} onChange={e => setForm(f => ({ ...f, applicationLink: e.target.value }))} className="mt-1" /></div>
-            <div><Label>Status</Label>
-              <Select value={form.status} onValueChange={v => setForm(f => ({ ...f, status: v }))}>
-                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-                <SelectContent>{STATUSES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
-              </Select>
-            </div>
-            <div><Label>Notes</Label><Textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={3} className="mt-1" /></div>
-            <Button onClick={handleSave} className="w-full bg-gradient-brand border-0 font-semibold">
-              {editApp ? "Update" : "Add"} Application
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
       <section className="relative z-10 pt-16 sm:pt-24 pb-24 px-4">
         <div className="container max-w-5xl mx-auto">
           <div className="flex items-center justify-between mb-6">
@@ -115,10 +110,6 @@ export default function TrackerPage() {
               <h1 className="text-3xl sm:text-4xl font-serif font-bold">Job Application <span className="text-gradient">Tracker</span></h1>
               <p className="text-sm text-muted-foreground mt-1">Track every application in one place</p>
             </div>
-            <Button onClick={() => { setForm({ company: "", jobTitle: "", country: "", dateApplied: new Date().toISOString().split("T")[0], applicationLink: "", status: "Applied", notes: "" }); setModalOpen(true); }}
-              className="bg-gradient-brand border-0 font-semibold gap-1.5">
-              <Plus className="h-4 w-4" /> Add
-            </Button>
           </div>
 
           {/* Stats */}
@@ -152,10 +143,14 @@ export default function TrackerPage() {
           </div>
 
           {/* Table */}
-          {filtered.length === 0 ? (
+          {loading ? (
+            <div className="text-center py-20 rounded-2xl border border-border bg-card">
+              <p className="text-muted-foreground text-sm">Loading applications...</p>
+            </div>
+          ) : filtered.length === 0 ? (
             <div className="text-center py-20 rounded-2xl border border-border bg-card">
               <Briefcase className="h-12 w-12 text-muted-foreground/30 mx-auto mb-4" />
-              <p className="text-muted-foreground text-sm">No applications yet. Start tracking!</p>
+              <p className="text-muted-foreground text-sm">No applications yet. Apply for jobs to start tracking!</p>
             </div>
           ) : (
             <div className="rounded-2xl border border-border bg-card overflow-hidden">
@@ -164,7 +159,7 @@ export default function TrackerPage() {
                   <thead><tr className="border-b border-border bg-muted/30">
                     <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground">Company</th>
                     <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground">Job Title</th>
-                    <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground hidden sm:table-cell">Country</th>
+                    <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground hidden sm:table-cell">Location</th>
                     <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground hidden sm:table-cell">Date</th>
                     <th className="text-left px-4 py-3 text-xs font-medium text-muted-foreground">Status</th>
                     <th className="text-right px-4 py-3 text-xs font-medium text-muted-foreground">Actions</th>
@@ -180,10 +175,7 @@ export default function TrackerPage() {
                           <span className={`text-xs px-2 py-0.5 rounded-full border ${STATUS_COLORS[app.status] || ""}`}>{app.status}</span>
                         </td>
                         <td className="px-4 py-3 text-right">
-                          <div className="flex gap-1 justify-end">
-                            <Button size="sm" variant="ghost" onClick={() => openEdit(app)}><Edit3 className="h-3.5 w-3.5" /></Button>
-                            <Button size="sm" variant="ghost" onClick={() => handleDelete(app.id)} className="text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button>
-                          </div>
+                          <Button size="sm" variant="ghost" onClick={() => handleDelete(app.id)} className="text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button>
                         </td>
                       </tr>
                     ))}
