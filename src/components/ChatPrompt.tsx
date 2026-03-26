@@ -31,17 +31,21 @@ export default function ChatPrompt() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 10, scale: 0.95 }}
           transition={{ type: "spring", stiffness: 300, damping: 24 }}
-          className="fixed bottom-24 right-6 z-[60] max-w-[280px] cursor-pointer"
+          className="fixed bottom-32 right-4 md:bottom-24 md:right-6 z-[60] max-w-[280px] cursor-pointer"
           onClick={openTawk}
         >
           <div className="relative bg-primary text-primary-foreground rounded-2xl rounded-br-sm px-4 py-3 shadow-xl">
             <button
-              onClick={(e) => { e.stopPropagation(); setVisible(false); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setVisible(false);
+              }}
               className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-background text-foreground flex items-center justify-center shadow-md hover:bg-accent transition-colors"
               aria-label="Dismiss"
             >
               <X className="w-3.5 h-3.5" />
             </button>
+
             <div className="flex items-start gap-2.5">
               <MessageCircle className="w-5 h-5 mt-0.5 shrink-0" />
               <div>
