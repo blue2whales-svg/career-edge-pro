@@ -17,6 +17,11 @@ export interface Job {
   country?: string;
   visa_sponsorship?: boolean;
   verified?: boolean;
+  source?: string;
+  source_label?: string;
+  posted_at?: string;
+  discovered_at?: string;
+  is_active?: boolean;
 }
 
 export const INDUSTRIES = [
@@ -55,6 +60,7 @@ export const FEATURED_JOBS: Job[] = [
     posted: "38 min ago",
     featured: true, hot: true, tag: "🚢 Cruise Line",
     hot_score: 85, category: "Cruise Jobs",
+    source: "platform_seed", source_label: "CV Edge",
   },
   {
     title: "Ship Restaurant Manager",
@@ -67,6 +73,7 @@ export const FEATURED_JOBS: Job[] = [
     posted: "1 hour ago",
     featured: true, hot: true, tag: "🚢 Cruise Line",
     hot_score: 80, category: "Cruise Jobs",
+    source: "platform_seed", source_label: "CV Edge",
   },
   {
     title: "Live-in Housemaid – Executive Villa",
@@ -79,6 +86,7 @@ export const FEATURED_JOBS: Job[] = [
     posted: "2 hours ago",
     featured: true, hot: true, tag: "🔥 Gulf Hot",
     hot_score: 75, category: "Gulf Jobs",
+    source: "platform_seed", source_label: "CV Edge",
   },
   {
     title: "Hotel Concierge",
@@ -91,6 +99,7 @@ export const FEATURED_JOBS: Job[] = [
     posted: "4 hours ago",
     featured: true, hot: true, tag: "🔥 Gulf Hot",
     hot_score: 70, category: "Gulf Jobs",
+    source: "platform_seed", source_label: "CV Edge",
   },
   {
     title: "Registered Nurse",
@@ -103,6 +112,7 @@ export const FEATURED_JOBS: Job[] = [
     posted: "3 hours ago",
     featured: true, hot: true, tag: "🔥 Gulf Hot",
     hot_score: 90, category: "Healthcare Jobs",
+    source: "platform_seed", source_label: "CV Edge",
   },
   {
     title: "Software Developer (Remote)",
@@ -115,6 +125,7 @@ export const FEATURED_JOBS: Job[] = [
     posted: "5 hours ago",
     featured: true, hot: true, tag: "🌍 Remote",
     hot_score: 72, category: "Remote Jobs",
+    source: "platform_seed", source_label: "CV Edge",
   },
 ];
 
@@ -131,6 +142,7 @@ export const JOBS: Job[] = [
     market: "USA",
     posted: "6 hours ago",
     hot: true, tag: "🚢 Cruise Line", category: "Cruise Jobs",
+    source: "platform_seed", source_label: "CV Edge",
   },
   {
     title: "Executive Chef",
@@ -142,6 +154,7 @@ export const JOBS: Job[] = [
     market: "Saudi Arabia",
     posted: "8 hours ago",
     hot: true, tag: "🔥 Gulf Hot", category: "Gulf Jobs",
+    source: "platform_seed", source_label: "CV Edge",
   },
   {
     title: "Civil Engineer",
@@ -153,6 +166,7 @@ export const JOBS: Job[] = [
     market: "Qatar",
     posted: "12 hours ago",
     hot: true, tag: "🔥 Gulf Hot", category: "Engineering Jobs",
+    source: "platform_seed", source_label: "CV Edge",
   },
   {
     title: "Nanny / Childminder",
@@ -164,6 +178,7 @@ export const JOBS: Job[] = [
     market: "UAE",
     posted: "1 day ago",
     hot: true, tag: "🔥 Gulf Hot", category: "Gulf Jobs",
+    source: "platform_seed", source_label: "CV Edge",
   },
   {
     title: "Customer Service Agent",
@@ -175,6 +190,7 @@ export const JOBS: Job[] = [
     market: "Kenya",
     posted: "1 day ago",
     category: "Kenya Jobs",
+    source: "platform_seed", source_label: "CV Edge",
   },
   {
     title: "Marketing Manager",
@@ -186,6 +202,7 @@ export const JOBS: Job[] = [
     market: "Kenya",
     posted: "2 days ago",
     category: "Kenya Jobs",
+    source: "platform_seed", source_label: "CV Edge",
   },
   {
     title: "Heavy Vehicle Driver",
@@ -197,6 +214,7 @@ export const JOBS: Job[] = [
     market: "UAE",
     posted: "1 day ago",
     tag: "🔥 Gulf Hot", category: "Drivers & Logistics",
+    source: "platform_seed", source_label: "CV Edge",
   },
   {
     title: "Project Manager — Construction",
@@ -208,5 +226,6 @@ export const JOBS: Job[] = [
     market: "Saudi Arabia",
     posted: "2 days ago",
     hot: true, tag: "🔥 Gulf Hot", category: "Construction Jobs",
+    source: "platform_seed", source_label: "CV Edge",
   },
 ];

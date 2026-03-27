@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MapPin, DollarSign, Clock, Building2, ArrowRight, Ship, Flame, Shield, Send } from "lucide-react";
+import { MapPin, DollarSign, Clock, Building2, ArrowRight, Ship, Flame, Shield, Send, Globe2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Job } from "@/data/jobs";
 import { CVMatchBadge } from "./CVMatchBadge";
@@ -31,7 +31,6 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
   const [postingInfo, setPostingInfo] = useState<JobPostingInfo | null>(null);
   const jobKey = `${job.title}|${job.company}`;
 
-  // Check if this is a posted job (exists in job_postings)
   useEffect(() => {
     const checkPosting = async () => {
       const { data } = await supabase
@@ -58,6 +57,10 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
     };
     checkPosting();
   }, [job.title, job.company]);
+
+  // Time display
+  const timeDisplay = job.posted || "Recently";
+  const sourceDisplay = job.source_label || job.source || "";
 
   return (
     <>
@@ -119,8 +122,13 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
                   <DollarSign className="h-3 w-3" /> {job.salary}
                 </span>
                 <span className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" /> {job.posted}
+                  <Clock className="h-3 w-3" /> {timeDisplay}
                 </span>
+                {sourceDisplay && (
+                  <span className="flex items-center gap-1 rounded-full border border-border bg-muted/40 px-2 py-0.5 text-[10px] font-mono">
+                    <Globe2 className="h-2.5 w-2.5" /> {sourceDisplay}
+                  </span>
+                )}
                 {job.tag && (
                   <span className={`rounded-full border px-2 py-0.5 text-[10px] font-mono ${
                     isCruise ? "border-blue-500/20 text-blue-400" : isGulf ? "border-brand-red/20 text-brand-red" : "border-border"

@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { MapPin, DollarSign, Clock, Building2, Ship, Flame, ArrowRight, CheckCircle2, Briefcase, GraduationCap, Star } from "lucide-react";
+import { MapPin, DollarSign, Clock, Building2, Ship, Flame, ArrowRight, CheckCircle2, Briefcase, GraduationCap, Star, Globe2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Job } from "@/data/jobs";
 
@@ -8,7 +8,6 @@ function generateRequirements(job: Job): string[] {
   const reqs: string[] = [];
   const { industry, title, tag, type } = job;
 
-  // Industry-specific qualifications
   if (industry === "Cruise & Hospitality") {
     reqs.push("Valid passport with 12+ months validity");
     if (tag?.includes("Cruise")) {
@@ -58,7 +57,6 @@ function generateRequirements(job: Job): string[] {
   }
 
   if (title.toLowerCase().includes("fresh graduate") || title.toLowerCase().includes("welcome")) {
-    // Remove experience requirements for fresh grad roles
     return reqs.filter(r => !r.toLowerCase().includes("years experience")).concat(["Fresh graduates are encouraged to apply"]);
   }
 
@@ -67,7 +65,7 @@ function generateRequirements(job: Job): string[] {
 
 function generateBenefits(job: Job): string[] {
   const benefits: string[] = [];
-  const { tag, salary, industry } = job;
+  const { tag, salary } = job;
 
   if (tag?.includes("Cruise")) {
     benefits.push("Free accommodation & meals onboard");
@@ -99,11 +97,11 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
   const isGulf = job.tag?.includes("Gulf");
   const requirements = generateRequirements(job);
   const benefits = generateBenefits(job);
+  const sourceDisplay = job.source_label || job.source || "";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto p-0 gap-0">
-        {/* Header */}
         <div className={`p-6 pb-4 border-b border-border ${
           isCruise ? "bg-blue-500/5" : isGulf ? "bg-brand-red/5" : "bg-gradient-brand-subtle"
         }`}>
@@ -121,21 +119,27 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
               <div>
                 <DialogTitle className="text-lg font-serif leading-tight">{job.title}</DialogTitle>
                 <p className="text-sm text-muted-foreground mt-1">{job.company}</p>
-                {job.tag && (
-                  <span className={`inline-flex items-center gap-1 mt-2 rounded-full border px-2.5 py-0.5 text-[11px] font-mono font-semibold ${
-                    isCruise ? "border-blue-500/20 text-blue-400 bg-blue-500/10" : isGulf ? "border-brand-red/20 text-brand-red bg-brand-red/10" : "border-border"
-                  }`}>
-                    {isCruise ? <Ship className="h-3 w-3" /> : <Flame className="h-3 w-3" />}
-                    {job.tag}
-                  </span>
-                )}
+                <div className="flex items-center gap-2 mt-2 flex-wrap">
+                  {job.tag && (
+                    <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-mono font-semibold ${
+                      isCruise ? "border-blue-500/20 text-blue-400 bg-blue-500/10" : isGulf ? "border-brand-red/20 text-brand-red bg-brand-red/10" : "border-border"
+                    }`}>
+                      {isCruise ? <Ship className="h-3 w-3" /> : <Flame className="h-3 w-3" />}
+                      {job.tag}
+                    </span>
+                  )}
+                  {sourceDisplay && (
+                    <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/40 px-2 py-0.5 text-[10px] font-mono text-muted-foreground">
+                      <Globe2 className="h-2.5 w-2.5" /> {sourceDisplay}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </DialogHeader>
         </div>
 
         <div className="p-6 space-y-6">
-          {/* Key Details */}
           <div className="grid grid-cols-2 gap-3">
             <div className="rounded-lg border border-border bg-muted/30 p-3">
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
@@ -163,7 +167,6 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
             </div>
           </div>
 
-          {/* Requirements */}
           <div>
             <h4 className="flex items-center gap-2 text-sm font-semibold mb-3">
               <GraduationCap className="h-4 w-4 text-primary" /> Qualifications & Requirements
@@ -178,7 +181,6 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
             </ul>
           </div>
 
-          {/* Benefits */}
           <div>
             <h4 className="flex items-center gap-2 text-sm font-semibold mb-3">
               <Star className="h-4 w-4 text-brand-red" /> Why This Role
@@ -193,7 +195,6 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
             </ul>
           </div>
 
-          {/* Description (for live jobs) */}
           {job.description && (
             <div>
               <h4 className="flex items-center gap-2 text-sm font-semibold mb-3">
@@ -203,7 +204,6 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
             </div>
           )}
 
-          {/* How it works - apply flow */}
           <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-2.5">
             <p className="text-xs font-semibold text-primary">📋 How to Apply for This Role</p>
             <ol className="space-y-1.5 text-[11px] text-muted-foreground list-decimal list-inside">
@@ -214,7 +214,6 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
             </ol>
           </div>
 
-          {/* Urgency + CTA */}
           <div className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-5 text-center space-y-3">
             <p className="text-sm font-semibold">
               🔥 Employers are hiring <span className="text-primary">NOW</span> — don't miss this opportunity
