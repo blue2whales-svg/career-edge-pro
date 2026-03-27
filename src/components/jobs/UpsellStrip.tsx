@@ -15,14 +15,15 @@ export function UpsellStrip({ variant }: { variant: Variant }) {
         }}
       >
         <div>
-          <p className="text-sm font-medium">
-            🎯 Most CVs fail ATS screening before a human ever reads them.
-          </p>
+          <p className="text-sm font-medium">🎯 Most CVs fail ATS screening before a human ever reads them.</p>
           <p className="text-xs text-muted-foreground mt-0.5">Is yours passing?</p>
         </div>
-        <Link to="/order?service=cv">
+
+        {/* UPDATED DESTINATION */}
+        <Link to="/ats-checker">
           <Button variant="outline" size="sm" className="text-xs font-semibold h-8 gap-1 shrink-0 rounded-lg">
-            Check Free <ArrowRight className="h-3 w-3" />
+            Check Free
+            <ArrowRight className="h-3 w-3" />
           </Button>
         </Link>
       </div>
@@ -38,14 +39,14 @@ export function UpsellStrip({ variant }: { variant: Variant }) {
       }}
     >
       <div>
-        <p className="text-sm font-medium">
-          ⚡ See a job you love? Make sure your CV is ready to compete for it.
-        </p>
+        <p className="text-sm font-medium">⚡ See a job you love? Make sure your CV is ready to compete for it.</p>
         <p className="text-xs text-muted-foreground mt-0.5">Professional Package → KSh 5,500</p>
       </div>
+
       <Link to="/order?service=professional">
         <Button variant="outline" size="sm" className="text-xs font-semibold h-8 gap-1 shrink-0 rounded-lg">
-          Upgrade My CV <ArrowRight className="h-3 w-3" />
+          Upgrade My CV
+          <ArrowRight className="h-3 w-3" />
         </Button>
       </Link>
     </div>
