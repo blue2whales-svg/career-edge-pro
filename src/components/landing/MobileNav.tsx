@@ -1,376 +1,95 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Menu, ArrowRight, Flame } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import cvedgeLogo from "@/assets/cvedge-logo.png";
 
-@layer base {
-  :root {
-    --background: 222 47% 5%;
-    --foreground: 40 20% 95%;
+const NAV_LINKS = [
+  { label: "Jobs", to: "/jobs" },
+  { label: "CV Builder", to: "/cv-builder" },
+  { label: "CV Templates", to: "/templates" },
+  { label: "Cover Letter", to: "/cover-letter" },
+  { label: "ATS Checker", to: "/ats-checker" },
+  { label: "Pricing", to: "/pricing" },
+  { label: "Services", to: "/services" },
+  { label: "Tracker", to: "/tracker" },
+  { label: "Pro ⭐", to: "/pro" },
+];
 
-    --card: 222 35% 8%;
-    --card-foreground: 40 20% 95%;
+export function MobileNav() {
+  const [open, setOpen] = useState(false);
 
-    --popover: 222 35% 8%;
-    --popover-foreground: 40 20% 95%;
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <button
+          className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg border border-border/50 bg-card/50 backdrop-blur-sm shrink-0"
+          aria-label="Open menu"
+        >
+          <Menu className="h-5 w-5 text-foreground" />
+        </button>
+      </SheetTrigger>
 
-    --primary: 43 55% 54%;
-    --primary-foreground: 222 47% 5%;
+      <SheetContent side="right" className="w-[85vw] max-w-sm bg-background border-border p-0">
+        <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
 
-    --secondary: 217 91% 60%;
-    --secondary-foreground: 222 47% 5%;
+        <div className="flex flex-col h-full">
+          {/* Header */}
+          <div className="flex items-center gap-2.5 p-5 border-b border-border/50">
+            <img
+              src={cvedgeLogo}
+              alt="CV Edge"
+              className="w-9 h-9 rounded-full shadow-glow-sm ring-1 ring-primary/20"
+            />
+            <span className="font-bold text-lg">CV Edge</span>
+          </div>
 
-    --muted: 222 25% 14%;
-    --muted-foreground: 220 15% 55%;
+          {/* Top Hot Jobs CTA */}
+          <div className="px-5 pt-4">
+            <Link to="/jobs?industry=%F0%9F%94%A5+Hot+Abroad" onClick={() => setOpen(false)}>
+              <Button
+                size="sm"
+                variant="outline"
+                className="w-full border-destructive/40 text-destructive hover:bg-destructive/10 font-semibold gap-1.5"
+              >
+                <Flame className="h-4 w-4" />
+                View Hot Jobs
+              </Button>
+            </Link>
+          </div>
 
-    --accent: 187 94% 43%;
-    --accent-foreground: 222 47% 5%;
+          {/* Links */}
+          <nav className="flex-1 py-4 overflow-y-auto">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                onClick={() => setOpen(false)}
+                className="flex items-center px-6 py-4 text-base font-medium text-foreground/80 hover:text-foreground hover:bg-primary/5 transition-colors border-b border-border/20"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 40 20% 95%;
+          {/* CTA buttons */}
+          <div className="p-5 space-y-3 border-t border-border/50">
+            <Link to="/login" onClick={() => setOpen(false)}>
+              <Button variant="outline" className="w-full h-12 text-base border-primary/30 hover:bg-primary/5">
+                Log in
+              </Button>
+            </Link>
 
-    --border: 222 20% 16%;
-    --input: 222 20% 16%;
-    --ring: 43 55% 54%;
-
-    --radius: 0.625rem;
-
-    --sidebar-background: 222 40% 6%;
-    --sidebar-foreground: 220 15% 55%;
-    --sidebar-primary: 43 55% 54%;
-    --sidebar-primary-foreground: 222 47% 5%;
-    --sidebar-accent: 222 25% 12%;
-    --sidebar-accent-foreground: 40 20% 95%;
-    --sidebar-border: 222 20% 14%;
-    --sidebar-ring: 43 55% 54%;
-
-    --gold: 43 55% 54%;
-    --gold-light: 43 60% 70%;
-    --gold-dark: 43 50% 40%;
-    --brand-red: 0 72% 51%;
-    --brand-red-light: 0 72% 65%;
-    --brand-blue: 217 91% 60%;
-    --brand-blue-light: 217 85% 72%;
-    --brand-white: 40 20% 95%;
-    --glow-primary: 43 55% 54%;
-    --glow-secondary: 217 91% 60%;
-    --surface-elevated: 222 30% 10%;
-    --surface-glass: 222 35% 8%;
-    --gradient-gold: linear-gradient(135deg, hsl(43 55% 54%), hsl(43 60% 70%));
-    --gradient-gold-subtle: linear-gradient(135deg, hsl(43 55% 54% / 0.15), hsl(43 60% 70% / 0.1));
-    --gradient-brand: linear-gradient(135deg, hsl(43 55% 54%), hsl(43 60% 70%));
-    --gradient-brand-subtle: linear-gradient(135deg, hsl(43 55% 54% / 0.15), hsl(43 60% 70% / 0.1));
-    --gradient-brand-full: linear-gradient(135deg, hsl(0 72% 51%), hsl(43 55% 54%), hsl(217 91% 60%));
-    --gradient-hero: linear-gradient(180deg, hsl(222 47% 5%) 0%, hsl(222 35% 8%) 100%);
-    --shadow-gold: 0 0 40px -10px hsl(43 55% 54% / 0.4);
-    --shadow-gold-sm: 0 0 20px -5px hsl(43 55% 54% / 0.3);
-    --shadow-glow: 0 0 40px -10px hsl(43 55% 54% / 0.4);
-    --shadow-glow-sm: 0 0 20px -5px hsl(43 55% 54% / 0.3);
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground font-sans antialiased;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-sans font-bold tracking-tight;
-  }
-}
-
-@layer utilities {
-  .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: var(--gradient-gold);
-  }
-
-  .text-gradient-blue {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(217 91% 60%), hsl(187 94% 43%));
-  }
-
-  .bg-gradient-brand {
-    background-image: var(--gradient-gold);
-  }
-
-  .bg-gradient-brand-subtle {
-    background-image: var(--gradient-brand-subtle);
-  }
-
-  .bg-gradient-hero {
-    background-image: var(--gradient-hero);
-  }
-
-  .shadow-glow {
-    box-shadow: var(--shadow-gold);
-  }
-
-  .shadow-glow-sm {
-    box-shadow: var(--shadow-gold-sm);
-  }
-
-  .surface-elevated {
-    background-color: hsl(var(--surface-elevated));
-  }
-
-  .surface-glass {
-    background-color: hsl(var(--surface-glass) / 0.8);
-    backdrop-filter: blur(12px);
-  }
-
-  .border-glow {
-    border-color: hsl(var(--glow-primary) / 0.3);
-  }
-
-  .gold-shimmer {
-    position: relative;
-    overflow: hidden;
-  }
-
-  .gold-shimmer::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, hsl(43 60% 70% / 0.2), transparent);
-    animation: shimmer 3s ease-in-out infinite;
-  }
-}
-
-/* Grid background pattern */
-.bg-grid {
-  background-image:
-    linear-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(var(--border) / 0.3) 1px, transparent 1px);
-  background-size: 60px 60px;
-}
-
-/* Diagonal section divider */
-.diagonal-top {
-  clip-path: polygon(0 8%, 100% 0, 100% 100%, 0 100%);
-}
-
-.diagonal-bottom {
-  clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
-}
-
-/* Animated gradient orb */
-@keyframes orb-float {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-  33% {
-    transform: translate(30px, -30px) scale(1.05);
-  }
-  66% {
-    transform: translate(-20px, 20px) scale(0.95);
-  }
-}
-
-.animate-orb {
-  animation: orb-float 8s ease-in-out infinite;
-}
-
-@keyframes shimmer {
-  0% {
-    left: -100%;
-  }
-  50% {
-    left: 100%;
-  }
-  100% {
-    left: 100%;
-  }
-}
-
-@keyframes slide-up-fade {
-  0% {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slide-down-fade {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-12px);
-  }
-}
-
-.animate-slide-up {
-  animation: slide-up-fade 0.4s ease-out forwards;
-}
-
-.animate-slide-down {
-  animation: slide-down-fade 0.4s ease-out forwards;
-}
-
-@keyframes pulse-soft {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
-}
-
-.animate-pulse-soft {
-  animation: pulse-soft 2s ease-in-out infinite;
-}
-
-@keyframes counter-tick {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-2px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-.animate-tick {
-  animation: counter-tick 0.3s ease-out;
-}
-
-/* Horizontal scroll animation for trust bar */
-@keyframes scroll-left {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-scroll-left {
-  animation: scroll-left 30s linear infinite;
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: hsl(var(--background));
-}
-
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted));
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground));
-}
-
-.scrollbar-none::-webkit-scrollbar {
-  display: none;
-}
-
-.scrollbar-none {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.scrollbar-thin::-webkit-scrollbar {
-  width: 4px;
-}
-
-.scrollbar-thin::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted));
-  border-radius: 2px;
-}
-
-/* ===============================
-   FLOATING WIDGET FIX (FINAL)
-   =============================== */
-
-/* WhatsApp button → LEFT side */
-a[href*="wa.me"],
-a[href*="whatsapp.com"] {
-  position: fixed !important;
-  left: 16px !important;
-  right: auto !important;
-  bottom: 110px !important;
-  z-index: 80 !important;
-}
-
-/* Desktop adjustment */
-@media (min-width: 768px) {
-  a[href*="wa.me"],
-  a[href*="whatsapp.com"] {
-    left: 24px !important;
-    bottom: 24px !important;
-  }
-}
-
-/* Chatbot launcher → RIGHT side */
-iframe[title*="chat"],
-iframe[title*="Chat"],
-iframe[title*="widget"],
-iframe[title*="Widget"],
-#tawkchat-container,
-#tawkchat-minified-box,
-.tawk-min-container,
-.tawk-button,
-.tawk-chat-bubble,
-div[class*="chat-widget"],
-div[class*="chat-launcher"],
-div[class*="widget-launcher"] {
-  position: fixed !important;
-  right: 16px !important;
-  left: auto !important;
-  bottom: 180px !important;
-  z-index: 90 !important;
-}
-
-/* Desktop chatbot adjustment */
-@media (min-width: 768px) {
-  iframe[title*="chat"],
-  iframe[title*="Chat"],
-  iframe[title*="widget"],
-  iframe[title*="Widget"],
-  #tawkchat-container,
-  #tawkchat-minified-box,
-  .tawk-min-container,
-  .tawk-button,
-  .tawk-chat-bubble,
-  div[class*="chat-widget"],
-  div[class*="chat-launcher"],
-  div[class*="widget-launcher"] {
-    right: 20px !important;
-    bottom: 24px !important;
-  }
-}
-
-/* Extra breathing room for mobile bottom area */
-@media (max-width: 768px) {
-  body {
-    padding-bottom: 100px;
-  }
+            <Link to="/signup" onClick={() => setOpen(false)}>
+              <Button className="w-full h-12 text-base bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer">
+                Sign Up Free
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
 }
