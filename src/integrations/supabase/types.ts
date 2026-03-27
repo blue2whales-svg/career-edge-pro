@@ -92,18 +92,21 @@ export type Database = {
           country: string | null
           created_at: string
           description: string | null
+          discovered_at: string
           external_id: string | null
           featured: boolean | null
           hot: boolean | null
           hot_score: number | null
           id: string
           industry: string | null
+          is_active: boolean
           location: string
           market: string | null
           posted: string | null
           posted_at: string | null
           salary: string | null
           source: string
+          source_label: string | null
           tag: string | null
           title: string
           type: string | null
@@ -118,18 +121,21 @@ export type Database = {
           country?: string | null
           created_at?: string
           description?: string | null
+          discovered_at?: string
           external_id?: string | null
           featured?: boolean | null
           hot?: boolean | null
           hot_score?: number | null
           id?: string
           industry?: string | null
+          is_active?: boolean
           location: string
           market?: string | null
           posted?: string | null
           posted_at?: string | null
           salary?: string | null
           source?: string
+          source_label?: string | null
           tag?: string | null
           title: string
           type?: string | null
@@ -144,18 +150,21 @@ export type Database = {
           country?: string | null
           created_at?: string
           description?: string | null
+          discovered_at?: string
           external_id?: string | null
           featured?: boolean | null
           hot?: boolean | null
           hot_score?: number | null
           id?: string
           industry?: string | null
+          is_active?: boolean
           location?: string
           market?: string | null
           posted?: string | null
           posted_at?: string | null
           salary?: string | null
           source?: string
+          source_label?: string | null
           tag?: string | null
           title?: string
           type?: string | null
