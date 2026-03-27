@@ -14,15 +14,18 @@ export function UpsellStrip({ variant }: { variant: Variant }) {
           border: "1px solid rgba(59,130,246,0.2)",
         }}
       >
+        {/* Message */}
         <div>
-          <p className="text-sm font-medium">🎯 Most CVs fail ATS screening before a human ever reads them.</p>
-          <p className="text-xs text-muted-foreground mt-0.5">Is yours passing?</p>
+          <p className="text-sm font-semibold">🎯 Most CVs fail ATS before a recruiter even sees them.</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Check your CV free in seconds and see if it is hurting your chances.
+          </p>
         </div>
 
-        {/* UPDATED DESTINATION */}
+        {/* CTA → ATS CHECKER */}
         <Link to="/ats-checker">
           <Button variant="outline" size="sm" className="text-xs font-semibold h-8 gap-1 shrink-0 rounded-lg">
-            Check Free
+            Check My CV Free
             <ArrowRight className="h-3 w-3" />
           </Button>
         </Link>
@@ -38,11 +41,13 @@ export function UpsellStrip({ variant }: { variant: Variant }) {
         border: "1px solid rgba(245,158,11,0.2)",
       }}
     >
+      {/* Message */}
       <div>
-        <p className="text-sm font-medium">⚡ See a job you love? Make sure your CV is ready to compete for it.</p>
+        <p className="text-sm font-semibold">⚡ See a job you love? Make sure your CV is ready to compete for it.</p>
         <p className="text-xs text-muted-foreground mt-0.5">Professional Package → KSh 5,500</p>
       </div>
 
+      {/* CTA → ORDER PAGE (UNCHANGED) */}
       <Link to="/order?service=professional">
         <Button variant="outline" size="sm" className="text-xs font-semibold h-8 gap-1 shrink-0 rounded-lg">
           Upgrade My CV
