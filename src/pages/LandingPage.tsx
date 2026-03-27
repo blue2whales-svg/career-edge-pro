@@ -38,30 +38,46 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* NAVBAR */}
       <nav className="border-b border-border/30 sticky top-0 z-10 bg-background/70 backdrop-blur">
-        <div className="container max-w-6xl mx-auto flex items-center justify-between h-16 px-4">
-          <div className="flex items-center gap-2">
-            <img src={cvedgeLogo} alt="CV Edge" className="w-10 h-10 rounded-full" />
-            <span className="font-bold text-lg">CV Edge</span>
+        <div className="container max-w-6xl mx-auto flex items-center justify-between h-16 px-4 gap-3">
+          {/* Left */}
+          <div className="flex items-center gap-2 min-w-0">
+            <img src={cvedgeLogo} alt="CV Edge" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full shrink-0" />
+            <span className="font-bold text-sm sm:text-lg truncate">CV Edge</span>
           </div>
 
+          {/* Desktop middle links */}
           <div className="hidden md:flex gap-6 text-sm text-muted-foreground">
-            <Link to="/services">Services</Link>
-            <Link to="/scholarships">Scholarships</Link>
-            <Link to="/pricing">Pricing</Link>
-            <Link to="/jobs">Jobs</Link>
-            <Link to="/how-it-works">How it Works</Link>
+            <Link to="/services" className="hover:text-foreground transition-colors">
+              Services
+            </Link>
+            <Link to="/scholarships" className="hover:text-foreground transition-colors">
+              Scholarships
+            </Link>
+            <Link to="/pricing" className="hover:text-foreground transition-colors">
+              Pricing
+            </Link>
+            <Link to="/jobs" className="hover:text-foreground transition-colors">
+              Jobs
+            </Link>
+            <Link to="/how-it-works" className="hover:text-foreground transition-colors">
+              How it Works
+            </Link>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Link to="/jobs?industry=%F0%9F%94%A5+Hot+Abroad">
-              <Button size="sm" variant="outline">
+          {/* Right */}
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Hide on mobile, show from small screens upward */}
+            <Link to="/jobs?industry=%F0%9F%94%A5+Hot+Abroad" className="hidden sm:inline-flex">
+              <Button size="sm" variant="outline" className="whitespace-nowrap">
                 <Flame className="w-4 h-4 mr-1" />
                 Hot Jobs
               </Button>
             </Link>
 
             <Link to="/order">
-              <Button size="sm">Order Now</Button>
+              <Button size="sm" className="whitespace-nowrap px-3 sm:px-4">
+                Order Now
+              </Button>
             </Link>
 
             <MobileNav />
@@ -104,6 +120,16 @@ export default function LandingPage() {
             <Link to="/services">
               <Button variant="outline" size="lg">
                 See Services
+              </Button>
+            </Link>
+          </div>
+
+          {/* Mobile Hot Jobs button — better placement */}
+          <div className="mt-4 sm:hidden">
+            <Link to="/jobs?industry=%F0%9F%94%A5+Hot+Abroad">
+              <Button variant="outline" size="sm" className="w-full">
+                <Flame className="w-4 h-4 mr-1" />
+                Browse Hot Jobs
               </Button>
             </Link>
           </div>
