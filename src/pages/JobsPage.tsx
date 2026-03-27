@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Globe, Shield, Sparkles } from "lucide-react";
+import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Globe, Sparkles, SearchX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Link, useSearchParams } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import { FeaturedJobs } from "@/components/jobs/FeaturedJobs";
@@ -12,7 +13,7 @@ import { LiveStatusBar } from "@/components/jobs/LiveStatusBar";
 import { FeaturedCategories } from "@/components/jobs/FeaturedCategories";
 import { UpsellStrip } from "@/components/jobs/UpsellStrip";
 import { INDUSTRIES, MARKETS, JOB_CATEGORIES, type Job } from "@/data/jobs";
-import { useJobs, triggerJobsFetch } from "@/hooks/useJobs";
+import { useJobsPaginated, useCategoryCounts, triggerJobsFetch, type JobFilters } from "@/hooks/useJobs";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -29,14 +30,40 @@ export default function JobsPage() {
   const initialCategory = searchParams.get("category") || "All Categories";
 
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedIndustry, setSelectedIndustry] = useState(initialIndustry);
   const [selectedMarket, setSelectedMarket] = useState(initialMarket);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [isManualRefreshing, setIsManualRefreshing] = useState(false);
 
-  const { data, isLoading, refetch } = useJobs();
-  const jobs = data?.jobs ?? [];
+  // Debounce search
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  const filters: JobFilters = {
+    search: debouncedSearch || undefined,
+    category: selectedCategory !== "All Categories" ? selectedCategory : undefined,
+    industry: selectedIndustry !== "All" ? selectedIndustry : undefined,
+    market: selectedMarket !== "All Markets" ? selectedMarket : undefined,
+  };
+
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useJobsPaginated(filters);
+
+  const { data: counts } = useCategoryCounts();
+  const totalActive = counts?.total ?? 0;
+
+  const allJobs = data?.pages.flatMap(p => p.jobs) ?? [];
+  const totalCount = data?.pages[0]?.totalCount ?? 0;
 
   const handleRefresh = useCallback(() => {
     setIsManualRefreshing(true);
@@ -45,32 +72,23 @@ export default function JobsPage() {
     });
   }, [refetch]);
 
-  const handleFilterChange = useCallback((params: { search?: string; industry?: string; market?: string }) => {
+  const handleFilterChange = useCallback((params: Partial<JobFilters>) => {
     if (params.search) setSearch(params.search);
     if (params.industry) setSelectedIndustry(params.industry);
     if (params.market) setSelectedMarket(params.market);
+    if (params.category) setSelectedCategory(params.category);
+    if (params.visaOnly) {
+      // Reset other filters and show visa jobs
+      setSelectedCategory("All Categories");
+      setSelectedIndustry("All");
+      setSelectedMarket("All Markets");
+      setSearch("visa");
+    }
   }, []);
 
   useEffect(() => {
     triggerJobsFetch();
   }, []);
-
-  const filtered = jobs.filter((job) => {
-    const matchSearch = job.title.toLowerCase().includes(search.toLowerCase()) ||
-      job.company.toLowerCase().includes(search.toLowerCase());
-    if (selectedIndustry === "🔥 Hot Abroad") {
-      const matchMarket = selectedMarket === "All Markets" || job.market === selectedMarket;
-      const matchCategory = selectedCategory === "All Categories" || job.category === selectedCategory;
-      return matchSearch && job.hot && matchMarket && matchCategory;
-    }
-    const matchIndustry = selectedIndustry === "All" || job.industry === selectedIndustry;
-    const matchMarket = selectedMarket === "All Markets" || job.market === selectedMarket;
-    const matchCategory = selectedCategory === "All Categories" || job.category === selectedCategory;
-    return matchSearch && matchIndustry && matchMarket && matchCategory;
-  });
-
-  // Sort by hot_score descending
-  const sorted = [...filtered].sort((a, b) => (b.hot_score || 0) - (a.hot_score || 0));
 
   return (
     <PageLayout>
@@ -101,7 +119,7 @@ export default function JobsPage() {
           >
             <Flame className="h-3.5 w-3.5 text-brand-red" />
             <span className="text-xs text-muted-foreground font-mono">
-              {jobs.length} live roles · Cruise & Gulf trending · Updated every 30 min
+              {totalActive || allJobs.length} live roles · Cruise & Gulf trending · Updated every 30 min
             </span>
           </motion.div>
 
@@ -139,7 +157,7 @@ export default function JobsPage() {
       <FeaturedJobs />
 
       {/* Featured Categories */}
-      <FeaturedCategories jobs={jobs} onFilterChange={handleFilterChange} />
+      <FeaturedCategories onFilterChange={handleFilterChange} />
 
       {/* Category Filters */}
       <section className="relative z-10 pb-2 px-4">
@@ -167,14 +185,14 @@ export default function JobsPage() {
         <div className="container max-w-5xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
             <h2 className="text-lg font-serif font-bold">All Openings</h2>
-            <span className="text-xs text-muted-foreground font-mono">{sorted.length} roles</span>
+            <span className="text-xs text-muted-foreground font-mono">{totalCount} roles</span>
             <Button
               variant="ghost"
               size="sm"
               className="ml-auto text-xs gap-1.5"
-              onClick={() => { triggerJobsFetch().then(() => refetch()); }}
+              onClick={handleRefresh}
             >
-              <RefreshCw className="h-3.5 w-3.5" /> Refresh
+              <RefreshCw className={`h-3.5 w-3.5 ${isManualRefreshing ? "animate-spin" : ""}`} /> Refresh
             </Button>
           </div>
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
@@ -215,31 +233,86 @@ export default function JobsPage() {
       <section className="relative z-10 pb-24 px-4">
         <div className="container max-w-5xl mx-auto">
           <div className="mb-4">
-            <LiveStatusBar jobCount={sorted.length} isRefreshing={isManualRefreshing} onRefresh={handleRefresh} />
+            <LiveStatusBar jobCount={totalCount} isRefreshing={isManualRefreshing} onRefresh={handleRefresh} />
           </div>
 
           {isLoading ? (
-            <div className="text-center py-20">
-              <RefreshCw className="h-6 w-6 animate-spin mx-auto text-muted-foreground mb-3" />
-              <p className="text-muted-foreground text-sm">Loading live jobs...</p>
-            </div>
-          ) : (
             <div className="space-y-3">
-              {sorted.map((job, i) => (
-                <React.Fragment key={i}>
-                  <JobCard job={job} index={i} onClick={() => setSelectedJob(job)} />
-                  {i > 0 && (i + 1) % 6 === 0 && (
-                    <UpsellStrip variant={Math.floor(i / 6) % 2 === 0 ? "ats" : "bundle"} />
-                  )}
-                </React.Fragment>
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="rounded-xl border border-border bg-card p-5 sm:p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex-1 flex items-start gap-3">
+                      <Skeleton className="w-10 h-10 rounded-lg shrink-0" />
+                      <div className="flex-1">
+                        <Skeleton className="h-5 w-3/4 mb-2" />
+                        <Skeleton className="h-4 w-1/2 mb-3" />
+                        <div className="flex gap-3">
+                          <Skeleton className="h-3 w-24" />
+                          <Skeleton className="h-3 w-20" />
+                          <Skeleton className="h-3 w-16" />
+                        </div>
+                      </div>
+                    </div>
+                    <Skeleton className="h-10 w-32" />
+                  </div>
+                </div>
               ))}
             </div>
-          )}
-
-          {!isLoading && sorted.length === 0 && (
+          ) : allJobs.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-muted-foreground">No jobs found matching your search. Try a different filter.</p>
+              <SearchX className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No jobs found</h3>
+              <p className="text-muted-foreground text-sm mb-6 max-w-md mx-auto">
+                No jobs match your current filters. Try adjusting your search, category, or market filters to discover more opportunities.
+              </p>
+              <div className="flex gap-3 justify-center flex-wrap">
+                <Button variant="outline" size="sm" onClick={() => {
+                  setSearch("");
+                  setSelectedCategory("All Categories");
+                  setSelectedIndustry("All");
+                  setSelectedMarket("All Markets");
+                }}>
+                  Clear All Filters
+                </Button>
+                <Button size="sm" className="bg-gradient-brand border-0" onClick={handleRefresh}>
+                  <RefreshCw className="h-3.5 w-3.5 mr-1.5" /> Refresh Jobs
+                </Button>
+              </div>
             </div>
+          ) : (
+            <>
+              <div className="space-y-3">
+                {allJobs.map((job, i) => (
+                  <React.Fragment key={`${job.title}-${job.company}-${i}`}>
+                    <JobCard job={job} index={i} onClick={() => setSelectedJob(job)} />
+                    {i > 0 && (i + 1) % 6 === 0 && (
+                      <UpsellStrip variant={Math.floor(i / 6) % 2 === 0 ? "ats" : "bundle"} />
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
+
+              {/* Load More */}
+              {hasNextPage && (
+                <div className="text-center mt-8">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => fetchNextPage()}
+                    disabled={isFetchingNextPage}
+                    className="min-w-[200px]"
+                  >
+                    {isFetchingNextPage ? (
+                      <>
+                        <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> Loading...
+                      </>
+                    ) : (
+                      <>Load More Jobs ({totalCount - allJobs.length} remaining)</>
+                    )}
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>

@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { Job } from "@/data/jobs";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useCategoryCounts, type JobFilters } from "@/hooks/useJobs";
 
 interface FeaturedCategoriesProps {
-  jobs: Job[];
-  onFilterChange: (params: { search?: string; industry?: string; market?: string }) => void;
+  onFilterChange: (filters: Partial<JobFilters>) => void;
 }
 
 const fadeUp = {
@@ -21,51 +21,49 @@ const categories = [
     icon: "🇰🇪",
     title: "Kenya Jobs",
     subtitle: "Fresh local opportunities in Nairobi, Mombasa & more",
-    filter: { market: "Kenya" },
-    countFn: (jobs: Job[]) => jobs.filter((j) => j.market === "Kenya").length,
+    filter: { market: "Kenya" } as Partial<JobFilters>,
+    countKey: "Kenya Jobs",
   },
   {
     icon: "🏨",
     title: "Dubai & Gulf Jobs",
     subtitle: "Hotels, construction, healthcare & more — tax-free",
-    filter: { industry: "🔥 Hot Abroad", market: "UAE" },
-    countFn: (jobs: Job[]) =>
-      jobs.filter((j) => ["UAE", "Qatar", "Saudi Arabia", "Oman"].includes(j.market)).length,
+    filter: { category: "Gulf Jobs" } as Partial<JobFilters>,
+    countKey: "Gulf Jobs",
   },
   {
     icon: "🚢",
     title: "Cruise Ship Jobs",
     subtitle: "Global cruise lines actively recruiting",
-    filter: { search: "cruise" },
-    countFn: (jobs: Job[]) =>
-      jobs.filter((j) => j.title.toLowerCase().includes("cruise") || j.tag?.includes("Cruise")).length,
+    filter: { category: "Cruise Jobs" } as Partial<JobFilters>,
+    countKey: "Cruise Jobs",
   },
   {
     icon: "🌍",
     title: "Remote Jobs",
     subtitle: "Work globally from anywhere in Africa",
-    filter: { search: "remote" },
-    countFn: (jobs: Job[]) =>
-      jobs.filter((j) => j.type?.toLowerCase().includes("remote") || j.title.toLowerCase().includes("remote") || j.category === "Remote Jobs").length,
+    filter: { category: "Remote Jobs" } as Partial<JobFilters>,
+    countKey: "Remote Jobs",
   },
   {
     icon: "✈️",
     title: "Visa Sponsorship",
     subtitle: "Employers offering work permits & relocation",
-    filter: { search: "visa" },
-    countFn: (jobs: Job[]) =>
-      jobs.filter((j) => j.visa_sponsorship || j.tag?.includes("Visa")).length,
+    filter: { visaOnly: true } as Partial<JobFilters>,
+    countKey: "Visa Sponsorship",
   },
   {
     icon: "🏥",
     title: "Healthcare Jobs",
     subtitle: "Nursing, medical & healthcare roles abroad",
-    filter: { industry: "Healthcare" },
-    countFn: (jobs: Job[]) => jobs.filter((j) => j.industry === "Healthcare").length,
+    filter: { industry: "Healthcare" } as Partial<JobFilters>,
+    countKey: "Healthcare Jobs",
   },
 ];
 
-export function FeaturedCategories({ jobs, onFilterChange }: FeaturedCategoriesProps) {
+export function FeaturedCategories({ onFilterChange }: FeaturedCategoriesProps) {
+  const { data: counts, isLoading } = useCategoryCounts();
+
   return (
     <section className="relative z-10 pb-6 px-4">
       <div className="container max-w-5xl mx-auto">
@@ -74,7 +72,7 @@ export function FeaturedCategories({ jobs, onFilterChange }: FeaturedCategoriesP
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {categories.map((cat, i) => {
-            const count = cat.countFn(jobs);
+            const count = counts?.[cat.countKey] ?? 0;
             return (
               <motion.div
                 key={cat.title}
@@ -92,7 +90,11 @@ export function FeaturedCategories({ jobs, onFilterChange }: FeaturedCategoriesP
                 <h3 className="font-semibold text-sm mb-1">{cat.title}</h3>
                 <p className="text-xs text-muted-foreground mb-3">{cat.subtitle}</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground font-mono">{count} jobs live</span>
+                  {isLoading ? (
+                    <Skeleton className="h-4 w-16" />
+                  ) : (
+                    <span className="text-xs text-muted-foreground font-mono">{count} jobs live</span>
+                  )}
                   <Button variant="ghost" size="sm" className="text-xs h-7 px-2 gap-1 text-primary">
                     Browse <ArrowRight className="h-3 w-3" />
                   </Button>
