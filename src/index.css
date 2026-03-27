@@ -43,7 +43,7 @@
     --sidebar-border: 222 20% 14%;
     --sidebar-ring: 43 55% 54%;
 
-    /* Brand tokens — matches logo: white, red, blue, gold */
+    /* Brand tokens */
     --gold: 43 55% 54%;
     --gold-light: 43 60% 70%;
     --gold-dark: 43 50% 40%;
@@ -56,12 +56,14 @@
     --glow-secondary: 217 91% 60%;
     --surface-elevated: 222 30% 10%;
     --surface-glass: 222 35% 8%;
+
     --gradient-gold: linear-gradient(135deg, hsl(43 55% 54%), hsl(43 60% 70%));
     --gradient-gold-subtle: linear-gradient(135deg, hsl(43 55% 54% / 0.15), hsl(43 60% 70% / 0.1));
     --gradient-brand: linear-gradient(135deg, hsl(43 55% 54%), hsl(43 60% 70%));
     --gradient-brand-subtle: linear-gradient(135deg, hsl(43 55% 54% / 0.15), hsl(43 60% 70% / 0.1));
     --gradient-brand-full: linear-gradient(135deg, hsl(0 72% 51%), hsl(43 55% 54%), hsl(217 91% 60%));
     --gradient-hero: linear-gradient(180deg, hsl(222 47% 5%) 0%, hsl(222 35% 8%) 100%);
+
     --shadow-gold: 0 0 40px -10px hsl(43 55% 54% / 0.4);
     --shadow-gold-sm: 0 0 20px -5px hsl(43 55% 54% / 0.3);
     --shadow-glow: 0 0 40px -10px hsl(43 55% 54% / 0.4);
@@ -100,7 +102,7 @@
   }
 
   .bg-gradient-brand {
-    background-image: var(--gradient-gold);
+    background-image: var(--gradient-brand);
   }
 
   .bg-gradient-brand-subtle {
@@ -136,6 +138,7 @@
     position: relative;
     overflow: hidden;
   }
+
   .gold-shimmer::after {
     content: "";
     position: absolute;
@@ -160,6 +163,7 @@
 .diagonal-top {
   clip-path: polygon(0 8%, 100% 0, 100% 100%, 0 100%);
 }
+
 .diagonal-bottom {
   clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
 }
@@ -273,13 +277,16 @@
   width: 6px;
   height: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: hsl(var(--background));
 }
+
 ::-webkit-scrollbar-thumb {
   background: hsl(var(--muted));
   border-radius: 3px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground));
 }
@@ -287,6 +294,7 @@
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
 .scrollbar-none {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -295,10 +303,12 @@
 .scrollbar-thin::-webkit-scrollbar {
   width: 4px;
 }
+
 .scrollbar-thin::-webkit-scrollbar-thumb {
   background: hsl(var(--muted));
   border-radius: 2px;
 }
+
 /* ===============================
    FLOATING WIDGET FIX (FINAL)
    =============================== */
@@ -309,7 +319,7 @@ a[href*="whatsapp.com"] {
   position: fixed !important;
   left: 16px !important;
   right: auto !important;
-  bottom: 110px !important; /* lifted above mobile nav */
+  bottom: 110px !important;
   z-index: 80 !important;
 }
 
@@ -338,7 +348,7 @@ div[class*="widget-launcher"] {
   position: fixed !important;
   right: 16px !important;
   left: auto !important;
-  bottom: 110px !important;
+  bottom: 180px !important;
   z-index: 90 !important;
 }
 
@@ -359,4 +369,62 @@ div[class*="widget-launcher"] {
     right: 20px !important;
     bottom: 24px !important;
   }
+}
+
+/* ===============================
+   PREMIUM CARD EFFECT (10M LOOK)
+   =============================== */
+
+.premium-card {
+  position: relative;
+  border-radius: 20px;
+  background: hsl(var(--card));
+  overflow: hidden;
+  transition: all 0.35s ease;
+}
+
+.premium-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, hsl(43 55% 54% / 0.4), transparent 40%, transparent 60%, hsl(217 91% 60% / 0.25));
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: 0;
+}
+
+.premium-card::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: hsl(var(--card));
+  z-index: 0;
+}
+
+.premium-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.premium-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow:
+    0 20px 60px -20px hsl(43 55% 54% / 0.35),
+    0 10px 30px -10px hsl(217 91% 60% / 0.25);
+}
+
+.premium-card:hover::before {
+  opacity: 1;
+}
+
+.premium-glass {
+  backdrop-filter: blur(14px);
+  background: hsl(var(--card) / 0.75);
+  border: 1px solid hsl(var(--border));
+}
+
+.ats-badge {
+  box-shadow: 0 0 18px hsl(43 55% 54% / 0.35);
 }
