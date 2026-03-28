@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const BeforeAfterSection = () => {
   return (
     <section className="relative overflow-hidden py-16 md:py-24">
@@ -271,6 +273,7 @@ const BeforeAfterSection = () => {
             </div>
           </div>
 
+          {/* CTA */}
           <div className="mx-auto mt-2 max-w-3xl text-center">
             <p className="text-base font-medium text-foreground md:text-lg">
               Your experience deserves a CV that opens doors.
@@ -279,10 +282,12 @@ const BeforeAfterSection = () => {
               ATS-friendly • Premium layout • Built for serious employers • Ready in 24 hours
             </p>
 
-            <div className="mt-6">
-              <button className="inline-flex items-center justify-center rounded-2xl bg-gradient-brand px-6 py-3 text-sm font-bold text-primary-foreground shadow-glow transition hover:scale-[1.02]">
-                Upgrade My CV
-              </button>
+            <div className="mt-6 pb-24 sm:pb-0">
+              <Link to="/order">
+                <button className="relative z-50 inline-flex items-center justify-center rounded-2xl bg-gradient-brand px-6 py-3 text-sm font-bold text-primary-foreground shadow-glow transition hover:scale-[1.02]">
+                  Upgrade My CV
+                </button>
+              </Link>
             </div>
           </div>
         </div>
