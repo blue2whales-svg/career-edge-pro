@@ -24,7 +24,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link, useSearchParams } from "react-router-dom";
+// ✅ CHANGE 1: Added useNavigate
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import PageLayout from "@/components/PageLayout";
 import { supabase } from "@/integrations/supabase/client";
@@ -159,6 +160,9 @@ const PACKAGE_MAP: Record<string, { services: string[]; label: string; price: nu
 
 export default function OrderPage() {
   const [searchParams] = useSearchParams();
+  // ✅ CHANGE 2: useNavigate hook
+  const navigate = useNavigate();
+
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -192,6 +196,11 @@ export default function OrderPage() {
   const companyFromQuery = searchParams.get("company");
   const packageParam = searchParams.get("package");
   const isPackageMode = !!(packageParam && PACKAGE_MAP[packageParam]);
+
+  // ✅ CHANGE 3: Detect if the order contains any Europass service
+  const isEuropassOrder = selectedServices.some(
+    (s) => s === "europass-cv" || s === "europass-cover-letter"
+  );
 
   useEffect(() => {
     trackViewContent("Order", "Checkout");
@@ -281,8 +290,15 @@ export default function OrderPage() {
       if (data?.status === "COMPLETED") {
         setPaymentConfirmed(true);
         trackPurchase(total, "KES");
-        if (!documentsGenerated && !documentsGenerating) await runGenerateCv();
         toast({ title: "Payment confirmed! 🎉", description: data?.mpesa_code ? `Receipt: ${data.mpesa_code}` : undefined });
+
+        // ✅ CHANGE 4: Europass orders go to the builder; all others go to /review
+        if (isEuropassOrder) {
+          await runGenerateCv();
+          navigate(`/europass-builder?orderId=${orderId}&email=${encodeURIComponent(email.trim())}`);
+        } else {
+          if (!documentsGenerated && !documentsGenerating) await runGenerateCv();
+        }
       } else {
         toast({ title: "Payment not yet received. Please check your phone and try again.", variant: "destructive" });
       }
@@ -416,7 +432,16 @@ export default function OrderPage() {
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
                     <Link to="/jobs"><Button className="bg-gradient-brand border-0 font-semibold gold-shimmer">Browse Jobs & Apply <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
-                    <Link to={`/review/${orderId}`}><Button variant="outline" className="border-primary/30">Review Your Documents</Button></Link>
+                    {/* ✅ CHANGE 5: Europass orders link to builder, all others to /review */}
+                    {isEuropassOrder ? (
+                      <Link to={`/europass-builder?orderId=${orderId}&email=${encodeURIComponent(email.trim())}`}>
+                        <Button variant="outline" className="border-primary/30">Open Europass Builder</Button>
+                      </Link>
+                    ) : (
+                      <Link to={`/review/${orderId}`}>
+                        <Button variant="outline" className="border-primary/30">Review Your Documents</Button>
+                      </Link>
+                    )}
                   </div>
                 </>
               ) : (
@@ -742,6 +767,10 @@ export default function OrderPage() {
                         setPaymentConfirmed(true);
                         trackPurchase(total, "KES");
                         runGenerateCv();
+                        // ✅ CHANGE 6: PayPal Europass redirect
+                        if (isEuropassOrder) {
+                          navigate(`/europass-builder?orderId=${ref}&email=${encodeURIComponent(email.trim())}`);
+                        }
                       }}
                     />
                   ) : (
