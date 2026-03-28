@@ -28,9 +28,8 @@ export function MobileNav() {
       </SheetTrigger>
 
       <SheetContent
-  side="right"
-  className="z-[100] h-[100dvh] w-[85vw] max-w-[340px] p-0 bg-background/95 backdrop-blur-xl border-l border-border/60 flex flex-col"
->
+        side="right"
+        className="z-[100] h-[100dvh] w-[85vw] max-w-[340px] p-0 bg-background/95 backdrop-blur-xl border-l border-border/60 flex flex-col"
       >
         <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
 
@@ -49,7 +48,7 @@ export function MobileNav() {
           </button>
         </div>
 
-        {/* USER BLOCK (NEW 🔥) */}
+        {/* USER BLOCK */}
         <div className="px-4 py-4 border-b border-border/40">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -63,7 +62,7 @@ export function MobileNav() {
           </div>
         </div>
 
-        {/* QUICK ACTIONS (HIGH CONVERSION 🔥) */}
+        {/* QUICK ACTIONS */}
         <div className="px-4 py-4 space-y-2 border-b border-border/40">
           <p className="text-xs font-semibold text-muted-foreground uppercase">Quick Actions</p>
 
@@ -123,7 +122,7 @@ export function MobileNav() {
         </nav>
 
         {/* FOOTER */}
-        <div className="border-t border-border/50 px-4 py-4 space-y-3">
+        <div className="border-t border-border/50 px-4 py-4 space-y-3 shrink-0">
           <Link to="/login" onClick={() => setOpen(false)}>
             <Button variant="outline" className="w-full">
               Log in
