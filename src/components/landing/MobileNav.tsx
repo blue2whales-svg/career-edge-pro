@@ -28,9 +28,8 @@ export function MobileNav() {
       </SheetTrigger>
 
       <SheetContent
-  side="right"
-  className="z-[100] h-[100dvh] w-[85vw] max-w-[340px] p-0 bg-background/95 backdrop-blur-xl border-l border-border/60 flex flex-col"
->
+        side="right"
+        className="h-[100dvh] w-[85vw] max-w-[340px] p-0 bg-background/95 backdrop-blur-xl border-l border-border/60 flex flex-col"
       >
         <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
 
