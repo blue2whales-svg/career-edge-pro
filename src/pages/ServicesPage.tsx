@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
+import { trackViewContent } from "@/hooks/useFbPixel";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
