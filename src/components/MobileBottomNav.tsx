@@ -41,7 +41,7 @@ export default function MobileBottomNav() {
 
   return (
     <>
-      <nav className="fixed bottom-3 left-3 right-3 z-[70] md:hidden rounded-2xl border border-border/40 surface-glass backdrop-blur-xl shadow-lg">
+      <nav className="fixed bottom-3 left-3 right-3 z-[40] md:hidden rounded-2xl border border-border/40 surface-glass backdrop-blur-xl shadow-lg">
         <div className="flex items-center justify-around h-16 px-1">
           {NAV_ITEMS.map((item) => {
             const isActive = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
