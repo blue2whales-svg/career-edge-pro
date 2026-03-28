@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FileText, Copy, Download, RefreshCw, Edit3, Save, ArrowRight, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ const fadeUp = {
 };
 
 export default function CoverLetterPage() {
+  useEffect(() => { trackViewContent("Cover Letter", "Services"); }, []);
   const [searchParams] = useSearchParams();
   const [jobTitle, setJobTitle] = useState(searchParams.get("job_title") || "");
   const [company, setCompany] = useState(searchParams.get("company") || "");

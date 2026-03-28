@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { ArrowRight, Check, Zap, Star, Crown, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -104,6 +104,7 @@ const ADD_ONS = [
 ];
 
 export default function PricingPage() {
+  useEffect(() => { trackViewContent("Pricing", "Pricing"); }, []);
   return (
     <PageLayout>
       {/* Hero */}

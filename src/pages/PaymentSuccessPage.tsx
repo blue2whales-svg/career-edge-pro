@@ -1,10 +1,13 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
+import { trackPurchase } from "@/hooks/useFbPixel";
 
 export default function PaymentSuccessPage() {
+  useEffect(() => { trackPurchase(0, "KES"); }, []);
   return (
     <PageLayout>
       <section className="relative z-10 pt-24 pb-24 px-4">
