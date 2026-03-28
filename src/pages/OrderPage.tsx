@@ -29,7 +29,7 @@ import { cn } from "@/lib/utils";
 import PageLayout from "@/components/PageLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { trackPurchase } from "@/hooks/useFbPixel";
+import { trackPurchase, trackViewContent } from "@/hooks/useFbPixel";
 import ServiceQuestions from "@/components/order/ServiceQuestions";
 
 const fadeUp = {
