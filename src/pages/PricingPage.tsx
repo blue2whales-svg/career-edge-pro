@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { motion } from "framer-motion";
+import { trackViewContent } from "@/hooks/useFbPixel";
 import { ArrowRight, Check, Zap, Star, Crown, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
