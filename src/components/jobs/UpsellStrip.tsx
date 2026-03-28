@@ -48,8 +48,9 @@ export function UpsellStrip({ variant }: { variant: Variant }) {
       </div>
 
       {/* CTA → ORDER PAGE (UNCHANGED) */}
-      <Link to="/order?service=professional">
-        <Button variant="outline" size="sm" className="text-xs font-semibold h-8 gap-1 shrink-0 rounded-lg">
+      <div className="pb-24 sm:pb-0">
+  <Link to="/order?service=professional">
+    <Button variant="outline" size="sm" className="relative z-50 text-xs font-semibold h-8 gap-1 shrink-0 rounded-lg">
           Upgrade My CV
           <ArrowRight className="h-3 w-3" />
         </Button>
