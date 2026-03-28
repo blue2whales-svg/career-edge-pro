@@ -29,6 +29,7 @@ import { cn } from "@/lib/utils";
 import PageLayout from "@/components/PageLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { trackPurchase, trackViewContent } from "@/hooks/useFbPixel";
 import ServiceQuestions from "@/components/order/ServiceQuestions";
 
 const fadeUp = {
@@ -192,6 +193,7 @@ export default function OrderPage() {
   const isPackageMode = !!(packageParam && PACKAGE_MAP[packageParam]);
 
   useEffect(() => {
+    trackViewContent("Order", "Checkout");
     const pkg = searchParams.get("package");
     const singleService = searchParams.get("service");
     if (pkg && PACKAGE_MAP[pkg]) {
@@ -305,6 +307,9 @@ export default function OrderPage() {
 
       if (data?.status === "COMPLETED") {
         setPaymentConfirmed(true);
+
+        // Fire Facebook Pixel Purchase event
+        trackPurchase(total, "KES");
 
         if (!documentsGenerated && !documentsGenerating) {
           await runGenerateCv();

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FileText, Shield, Globe, Zap, GraduationCap, Pen, Linkedin, Award,
@@ -8,6 +8,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
+import { trackViewContent } from "@/hooks/useFbPixel";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -236,6 +237,7 @@ function CVQuizSection() {
 
 
 export default function ServicesPage() {
+  useEffect(() => { trackViewContent("Services", "Services"); }, []);
   return (
     <PageLayout>
       {/* Hero */}

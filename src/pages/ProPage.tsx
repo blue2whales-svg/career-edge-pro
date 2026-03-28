@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PageLayout from "@/components/PageLayout";
 import MpesaPaymentModal from "@/components/MpesaPaymentModal";
+import { trackViewContent } from "@/hooks/useFbPixel";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -22,6 +23,7 @@ const BENEFITS = [
 ];
 
 export default function ProPage() {
+  useEffect(() => { trackViewContent("CV Edge Pro", "Subscription"); }, []);
   const [paymentOpen, setPaymentOpen] = useState(false);
   const isPro = localStorage.getItem("cvedge_pro") === "true";
 
