@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,63 @@ const emptyHobby = () => ({ title: "", description: "" });
 const emptyVol = () => ({ title: "", description: "", startDate: "", endDate: "", location: "" });
 
 export default function EuropassBuilder() {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  // ── Payment gate ──────────────────────────────────────────────
+  const [accessChecked, setAccessChecked] = useState(false);
+  const [hasAccess, setHasAccess] = useState(false);
+
+  useEffect(() => {
+    const checkAccess = async () => {
+      const email = searchParams.get("email");
+      const orderId = searchParams.get("orderId");
+
+      if (!email || !orderId) {
+        navigate("/order?reason=europass-required");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("europass_orders")
+        .select("id")
+        .eq("email", email)
+        .eq("order_id", orderId)
+        .eq("paid", true)
+        .maybeSingle();
+
+      if (error || !data) {
+        navigate("/order?reason=europass-required");
+      } else {
+        setHasAccess(true);
+      }
+
+      setAccessChecked(true);
+    };
+
+    checkAccess();
+  }, []);
+
+  if (!accessChecked) {
+    return (
+      <PageLayout>
+        <div className="flex items-center justify-center min-h-screen bg-[#0a0a0f]">
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 animate-spin text-blue-400 mx-auto mb-3" />
+            <p className="text-gray-400 text-sm">Verifying your access...</p>
+          </div>
+        </div>
+      </PageLayout>
+    );
+  }
+
+  if (!hasAccess) return null;
+  // ── End gate ──────────────────────────────────────────────────
+
+  return <EuropassBuilderInner />;
+}
+
+function EuropassBuilderInner() {
   const [activeTab, setActiveTab] = useState("personal");
   const [mode, setMode] = useState<"cv" | "cover-letter">("cv");
   const [generating, setGenerating] = useState(false);
