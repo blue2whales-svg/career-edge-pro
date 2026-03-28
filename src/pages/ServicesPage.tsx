@@ -237,6 +237,7 @@ function CVQuizSection() {
 
 
 export default function ServicesPage() {
+  useEffect(() => { trackViewContent("Services", "Services"); }, []);
   return (
     <PageLayout>
       {/* Hero */}
