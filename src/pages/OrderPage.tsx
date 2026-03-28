@@ -193,6 +193,7 @@ export default function OrderPage() {
   const isPackageMode = !!(packageParam && PACKAGE_MAP[packageParam]);
 
   useEffect(() => {
+    trackViewContent("Order", "Checkout");
     const pkg = searchParams.get("package");
     const singleService = searchParams.get("service");
     if (pkg && PACKAGE_MAP[pkg]) {
