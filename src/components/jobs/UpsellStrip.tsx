@@ -21,14 +21,19 @@ export function UpsellStrip({ variant }: { variant: Variant }) {
             Check your CV free in seconds and see if it is hurting your chances.
           </p>
         </div>
-
         {/* CTA → ATS CHECKER */}
-        <Link to="/ats-checker">
-          <Button variant="outline" size="sm" className="text-xs font-semibold h-8 gap-1 shrink-0 rounded-lg">
-            Check My CV Free
-            <ArrowRight className="h-3 w-3" />
-          </Button>
-        </Link>
+        <div className="pb-24 sm:pb-0">
+          <Link to="/ats-checker">
+            <Button
+              variant="outline"
+              size="sm"
+              className="relative z-50 text-xs font-semibold h-8 gap-1 shrink-0 rounded-lg"
+            >
+              Check My CV Free
+              <ArrowRight className="h-3 w-3" />
+            </Button>
+          </Link>
+        </div>
       </div>
     );
   }
@@ -46,15 +51,19 @@ export function UpsellStrip({ variant }: { variant: Variant }) {
         <p className="text-sm font-semibold">⚡ See a job you love? Make sure your CV is ready to compete for it.</p>
         <p className="text-xs text-muted-foreground mt-0.5">Professional Package → KSh 5,500</p>
       </div>
-
-      {/* CTA → ORDER PAGE (UNCHANGED) */}
+      {/* CTA → ORDER PAGE */}
       <div className="pb-24 sm:pb-0">
-  <Link to="/order?service=professional">
-    <Button variant="outline" size="sm" className="relative z-50 text-xs font-semibold h-8 gap-1 shrink-0 rounded-lg">
-          Upgrade My CV
-          <ArrowRight className="h-3 w-3" />
-        </Button>
-      </Link>
+        <Link to="/order?service=professional">
+          <Button
+            variant="outline"
+            size="sm"
+            className="relative z-50 text-xs font-semibold h-8 gap-1 shrink-0 rounded-lg"
+          >
+            Upgrade My CV
+            <ArrowRight className="h-3 w-3" />
+          </Button>
+        </Link>
+      </div>
     </div>
   );
 }
