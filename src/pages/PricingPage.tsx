@@ -7,6 +7,9 @@ import { Link } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import { GuaranteeBadge } from "@/components/landing/GuaranteeBadge";
 import { SecurityBadges } from "@/components/landing/SecurityBadges";
+import { useIsInternational } from "@/hooks/useIsInternational";
+import { useUsdRate } from "@/hooks/useUsdRate";
+import { PayPalButton } from "@/components/PayPalButton";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -15,6 +18,13 @@ const fadeUp = {
     y: 0,
     transition: { delay: i * 0.08, duration: 0.5, ease: [0, 0, 0.2, 1] as const },
   }),
+};
+
+const PACKAGE_PRICES: Record<string, number> = {
+  starter: 1490,
+  professional: 1490,
+  international: 2000,
+  executive: 5490,
 };
 
 const PACKAGES = [
@@ -106,7 +116,13 @@ const ADD_ONS = [
 ];
 
 export default function PricingPage() {
-  useEffect(() => { trackViewContent("Pricing", "Pricing"); }, []);
+  useEffect(() => {
+    trackViewContent("Pricing", "Pricing");
+  }, []);
+
+  const { isInternational } = useIsInternational();
+  const usdRate = useUsdRate();
+
   return (
     <PageLayout>
       {/* Hero */}
@@ -137,7 +153,7 @@ export default function PricingPage() {
             custom={2}
             className="text-sm font-mono text-primary"
           >
-            📱 Pay instantly via M-Pesa
+            {isInternational ? "🔒 Secure PayPal checkout — pay in USD" : "📱 Pay instantly via M-Pesa"}
           </motion.p>
           <div className="mt-6 flex justify-center">
             <SecurityBadges />
@@ -173,9 +189,12 @@ export default function PricingPage() {
                 </div>
                 <h3 className="text-xl font-bold mb-1">{pkg.name}</h3>
                 <div className="flex items-baseline gap-1 mb-1">
-                  <span className="text-2xl lg:text-3xl font-bold text-primary">{pkg.price}</span>
+                  <span className="text-2xl lg:text-3xl font-bold text-primary">
+                    {isInternational ? `$${(PACKAGE_PRICES[pkg.package] * usdRate).toFixed(2)}` : pkg.price}
+                  </span>
                   <span className="text-xs text-muted-foreground">/{pkg.period}</span>
                 </div>
+                {isInternational && <p className="text-xs text-muted-foreground mb-1">{pkg.price} KES</p>}
                 {"oldPrice" in pkg && pkg.oldPrice && (
                   <p className="text-xs text-muted-foreground line-through mb-2">{pkg.oldPrice}</p>
                 )}
@@ -188,16 +207,21 @@ export default function PricingPage() {
                     </li>
                   ))}
                 </ul>
-                <Link to={`/order?package=${pkg.package}`}>
-                  <Button
-                    className={`w-full h-12 font-semibold ${
-                      pkg.popular ? "bg-gradient-brand border-0 shadow-glow gold-shimmer" : "border-primary/30"
-                    }`}
-                    variant={pkg.popular ? "default" : "outline"}
-                  >
-                    Choose {pkg.name} <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
+
+                {isInternational ? (
+                  <PayPalButton amountUsd={(PACKAGE_PRICES[pkg.package] * usdRate).toFixed(2)} description={pkg.name} />
+                ) : (
+                  <Link to={`/order?package=${pkg.package}`}>
+                    <Button
+                      className={`w-full h-12 font-semibold ${
+                        pkg.popular ? "bg-gradient-brand border-0 shadow-glow gold-shimmer" : "border-primary/30"
+                      }`}
+                      variant={pkg.popular ? "default" : "outline"}
+                    >
+                      Choose {pkg.name} <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                )}
               </motion.div>
             ))}
           </div>
@@ -226,9 +250,7 @@ export default function PricingPage() {
                 viewport={{ once: true }}
                 variants={fadeUp}
                 custom={i}
-                className={`flex items-center justify-between p-5 ${
-                  i < ADD_ONS.length - 1 ? "border-b border-border/50" : ""
-                }`}
+                className={`flex items-center justify-between p-5 ${i < ADD_ONS.length - 1 ? "border-b border-border/50" : ""}`}
               >
                 <span className="font-medium text-sm sm:text-base">{addon.name}</span>
                 <div className="flex items-center gap-4">
