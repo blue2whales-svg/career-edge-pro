@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Check, Globe, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PageLayout from "@/components/PageLayout";
 import MpesaPaymentModal from "@/components/MpesaPaymentModal";
+import { trackViewContent } from "@/hooks/useFbPixel";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -21,6 +22,7 @@ const FEATURES = [
 ];
 
 export default function GlobalServicePage() {
+  useEffect(() => { trackViewContent("Global Assistance", "Services"); }, []);
   const [paymentOpen, setPaymentOpen] = useState(false);
 
   return (
