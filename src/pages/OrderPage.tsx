@@ -180,6 +180,7 @@ export default function OrderPage() {
   const [checkoutRequestId, setCheckoutRequestId] = useState("");
   const [documentsGenerating, setDocumentsGenerating] = useState(false);
   const [documentsGenerated, setDocumentsGenerated] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
@@ -1082,10 +1083,25 @@ export default function OrderPage() {
                   </div>
                 )}
 
+                <label className="flex items-start gap-2.5 cursor-pointer mb-4">
+                  <input
+                    type="checkbox"
+                    checked={agreedToTerms}
+                    onChange={(e) => setAgreedToTerms(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded border-border accent-primary"
+                  />
+                  <span className="text-xs text-muted-foreground leading-relaxed">
+                    I agree to the{" "}
+                    <a href="/terms" target="_blank" className="text-primary underline hover:text-primary/80">Terms &amp; Conditions</a>
+                    {" "}and{" "}
+                    <a href="/privacy" target="_blank" className="text-primary underline hover:text-primary/80">Privacy Policy</a>.
+                  </span>
+                </label>
+
                 <Button
                   onClick={handleSubmit}
                   disabled={
-                    selectedServices.length === 0 || !name.trim() || !email.trim() || !phone.trim() || isSubmitting
+                    selectedServices.length === 0 || !name.trim() || !email.trim() || !phone.trim() || !agreedToTerms || isSubmitting
                   }
                   className="w-full h-12 bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer text-base"
                 >
@@ -1149,7 +1165,7 @@ export default function OrderPage() {
           </div>
           <Button
             onClick={handleSubmit}
-            disabled={selectedServices.length === 0 || !name.trim() || !email.trim() || !phone.trim() || isSubmitting}
+            disabled={selectedServices.length === 0 || !name.trim() || !email.trim() || !phone.trim() || !agreedToTerms || isSubmitting}
             className="h-11 px-6 bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer shrink-0"
           >
             {isSubmitting ? (
