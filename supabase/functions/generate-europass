@@ -1,1 +1,114 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  try {
+    const { profile, mode } = await req.json();
+    if (!profile) throw new Error("profile is required");
+
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+
+    const isCoverLetter = mode === "cover-letter";
+
+    const systemPrompt = isCoverLetter
+      ? `You are an expert Europass Cover Letter writer. Produce a formal, professional European-standard cover letter. Use proper business letter format. Be concise, compelling, and specific. Never use clichés. Output plain text only, no markdown.`
+      : `You are an expert Europass CV writer. Produce a complete, structured Europass CV. Follow the official EU Europass format exactly. Output each section clearly labelled. Use plain text, no markdown symbols. Sections must be: ABOUT ME, EDUCATION AND TRAINING, WORK EXPERIENCE, SKILLS, LANGUAGE SKILLS, CERTIFICATIONS, HOBBIES AND INTERESTS, VOLUNTEERING.`;
+
+    const userPrompt = isCoverLetter
+      ? `
+Write a Europass Cover Letter for:
+Name: ${profile.firstName} ${profile.lastName}
+City: ${profile.city}, ${profile.country}
+Email: ${profile.email}
+Phone: ${profile.phone}
+Date: ${new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" })}
+Applying for: ${profile.targetRole} at ${profile.targetCompany || "the company"}
+About them: ${profile.aboutMe}
+Key achievements: ${profile.experience?.map((e: any) => e.achievements).flat().join(", ")}
+Skills: ${profile.skills}
+
+Write 4 paragraphs: 1) opening with strong interest, 2) key achievements with numbers, 3) skills summary, 4) closing with call to action. End with "Kind regards," then their full name.
+`.trim()
+      : `
+Generate a complete Europass CV for this person:
+
+PERSONAL DETAILS:
+Full Name: ${profile.firstName} ${profile.lastName}
+Passport/ID: ${profile.passport || ""}
+Date of Birth: ${profile.dob || ""}
+Place of Birth: ${profile.placeOfBirth || ""}
+Nationality: ${profile.nationality || ""}
+Gender: ${profile.gender || ""}
+Phone: ${profile.phone || ""}
+Email: ${profile.email || ""}
+Address: ${profile.address || ""}, ${profile.city || ""}, ${profile.country || ""}
+
+ABOUT ME:
+${profile.aboutMe || ""}
+
+EDUCATION AND TRAINING:
+${profile.education?.map((e: any) => `${e.startDate} – ${e.endDate} | ${e.location}\n${e.qualification} | ${e.institution}\nField: ${e.field}`).join("\n\n") || ""}
+
+WORK EXPERIENCE:
+${profile.experience?.map((e: any) => `${e.startDate} – ${e.endDate} | ${e.location}\n${e.jobTitle} – ${e.employer}\nDuties: ${e.duties}\nKey Achievements: ${e.achievements}`).join("\n\n") || ""}
+
+SKILLS:
+${profile.skills || ""}
+
+MOTHER TONGUE: ${profile.motherTongue || ""}
+OTHER LANGUAGES:
+${profile.languages?.map((l: any) => `${l.name}: Listening ${l.listening}, Reading ${l.reading}, Spoken Production ${l.spokenProduction}, Spoken Interaction ${l.spokenInteraction}, Writing ${l.writing}`).join("\n") || ""}
+
+CERTIFICATIONS:
+${profile.certifications?.map((c: any) => `${c.institution}, ${c.date}\n${c.title}\n${c.description}\nMode: ${c.mode}`).join("\n\n") || ""}
+
+HOBBIES AND INTERESTS:
+${profile.hobbies?.map((h: any) => `${h.title}: ${h.description}`).join("\n") || ""}
+
+VOLUNTEERING:
+${profile.volunteering?.map((v: any) => `${v.startDate} – ${v.endDate} | ${v.location}\n${v.title}: ${v.description}`).join("\n\n") || ""}
+
+Output each section with its heading in CAPS, then the content below it. Be professional and thorough.
+`.trim();
+
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-3-flash-preview",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const errText = await aiResponse.text();
+      throw new Error(`AI gateway error: ${aiResponse.status} — ${errText}`);
+    }
+
+    const aiData = await aiResponse.json();
+    const content = aiData.choices?.[0]?.message?.content || "";
+
+    return new Response(JSON.stringify({ content }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  } catch (e) {
+    console.error("generate-europass error:", e);
+    return new Response(
+      JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+});
