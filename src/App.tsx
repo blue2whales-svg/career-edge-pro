@@ -42,6 +42,10 @@ import PortalMessages from "./pages/PortalMessages";
 import PortalSettingsPage from "./pages/PortalSettingsPage";
 import AdminJobsPage from "./pages/AdminJobsPage";
 import NotFound from "./pages/NotFound";
+import TermsPage from "./pages/TermsPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import RefundPolicyPage from "./pages/RefundPolicyPage";
+import DisclaimerPage from "./pages/DisclaimerPage";
 
 const queryClient = new QueryClient();
 
@@ -142,6 +146,10 @@ const App = () => {
                 </AuthGuard>
               }
             />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/refund-policy" element={<RefundPolicyPage />} />
+            <Route path="/disclaimer" element={<DisclaimerPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

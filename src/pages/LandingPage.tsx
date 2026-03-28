@@ -322,7 +322,12 @@ export default function LandingPage() {
           </div>
           <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} CV Edge. All rights reserved.</p>
-            <p className="text-xs text-muted-foreground">Professional career documents for Kenyan professionals.</p>
+            <div className="flex flex-wrap gap-4 text-xs">
+              <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors">Terms &amp; Conditions</Link>
+              <Link to="/privacy" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link>
+              <Link to="/refund-policy" className="text-muted-foreground hover:text-primary transition-colors">Refund Policy</Link>
+              <Link to="/disclaimer" className="text-muted-foreground hover:text-primary transition-colors">Disclaimer</Link>
+            </div>
           </div>
         </div>
       </footer>
