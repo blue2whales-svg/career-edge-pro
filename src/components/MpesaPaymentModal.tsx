@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { trackPurchase } from "@/hooks/useFbPixel";
 
 const PAYBILL = "4561075";
 
@@ -199,6 +200,7 @@ export default function MpesaPaymentModal({
           }
           setTimelineStage("confirmed");
           setStep("success");
+          trackPurchase(confirmedAmount || pkg.amount, "KES");
           onPaymentSuccess?.();
         } else if (row?.status === "failed" || row?.status === "payment_failed") {
           clearInterval(pollRef.current!);
@@ -507,6 +509,7 @@ export default function MpesaPaymentModal({
                           setTimelineStage("confirmed");
                           setStep("success");
                           if (data.mpesa_receipt) setMpesaCode(data.mpesa_receipt);
+                          trackPurchase(confirmedAmount || pkg.amount, "KES");
                           onPaymentSuccess?.();
                           toast.success("Payment confirmed! 🎉");
                         } else {
@@ -603,6 +606,7 @@ export default function MpesaPaymentModal({
                         setTimelineStage("confirmed");
                         setStep("success");
                         if (data.mpesa_receipt) setMpesaCode(data.mpesa_receipt);
+                        trackPurchase(confirmedAmount || pkg.amount, "KES");
                         onPaymentSuccess?.();
                         toast.success("Payment confirmed! 🎉");
                       } else {

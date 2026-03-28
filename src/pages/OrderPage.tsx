@@ -29,6 +29,7 @@ import { cn } from "@/lib/utils";
 import PageLayout from "@/components/PageLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { trackPurchase } from "@/hooks/useFbPixel";
 import ServiceQuestions from "@/components/order/ServiceQuestions";
 
 const fadeUp = {
@@ -305,6 +306,9 @@ export default function OrderPage() {
 
       if (data?.status === "COMPLETED") {
         setPaymentConfirmed(true);
+
+        // Fire Facebook Pixel Purchase event
+        trackPurchase(totalAmount, "KES");
 
         if (!documentsGenerated && !documentsGenerating) {
           await runGenerateCv();
