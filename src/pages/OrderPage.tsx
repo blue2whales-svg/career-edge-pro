@@ -308,7 +308,7 @@ export default function OrderPage() {
         setPaymentConfirmed(true);
 
         // Fire Facebook Pixel Purchase event
-        trackPurchase(totalAmount, "KES");
+        trackPurchase(total, "KES");
 
         if (!documentsGenerated && !documentsGenerating) {
           await runGenerateCv();
