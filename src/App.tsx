@@ -34,6 +34,7 @@ import OptimizePage from "./pages/OptimizePage";
 import SamplesPage from "./pages/SamplesPage";
 import GenerateCVPage from "./pages/GenerateCVPage";
 import PaymentSuccessPage from "./pages/PaymentSuccessPage";
+import EuropassBuilder from "./pages/EuropassBuilder";
 import PortalLayout from "./components/PortalLayout";
 import PortalDashboard from "./pages/PortalDashboard";
 import OrderDetailPage from "./pages/OrderDetailPage";
@@ -74,6 +75,7 @@ const App = () => {
             <Route path="/cv-editor/:templateId" element={<NewCVEditorPage />} />
             <Route path="/cover-letter" element={<CoverLetterPage />} />
             <Route path="/ats-checker" element={<ATSCheckerPage />} />
+            <Route path="/europass-builder" element={<EuropassBuilder />} />
             <Route
               path="/tracker"
               element={
