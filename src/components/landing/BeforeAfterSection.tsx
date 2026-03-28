@@ -36,7 +36,6 @@ const BeforeAfterSection = () => {
                 </span>
                 <p className="mt-2 text-sm text-muted-foreground">Looks ordinary. Feels weak. Easy to ignore.</p>
               </div>
-
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500 text-lg text-white shadow-lg">
                 ✕
               </div>
@@ -116,7 +115,6 @@ const BeforeAfterSection = () => {
                   Cleaner. Stronger. Built to impress recruiters fast.
                 </p>
               </div>
-
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500 text-lg text-white shadow-lg">
                 ✓
               </div>
@@ -183,7 +181,6 @@ const BeforeAfterSection = () => {
                           </div>
                           <span className="text-sm font-semibold text-primary">2020 — 2023</span>
                         </div>
-
                         <ul className="mt-3 list-disc pl-5 text-sm leading-7 text-slate-700">
                           <li>Grew regional revenue by 38% in 18 months through targeted B2B campaigns</li>
                           <li>Managed 45+ enterprise clients worth KES 120M annually</li>
@@ -200,7 +197,6 @@ const BeforeAfterSection = () => {
                           </div>
                           <span className="text-sm font-semibold text-primary">2019 — 2020</span>
                         </div>
-
                         <ul className="mt-3 list-disc pl-5 text-sm leading-7 text-slate-700">
                           <li>Exceeded KPI by 52%, earning full-time conversion ahead of schedule</li>
                         </ul>
@@ -283,8 +279,8 @@ const BeforeAfterSection = () => {
             </p>
 
             <div className="mt-6 pb-24 sm:pb-0">
-              <Link to="/order">
-                <button className="relative z-50 inline-flex items-center justify-center rounded-2xl bg-gradient-brand px-6 py-3 text-sm font-bold text-primary-foreground shadow-glow transition hover:scale-[1.02]">
+              <Link to="/templates">
+                <button className="relative z-50 inline-flex items-center justify-center rounded-2xl bg-gradient-brand px-8 py-4 text-sm font-bold text-primary-foreground shadow-glow transition hover:scale-[1.02] active:scale-[0.98]">
                   Upgrade My CV
                 </button>
               </Link>
