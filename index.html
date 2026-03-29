@@ -56,29 +56,6 @@
       name="twitter:image"
       content="https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/231f2caa-f684-4f0f-ac16-6aaec73b37e5/id-preview-59f2d992--a654075b-2800-4065-a7bc-c85cc078d496.lovable.app-1772979178414.png"
     />
-
-    <!-- Facebook Pixel Code -->
-    <script>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '257212767118333');
-      fbq('track', 'PageView');
-    </script>
-
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9NRGTZPQGK"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-9NRGTZPQGK');
-    </script>
   </head>
 
   <body>
@@ -88,15 +65,52 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- Zapier Chatbot -->
-    <script
-      defer
-      type="module"
-      src="https://interfaces.zapier.com/assets/web-components/zapier-interfaces/zapier-interfaces.esm.js"
-    ></script>
-    <zapier-interfaces-chatbot-embed
-      is-popup="true"
-      chatbot-id="cmn7v2j7b0013tgdtvs9wg03q"
-    ></zapier-interfaces-chatbot-embed>
+    <!-- Facebook Pixel — deferred -->
+    <script defer>
+      setTimeout(function() {
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '257212767118333');
+        fbq('track', 'PageView');
+      }, 2000);
+    </script>
+
+    <!-- Google Analytics — deferred -->
+    <script defer>
+      setTimeout(function() {
+        var s = document.createElement('script');
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-9NRGTZPQGK';
+        s.async = true;
+        document.head.appendChild(s);
+        s.onload = function() {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-9NRGTZPQGK');
+        };
+      }, 2000);
+    </script>
+
+    <!-- Zapier Chatbot — deferred 3s -->
+    <script defer>
+      setTimeout(function() {
+        var s = document.createElement('script');
+        s.type = 'module';
+        s.src = 'https://interfaces.zapier.com/assets/web-components/zapier-interfaces/zapier-interfaces.esm.js';
+        document.body.appendChild(s);
+        s.onload = function() {
+          var el = document.createElement('zapier-interfaces-chatbot-embed');
+          el.setAttribute('is-popup', 'true');
+          el.setAttribute('chatbot-id', 'cmn7v2j7b0013tgdtvs9wg03q');
+          document.body.appendChild(el);
+        };
+      }, 3000);
+    </script>
   </body>
 </html>

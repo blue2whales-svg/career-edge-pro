@@ -259,6 +259,7 @@ export default function LandingPage() {
                 <img
                   src={cvedgeLogo}
                   alt="CV Edge Logo"
+                  loading="lazy"
                   className="w-9 h-9 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20"
                 />
                 <span className="font-bold">CV Edge</span>
