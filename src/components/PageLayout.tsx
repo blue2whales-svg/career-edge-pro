@@ -98,11 +98,12 @@ export default function PageLayout({ children }: PageLayoutProps) {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mb-8">
             <div className="col-span-2 sm:col-span-1">
               <Link to="/" className="flex items-center gap-2.5 mb-3">
-                <img
-                  src={cvedgeLogo}
-                  alt="CV Edge Logo"
-                  className="w-9 h-9 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20"
-                />
+              <img
+                src={cvedgeLogo}
+                alt="CV Edge Logo"
+                loading="lazy"
+                className="w-9 h-9 object-contain rounded-full shadow-glow-sm ring-1 ring-primary/20"
+              />
                 <span className="font-bold">CV Edge</span>
               </Link>
               <p className="text-xs text-muted-foreground mb-2">Your Career's Secret Weapon</p>
