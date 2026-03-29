@@ -93,9 +93,9 @@ function generateBenefits(job: Job): string[] {
 }
 
 export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; open: boolean; onOpenChange: (open: boolean) => void }) {
-  if (!job) return null;
-
   const { isUnlocked, canUseFreeUnlock, useFreeUnlock, isJobFreeUnlocked } = useJobAccess();
+
+  if (!job) return null;
   const jobKey = `${job.title}|${job.company}`;
   const hasAccess = isUnlocked || isJobFreeUnlocked(jobKey);
 
