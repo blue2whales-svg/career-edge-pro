@@ -45,11 +45,11 @@ export default function EuropassBuilder() {
       }
 
       const { data, error } = await supabase
-        .from("europass_orders")
+        .from("orders")
         .select("id")
         .eq("email", email)
-        .eq("order_id", orderId)
-        .eq("paid", true)
+        .eq("id", orderId)
+        .eq("status", "paid")
         .maybeSingle();
 
       if (error || !data) {
