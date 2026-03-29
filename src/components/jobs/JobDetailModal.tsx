@@ -1,8 +1,10 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Button } from "../ui/button";
 import { MapPin, DollarSign, Clock, Building2, Ship, Flame, ArrowRight, CheckCircle2, Briefcase, GraduationCap, Star, Globe2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import type { Job } from "@/data/jobs";
+import type { Job } from "../../data/jobs";
+import { useJobAccess } from "../../hooks/useJobAccess";
+import { JobLockOverlay } from "./JobLockOverlay";
 
 function generateRequirements(job: Job): string[] {
   const reqs: string[] = [];
@@ -83,7 +85,7 @@ function generateBenefits(job: Job): string[] {
     benefits.push("Career growth opportunities");
   }
 
-  if (salary.includes("tips")) {
+  if (salary?.includes("tips")) {
     benefits.push("Additional tips & service charges");
   }
 
@@ -93,15 +95,24 @@ function generateBenefits(job: Job): string[] {
 export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; open: boolean; onOpenChange: (open: boolean) => void }) {
   if (!job) return null;
 
+  const { isUnlocked, canUseFreeUnlock, useFreeUnlock, isJobFreeUnlocked } = useJobAccess();
+  const jobKey = `${job.title}|${job.company}`;
+  const hasAccess = isUnlocked || isJobFreeUnlocked(jobKey);
+
   const isCruise = job.tag?.includes("Cruise");
   const isGulf = job.tag?.includes("Gulf");
   const requirements = generateRequirements(job);
   const benefits = generateBenefits(job);
   const sourceDisplay = job.source_label || job.source || "";
 
+  const handleFreeUnlock = () => {
+    useFreeUnlock(jobKey);
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto p-0 gap-0">
+        {/* Header - always visible */}
         <div className={`p-6 pb-4 border-b border-border ${
           isCruise ? "bg-blue-500/5" : isGulf ? "bg-brand-red/5" : "bg-gradient-brand-subtle"
         }`}>
@@ -139,95 +150,110 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
           </DialogHeader>
         </div>
 
-        <div className="p-6 space-y-6">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-lg border border-border bg-muted/30 p-3">
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
-                <MapPin className="h-3.5 w-3.5" /> Location
+        {/* Body with conditional blur */}
+        <div className="relative">
+          <div className={`p-6 space-y-6 ${!hasAccess ? "blur-sm pointer-events-none select-none" : ""}`}>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-lg border border-border bg-muted/30 p-3">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
+                  <MapPin className="h-3.5 w-3.5" /> Location
+                </div>
+                <p className="text-sm font-medium">{job.location}</p>
               </div>
-              <p className="text-sm font-medium">{job.location}</p>
-            </div>
-            <div className="rounded-lg border border-border bg-muted/30 p-3">
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
-                <DollarSign className="h-3.5 w-3.5" /> Salary
+              <div className="rounded-lg border border-border bg-muted/30 p-3">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
+                  <DollarSign className="h-3.5 w-3.5" /> Salary
+                </div>
+                <p className="text-sm font-medium">{job.salary}</p>
               </div>
-              <p className="text-sm font-medium">{job.salary}</p>
-            </div>
-            <div className="rounded-lg border border-border bg-muted/30 p-3">
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
-                <Briefcase className="h-3.5 w-3.5" /> Type
+              <div className="rounded-lg border border-border bg-muted/30 p-3">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
+                  <Briefcase className="h-3.5 w-3.5" /> Type
+                </div>
+                <p className="text-sm font-medium">{job.type}</p>
               </div>
-              <p className="text-sm font-medium">{job.type}</p>
-            </div>
-            <div className="rounded-lg border border-border bg-muted/30 p-3">
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
-                <Clock className="h-3.5 w-3.5" /> Posted
+              <div className="rounded-lg border border-border bg-muted/30 p-3">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
+                  <Clock className="h-3.5 w-3.5" /> Posted
+                </div>
+                <p className="text-sm font-medium">{job.posted}</p>
               </div>
-              <p className="text-sm font-medium">{job.posted}</p>
             </div>
-          </div>
 
-          <div>
-            <h4 className="flex items-center gap-2 text-sm font-semibold mb-3">
-              <GraduationCap className="h-4 w-4 text-primary" /> Qualifications & Requirements
-            </h4>
-            <ul className="space-y-2">
-              {requirements.map((req, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                  <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                  {req}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="flex items-center gap-2 text-sm font-semibold mb-3">
-              <Star className="h-4 w-4 text-brand-red" /> Why This Role
-            </h4>
-            <ul className="space-y-2">
-              {benefits.map((benefit, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                  <Star className="h-3.5 w-3.5 text-brand-red shrink-0 mt-0.5" />
-                  {benefit}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {job.description && (
             <div>
               <h4 className="flex items-center gap-2 text-sm font-semibold mb-3">
-                <Briefcase className="h-4 w-4 text-primary" /> Job Description
+                <GraduationCap className="h-4 w-4 text-primary" /> Qualifications & Requirements
               </h4>
-              <p className="text-sm text-muted-foreground whitespace-pre-line line-clamp-6">{job.description}</p>
+              <ul className="space-y-2">
+                {requirements.map((req, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                    <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    {req}
+                  </li>
+                ))}
+              </ul>
             </div>
+
+            <div>
+              <h4 className="flex items-center gap-2 text-sm font-semibold mb-3">
+                <Star className="h-4 w-4 text-brand-red" /> Why This Role
+              </h4>
+              <ul className="space-y-2">
+                {benefits.map((benefit, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                    <Star className="h-3.5 w-3.5 text-brand-red shrink-0 mt-0.5" />
+                    {benefit}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {job.description && (
+              <div>
+                <h4 className="flex items-center gap-2 text-sm font-semibold mb-3">
+                  <Briefcase className="h-4 w-4 text-primary" /> Job Description
+                </h4>
+                <p className="text-sm text-muted-foreground whitespace-pre-line line-clamp-6">{job.description}</p>
+              </div>
+            )}
+
+            {hasAccess && (
+              <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-2.5">
+                <p className="text-xs font-semibold text-primary">📋 How to Apply for This Role</p>
+                <ol className="space-y-1.5 text-[11px] text-muted-foreground list-decimal list-inside">
+                  <li>Order a <strong className="text-foreground">CV + Cover Letter</strong> tailored for this role</li>
+                  <li>Complete M-Pesa payment — documents ready in 24hrs</li>
+                  <li>Download your docs in <strong className="text-foreground">PDF or MS Word</strong></li>
+                  <li>The <strong className="text-foreground">direct application link</strong> unlocks after payment — submit your winning docs straight to the employer</li>
+                </ol>
+              </div>
+            )}
+
+            <div className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-5 text-center space-y-3">
+              <p className="text-sm font-semibold">
+                🔥 Employers are hiring <span className="text-primary">NOW</span> — don't miss this opportunity
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Get a professionally crafted CV tailored to this exact role — download in PDF or Word, then apply directly. Our specialists know what {job.company} is looking for.
+              </p>
+              <Link to={`/order?service=cv&job_title=${encodeURIComponent(job.title)}&company=${encodeURIComponent(job.company)}`} onClick={() => onOpenChange(false)}>
+                <Button size="lg" className="w-full bg-gradient-brand border-0 font-semibold h-12 shadow-glow gold-shimmer mt-2">
+                  Get My CV for This Role <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <p className="text-[10px] text-muted-foreground">PDF & Word download · Direct apply link unlocked · ATS-optimised</p>
+            </div>
+          </div>
+
+          {/* Lock overlay for unpaid users */}
+          {!hasAccess && (
+            <JobLockOverlay
+              jobTitle={job.title}
+              company={job.company}
+              canUseFreeUnlock={canUseFreeUnlock}
+              onFreeUnlock={handleFreeUnlock}
+            />
           )}
-
-          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-2.5">
-            <p className="text-xs font-semibold text-primary">📋 How to Apply for This Role</p>
-            <ol className="space-y-1.5 text-[11px] text-muted-foreground list-decimal list-inside">
-              <li>Order a <strong className="text-foreground">CV + Cover Letter</strong> tailored for this role</li>
-              <li>Complete M-Pesa payment — documents ready in 24hrs</li>
-              <li>Download your docs in <strong className="text-foreground">PDF or MS Word</strong></li>
-              <li>The <strong className="text-foreground">direct application link</strong> unlocks after payment — submit your winning docs straight to the employer</li>
-            </ol>
-          </div>
-
-          <div className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-5 text-center space-y-3">
-            <p className="text-sm font-semibold">
-              🔥 Employers are hiring <span className="text-primary">NOW</span> — don't miss this opportunity
-            </p>
-            <p className="text-xs text-muted-foreground">
-              Get a professionally crafted CV tailored to this exact role — download in PDF or Word, then apply directly. Our specialists know what {job.company} is looking for.
-            </p>
-            <Link to={`/order?service=cv&job_title=${encodeURIComponent(job.title)}&company=${encodeURIComponent(job.company)}`} onClick={() => onOpenChange(false)}>
-              <Button size="lg" className="w-full bg-gradient-brand border-0 font-semibold h-12 shadow-glow gold-shimmer mt-2">
-                Get My CV for This Role <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <p className="text-[10px] text-muted-foreground">PDF & Word download · Direct apply link unlocked · ATS-optimised</p>
-          </div>
         </div>
       </DialogContent>
     </Dialog>
