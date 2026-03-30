@@ -1,0 +1,27 @@
+name: Fetch Jobs
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Adzuna Jobs
+        run: |
+          curl -s -X POST \
+            "${{ secrets.SUPABASE_URL }}/functions/v1/fetch-adzuna" \
+            -H "Content-Type: application/json" \
+            -d '{}'
+
+      - name: Wait 30 seconds
+        run: sleep 30
+
+      - name: Fetch Jooble Jobs
+        run: |
+          curl -s -X POST \
+            "${{ secrets.SUPABASE_URL }}/functions/v1/fetch-jooble" \
+            -H "Content-Type: application/json" \
+            -d '{}'
