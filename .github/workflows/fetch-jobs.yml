@@ -8,20 +8,22 @@ on:
 jobs:
   fetch:
     runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
     steps:
       - name: Fetch Adzuna Jobs
         run: |
-          curl -s -X POST \
-            "${{ secrets.SUPABASE_URL }}/functions/v1/fetch-adzuna" \
+          curl -f -s -X POST \
+            "${SUPABASE_URL}/functions/v1/fetch-adzuna" \
             -H "Content-Type: application/json" \
-            -d '{}'
+            -d '{}' || echo "Adzuna fetch failed"
 
       - name: Wait 30 seconds
         run: sleep 30
 
       - name: Fetch Jooble Jobs
         run: |
-          curl -s -X POST \
-            "${{ secrets.SUPABASE_URL }}/functions/v1/fetch-jooble" \
+          curl -f -s -X POST \
+            "${SUPABASE_URL}/functions/v1/fetch-jooble" \
             -H "Content-Type: application/json" \
-            -d '{}'
+            -d '{}' || echo "Jooble fetch failed"
