@@ -2246,7 +2246,7 @@ export default function CVEditorPage() {
               </div>
 
               {/* ── DOWNLOAD BUTTON — payment gated ── */}
-              <div className="flex gap-3 pb-6">
+              <div className="flex gap-3 pb-4">
                 <Button
                   onClick={() => {
                     if (hasPaid) {
@@ -2273,6 +2273,31 @@ export default function CVEditorPage() {
                   )}
                 </Button>
               </div>
+
+              {hasPaid && (
+                <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 flex items-start gap-3 pb-6">
+                  <div className="text-2xl">💼</div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-sm mb-0.5">
+                      Boost your chances — LinkedIn Optimization
+                    </div>
+                    <div className="text-xs text-muted-foreground mb-2">
+                      Gulf and international employers check LinkedIn before interviewing.
+                      We rewrite your profile to match your new CV. <strong>KSh 2,000.</strong>
+                    </div>
+                    <Button
+                      size="sm"
+                      className="bg-gradient-brand border-0 gold-shimmer font-semibold"
+                      onClick={() => {
+                        sessionStorage.setItem("linkedin_upsell_from_cv", cv.name);
+                        navigate("/linkedin-optimization");
+                      }}
+                    >
+                      Optimize My LinkedIn →
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* ── Desktop sticky preview ── */}
