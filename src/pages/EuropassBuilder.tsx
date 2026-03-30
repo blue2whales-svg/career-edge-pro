@@ -32,7 +32,6 @@ const emptyVol = () => ({ title: "", description: "", startDate: "", endDate: ""
 
 export default function EuropassBuilder() {
   const { isPro, loading } = useProPlan();
-const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [accessChecked, setAccessChecked] = useState(false);
