@@ -1,3 +1,5 @@
+import { useProPlan } from "@/hooks/useProPlan";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -29,6 +31,8 @@ const emptyHobby = () => ({ title: "", description: "" });
 const emptyVol = () => ({ title: "", description: "", startDate: "", endDate: "", location: "" });
 
 export default function EuropassBuilder() {
+  const { isPro, loading } = useProPlan();
+const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [accessChecked, setAccessChecked] = useState(false);
@@ -77,7 +81,32 @@ export default function EuropassBuilder() {
     );
   }
 
-  if (!hasAccess) return null;
+  if (!hasAccess) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-[#0b1120] text-white px-6">
+      <div className="max-w-md w-full text-center bg-[#111827] p-8 rounded-2xl shadow-xl border border-gray-800">
+        
+        <div className="text-4xl mb-4">🔒</div>
+
+        <h2 className="text-2xl font-bold mb-2">
+          Europass CV is a Pro Feature
+        </h2>
+
+        <p className="text-gray-400 mb-6">
+          Upgrade to Pro to unlock this feature.
+        </p>
+
+        <button
+          onClick={() => window.location.href = "/pro"}
+          className="w-full bg-[#C9A84C] text-black font-semibold py-3 rounded-lg"
+        >
+          Upgrade to Pro
+        </button>
+
+      </div>
+    </div>
+  );
+}
 
   return <EuropassBuilderInner />;
 }
