@@ -414,26 +414,27 @@ Deno.serve(async (req) => {
       }
     }
 
-    // ── FIX: Archive jobs by discovered_at (not posted_at) ──────────────────
-    // Use discovered_at so we keep jobs YOU found recently,
-    // regardless of when the employer originally posted them.
-    const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+    // ── Archive jobs discovered >2 days ago (buffer before hard delete) ──────
+    // Jobs go inactive after 2 days, deleted after 3 days.
+    // CV Edge differentiator: only fresh jobs on the board.
+    const twoDaysAgo = new Date(Date.now() - 2 * 86400000).toISOString();
     const { data: archived } = await supabase
       .from("cached_jobs")
       .update({ is_active: false, hot: false, hot_score: 0 })
-      .lt("discovered_at", sevenDaysAgo)
+      .lt("discovered_at", twoDaysAgo)
       .eq("is_active", true)
       .neq("source", "platform_seed")
       .select("id");
-    console.log(`📦 Archived ${archived?.length || 0} stale jobs (discovered >7 days ago)`);
+    console.log(`📦 Archived ${archived?.length || 0} stale jobs (discovered >2 days ago)`);
 
-    // ── FIX: Delete by discovered_at (not created_at) ───────────────────────
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+    // ── Hard delete jobs discovered >3 days ago ───────────────────────────────
+    const threeDaysAgo = new Date(Date.now() - 3 * 86400000).toISOString();
     await supabase
       .from("cached_jobs")
       .delete()
-      .lt("discovered_at", thirtyDaysAgo)
+      .lt("discovered_at", threeDaysAgo)
       .neq("source", "platform_seed");
+    console.log(`🗑️ Deleted jobs discovered >3 days ago`);
 
     // Guarantee minimum 200 active jobs: keep platform_seed active
     const { count: activeCount } = await supabase
