@@ -159,16 +159,60 @@ async function main() {
 
   console.log(`Total unique jobs: ${unique.length}`);
 
-  const client = await pool.connect();
+  async function main() {
+  const [adzunaJobs, joobleJobs] = await Promise.all([fetchAdzuna(), fetchJooble()]);
+  const allJobs = [...adzunaJobs, ...joobleJobs];
+
+  const seen = new Set();
+  const unique = allJobs.filter(j => {
+    if (seen.has(j.external_id)) return false;
+    seen.add(j.external_id);
+    return true;
+  });
+
+  console.log(`Total unique jobs: ${unique.length}`);
+
+  const SUPABASE_URL = process.env.SUPABASE_URL;
+  const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const BATCH = 50;
   let inserted = 0;
 
-  try {
-    const BATCH = 50;
-    for (let i = 0; i < unique.length; i += BATCH) {
-      const batch = unique.slice(i, i + BATCH);
-      for (const job of batch) {
-        try {
-          await client.query(`
+  for (let i = 0; i < unique.length; i += BATCH) {
+    const batch = unique.slice(i, i + BATCH);
+    let success = false;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/cached_jobs`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SERVICE_KEY,
+            'Authorization': `Bearer ${SERVICE_KEY}`,
+            'Prefer': 'resolution=ignore-duplicates,return=minimal',
+          },
+          body: JSON.stringify(batch),
+        });
+        if (res.ok || res.status === 201) {
+          inserted += batch.length;
+          success = true;
+          break;
+        } else {
+          const err = await res.text();
+          console.error(`Batch ${i} attempt ${attempt} failed:`, res.status, err);
+          await new Promise(r => setTimeout(r, 2000));
+        }
+      } catch (e) {
+        console.error(`Batch ${i} attempt ${attempt} threw:`, e.message);
+        await new Promise(r => setTimeout(r, 2000));
+      }
+    }
+    if (!success) console.error(`Batch ${i} failed after 3 attempts`);
+  }
+
+  console.log(`✅ Inserted ${inserted} jobs`);
+}
+
+main().catch(err => { console.error(err); process.exit(1); });`
             INSERT INTO cached_jobs (
               external_id, title, company, location, salary, type, industry,
               market, posted_at, hot, tag, source, source_label, apply_url,
