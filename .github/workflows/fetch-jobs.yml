@@ -8,22 +8,23 @@ on:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    env:
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
     steps:
-      - name: Fetch Adzuna Jobs
-        run: |
-          curl -f -s -X POST \
-            "${SUPABASE_URL}/functions/v1/fetch-adzuna" \
-            -H "Content-Type: application/json" \
-            -d '{}' || echo "Adzuna fetch failed"
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - name: Wait 30 seconds
-        run: sleep 30
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-      - name: Fetch Jooble Jobs
-        run: |
-          curl -f -s -X POST \
-            "${SUPABASE_URL}/functions/v1/fetch-jooble" \
-            -H "Content-Type: application/json" \
-            -d '{}' || echo "Jooble fetch failed"
+      - name: Install Supabase client
+        run: npm install @supabase/supabase-js
+
+      - name: Run fetch script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          JOOBLE_API_KEY: ${{ secrets.JOOBLE_API_KEY }}
+        run: node .github/scripts/fetch-jobs.mjs
