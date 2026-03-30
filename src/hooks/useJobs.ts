@@ -30,6 +30,7 @@ export interface JobFilters {
   category?: string;
   industry?: string;
   market?: string;
+  company?: string;
   hotOnly?: boolean;
   visaOnly?: boolean;
 }
@@ -89,6 +90,9 @@ function buildQuery(filters: JobFilters) {
   }
   if (filters.market && filters.market !== "All Markets") {
     query = query.eq("market", filters.market);
+  }
+  if (filters.company) {
+    query = query.ilike("company", `%${filters.company}%`);
   }
   if (filters.hotOnly) {
     query = query.eq("hot", true);

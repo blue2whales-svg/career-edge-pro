@@ -28,9 +28,11 @@ export default function JobsPage() {
   const initialIndustry = searchParams.get("industry") || "All";
   const initialMarket = searchParams.get("market") || "All Markets";
   const initialCategory = searchParams.get("category") || "All Categories";
+  const initialCompany = searchParams.get("company") || "";
 
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [selectedCompany, setSelectedCompany] = useState(initialCompany);
   const [selectedIndustry, setSelectedIndustry] = useState(initialIndustry);
   const [selectedMarket, setSelectedMarket] = useState(initialMarket);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
@@ -48,6 +50,7 @@ export default function JobsPage() {
     category: selectedCategory !== "All Categories" ? selectedCategory : undefined,
     industry: selectedIndustry !== "All" ? selectedIndustry : undefined,
     market: selectedMarket !== "All Markets" ? selectedMarket : undefined,
+    company: selectedCompany || undefined,
   };
 
   const {
