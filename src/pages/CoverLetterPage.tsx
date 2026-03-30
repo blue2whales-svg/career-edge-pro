@@ -198,7 +198,26 @@ export default function CoverLetterPage() {
                         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-card via-card/80 to-transparent rounded-b-xl" />
                         <div className="absolute bottom-4 left-0 right-0 flex justify-center">
                           <div className="flex items-center gap-2 bg-muted/80 border border-border text-xs px-4 py-2 rounded-full">
-                            <Lock className="h-3.5 w-3.5 text-primary" />
+                            {!isPaid && (
+  <div className="absolute bottom-4 left-0 right-0 flex justify-center">
+    <div className="bg-[#111827] border border-gray-800 px-5 py-4 rounded-xl text-center shadow-lg max-w-sm w-full">
+      
+      <div className="text-2xl mb-2">🔒</div>
+
+      <p className="text-sm text-gray-300 mb-3">
+        Unlock the full cover letter
+      </p>
+
+      <button
+        onClick={() => setPaymentOpen(true)}
+        className="bg-[#C9A84C] text-black font-semibold px-4 py-2 rounded-lg text-sm"
+      >
+        Upgrade to Pro
+      </button>
+
+    </div>
+  </div>
+)}
                             <span className="text-muted-foreground">Unlock full cover letter after payment</span>
                           </div>
                         </div>
