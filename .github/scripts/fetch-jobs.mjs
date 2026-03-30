@@ -1,13 +1,7 @@
-import { createClient } from '@supabase/supabase-js';
+import pg from 'pg';
+const { Pool } = pg;
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
-
-const ADZUNA_APP_ID = process.env.ADZUNA_APP_ID;
-const ADZUNA_APP_KEY = process.env.ADZUNA_APP_KEY;
-const JOOBLE_API_KEY = process.env.JOOBLE_API_KEY;
+const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
 
 function guessIndustry(title, employer) {
   const t = (title + ' ' + employer).toLowerCase();
@@ -53,7 +47,7 @@ async function fetchAdzuna() {
   const jobs = [];
   const results = await Promise.allSettled(
     queries.map(q =>
-      fetch(`https://api.adzuna.com/v1/api/jobs/${q.country}/search/1?app_id=${ADZUNA_APP_ID}&app_key=${ADZUNA_APP_KEY}&what=${encodeURIComponent(q.what)}&results_per_page=20&max_days_old=3&sort_by=date`)
+      fetch(`https://api.adzuna.com/v1/api/jobs/${q.country}/search/1?app_id=${process.env.ADZUNA_APP_ID}&app_key=${process.env.ADZUNA_APP_KEY}&what=${encodeURIComponent(q.what)}&results_per_page=20&max_days_old=3&sort_by=date`)
         .then(r => r.json())
         .then(data => ({ q, rows: data.results || [] }))
     )
@@ -109,7 +103,7 @@ async function fetchJooble() {
   const jobs = [];
   const results = await Promise.allSettled(
     queries.map(q =>
-      fetch(`https://jooble.org/api/${JOOBLE_API_KEY}`, {
+      fetch(`https://jooble.org/api/${process.env.JOOBLE_API_KEY}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ keywords: q.keywords, location: q.location, page: 1 }),
@@ -165,20 +159,42 @@ async function main() {
 
   console.log(`Total unique jobs: ${unique.length}`);
 
-  const BATCH = 50;
+  const client = await pool.connect();
   let inserted = 0;
-  for (let i = 0; i < unique.length; i += BATCH) {
-    const batch = unique.slice(i, i + BATCH);
-    const { error } = await supabase.from('cached_jobs').upsert(batch, {
-      onConflict: 'external_id,source',
-      ignoreDuplicates: true,
-    });
-    if (error) {
-      console.error(`Batch ${i} error:`, error.message);
-    } else {
-      inserted += batch.length;
+
+  try {
+    const BATCH = 50;
+    for (let i = 0; i < unique.length; i += BATCH) {
+      const batch = unique.slice(i, i + BATCH);
+      for (const job of batch) {
+        try {
+          await client.query(`
+            INSERT INTO cached_jobs (
+              external_id, title, company, location, salary, type, industry,
+              market, posted_at, hot, tag, source, source_label, apply_url,
+              description, country, category, visa_sponsorship, hot_score,
+              verified, featured, is_active, discovered_at
+            ) VALUES (
+              $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23
+            ) ON CONFLICT (external_id, source) DO NOTHING
+          `, [
+            job.external_id, job.title, job.company, job.location, job.salary,
+            job.type, job.industry, job.market, job.posted_at, job.hot, job.tag,
+            job.source, job.source_label, job.apply_url, job.description,
+            job.country, job.category, job.visa_sponsorship, job.hot_score,
+            job.verified, job.featured, job.is_active, job.discovered_at
+          ]);
+          inserted++;
+        } catch (e) {
+          console.error('Row error:', e.message);
+        }
+      }
     }
+  } finally {
+    client.release();
+    await pool.end();
   }
+
   console.log(`✅ Inserted ${inserted} jobs`);
 }
 
