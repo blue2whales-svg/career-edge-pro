@@ -1993,18 +1993,9 @@ export default function CVEditorPage() {
   const onPaymentSuccess = async () => {
   setHasPaid(true);
 
-  // Write to follow-up queue
+  // Write to follow-up queue (skipped — table not yet created)
   try {
-    await supabase.from("cv_followup_queue").insert({
-      name: cv.name,
-      email: cv.email || null,
-      phone: cv.phone,
-      template_id: templateId ?? "classic",
-      amount_paid: templatePrice.amount,
-      day1_sent: false,
-      day3_sent: false,
-      day7_sent: false,
-    });
+    console.log("Payment success for:", cv.name);
   } catch (err) {
     console.error("Follow-up queue error:", err);
     // Silently fail — never block the download

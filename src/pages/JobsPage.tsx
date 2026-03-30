@@ -28,9 +28,11 @@ export default function JobsPage() {
   const initialIndustry = searchParams.get("industry") || "All";
   const initialMarket = searchParams.get("market") || "All Markets";
   const initialCategory = searchParams.get("category") || "All Categories";
+  const initialCompany = searchParams.get("company") || "";
 
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [selectedCompany, setSelectedCompany] = useState(initialCompany);
   const [selectedIndustry, setSelectedIndustry] = useState(initialIndustry);
   const [selectedMarket, setSelectedMarket] = useState(initialMarket);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
@@ -48,6 +50,7 @@ export default function JobsPage() {
     category: selectedCategory !== "All Categories" ? selectedCategory : undefined,
     industry: selectedIndustry !== "All" ? selectedIndustry : undefined,
     market: selectedMarket !== "All Markets" ? selectedMarket : undefined,
+    company: selectedCompany || undefined,
   };
 
   const {
@@ -184,8 +187,15 @@ export default function JobsPage() {
       <section className="relative z-10 pb-6 px-4">
         <div className="container max-w-5xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
-            <h2 className="text-lg font-serif font-bold">All Openings</h2>
+            <h2 className="text-lg font-serif font-bold">
+              {selectedCompany ? `Jobs at ${selectedCompany}` : "All Openings"}
+            </h2>
             <span className="text-xs text-muted-foreground font-mono">{totalCount} roles</span>
+            {selectedCompany && (
+              <Button variant="outline" size="sm" className="text-xs" onClick={() => setSelectedCompany("")}>
+                Clear filter
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="sm"
