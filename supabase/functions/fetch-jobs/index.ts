@@ -350,7 +350,6 @@ Deno.serve(async (req) => {
 
     if (promises.length === 0) {
       console.log("⚠️ No API keys configured. Keeping existing jobs active.");
-      // Ensure minimum 200 active jobs by keeping seeds
       const { count } = await supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true);
       console.log(`📊 Current active jobs: ${count}`);
       return new Response(
@@ -415,25 +414,33 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Archive jobs older than 72 hours (set is_active = false)
-    const threeDaysAgo = new Date(Date.now() - 72 * 3600000).toISOString();
+    // ── FIX: Archive jobs by discovered_at (not posted_at) ──────────────────
+    // Use discovered_at so we keep jobs YOU found recently,
+    // regardless of when the employer originally posted them.
+    const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
     const { data: archived } = await supabase
       .from("cached_jobs")
       .update({ is_active: false, hot: false, hot_score: 0 })
-      .lt("posted_at", threeDaysAgo)
+      .lt("discovered_at", sevenDaysAgo)
       .eq("is_active", true)
       .neq("source", "platform_seed")
       .select("id");
-    console.log(`📦 Archived ${archived?.length || 0} stale jobs (>72h)`);
+    console.log(`📦 Archived ${archived?.length || 0} stale jobs (discovered >7 days ago)`);
 
-    // Delete jobs older than 14 days
-    const twoWeeksAgo = new Date(Date.now() - 14 * 86400000).toISOString();
-    await supabase.from("cached_jobs").delete().lt("created_at", twoWeeksAgo).neq("source", "platform_seed");
+    // ── FIX: Delete by discovered_at (not created_at) ───────────────────────
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+    await supabase
+      .from("cached_jobs")
+      .delete()
+      .lt("discovered_at", thirtyDaysAgo)
+      .neq("source", "platform_seed");
 
     // Guarantee minimum 200 active jobs: keep platform_seed active
-    const { count: activeCount } = await supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true);
+    const { count: activeCount } = await supabase
+      .from("cached_jobs")
+      .select("*", { count: "exact", head: true })
+      .eq("is_active", true);
     if ((activeCount || 0) < 200) {
-      // Re-activate platform_seed jobs
       await supabase.from("cached_jobs").update({ is_active: true }).eq("source", "platform_seed");
       console.log(`⚡ Active jobs below 200 (${activeCount}), re-activated platform_seed jobs`);
     }
@@ -446,9 +453,7 @@ Deno.serve(async (req) => {
       .order("hot_score", { ascending: false })
       .limit(6);
     if (topJobs && topJobs.length > 0) {
-      // Reset featured
       await supabase.from("cached_jobs").update({ featured: false }).eq("featured", true);
-      // Set new featured
       const ids = topJobs.map(j => j.id);
       for (const id of ids) {
         await supabase.from("cached_jobs").update({ featured: true }).eq("id", id);
@@ -456,7 +461,10 @@ Deno.serve(async (req) => {
     }
 
     // Final count
-    const { count: finalActive } = await supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true);
+    const { count: finalActive } = await supabase
+      .from("cached_jobs")
+      .select("*", { count: "exact", head: true })
+      .eq("is_active", true);
     console.log(`📊 Final active jobs: ${finalActive}`);
     console.log(`✅ Fetch cycle complete`);
 
