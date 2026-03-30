@@ -1,3 +1,4 @@
+import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -1989,11 +1990,28 @@ export default function CVEditorPage() {
   };
 
   // ── Called by MpesaPaymentModal after real payment confirmed ──
-  const onPaymentSuccess = () => {
-    setHasPaid(true);
-    // Auto-trigger download after modal closes
-    setTimeout(() => handleDownload(), 800);
-  };
+  const onPaymentSuccess = async () => {
+  setHasPaid(true);
+
+  // Write to follow-up queue
+  try {
+    await supabase.from("cv_followup_queue").insert({
+      name: cv.name,
+      email: cv.email || null,
+      phone: cv.phone,
+      template_id: templateId ?? "classic",
+      amount_paid: templatePrice.amount,
+      day1_sent: false,
+      day3_sent: false,
+      day7_sent: false,
+    });
+  } catch (err) {
+    console.error("Follow-up queue error:", err);
+    // Silently fail — never block the download
+  }
+
+  setTimeout(() => handleDownload(), 800);
+};
 
   const update = (field: keyof CVData, value: string) => setCv((prev) => ({ ...prev, [field]: value }));
   const updateExp = (i: number, field: keyof Experience, value: string) => {
