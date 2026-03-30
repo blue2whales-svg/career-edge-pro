@@ -2,7 +2,7 @@ name: Fetch Jobs
 
 on:
   schedule:
-    - cron: "0 */4 * * *"
+    - cron: '0 */4 * * *'
   workflow_dispatch:
 
 jobs:
@@ -15,10 +15,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
 
-      - name: Install Supabase client
-        run: npm install @supabase/supabase-js
+      - name: Install dependencies
+        run: npm install @supabase/supabase-js pg
 
       - name: Run fetch script
         env:
@@ -27,4 +27,5 @@ jobs:
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
           ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
           JOOBLE_API_KEY: ${{ secrets.JOOBLE_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: node .github/scripts/fetch-jobs.mjs
