@@ -1,7 +1,7 @@
-import pg from 'pg';
-const { Pool } = pg;
+import { createClient } from '@supabase/supabase-js';
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 function guessIndustry(title, employer) {
   const t = (title + ' ' + employer).toLowerCase();
@@ -146,6 +146,27 @@ async function fetchJooble() {
   return jobs;
 }
 
+async function upsertBatch(batch, attempt = 0) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/cached_jobs`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SERVICE_KEY,
+      'Authorization': `Bearer ${SERVICE_KEY}`,
+      'Prefer': 'resolution=ignore-duplicates,return=minimal',
+    },
+    body: JSON.stringify(batch),
+  });
+  if (res.ok || res.status === 201) return true;
+  const err = await res.text();
+  console.error(`Upsert failed (attempt ${attempt}):`, res.status, err);
+  if (attempt < 2) {
+    await new Promise(r => setTimeout(r, 3000));
+    return upsertBatch(batch, attempt + 1);
+  }
+  return false;
+}
+
 async function main() {
   const [adzunaJobs, joobleJobs] = await Promise.all([fetchAdzuna(), fetchJooble()]);
   const allJobs = [...adzunaJobs, ...joobleJobs];
@@ -159,84 +180,13 @@ async function main() {
 
   console.log(`Total unique jobs: ${unique.length}`);
 
-  async function main() {
-  const [adzunaJobs, joobleJobs] = await Promise.all([fetchAdzuna(), fetchJooble()]);
-  const allJobs = [...adzunaJobs, ...joobleJobs];
-
-  const seen = new Set();
-  const unique = allJobs.filter(j => {
-    if (seen.has(j.external_id)) return false;
-    seen.add(j.external_id);
-    return true;
-  });
-
-  console.log(`Total unique jobs: ${unique.length}`);
-
-  const SUPABASE_URL = process.env.SUPABASE_URL;
-  const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const BATCH = 50;
   let inserted = 0;
 
   for (let i = 0; i < unique.length; i += BATCH) {
     const batch = unique.slice(i, i + BATCH);
-    let success = false;
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/cached_jobs`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': SERVICE_KEY,
-            'Authorization': `Bearer ${SERVICE_KEY}`,
-            'Prefer': 'resolution=ignore-duplicates,return=minimal',
-          },
-          body: JSON.stringify(batch),
-        });
-        if (res.ok || res.status === 201) {
-          inserted += batch.length;
-          success = true;
-          break;
-        } else {
-          const err = await res.text();
-          console.error(`Batch ${i} attempt ${attempt} failed:`, res.status, err);
-          await new Promise(r => setTimeout(r, 2000));
-        }
-      } catch (e) {
-        console.error(`Batch ${i} attempt ${attempt} threw:`, e.message);
-        await new Promise(r => setTimeout(r, 2000));
-      }
-    }
-    if (!success) console.error(`Batch ${i} failed after 3 attempts`);
-  }
-
-  console.log(`✅ Inserted ${inserted} jobs`);
-}
-
-main().catch(err => { console.error(err); process.exit(1); });`
-            INSERT INTO cached_jobs (
-              external_id, title, company, location, salary, type, industry,
-              market, posted_at, hot, tag, source, source_label, apply_url,
-              description, country, category, visa_sponsorship, hot_score,
-              verified, featured, is_active, discovered_at
-            ) VALUES (
-              $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23
-            ) ON CONFLICT (external_id, source) DO NOTHING
-          `, [
-            job.external_id, job.title, job.company, job.location, job.salary,
-            job.type, job.industry, job.market, job.posted_at, job.hot, job.tag,
-            job.source, job.source_label, job.apply_url, job.description,
-            job.country, job.category, job.visa_sponsorship, job.hot_score,
-            job.verified, job.featured, job.is_active, job.discovered_at
-          ]);
-          inserted++;
-        } catch (e) {
-          console.error('Row error:', e.message);
-        }
-      }
-    }
-  } finally {
-    client.release();
-    await pool.end();
+    const ok = await upsertBatch(batch);
+    if (ok) inserted += batch.length;
   }
 
   console.log(`✅ Inserted ${inserted} jobs`);
