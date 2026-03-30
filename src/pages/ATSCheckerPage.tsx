@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useProPlan } from "@/hooks/useProPlan";
 
 const SUPABASE_URL = "https://wspugvdwodqdlyamxzxj.supabase.co/functions/v1/ats-checker";
 const SUPABASE_ANON_KEY = "sb_publishable_nhGjJgV7MxzzyZLkStxzIA_DXY-lMFS";
@@ -17,6 +18,7 @@ const statusColor = (status) => {
 };
 
 export default function ATSCheckerPage() {
+  const { isPro, loading: planLoading } = useProPlan();
   const [cvText, setCvText] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const [email, setEmail] = useState("");
@@ -25,6 +27,36 @@ export default function ATSCheckerPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [shared, setShared] = useState(false);
+
+  // ── PRO GATE ──────────────────────────────────────────
+  if (planLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground text-sm">Checking your plan...</p>
+      </div>
+    );
+  }
+
+  if (!isPro) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6 px-4 text-center">
+        <div className="text-5xl">🔒</div>
+        <h2 className="text-2xl font-bold">ATS Checker is a Pro Feature</h2>
+        <p className="text-muted-foreground max-w-md">
+          Upgrade to CV Edge Pro to check your CV against ATS systems,
+          get a score, see critical issues and keyword gaps.
+        </p>
+        <a
+          href="/pro"
+          className="rounded-xl bg-gradient-brand px-8 py-3 font-semibold text-primary-foreground shadow-glow transition-opacity hover:opacity-90"
+        >
+          Upgrade to Pro →
+        </a>
+        <p className="text-xs text-muted-foreground">KES 499/month • Cancel anytime</p>
+      </div>
+    );
+  }
+  // ── END GATE ──────────────────────────────────────────
 
   const handleAnalyze = async () => {
     if (!cvText.trim() || cvText.trim().length < 50) {
