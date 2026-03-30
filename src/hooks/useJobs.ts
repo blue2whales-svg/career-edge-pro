@@ -253,6 +253,7 @@ function filterStatic(jobs: Job[], filters: JobFilters): Job[] {
     if (filters.industry && filters.industry !== "All" && filters.industry !== "🔥 Hot Abroad" && job.industry !== filters.industry) return false;
     if (filters.industry === "🔥 Hot Abroad" && !job.hot) return false;
     if (filters.market && filters.market !== "All Markets" && job.market !== filters.market) return false;
+    if (filters.company && !job.company.toLowerCase().includes(filters.company.toLowerCase())) return false;
     if (filters.hotOnly && !job.hot) return false;
     if (filters.visaOnly && !job.visa_sponsorship) return false;
     return true;
