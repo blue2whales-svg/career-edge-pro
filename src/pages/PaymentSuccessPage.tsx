@@ -9,7 +9,6 @@ import { trackPurchase } from "@/hooks/useFbPixel";
 export default function PaymentSuccessPage() {
   useEffect(() => {
     trackPurchase(0, "KES");
-    // Mark jobs as unlocked after successful payment
     try {
       localStorage.setItem("cvedge_jobs_unlocked", "true");
     } catch {}
@@ -30,7 +29,9 @@ export default function PaymentSuccessPage() {
                 </Button>
               </Link>
               <Link to="/jobs">
-                <Button variant="outline" className="w-full sm:w-auto">Browse Jobs (Unlocked)</Button>
+                <Button variant="outline" className="w-full sm:w-auto">
+                  Browse Jobs (Unlocked)
+                </Button>
               </Link>
             </div>
           </motion.div>
@@ -56,7 +57,9 @@ export default function PaymentSuccessPage() {
               <div className="rounded-xl border border-border bg-card p-4 flex items-center justify-between gap-4">
                 <div>
                   <h3 className="text-sm font-semibold">Premium CV Upgrade</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">Executive formatting, achievement metrics, keyword optimization</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Executive formatting, achievement metrics, keyword optimization
+                  </p>
                 </div>
                 <Link to="/order?service=cv_premium">
                   <Button size="sm" className="bg-gradient-brand border-0 font-semibold shrink-0">
@@ -68,7 +71,9 @@ export default function PaymentSuccessPage() {
               <div className="rounded-xl border border-border bg-card p-4 flex items-center justify-between gap-4">
                 <div>
                   <h3 className="text-sm font-semibold">Cover Letter Add-on</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">Tailored cover letter matching your CV and target role</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Tailored cover letter matching your CV and target role
+                  </p>
                 </div>
                 <Link to="/order?service=cover_letter">
                   <Button size="sm" className="bg-gradient-brand border-0 font-semibold shrink-0">
@@ -76,21 +81,23 @@ export default function PaymentSuccessPage() {
                   </Button>
                 </Link>
               </div>
+
+              <div className="rounded-xl border border-primary/30 bg-card p-4 flex items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-sm font-semibold">✅ ATS Checker — Now Unlocked</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Check your CV against ATS systems, get a score, see keyword gaps.
+                  </p>
+                </div>
+                <Link to="/ats-checker">
+                  <Button size="sm" className="bg-gradient-brand border-0 font-semibold shrink-0">
+                    Check Now
+                  </Button>
+                </Link>
+              </div>
             </div>
 
-            <div className="rounded-xl border border-primary/30 bg-card p-4 flex items-center justify-between gap-4">
-  <div>
-    <h3 className="text-sm font-semibold">✅ ATS Checker — Now Unlocked</h3>
-    <p className="text-xs text-muted-foreground mt-0.5">
-      Check your CV against ATS systems, get a score, see keyword gaps.
-    </p>
-  </div>
-  <Link to="/ats-checker">
-    <Button size="sm" className="bg-gradient-brand border-0 font-semibold shrink-0">
-      Check Now
-    </Button>
-  </Link>
-</div>
+            <div className="flex items-center justify-center gap-4 pt-2">
               <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
                 <Shield className="h-3 w-3" /> Secure Payment via M-Pesa & PayPal
               </span>
