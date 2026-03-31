@@ -118,9 +118,11 @@ export function useJobsPaginated(filters: JobFilters) {
 
       const query = buildQuery(filters).range(from, to);
       const { data, error, count } = await query;
+      console.log("Jobs result:", { data, error, count, pageParam });
 
       if (error) {
         console.error("Jobs query error:", error);
+        // Fallback to static
         const staticFiltered = filterStatic(JOBS, filters);
         return {
           jobs: staticFiltered.slice(from, to + 1),
@@ -131,6 +133,7 @@ export function useJobsPaginated(filters: JobFilters) {
 
       const jobs = (data || []).map(mapRow);
 
+      // If DB is empty on first page, use static fallback
       if (pageParam === 0 && jobs.length === 0) {
         const staticFiltered = filterStatic(JOBS, filters);
         return {
@@ -158,6 +161,7 @@ export function useFeaturedJobs() {
   return useQuery({
     queryKey: ["featured-jobs"],
     queryFn: async () => {
+      // Try explicit featured first
       const { data: explicit } = await supabase
         .from("cached_jobs")
         .select("*")
@@ -168,6 +172,7 @@ export function useFeaturedJobs() {
 
       if (explicit && explicit.length >= 3) return explicit.map(mapRow);
 
+      // Fall back to hot jobs
       const { data: hot } = await supabase
         .from("cached_jobs")
         .select("*")
@@ -178,6 +183,7 @@ export function useFeaturedJobs() {
 
       if (hot && hot.length >= 3) return hot.map(mapRow);
 
+      // Fall back to top jobs
       const { data: top } = await supabase
         .from("cached_jobs")
         .select("*")
@@ -207,36 +213,12 @@ export function useCategoryCounts() {
       const counts: Record<string, number> = {};
 
       const [kenya, gulf, cruise, remote, visa, health, total] = await Promise.all([
-        supabase
-          .from("cached_jobs")
-          .select("*", { count: "exact", head: true })
-          .eq("is_active", true)
-          .eq("market", "Kenya"),
-        supabase
-          .from("cached_jobs")
-          .select("*", { count: "exact", head: true })
-          .eq("is_active", true)
-          .in("market", ["UAE", "Qatar", "Saudi Arabia", "Oman", "Bahrain", "Kuwait"]),
-        supabase
-          .from("cached_jobs")
-          .select("*", { count: "exact", head: true })
-          .eq("is_active", true)
-          .eq("category", "Cruise Jobs"),
-        supabase
-          .from("cached_jobs")
-          .select("*", { count: "exact", head: true })
-          .eq("is_active", true)
-          .eq("market", "Remote"),
-        supabase
-          .from("cached_jobs")
-          .select("*", { count: "exact", head: true })
-          .eq("is_active", true)
-          .eq("visa_sponsorship", true),
-        supabase
-          .from("cached_jobs")
-          .select("*", { count: "exact", head: true })
-          .eq("is_active", true)
-          .eq("industry", "Healthcare"),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("market", "Kenya"),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).in("market", ["UAE", "Qatar", "Saudi Arabia", "Oman", "Bahrain", "Kuwait"]),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("category", "Cruise Jobs"),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("market", "Remote"),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("visa_sponsorship", true),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("industry", "Healthcare"),
         supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true),
       ]);
 
@@ -249,6 +231,7 @@ export function useCategoryCounts() {
       counts["total"] = total.count || 52;
 
       return counts;
+    },
     },
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
