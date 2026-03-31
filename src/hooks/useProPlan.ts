@@ -11,16 +11,16 @@ export function useProPlan() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return setLoading(false);
 
-      const { data } = await supabase
-        .from("vault_profiles")
-        .select("plan, plan_expires_at")
+      // Check if user has a paid order (pro access via CV purchase)
+      const { data: orders } = await supabase
+        .from("orders")
+        .select("id, created_at")
         .eq("user_id", user.id)
-        .single();
+        .eq("status", "paid")
+        .limit(1);
 
-      if (data?.plan === "pro" && data?.plan_expires_at) {
-        const expired = new Date(data.plan_expires_at) < new Date();
-        setIsPro(!expired);
-        setExpiresAt(data.plan_expires_at);
+      if (orders && orders.length > 0) {
+        setIsPro(true);
       }
 
       setLoading(false);
