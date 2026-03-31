@@ -6,10 +6,11 @@ interface JobLockOverlayProps {
   jobTitle: string;
   company: string;
   canUseFreeUnlock: boolean;
+  freeUnlocksRemaining?: number;
   onFreeUnlock: () => void;
 }
 
-export function JobLockOverlay({ jobTitle, company, canUseFreeUnlock, onFreeUnlock }: JobLockOverlayProps) {
+export function JobLockOverlay({ jobTitle, company, canUseFreeUnlock, freeUnlocksRemaining = 0, onFreeUnlock }: JobLockOverlayProps) {
   return (
     <div className="absolute inset-0 z-20 flex items-center justify-center bg-background/80 backdrop-blur-sm rounded-b-lg">
       <div className="max-w-sm mx-4 text-center space-y-4">
