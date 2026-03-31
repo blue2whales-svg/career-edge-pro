@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "../integrations/supabase/client";
 
 const STORAGE_KEY = "cvedge_jobs_unlocked";
-const FREE_UNLOCK_KEY = "cvedge_free_unlock_used";
-const FREE_UNLOCK_JOB_KEY = "cvedge_free_unlock_job";
+const FREE_UNLOCK_KEY = "cvedge_free_unlocks_used"; // stores JSON array of job keys
+const MAX_FREE_UNLOCKS = 3;
 
 function getUnlockedFromStorage(): boolean {
   try {
@@ -13,26 +13,20 @@ function getUnlockedFromStorage(): boolean {
   }
 }
 
-function getFreeUnlockUsed(): boolean {
+function getFreeUnlockedJobs(): string[] {
   try {
-    return localStorage.getItem(FREE_UNLOCK_KEY) === "true";
+    const raw = localStorage.getItem(FREE_UNLOCK_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
-    return true;
-  }
-}
-
-function getFreeUnlockJobKey(): string | null {
-  try {
-    return localStorage.getItem(FREE_UNLOCK_JOB_KEY);
-  } catch {
-    return null;
+    return [];
   }
 }
 
 export function useJobAccess() {
   const [isUnlocked, setIsUnlocked] = useState(getUnlockedFromStorage);
-  const [freeUnlockUsed, setFreeUnlockUsed] = useState(getFreeUnlockUsed);
-  const [freeUnlockJobKey, setFreeUnlockJobKey] = useState<string | null>(getFreeUnlockJobKey);
+  const [freeUnlockedJobs, setFreeUnlockedJobs] = useState<string[]>(getFreeUnlockedJobs);
   const [checking, setChecking] = useState(true);
 
   // Check Supabase for any paid order by this user
@@ -69,17 +63,20 @@ export function useJobAccess() {
   }, []);
 
   const useFreeUnlock = useCallback((jobKey: string) => {
-    localStorage.setItem(FREE_UNLOCK_KEY, "true");
-    localStorage.setItem(FREE_UNLOCK_JOB_KEY, jobKey);
-    setFreeUnlockUsed(true);
-    setFreeUnlockJobKey(jobKey);
+    setFreeUnlockedJobs((prev) => {
+      if (prev.includes(jobKey)) return prev;
+      const updated = [...prev, jobKey];
+      localStorage.setItem(FREE_UNLOCK_KEY, JSON.stringify(updated));
+      return updated;
+    });
   }, []);
 
   const isJobFreeUnlocked = useCallback((jobKey: string) => {
-    return freeUnlockJobKey === jobKey;
-  }, [freeUnlockJobKey]);
+    return freeUnlockedJobs.includes(jobKey);
+  }, [freeUnlockedJobs]);
 
-  const canUseFreeUnlock = !freeUnlockUsed && !isUnlocked;
+  const freeUnlocksRemaining = Math.max(0, MAX_FREE_UNLOCKS - freeUnlockedJobs.length);
+  const canUseFreeUnlock = freeUnlocksRemaining > 0 && !isUnlocked;
 
   return {
     isUnlocked,
@@ -88,5 +85,6 @@ export function useJobAccess() {
     canUseFreeUnlock,
     useFreeUnlock,
     isJobFreeUnlocked,
+    freeUnlocksRemaining,
   };
 }

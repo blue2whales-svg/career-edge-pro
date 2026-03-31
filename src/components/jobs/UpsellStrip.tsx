@@ -49,7 +49,7 @@ export function UpsellStrip({ variant }: { variant: Variant }) {
       {/* Message */}
       <div>
         <p className="text-sm font-semibold">⚡ See a job you love? Make sure your CV is ready to compete for it.</p>
-        <p className="text-xs text-muted-foreground mt-0.5">Professional Package → KSh 5,500</p>
+        <p className="text-xs text-muted-foreground mt-0.5">Starting from KES 1,490</p>
       </div>
       {/* CTA → ORDER PAGE */}
       <div className="pb-24 sm:pb-0">
