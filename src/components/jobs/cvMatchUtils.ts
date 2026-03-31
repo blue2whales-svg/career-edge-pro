@@ -88,3 +88,16 @@ export function getJobBadges(job: {
 
   return badges;
 }
+// Legacy stubs — kept for backward compat during migration
+export function getCVMatchScore(_jobKey: string): number {
+  return 0;
+}
+export function getScoreConfig(_score: number) {
+  return { label: "", bg: "", border: "", text: "", gradient: "" };
+}
+export function getSubScores(_overall: number) {
+  return { skills: 0, experience: 0, atsKeywords: 0, documentQuality: 0 };
+}
+export function hashJobId(_id: string): number {
+  return 0;
+}
