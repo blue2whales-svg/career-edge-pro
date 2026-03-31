@@ -76,8 +76,8 @@ function buildQuery(filters: JobFilters) {
     .from("cached_jobs")
     .select("*", { count: "exact" })
     .eq("is_active", true)
-    .order("hot_score", { ascending: false })
-    .order("posted_at", { ascending: false });
+    .order("posted_at", { ascending: false })
+    .order("hot_score", { ascending: false });
 
   if (filters.search) {
     const s = `%${filters.search}%`;
@@ -307,8 +307,8 @@ export function useJobs() {
         .from("cached_jobs")
         .select("*")
         .eq("is_active", true)
-        .order("hot_score", { ascending: false })
         .order("posted_at", { ascending: false })
+        .order("hot_score", { ascending: false })
         .limit(500);
 
       if (!data || data.length === 0) {
