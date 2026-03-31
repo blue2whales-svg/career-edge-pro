@@ -47,7 +47,11 @@ function mapRow(row: any): Job {
     type: row.type || "Full-time",
     industry: row.industry || "Operations",
     market: row.market || "Kenya",
-    posted: row.posted_at ? `Posted ${timeAgo(row.posted_at)}` : (row.discovered_at ? `Discovered ${timeAgo(row.discovered_at)}` : row.posted || "Recently"),
+    posted: row.posted_at
+      ? `Posted ${timeAgo(row.posted_at)}`
+      : row.discovered_at
+        ? `Discovered ${timeAgo(row.discovered_at)}`
+        : row.posted || "Recently",
     hot: row.hot || false,
     tag: row.tag || undefined,
     apply_url: row.apply_url || undefined,
@@ -114,6 +118,7 @@ export function useJobsPaginated(filters: JobFilters) {
 
       const query = buildQuery(filters).range(from, to);
       const { data, error, count } = await query;
+      console.log("Jobs result:", { data, error, count, pageParam });
 
       if (error) {
         console.error("Jobs query error:", error);
@@ -208,31 +213,58 @@ export function useCategoryCounts() {
       const counts: Record<string, number> = {};
 
       // Kenya
-      const { count: kenya } = await supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("market", "Kenya");
+      const { count: kenya } = await supabase
+        .from("cached_jobs")
+        .select("*", { count: "exact", head: true })
+        .eq("is_active", true)
+        .eq("market", "Kenya");
       counts["Kenya Jobs"] = kenya || 0;
 
       // Gulf
-      const { count: gulf } = await supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).in("market", ["UAE", "Qatar", "Saudi Arabia", "Oman", "Bahrain", "Kuwait"]);
+      const { count: gulf } = await supabase
+        .from("cached_jobs")
+        .select("*", { count: "exact", head: true })
+        .eq("is_active", true)
+        .in("market", ["UAE", "Qatar", "Saudi Arabia", "Oman", "Bahrain", "Kuwait"]);
       counts["Gulf Jobs"] = gulf || 0;
 
       // Cruise
-      const { count: cruise } = await supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("category", "Cruise Jobs");
+      const { count: cruise } = await supabase
+        .from("cached_jobs")
+        .select("*", { count: "exact", head: true })
+        .eq("is_active", true)
+        .eq("category", "Cruise Jobs");
       counts["Cruise Jobs"] = cruise || 0;
 
       // Remote
-      const { count: remote } = await supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("category", "Remote Jobs");
+      const { count: remote } = await supabase
+        .from("cached_jobs")
+        .select("*", { count: "exact", head: true })
+        .eq("is_active", true)
+        .eq("category", "Remote Jobs");
       counts["Remote Jobs"] = remote || 0;
 
       // Visa
-      const { count: visa } = await supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("visa_sponsorship", true);
+      const { count: visa } = await supabase
+        .from("cached_jobs")
+        .select("*", { count: "exact", head: true })
+        .eq("is_active", true)
+        .eq("visa_sponsorship", true);
       counts["Visa Sponsorship"] = visa || 0;
 
       // Healthcare
-      const { count: health } = await supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("industry", "Healthcare");
+      const { count: health } = await supabase
+        .from("cached_jobs")
+        .select("*", { count: "exact", head: true })
+        .eq("is_active", true)
+        .eq("industry", "Healthcare");
       counts["Healthcare Jobs"] = health || 0;
 
       // Total
-      const { count: total } = await supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true);
+      const { count: total } = await supabase
+        .from("cached_jobs")
+        .select("*", { count: "exact", head: true })
+        .eq("is_active", true);
       counts["total"] = total || 0;
 
       return counts;
@@ -250,7 +282,13 @@ function filterStatic(jobs: Job[], filters: JobFilters): Job[] {
       if (!job.title.toLowerCase().includes(s) && !job.company.toLowerCase().includes(s)) return false;
     }
     if (filters.category && filters.category !== "All Categories" && job.category !== filters.category) return false;
-    if (filters.industry && filters.industry !== "All" && filters.industry !== "🔥 Hot Abroad" && job.industry !== filters.industry) return false;
+    if (
+      filters.industry &&
+      filters.industry !== "All" &&
+      filters.industry !== "🔥 Hot Abroad" &&
+      job.industry !== filters.industry
+    )
+      return false;
     if (filters.industry === "🔥 Hot Abroad" && !job.hot) return false;
     if (filters.market && filters.market !== "All Markets" && job.market !== filters.market) return false;
     if (filters.company && !job.company.toLowerCase().includes(filters.company.toLowerCase())) return false;
@@ -280,9 +318,9 @@ export function useJobs() {
       const liveJobs = data.map(mapRow);
 
       const featured = (() => {
-        const explicit = liveJobs.filter(j => j.featured === true);
+        const explicit = liveJobs.filter((j) => j.featured === true);
         if (explicit.length >= 3) return explicit.slice(0, 6);
-        const hot = liveJobs.filter(j => j.hot === true || (j.hot_score && j.hot_score >= 40));
+        const hot = liveJobs.filter((j) => j.hot === true || (j.hot_score && j.hot_score >= 40));
         if (hot.length >= 3) return hot.slice(0, 6);
         return liveJobs.slice(0, 6);
       })();
