@@ -198,9 +198,7 @@ export default function OrderPage() {
   const isPackageMode = !!(packageParam && PACKAGE_MAP[packageParam]);
 
   // ✅ CHANGE 3: Detect if the order contains any Europass service
-  const isEuropassOrder = selectedServices.some(
-    (s) => s === "europass-cv" || s === "europass-cover-letter"
-  );
+  const isEuropassOrder = selectedServices.some((s) => s === "europass-cv" || s === "europass-cover-letter");
 
   useEffect(() => {
     trackViewContent("Order", "Checkout");
@@ -256,13 +254,19 @@ export default function OrderPage() {
       });
       if (error) {
         console.error("generate-cv error:", error);
-        toast({ title: "Payment confirmed, but document generation is delayed.", description: "Please wait a bit and refresh the review page shortly." });
+        toast({
+          title: "Payment confirmed, but document generation is delayed.",
+          description: "Please wait a bit and refresh the review page shortly.",
+        });
         return;
       }
       setDocumentsGenerated(true);
     } catch (genErr) {
       console.error("generate-cv invoke failed:", genErr);
-      toast({ title: "Payment confirmed, but document generation is delayed.", description: "Please wait a bit and refresh the review page shortly." });
+      toast({
+        title: "Payment confirmed, but document generation is delayed.",
+        description: "Please wait a bit and refresh the review page shortly.",
+      });
     } finally {
       setDocumentsGenerating(false);
     }
@@ -272,7 +276,11 @@ export default function OrderPage() {
     try {
       setPaymentChecking(true);
       if (!checkoutRequestId) {
-        toast({ title: "Payment not yet linked", description: "Please complete the M-Pesa prompt on your phone first.", variant: "destructive" });
+        toast({
+          title: "Payment not yet linked",
+          description: "Please complete the M-Pesa prompt on your phone first.",
+          variant: "destructive",
+        });
         return;
       }
       const response: any = await (supabase as any)
@@ -284,13 +292,19 @@ export default function OrderPage() {
       const error = response?.error;
       if (error) {
         console.warn("Payments query failed:", error);
-        toast({ title: "Payment check temporarily unavailable.", description: "Please wait a few seconds and try again." });
+        toast({
+          title: "Payment check temporarily unavailable.",
+          description: "Please wait a few seconds and try again.",
+        });
         return;
       }
       if (data?.status === "COMPLETED") {
         setPaymentConfirmed(true);
         trackPurchase(total, "KES");
-        toast({ title: "Payment confirmed! 🎉", description: data?.mpesa_code ? `Receipt: ${data.mpesa_code}` : undefined });
+        toast({
+          title: "Payment confirmed! 🎉",
+          description: data?.mpesa_code ? `Receipt: ${data.mpesa_code}` : undefined,
+        });
 
         // ✅ CHANGE 4: Europass orders go to the builder; all others go to /review
         if (isEuropassOrder) {
@@ -347,13 +361,17 @@ export default function OrderPage() {
             phone: formattedPhone,
             amount: total,
             accountReference: paymentRef,
-            transactionDesc: isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", "),
+            transactionDesc:
+              isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", "),
           },
         });
         if (stkError) {
           console.error("STK push error:", stkError);
           setPaymentError("network");
-          toast({ title: "Could not reach the payment service. Use the manual M-Pesa option below.", variant: "destructive" });
+          toast({
+            title: "Could not reach the payment service. Use the manual M-Pesa option below.",
+            variant: "destructive",
+          });
         } else if (stkData?.success === true) {
           setStkSent(true);
           setPaymentError(null);
@@ -364,10 +382,16 @@ export default function OrderPage() {
           const errorCode = stkData?.errorCode || "";
           if (errorCode.includes("1001") || errorCode.includes("credentials")) {
             setPaymentError("credentials");
-            toast({ title: "Payment service configuration issue. Please pay manually via M-Pesa below.", variant: "destructive" });
+            toast({
+              title: "Payment service configuration issue. Please pay manually via M-Pesa below.",
+              variant: "destructive",
+            });
           } else if (errorCode.includes("500.003") || errorCode.includes("busy")) {
             setPaymentError("network");
-            toast({ title: "M-Pesa is busy right now. Please retry in a moment or pay manually.", variant: "destructive" });
+            toast({
+              title: "M-Pesa is busy right now. Please retry in a moment or pay manually.",
+              variant: "destructive",
+            });
           } else {
             setPaymentError("generic");
             toast({ title: "M-Pesa request failed. Please try again or pay manually.", variant: "destructive" });
@@ -378,20 +402,22 @@ export default function OrderPage() {
         setPaymentError("network");
         toast({ title: "Could not reach payment service. Try the manual option below.", variant: "destructive" });
       }
-      supabase.functions.invoke("notify-zapier", {
-        body: {
-          order: {
-            id: paymentRef,
-            name: name.trim(),
-            email: email.trim(),
-            phone: formattedPhone,
-            services: selectedServices,
-            details: formValues,
-            total_amount: total,
-            status: "pending",
+      supabase.functions
+        .invoke("notify-zapier", {
+          body: {
+            order: {
+              id: paymentRef,
+              name: name.trim(),
+              email: email.trim(),
+              phone: formattedPhone,
+              services: selectedServices,
+              details: formValues,
+              total_amount: total,
+              status: "pending",
+            },
           },
-        },
-      }).catch(console.error);
+        })
+        .catch(console.error);
     } catch (error: any) {
       console.error("Order error:", error);
       toast({ title: "Something went wrong", description: error.message, variant: "destructive" });
@@ -415,31 +441,52 @@ export default function OrderPage() {
                     Payment <span className="text-gradient">Confirmed!</span>
                   </h1>
                   <p className="text-sm text-muted-foreground mb-2">
-                    {documentsGenerating ? "Your AI-powered documents are being generated now..." : "Your AI-powered documents are being generated now!"}
+                    {documentsGenerating
+                      ? "Your AI-powered documents are being generated now..."
+                      : "Your AI-powered documents are being generated now!"}
                   </p>
                   <p className="text-sm font-mono text-primary mb-8">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
                   <div className="rounded-xl border border-border bg-card p-6 text-left mb-8">
                     <h3 className="font-semibold mb-3">What happens next?</h3>
                     <div className="space-y-3 text-sm text-muted-foreground">
-                      <div className="flex items-start gap-3"><span className="text-primary font-bold">1.</span><span>AI is generating your documents right now (1-2 min)</span></div>
-                      <div className="flex items-start gap-3"><span className="text-primary font-bold">2.</span><span>Review and edit your documents on the next page</span></div>
-                      <div className="flex items-start gap-3"><span className="text-primary font-bold">3.</span><span>Download your polished, ready-to-use documents</span></div>
+                      <div className="flex items-start gap-3">
+                        <span className="text-primary font-bold">1.</span>
+                        <span>AI is generating your documents right now (1-2 min)</span>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <span className="text-primary font-bold">2.</span>
+                        <span>Review and edit your documents on the next page</span>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <span className="text-primary font-bold">3.</span>
+                        <span>Download your polished, ready-to-use documents</span>
+                      </div>
                     </div>
                   </div>
                   <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 mb-6 text-left">
                     <h3 className="font-semibold text-sm mb-1">🚀 Your CV is ready — now put it to work!</h3>
-                    <p className="text-xs text-muted-foreground">Browse open roles and apply instantly with your new professional CV.</p>
+                    <p className="text-xs text-muted-foreground">
+                      Browse open roles and apply instantly with your new professional CV.
+                    </p>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                    <Link to="/jobs"><Button className="bg-gradient-brand border-0 font-semibold gold-shimmer">Browse Jobs & Apply <ArrowRight className="ml-2 h-4 w-4" /></Button></Link>
+                    <Link to="/jobs">
+                      <Button className="bg-gradient-brand border-0 font-semibold gold-shimmer">
+                        Browse Jobs & Apply <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
                     {/* ✅ CHANGE 5: Europass orders link to builder, all others to /review */}
                     {isEuropassOrder ? (
                       <Link to={`/europass-builder?orderId=${orderId}&email=${encodeURIComponent(email.trim())}`}>
-                        <Button variant="outline" className="border-primary/30">Open Europass Builder</Button>
+                        <Button variant="outline" className="border-primary/30">
+                          Open Europass Builder
+                        </Button>
                       </Link>
                     ) : (
                       <Link to={`/review/${orderId}`}>
-                        <Button variant="outline" className="border-primary/30">Review Your Documents</Button>
+                        <Button variant="outline" className="border-primary/30">
+                          Review Your Documents
+                        </Button>
                       </Link>
                     )}
                   </div>
@@ -453,39 +500,86 @@ export default function OrderPage() {
                     Awaiting <span className="text-gradient">Payment</span>
                   </h1>
                   <p className="text-sm text-muted-foreground mb-2">
-                    {stkSent ? "An M-Pesa payment prompt has been sent to your phone. Please enter your PIN to complete payment." : "Complete your M-Pesa payment to unlock your documents."}
+                    {stkSent
+                      ? "An M-Pesa payment prompt has been sent to your phone. Please enter your PIN to complete payment."
+                      : "Complete your M-Pesa payment to unlock your documents."}
                   </p>
                   <p className="text-sm font-mono text-primary mb-6">Order ID: {orderId.slice(0, 8).toUpperCase()}</p>
                   {paymentError && (
-                    <div className={`rounded-xl border p-4 text-left mb-6 ${paymentError === "credentials" ? "border-destructive/30 bg-destructive/5" : paymentError === "network" ? "border-amber-500/30 bg-amber-500/5" : "border-muted bg-muted/30"}`}>
+                    <div
+                      className={`rounded-xl border p-4 text-left mb-6 ${paymentError === "credentials" ? "border-destructive/30 bg-destructive/5" : paymentError === "network" ? "border-amber-500/30 bg-amber-500/5" : "border-muted bg-muted/30"}`}
+                    >
                       <div className="flex items-start gap-3">
-                        {paymentError === "network" ? <WifiOff className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" /> : <AlertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />}
+                        {paymentError === "network" ? (
+                          <WifiOff className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+                        ) : (
+                          <AlertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                        )}
                         <div>
                           <p className="text-sm font-semibold text-foreground mb-1">
-                            {paymentError === "credentials" ? "Automatic payment unavailable" : paymentError === "network" ? "M-Pesa is temporarily busy" : "Payment prompt failed"}
+                            {paymentError === "credentials"
+                              ? "Automatic payment unavailable"
+                              : paymentError === "network"
+                                ? "M-Pesa is temporarily busy"
+                                : "Payment prompt failed"}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {paymentError === "credentials" ? "The automatic M-Pesa prompt couldn't be sent due to a configuration issue. Please use the manual payment steps below — your order is safe." : paymentError === "network" ? "Safaricom's servers are experiencing high traffic. You can retry in a moment or pay manually below." : "Something went wrong sending the M-Pesa prompt. Please retry or use the manual payment option."}
+                            {paymentError === "credentials"
+                              ? "The automatic M-Pesa prompt couldn't be sent due to a configuration issue. Please use the manual payment steps below — your order is safe."
+                              : paymentError === "network"
+                                ? "Safaricom's servers are experiencing high traffic. You can retry in a moment or pay manually below."
+                                : "Something went wrong sending the M-Pesa prompt. Please retry or use the manual payment option."}
                           </p>
                           {paymentError !== "credentials" && (
-                            <Button size="sm" variant="outline" className="mt-3 border-primary/30 text-xs" disabled={retryingPayment}
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="mt-3 border-primary/30 text-xs"
+                              disabled={retryingPayment}
                               onClick={async () => {
                                 setRetryingPayment(true);
                                 try {
-                                  const { data: stkData, error: stkError } = await supabase.functions.invoke("mpesa-stk-push", {
-                                    body: { phone: formatPhone(phone.trim()), amount: total, accountReference: orderId, transactionDesc: isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", ") },
-                                  });
+                                  const { data: stkData, error: stkError } = await supabase.functions.invoke(
+                                    "mpesa-stk-push",
+                                    {
+                                      body: {
+                                        phone: formatPhone(phone.trim()),
+                                        amount: total,
+                                        accountReference: orderId,
+                                        transactionDesc:
+                                          isPackageMode && packageParam
+                                            ? PACKAGE_MAP[packageParam].label
+                                            : selectedServices.join(", "),
+                                      },
+                                    },
+                                  );
                                   if (!stkError && stkData?.success === true) {
-                                    setStkSent(true); setPaymentError(null); setCheckoutRequestId(stkData.checkoutRequestId || "");
+                                    setStkSent(true);
+                                    setPaymentError(null);
+                                    setCheckoutRequestId(stkData.checkoutRequestId || "");
                                     toast({ title: "Check your phone for the M-Pesa prompt 📱" });
                                   } else {
-                                    toast({ title: "Still unable to send prompt. Please pay manually.", variant: "destructive" });
+                                    toast({
+                                      title: "Still unable to send prompt. Please pay manually.",
+                                      variant: "destructive",
+                                    });
                                   }
-                                } catch { toast({ title: "Could not reach payment service.", variant: "destructive" }); }
-                                finally { setRetryingPayment(false); }
+                                } catch {
+                                  toast({ title: "Could not reach payment service.", variant: "destructive" });
+                                } finally {
+                                  setRetryingPayment(false);
+                                }
                               }}
                             >
-                              {retryingPayment ? <><Loader2 className="mr-1.5 h-3 w-3 animate-spin" /> Retrying…</> : <><RefreshCw className="mr-1.5 h-3 w-3" /> Retry M-Pesa Prompt</>}
+                              {retryingPayment ? (
+                                <>
+                                  <Loader2 className="mr-1.5 h-3 w-3 animate-spin" /> Retrying…
+                                </>
+                              ) : (
+                                <>
+                                  <RefreshCw className="mr-1.5 h-3 w-3" /> Retry M-Pesa Prompt
+                                </>
+                              )}
                             </Button>
                           )}
                         </div>
@@ -493,30 +587,59 @@ export default function OrderPage() {
                     </div>
                   )}
                   <div className="rounded-xl border border-border bg-card p-6 text-left mb-6">
-                    <h3 className="font-semibold mb-3 flex items-center gap-2"><Phone className="h-4 w-4 text-primary" /> M-Pesa Payment</h3>
+                    <h3 className="font-semibold mb-3 flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-primary" /> M-Pesa Payment
+                    </h3>
                     <div className="space-y-3 text-sm text-muted-foreground">
                       {stkSent && !paymentError ? (
-                        <><p>📱 Check your phone for the M-Pesa prompt and enter your PIN.</p><p>Once payment is complete, click the button below to confirm.</p></>
+                        <>
+                          <p>📱 Check your phone for the M-Pesa prompt and enter your PIN.</p>
+                          <p>Once payment is complete, click the button below to confirm.</p>
+                        </>
                       ) : (
                         <>
                           <p className="font-medium text-foreground">Pay manually via M-Pesa:</p>
                           <div className="space-y-1">
                             <p>1. Go to M-Pesa → Lipa na M-Pesa → Pay Bill</p>
-                            <p>2. Business Number: <span className="font-mono text-primary">4561075</span></p>
-                            <p>3. Account Number: <span className="font-mono text-primary">{orderId}</span></p>
-                            <p>4. Amount: <span className="font-semibold text-primary">{formatKES(total)}</span></p>
+                            <p>
+                              2. Business Number: <span className="font-mono text-primary">4561075</span>
+                            </p>
+                            <p>
+                              3. Account Number: <span className="font-mono text-primary">{orderId}</span>
+                            </p>
+                            <p>
+                              4. Amount: <span className="font-semibold text-primary">{formatKES(total)}</span>
+                            </p>
                           </div>
                         </>
                       )}
                     </div>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                    <Button onClick={() => checkPaymentStatus()} disabled={paymentChecking} className="bg-gradient-brand border-0 font-semibold gold-shimmer">
-                      {paymentChecking ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...</> : <>Confirm Payment Now <Check className="ml-2 h-4 w-4" /></>}
+                    <Button
+                      onClick={() => checkPaymentStatus()}
+                      disabled={paymentChecking}
+                      className="bg-gradient-brand border-0 font-semibold gold-shimmer"
+                    >
+                      {paymentChecking ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...
+                        </>
+                      ) : (
+                        <>
+                          Confirm Payment Now <Check className="ml-2 h-4 w-4" />
+                        </>
+                      )}
                     </Button>
-                    <Link to="/"><Button variant="outline" className="border-primary/30">Back to Home</Button></Link>
+                    <Link to="/">
+                      <Button variant="outline" className="border-primary/30">
+                        Back to Home
+                      </Button>
+                    </Link>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-4">Your documents will be generated only after payment is confirmed.</p>
+                  <p className="text-xs text-muted-foreground mt-4">
+                    Your documents will be generated only after payment is confirmed.
+                  </p>
                 </>
               )}
             </motion.div>
@@ -530,11 +653,25 @@ export default function OrderPage() {
     <PageLayout>
       <section className="relative z-10 pt-8 sm:pt-16 pb-6 px-4">
         <div className="container max-w-4xl mx-auto text-center">
-          <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={0} className="text-2xl sm:text-5xl lg:text-6xl font-serif font-bold leading-[1.08] mb-3">
+          <motion.h1
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={0}
+            className="text-2xl sm:text-5xl lg:text-6xl font-serif font-bold leading-[1.08] mb-3"
+          >
             Start your <span className="text-gradient">order</span>
           </motion.h1>
-          <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={1} className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
-            {isInternational ? "Select your services, fill in your details, and pay securely via PayPal." : "Select your services, fill in your details, and pay via M-Pesa. We'll get to work immediately."}
+          <motion.p
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={1}
+            className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto"
+          >
+            {isInternational
+              ? "Select your services, fill in your details, and pay securely via PayPal."
+              : "Select your services, fill in your details, and pay via M-Pesa. We'll get to work immediately."}
           </motion.p>
         </div>
       </section>
@@ -544,8 +681,16 @@ export default function OrderPage() {
           <div className="grid lg:grid-cols-5 gap-8">
             <div className="lg:col-span-3">
               {jobFromQuery && (
-                <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1} className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-3 sm:p-4 mb-4 flex items-start gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5"><FileText className="h-4 w-4 text-primary" /></div>
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={fadeUp}
+                  custom={1}
+                  className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-3 sm:p-4 mb-4 flex items-start gap-3"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <FileText className="h-4 w-4 text-primary" />
+                  </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs sm:text-sm font-semibold leading-snug">CV tailored for: {jobFromQuery}</p>
                     {companyFromQuery && <p className="text-[11px] text-muted-foreground">at {companyFromQuery}</p>}
@@ -555,19 +700,36 @@ export default function OrderPage() {
               )}
 
               {jobFromQuery && (
-                <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1.5} className="rounded-xl border border-accent/40 bg-accent/5 p-3 sm:p-4 mb-4">
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={fadeUp}
+                  custom={1.5}
+                  className="rounded-xl border border-accent/40 bg-accent/5 p-3 sm:p-4 mb-4"
+                >
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
                     <Sparkles className="h-4 w-4 text-primary shrink-0" />
                     <p className="text-xs sm:text-sm font-semibold">Recommended Bundle</p>
-                    <span className="text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary px-2 py-0.5 rounded-full">Most Popular</span>
+                    <span className="text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+                      Most Popular
+                    </span>
                   </div>
-                  <p className="text-[11px] text-muted-foreground mb-3">Add a Cover Letter + LinkedIn for <span className="font-semibold text-foreground">3× more callbacks</span>.</p>
+                  <p className="text-[11px] text-muted-foreground mb-3">
+                    Add a Cover Letter + LinkedIn for{" "}
+                    <span className="font-semibold text-foreground">3× more callbacks</span>.
+                  </p>
                   <div className="flex flex-col sm:flex-row gap-2">
-                    {[{ id: "cover-letter", label: "Cover Letter", price: 1500 }, { id: "linkedin", label: "LinkedIn", price: 2000 }].map((item) => {
+                    {[
+                      { id: "cover-letter", label: "Cover Letter", price: 1500 },
+                      { id: "linkedin", label: "LinkedIn", price: 2000 },
+                    ].map((item) => {
                       const alreadySelected = selectedServices.includes(item.id);
                       return (
-                        <button key={item.id} onClick={() => !alreadySelected && toggleService(item.id)}
-                          className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition-all ${alreadySelected ? "border-primary bg-primary/10 text-primary cursor-default" : "border-border bg-card hover:border-primary/40 hover:bg-primary/5"}`}>
+                        <button
+                          key={item.id}
+                          onClick={() => !alreadySelected && toggleService(item.id)}
+                          className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition-all ${alreadySelected ? "border-primary bg-primary/10 text-primary cursor-default" : "border-border bg-card hover:border-primary/40 hover:bg-primary/5"}`}
+                        >
                           {alreadySelected ? <Check className="h-3 w-3" /> : <span className="text-primary">+</span>}
                           {item.label} · {formatKES(item.price)}
                         </button>
@@ -578,18 +740,41 @@ export default function OrderPage() {
               )}
 
               {!isPackageMode && (
-                <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={1.8} className="rounded-xl border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-card to-accent/5 p-4 sm:p-5 mb-5 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[9px] font-bold uppercase tracking-wider px-3 py-1 rounded-bl-lg">Save KES 2,000</div>
-                  <div className="flex items-center gap-2 mb-2"><Globe className="h-5 w-5 text-primary shrink-0" /><h3 className="text-sm sm:text-base font-bold">✈️ Going Abroad?</h3></div>
-                  <p className="text-xs sm:text-sm text-muted-foreground mb-3 leading-relaxed">Get our <span className="font-semibold text-foreground">ATS CV (international standard) + Cover Letter + LinkedIn Revamp</span> — keyword-optimised for global portals, 2 professional pages, and a comprehensive LinkedIn makeover.</p>
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={fadeUp}
+                  custom={1.8}
+                  className="rounded-xl border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-card to-accent/5 p-4 sm:p-5 mb-5 relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-[9px] font-bold uppercase tracking-wider px-3 py-1 rounded-bl-lg">
+                    Save KES 2,000
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Globe className="h-5 w-5 text-primary shrink-0" />
+                    <h3 className="text-sm sm:text-base font-bold">✈️ Going Abroad?</h3>
+                  </div>
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-3 leading-relaxed">
+                    Get our{" "}
+                    <span className="font-semibold text-foreground">
+                      ATS CV (international standard) + Cover Letter + LinkedIn Revamp
+                    </span>{" "}
+                    — keyword-optimised for global portals, 2 professional pages, and a comprehensive LinkedIn makeover.
+                  </p>
                   <div className="flex items-center gap-3 mb-3">
                     <span className="text-xs text-muted-foreground line-through">KES 6,500</span>
                     <span className="text-lg font-bold text-primary">KES 4,490</span>
                   </div>
                   {packageParam === "international" ? (
-                    <div className="inline-flex items-center gap-1.5 rounded-lg border border-primary bg-primary/10 px-4 py-2 text-xs font-semibold text-primary"><Check className="h-3.5 w-3.5" /> Bundle Selected</div>
+                    <div className="inline-flex items-center gap-1.5 rounded-lg border border-primary bg-primary/10 px-4 py-2 text-xs font-semibold text-primary">
+                      <Check className="h-3.5 w-3.5" /> Bundle Selected
+                    </div>
                   ) : (
-                    <Link to="/order?package=international"><Button size="sm" className="bg-gradient-brand border-0 font-semibold text-xs gold-shimmer"><Globe className="mr-1.5 h-3.5 w-3.5" /> Get International Bundle</Button></Link>
+                    <Link to="/order?package=international">
+                      <Button size="sm" className="bg-gradient-brand border-0 font-semibold text-xs gold-shimmer">
+                        <Globe className="mr-1.5 h-3.5 w-3.5" /> Get International Bundle
+                      </Button>
+                    </Link>
                   )}
                 </motion.div>
               )}
@@ -600,7 +785,11 @@ export default function OrderPage() {
                     <div className="rounded-xl border border-primary/20 bg-gradient-brand-subtle p-4 sm:p-5">
                       <div className="flex items-center gap-2 mb-3">
                         <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                          {packageParam === "international" ? <Globe className="h-4 w-4 text-primary" /> : <Award className="h-4 w-4 text-primary" />}
+                          {packageParam === "international" ? (
+                            <Globe className="h-4 w-4 text-primary" />
+                          ) : (
+                            <Award className="h-4 w-4 text-primary" />
+                          )}
                         </div>
                         <div>
                           <h2 className="text-base sm:text-lg font-bold">{PACKAGE_MAP[packageParam].label}</h2>
@@ -611,15 +800,23 @@ export default function OrderPage() {
                         {PACKAGE_MAP[packageParam].services.map((sId) => {
                           const svc = SERVICES.find((s) => s.id === sId);
                           return svc ? (
-                            <div key={sId} className="flex items-center gap-2 text-sm"><Check className="h-3.5 w-3.5 text-primary shrink-0" /><span className="text-muted-foreground">{svc.label}</span></div>
+                            <div key={sId} className="flex items-center gap-2 text-sm">
+                              <Check className="h-3.5 w-3.5 text-primary shrink-0" />
+                              <span className="text-muted-foreground">{svc.label}</span>
+                            </div>
                           ) : null;
                         })}
                         {packageParam === "international" && (
-                          <div className="flex items-center gap-2 text-sm"><Check className="h-3.5 w-3.5 text-primary shrink-0" /><span className="text-muted-foreground">2-page international standard format</span></div>
+                          <div className="flex items-center gap-2 text-sm">
+                            <Check className="h-3.5 w-3.5 text-primary shrink-0" />
+                            <span className="text-muted-foreground">2-page international standard format</span>
+                          </div>
                         )}
                       </div>
                       <Link to="/order" className="inline-block mt-3">
-                        <button className="text-xs text-primary underline underline-offset-2 hover:text-primary/80">Change package / pick individual services</button>
+                        <button className="text-xs text-primary underline underline-offset-2 hover:text-primary/80">
+                          Change package / pick individual services
+                        </button>
                       </Link>
                     </div>
                   </div>
@@ -630,17 +827,28 @@ export default function OrderPage() {
                       {SERVICES.map((s) => {
                         const selected = selectedServices.includes(s.id);
                         return (
-                          <button key={s.id} onClick={() => toggleService(s.id)}
-                            className={`rounded-xl border p-3 sm:p-4 flex items-center gap-3 text-left transition-all duration-200 ${selected ? "border-primary bg-primary/10 shadow-glow-sm ring-2 ring-primary/30" : "border-border bg-card hover:border-primary/30"}`}>
-                            <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0 ${selected ? "bg-gradient-brand" : "bg-muted"}`}>
-                              <s.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${selected ? "text-primary-foreground" : "text-muted-foreground"}`} />
+                          <button
+                            key={s.id}
+                            onClick={() => toggleService(s.id)}
+                            className={`rounded-xl border p-3 sm:p-4 flex items-center gap-3 text-left transition-all duration-200 ${selected ? "border-primary bg-primary/10 shadow-glow-sm ring-2 ring-primary/30" : "border-border bg-card hover:border-primary/30"}`}
+                          >
+                            <div
+                              className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center shrink-0 ${selected ? "bg-gradient-brand" : "bg-muted"}`}
+                            >
+                              <s.icon
+                                className={`h-4 w-4 sm:h-5 sm:w-5 ${selected ? "text-primary-foreground" : "text-muted-foreground"}`}
+                              />
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="font-semibold text-xs sm:text-sm">{s.label}</div>
-                              <div className="text-[10px] sm:text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-2">{s.desc}</div>
+                              <div className="text-[10px] sm:text-[11px] text-muted-foreground leading-tight mt-0.5 line-clamp-2">
+                                {s.desc}
+                              </div>
                               <div className="text-xs text-primary font-bold mt-0.5">{formatKES(s.price)}</div>
                             </div>
-                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${selected ? "border-primary bg-primary" : "border-muted-foreground/30 bg-transparent"}`}>
+                            <div
+                              className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${selected ? "border-primary bg-primary" : "border-muted-foreground/30 bg-transparent"}`}
+                            >
                               {selected && <Check className="h-3.5 w-3.5 text-primary-foreground" />}
                             </div>
                           </button>
@@ -653,34 +861,85 @@ export default function OrderPage() {
                 <h2 className="text-lg sm:text-xl font-bold mb-4">{isPackageMode ? "1" : "2"}. Your details</h2>
                 <div className="space-y-4 mb-6">
                   <div>
-                    <Input ref={nameRef} placeholder="Full name *" value={name}
-                      onChange={(e) => { setName(e.target.value); setValidationErrors((prev) => ({ ...prev, name: false })); }}
-                      className={cn("h-12 bg-card border-border transition-all", validationErrors.name && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle")} />
-                    {validationErrors.name && <p className="text-xs text-destructive mt-1 animate-pulse font-medium">⚠ Full name is required</p>}
+                    <Input
+                      ref={nameRef}
+                      placeholder="Full name *"
+                      value={name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                        setValidationErrors((prev) => ({ ...prev, name: false }));
+                      }}
+                      className={cn(
+                        "h-12 bg-card border-border transition-all",
+                        validationErrors.name && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
+                      )}
+                    />
+                    {validationErrors.name && (
+                      <p className="text-xs text-destructive mt-1 animate-pulse font-medium">⚠ Full name is required</p>
+                    )}
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <Input ref={emailRef} placeholder="Email address *" type="email" value={email}
-                        onChange={(e) => { setEmail(e.target.value); setValidationErrors((prev) => ({ ...prev, email: false })); }}
-                        className={cn("h-12 bg-card border-border transition-all", validationErrors.email && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle")} />
-                      {validationErrors.email && <p className="text-xs text-destructive mt-1 animate-pulse font-medium">⚠ Email address is required</p>}
+                      <Input
+                        ref={emailRef}
+                        placeholder="Email address *"
+                        type="email"
+                        value={email}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          setValidationErrors((prev) => ({ ...prev, email: false }));
+                        }}
+                        className={cn(
+                          "h-12 bg-card border-border transition-all",
+                          validationErrors.email &&
+                            "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
+                        )}
+                      />
+                      {validationErrors.email && (
+                        <p className="text-xs text-destructive mt-1 animate-pulse font-medium">
+                          ⚠ Email address is required
+                        </p>
+                      )}
                     </div>
                     <div>
-                      <Input ref={phoneRef}
+                      <Input
+                        ref={phoneRef}
                         placeholder={isInternational ? "Phone number (optional)" : "M-Pesa number *"}
                         value={phone}
-                        onChange={(e) => { setPhone(e.target.value); setValidationErrors((prev) => ({ ...prev, phone: false })); }}
-                        className={cn("h-12 bg-card border-border transition-all", validationErrors.phone && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle")} />
-                      {validationErrors.phone && <p className="text-xs text-destructive mt-1 animate-pulse font-medium">⚠ M-Pesa number is required for payment</p>}
+                        onChange={(e) => {
+                          setPhone(e.target.value);
+                          setValidationErrors((prev) => ({ ...prev, phone: false }));
+                        }}
+                        className={cn(
+                          "h-12 bg-card border-border transition-all",
+                          validationErrors.phone &&
+                            "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
+                        )}
+                      />
+                      {validationErrors.phone && (
+                        <p className="text-xs text-destructive mt-1 animate-pulse font-medium">
+                          ⚠ M-Pesa number is required for payment
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
 
                 {selectedServices.length > 0 && (
                   <>
-                    <h2 className="text-lg sm:text-xl font-bold mb-4">{isPackageMode ? "2" : "3"}. Service-specific details</h2>
-                    <p className="text-sm text-muted-foreground mb-4">The more detail you provide, the better your AI-generated documents will be.</p>
-                    <div className="mb-6"><ServiceQuestions selectedServices={selectedServices} values={formValues} onChange={handleFormChange} /></div>
+                    <h2 className="text-lg sm:text-xl font-bold mb-4">
+                      {isPackageMode ? "2" : "3"}. Service-specific details
+                    </h2>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      The more detail you provide, the better your AI-generated documents will be.
+                    </p>
+                    <div className="mb-6">
+                      <ServiceQuestions
+                        selectedServices={selectedServices}
+                        values={formValues}
+                        onChange={handleFormChange}
+                      />
+                    </div>
                   </>
                 )}
 
@@ -688,11 +947,29 @@ export default function OrderPage() {
                   {isPackageMode ? (selectedServices.length > 0 ? "3" : "2") : selectedServices.length > 0 ? "4" : "3"}.
                   Upload documents <span className="text-xs font-normal text-muted-foreground">(optional)</span>
                 </h2>
-                <div onClick={() => fileInputRef.current?.click()}
-                  onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                  onDrop={(e) => { e.preventDefault(); e.stopPropagation(); const droppedFiles = Array.from(e.dataTransfer.files); const valid = droppedFiles.filter((f) => f.size <= 10 * 1024 * 1024); setFiles((prev) => [...prev, ...valid]); }}
-                  className="rounded-xl border-2 border-dashed border-border bg-card/50 p-8 text-center cursor-pointer hover:border-primary/40 transition-colors">
-                  <input ref={fileInputRef} type="file" multiple accept=".pdf,.doc,.docx" onChange={handleFileChange} className="hidden" />
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const droppedFiles = Array.from(e.dataTransfer.files);
+                    const valid = droppedFiles.filter((f) => f.size <= 10 * 1024 * 1024);
+                    setFiles((prev) => [...prev, ...valid]);
+                  }}
+                  className="rounded-xl border-2 border-dashed border-border bg-card/50 p-8 text-center cursor-pointer hover:border-primary/40 transition-colors"
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    accept=".pdf,.doc,.docx"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
                   <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
                   <p className="text-sm text-muted-foreground mb-1">Drag & drop your existing CV, or click to browse</p>
                   <p className="text-xs text-muted-foreground">PDF, DOC, DOCX — Max 10MB</p>
@@ -700,11 +977,24 @@ export default function OrderPage() {
                 {files.length > 0 && (
                   <div className="mt-3 space-y-2">
                     {files.map((f, i) => (
-                      <div key={i} className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm">
+                      <div
+                        key={i}
+                        className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm"
+                      >
                         <FileText className="h-4 w-4 text-primary shrink-0" />
                         <span className="truncate flex-1">{f.name}</span>
-                        <span className="text-xs text-muted-foreground shrink-0">{(f.size / 1024 / 1024).toFixed(1)}MB</span>
-                        <button onClick={(e) => { e.stopPropagation(); removeFile(i); }} className="text-muted-foreground hover:text-destructive"><X className="h-4 w-4" /></button>
+                        <span className="text-xs text-muted-foreground shrink-0">
+                          {(f.size / 1024 / 1024).toFixed(1)}MB
+                        </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeFile(i);
+                          }}
+                          className="text-muted-foreground hover:text-destructive"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -714,7 +1004,13 @@ export default function OrderPage() {
 
             {/* ORDER SUMMARY SIDEBAR */}
             <div className="lg:col-span-2">
-              <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={3} className="rounded-2xl border border-primary/20 bg-card p-6 sticky top-24 z-[60]">
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={fadeUp}
+                custom={3}
+                className="rounded-2xl border border-primary/20 bg-card p-6 sticky top-24 z-[60]"
+              >
                 <h3 className="font-bold text-lg mb-4">Order Summary</h3>
                 {selectedServices.length === 0 ? (
                   <p className="text-sm text-muted-foreground py-4">Select services to get started</p>
@@ -735,10 +1031,16 @@ export default function OrderPage() {
                     <div className="border-t border-border pt-3 flex items-center justify-between">
                       <span className="font-bold">Total</span>
                       <div className="text-right">
-                        {isPackageMode && subtotal > total && <span className="text-xs text-muted-foreground line-through block">{formatKES(subtotal)}</span>}
+                        {isPackageMode && subtotal > total && (
+                          <span className="text-xs text-muted-foreground line-through block">
+                            {formatKES(subtotal)}
+                          </span>
+                        )}
                         <span className="text-2xl font-bold text-primary">{formatKES(total)}</span>
                         {isInternational && total > 0 && (
-                          <span className="text-xs text-muted-foreground block">≈ ${(total * usdRate).toFixed(2)} USD</span>
+                          <span className="text-xs text-muted-foreground block">
+                            ≈ ${(total * usdRate * 1.15).toFixed(2)} USD
+                          </span>
                         )}
                       </div>
                     </div>
@@ -746,20 +1048,32 @@ export default function OrderPage() {
                 )}
 
                 <label className="flex items-start gap-2.5 cursor-pointer mb-4">
-                  <input type="checkbox" checked={agreedToTerms} onChange={(e) => setAgreedToTerms(e.target.checked)} className="mt-0.5 h-4 w-4 rounded border-border accent-primary" />
+                  <input
+                    type="checkbox"
+                    checked={agreedToTerms}
+                    onChange={(e) => setAgreedToTerms(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded border-border accent-primary"
+                  />
                   <span className="text-xs text-muted-foreground leading-relaxed">
                     I agree to the{" "}
-                    <a href="/terms" target="_blank" className="text-primary underline hover:text-primary/80">Terms &amp; Conditions</a>
-                    {" "}and{" "}
-                    <a href="/privacy" target="_blank" className="text-primary underline hover:text-primary/80">Privacy Policy</a>.
+                    <a href="/terms" target="_blank" className="text-primary underline hover:text-primary/80">
+                      Terms &amp; Conditions
+                    </a>{" "}
+                    and{" "}
+                    <a href="/privacy" target="_blank" className="text-primary underline hover:text-primary/80">
+                      Privacy Policy
+                    </a>
+                    .
                   </span>
                 </label>
 
                 {isInternational ? (
                   total > 0 && agreedToTerms && name.trim() && email.trim() ? (
                     <PayPalButton
-                      amountUsd={(total * usdRate).toFixed(2)}
-                      description={isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", ")}
+                      amountUsd={(total * usdRate * 1.15).toFixed(2)}
+                      description={
+                        isPackageMode && packageParam ? PACKAGE_MAP[packageParam].label : selectedServices.join(", ")
+                      }
                       onSuccess={(details) => {
                         const ref = details.id?.slice(0, 12) || "PAYPAL";
                         setOrderId(ref);
@@ -775,34 +1089,73 @@ export default function OrderPage() {
                     />
                   ) : (
                     <Button disabled className="w-full h-12 opacity-50">
-                      {!agreedToTerms ? "Agree to terms to pay" : !name.trim() || !email.trim() ? "Fill in your details above" : "Select a service to pay"}
+                      {!agreedToTerms
+                        ? "Agree to terms to pay"
+                        : !name.trim() || !email.trim()
+                          ? "Fill in your details above"
+                          : "Select a service to pay"}
                     </Button>
                   )
                 ) : (
                   <Button
                     onClick={handleSubmit}
-                    disabled={selectedServices.length === 0 || !name.trim() || !email.trim() || !phone.trim() || !agreedToTerms || isSubmitting}
+                    disabled={
+                      selectedServices.length === 0 ||
+                      !name.trim() ||
+                      !email.trim() ||
+                      !phone.trim() ||
+                      !agreedToTerms ||
+                      isSubmitting
+                    }
                     className="w-full h-12 bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer text-base"
                   >
-                    {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Placing Order...</> : <>Pay via M-Pesa <ArrowRight className="ml-2 h-4 w-4" /></>}
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Placing Order...
+                      </>
+                    ) : (
+                      <>
+                        Pay via M-Pesa <ArrowRight className="ml-2 h-4 w-4" />
+                      </>
+                    )}
                   </Button>
                 )}
 
-                {selectedServices.length === 0 && <p className="text-xs text-muted-foreground text-center mt-2">↑ Select at least one service to continue</p>}
-                {!isInternational && selectedServices.length > 0 && (!name.trim() || !email.trim() || !phone.trim()) && (
-                  <p className="text-xs text-muted-foreground text-center mt-2">Fill in your name, email, and M-Pesa number to continue</p>
+                {selectedServices.length === 0 && (
+                  <p className="text-xs text-muted-foreground text-center mt-2">
+                    ↑ Select at least one service to continue
+                  </p>
                 )}
+                {!isInternational &&
+                  selectedServices.length > 0 &&
+                  (!name.trim() || !email.trim() || !phone.trim()) && (
+                    <p className="text-xs text-muted-foreground text-center mt-2">
+                      Fill in your name, email, and M-Pesa number to continue
+                    </p>
+                  )}
 
                 <div className="mt-4 rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3">
                   <p className="text-xs text-emerald-400 font-medium flex items-center gap-1.5">
-                    {isInternational ? "🔒 Secure PayPal checkout — pay in USD" : "📱 You'll receive an M-Pesa STK push to confirm payment"}
+                    {isInternational
+                      ? "🔒 Secure PayPal checkout — pay in USD"
+                      : "📱 You'll receive an M-Pesa STK push to confirm payment"}
                   </p>
                 </div>
 
                 <div className="mt-4 space-y-2">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground"><Check className="h-3 w-3 text-primary" /><span>Same-day delivery</span></div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground"><Check className="h-3 w-3 text-primary" /><span>Satisfaction guaranteed</span></div>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground"><Check className="h-3 w-3 text-primary" /><span>{isInternational ? "Secure PayPal payment" : "Instant M-Pesa payment"}</span></div>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Check className="h-3 w-3 text-primary" />
+                    <span>Same-day delivery</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Check className="h-3 w-3 text-primary" />
+                    <span>Satisfaction guaranteed</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Check className="h-3 w-3 text-primary" />
+                    <span>{isInternational ? "Secure PayPal payment" : "Instant M-Pesa payment"}</span>
+                  </div>
                 </div>
               </motion.div>
             </div>
@@ -815,7 +1168,9 @@ export default function OrderPage() {
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <p className="text-xs text-muted-foreground">
-              {selectedServices.length === 0 ? "No services selected" : `${selectedServices.length} service${selectedServices.length > 1 ? "s" : ""}`}
+              {selectedServices.length === 0
+                ? "No services selected"
+                : `${selectedServices.length} service${selectedServices.length > 1 ? "s" : ""}`}
             </p>
             <p className="text-lg font-bold text-primary truncate">{formatKES(total)}</p>
           </div>
@@ -824,10 +1179,23 @@ export default function OrderPage() {
           ) : (
             <Button
               onClick={handleSubmit}
-              disabled={selectedServices.length === 0 || !name.trim() || !email.trim() || !phone.trim() || !agreedToTerms || isSubmitting}
+              disabled={
+                selectedServices.length === 0 ||
+                !name.trim() ||
+                !email.trim() ||
+                !phone.trim() ||
+                !agreedToTerms ||
+                isSubmitting
+              }
               className="h-11 px-6 bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer shrink-0"
             >
-              {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Pay Now <ArrowRight className="ml-1 h-4 w-4" /></>}
+              {isSubmitting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  Pay Now <ArrowRight className="ml-1 h-4 w-4" />
+                </>
+              )}
             </Button>
           )}
         </div>
