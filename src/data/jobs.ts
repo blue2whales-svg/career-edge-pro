@@ -1092,3 +1092,57 @@ export const JOBS: Job[] = [
 ];
 
 export const FEATURED_JOBS: Job[] = JOBS.filter((j) => j.featured).slice(0, 6);
+export const INDUSTRIES = [
+  "All",
+  "Engineering",
+  "Hospitality",
+  "Healthcare",
+  "Finance",
+  "Technology",
+  "Logistics",
+  "Sales",
+  "Administration",
+  "Security",
+  "Customer Service",
+  "Marketing",
+  "Education",
+  "Creative",
+  "Retail",
+  "Maritime",
+  "General Work",
+  "🔥 Hot Abroad",
+];
+
+export const MARKETS = [
+  "All Markets",
+  "Kenya",
+  "UAE",
+  "Qatar",
+  "Saudi Arabia",
+  "Oman",
+  "Kuwait",
+  "Bahrain",
+  "Cruise",
+  "Remote",
+];
+
+export const JOB_CATEGORIES = [
+  "All Categories",
+  "Engineering",
+  "Hospitality",
+  "Healthcare",
+  "Finance",
+  "Technology",
+  "Logistics",
+  "Sales",
+  "Administration",
+  "Security",
+  "Customer Service",
+  "Marketing",
+  "Education",
+  "Creative",
+  "Retail",
+  "General Work",
+  "Cruise Jobs",
+  "Remote Jobs",
+];
