@@ -1,3 +1,4 @@
+console.log("ENV URL:", import.meta.env.VITE_SUPABASE_URL);
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Globe, Sparkles, SearchX } from "lucide-react";
@@ -18,7 +19,8 @@ import { useJobsPaginated, useCategoryCounts, triggerJobsFetch, type JobFilters 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
-    opacity: 1, y: 0,
+    opacity: 1,
+    y: 0,
     transition: { delay: i * 0.06, duration: 0.5, ease: [0, 0, 0.2, 1] as const },
   }),
 };
@@ -53,26 +55,21 @@ export default function JobsPage() {
     company: selectedCompany || undefined,
   };
 
-  const {
-    data,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    refetch,
-  } = useJobsPaginated(filters);
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = useJobsPaginated(filters);
 
   const { data: counts } = useCategoryCounts();
   const totalActive = counts?.total ?? 0;
 
-  const allJobs = data?.pages.flatMap(p => p.jobs) ?? [];
+  const allJobs = data?.pages.flatMap((p) => p.jobs) ?? [];
   const totalCount = data?.pages[0]?.totalCount ?? 0;
 
   const handleRefresh = useCallback(() => {
     setIsManualRefreshing(true);
-    triggerJobsFetch().then(() => refetch()).finally(() => {
-      setTimeout(() => setIsManualRefreshing(false), 2000);
-    });
+    triggerJobsFetch()
+      .then(() => refetch())
+      .finally(() => {
+        setTimeout(() => setIsManualRefreshing(false), 2000);
+      });
   }, [refetch]);
 
   const handleFilterChange = useCallback((params: Partial<JobFilters>) => {
@@ -96,28 +93,44 @@ export default function JobsPage() {
   return (
     <PageLayout>
       <JobDetailModal job={selectedJob} open={!!selectedJob} onOpenChange={(open) => !open && setSelectedJob(null)} />
-      
+
       {/* Hero */}
       <section className="relative z-10 pt-16 sm:pt-24 pb-10 px-4">
         <div className="container max-w-5xl mx-auto text-center">
-          <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={0}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={0}
             className="inline-flex items-center gap-2 rounded-full border border-brand-red/20 bg-brand-red/5 px-4 py-1.5 mb-6"
           >
             <Sparkles className="h-3.5 w-3.5 text-brand-red" />
             <span className="text-xs font-mono text-brand-red">AI-Powered Job Discovery — Auto-Updated</span>
           </motion.div>
-          <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={1}
+          <motion.h1
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={1}
             className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold leading-[1.08] mb-5"
           >
-            Land a role abroad.{" "}
-            <span className="text-gradient">Get the CV to match.</span>
+            Land a role abroad. <span className="text-gradient">Get the CV to match.</span>
           </motion.h1>
-          <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={2}
+          <motion.p
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={2}
             className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-4"
           >
-            Fresh jobs from cruise lines, Gulf states, Kenya, and 10+ global markets — discovered automatically every 30 minutes.
+            Fresh jobs from cruise lines, Gulf states, Kenya, and 10+ global markets — discovered automatically every 30
+            minutes.
           </motion.p>
-          <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={2}
             className="inline-flex items-center gap-2 rounded-full bg-muted/60 border border-border px-4 py-1.5 mb-8"
           >
             <Flame className="h-3.5 w-3.5 text-brand-red" />
@@ -127,7 +140,11 @@ export default function JobsPage() {
           </motion.div>
 
           {/* Search */}
-          <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={3}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            custom={3}
             className="max-w-xl mx-auto relative"
           >
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -149,7 +166,10 @@ export default function JobsPage() {
             <div>
               <p className="text-sm font-semibold">How to Apply</p>
               <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                Pick a role → Order a tailored <strong className="text-foreground">CV + Cover Letter</strong> → Pay via M-Pesa → Download in <strong className="text-foreground">PDF or Word</strong> → The <strong className="text-foreground">direct apply link</strong> unlocks so you can submit straight to the employer.
+                Pick a role → Order a tailored <strong className="text-foreground">CV + Cover Letter</strong> → Pay via
+                M-Pesa → Download in <strong className="text-foreground">PDF or Word</strong> → The{" "}
+                <strong className="text-foreground">direct apply link</strong> unlocks so you can submit straight to the
+                employer.
               </p>
             </div>
           </div>
@@ -196,12 +216,7 @@ export default function JobsPage() {
                 Clear filter
               </Button>
             )}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="ml-auto text-xs gap-1.5"
-              onClick={handleRefresh}
-            >
+            <Button variant="ghost" size="sm" className="ml-auto text-xs gap-1.5" onClick={handleRefresh}>
               <RefreshCw className={`h-3.5 w-3.5 ${isManualRefreshing ? "animate-spin" : ""}`} /> Refresh
             </Button>
           </div>
@@ -273,15 +288,20 @@ export default function JobsPage() {
               <SearchX className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
               <h3 className="text-lg font-semibold mb-2">No jobs found</h3>
               <p className="text-muted-foreground text-sm mb-6 max-w-md mx-auto">
-                No jobs match your current filters. Try adjusting your search, category, or market filters to discover more opportunities.
+                No jobs match your current filters. Try adjusting your search, category, or market filters to discover
+                more opportunities.
               </p>
               <div className="flex gap-3 justify-center flex-wrap">
-                <Button variant="outline" size="sm" onClick={() => {
-                  setSearch("");
-                  setSelectedCategory("All Categories");
-                  setSelectedIndustry("All");
-                  setSelectedMarket("All Markets");
-                }}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSearch("");
+                    setSelectedCategory("All Categories");
+                    setSelectedIndustry("All");
+                    setSelectedMarket("All Markets");
+                  }}
+                >
                   Clear All Filters
                 </Button>
                 <Button size="sm" className="bg-gradient-brand border-0" onClick={handleRefresh}>
@@ -330,17 +350,26 @@ export default function JobsPage() {
       {/* CTA */}
       <section className="relative z-10 py-20 px-4">
         <div className="container max-w-3xl mx-auto text-center">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            custom={0}
             className="rounded-2xl border border-primary/20 bg-gradient-brand-subtle p-10 sm:p-14"
           >
             <h2 className="text-3xl sm:text-4xl font-serif font-bold mb-4">
               Don't see your dream role? <span className="text-gradient">We'll still help.</span>
             </h2>
             <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
-              Order a CV tailored to any role or industry. Share the job description and we'll craft the perfect application.
+              Order a CV tailored to any role or industry. Share the job description and we'll craft the perfect
+              application.
             </p>
             <Link to="/order">
-              <Button size="lg" className="w-full sm:w-auto bg-gradient-brand border-0 font-semibold h-13 px-10 shadow-glow gold-shimmer">
+              <Button
+                size="lg"
+                className="w-full sm:w-auto bg-gradient-brand border-0 font-semibold h-13 px-10 shadow-glow gold-shimmer"
+              >
                 Order Custom CV <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
