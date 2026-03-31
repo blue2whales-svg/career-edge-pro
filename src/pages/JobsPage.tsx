@@ -135,7 +135,8 @@ export default function JobsPage() {
           >
             <Flame className="h-3.5 w-3.5 text-brand-red" />
             <span className="text-xs text-muted-foreground font-mono">
-              {totalActive || allJobs.length} live roles · Cruise & Gulf trending · Updated every 30 min
+              {totalActive || allJobs.length} live roles · Kenya · UAE · Qatar · Cruise Lines · Europe · Updated{" "}
+              {new Date().toLocaleDateString("en-KE", { day: "numeric", month: "short" })}
             </span>
           </motion.div>
 
