@@ -251,6 +251,7 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
               jobTitle={job.title}
               company={job.company}
               canUseFreeUnlock={canUseFreeUnlock}
+              freeUnlocksRemaining={freeUnlocksRemaining}
               onFreeUnlock={handleFreeUnlock}
             />
           )}
