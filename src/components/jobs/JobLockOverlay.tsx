@@ -32,7 +32,7 @@ export function JobLockOverlay({ jobTitle, company, canUseFreeUnlock, freeUnlock
 
         {canUseFreeUnlock && (
           <Button variant="outline" size="sm" className="w-full text-xs" onClick={onFreeUnlock}>
-            🎁 Unlock This Job for Free (1 free unlock)
+            🎁 Unlock This Job for Free ({freeUnlocksRemaining} free {freeUnlocksRemaining === 1 ? "unlock" : "unlocks"} left)
           </Button>
         )}
 

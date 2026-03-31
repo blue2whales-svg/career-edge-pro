@@ -203,11 +203,13 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
   };
 
   const fireStkPush = async (formattedPhone: string, generatedOrderId: string) => {
-    const res = await fetch(`https://wspugvdwodqdlyamxzxj.supabase.co/functions/v1/mpesa-stk-push`, {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+    const res = await fetch(`${supabaseUrl}/functions/v1/mpesa-stk-push`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndzcHVndmR3b2RxZGx5YW14enhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzODE5OTQsImV4cCI6MjA4ODk1Nzk5NH0.nW2OFx1oZKzjU5G0SRoQLvdaLi9wQKb3h6zDuGDQbwU`,
+        Authorization: `Bearer ${supabaseKey}`,
       },
       body: JSON.stringify({ phone: formattedPhone, amount: pkg.amount, packageName: pkg.label, orderId: generatedOrderId, fullName: fullName.trim(), email: email.trim() }),
     });
