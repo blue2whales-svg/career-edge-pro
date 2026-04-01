@@ -72,7 +72,7 @@ function mapRow(row: any): Job {
 
 // ─── Build Supabase query with filters ──────────────────────────────────────
 function buildQuery(filters: JobFilters) {
-  let query = supabase
+  let query: any = supabase
     .from("cached_jobs")
     .select("*", { count: "exact" })
     .eq("is_active", true)
