@@ -46,7 +46,7 @@ function mapRow(row: any): Job {
     salary: row.salary || "Competitive",
     type: row.type || "Full-time",
     industry: row.industry || "Operations",
-    market: row.market || "Kenya",
+    market: row.market_tag || row.market || "kenya",
     posted: row.posted_at
       ? `Posted ${timeAgo(row.posted_at)}`
       : row.discovered_at
@@ -93,7 +93,7 @@ function buildQuery(filters: JobFilters) {
     query = query.eq("hot", true);
   }
   if (filters.market && filters.market !== "All Markets") {
-    query = query.eq("market", filters.market);
+    query = query.eq("market_tag", filters.market);
   }
   if (filters.company) {
     query = query.ilike("company", `%${filters.company}%`);
@@ -118,11 +118,9 @@ export function useJobsPaginated(filters: JobFilters) {
 
       const query = buildQuery(filters).range(from, to);
       const { data, error, count } = await query;
-      console.log("Jobs result:", { data, error, count, pageParam });
 
       if (error) {
         console.error("Jobs query error:", error);
-        // Fallback to static
         const staticFiltered = filterStatic(JOBS, filters);
         return {
           jobs: staticFiltered.slice(from, to + 1),
@@ -133,7 +131,6 @@ export function useJobsPaginated(filters: JobFilters) {
 
       const jobs = (data || []).map(mapRow);
 
-      // If DB is empty on first page, use static fallback
       if (pageParam === 0 && jobs.length === 0) {
         const staticFiltered = filterStatic(JOBS, filters);
         return {
@@ -161,7 +158,6 @@ export function useFeaturedJobs() {
   return useQuery({
     queryKey: ["featured-jobs"],
     queryFn: async () => {
-      // Try explicit featured first
       const { data: explicit } = await supabase
         .from("cached_jobs")
         .select("*")
@@ -172,7 +168,6 @@ export function useFeaturedJobs() {
 
       if (explicit && explicit.length >= 3) return explicit.map(mapRow);
 
-      // Fall back to hot jobs
       const { data: hot } = await supabase
         .from("cached_jobs")
         .select("*")
@@ -183,7 +178,6 @@ export function useFeaturedJobs() {
 
       if (hot && hot.length >= 3) return hot.map(mapRow);
 
-      // Fall back to top jobs
       const { data: top } = await supabase
         .from("cached_jobs")
         .select("*")
@@ -210,12 +204,11 @@ export function useCategoryCounts() {
   return useQuery({
     queryKey: ["category-counts"],
     queryFn: async () => {
-      // Run all count queries in parallel for speed
       const [kenya, gulf, cruise, remote, visa, health, total] = await Promise.all([
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("market", "Kenya"),
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).in("market", ["UAE", "Qatar", "Saudi Arabia", "Oman", "Bahrain", "Kuwait"]),
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("category", "Cruise Jobs"),
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("category", "Remote Jobs"),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("market_tag", "kenya"),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).in("market_tag", ["uae", "qatar", "saudi", "kuwait", "bahrain", "oman"]),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("market_tag", "cruise"),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("market_tag", "remote"),
         supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("visa_sponsorship", true),
         supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("industry", "Healthcare"),
         supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true),
@@ -260,7 +253,7 @@ function filterStatic(jobs: Job[], filters: JobFilters): Job[] {
   });
 }
 
-// ─── Legacy hook (for FeaturedJobs backward compat) ─────────────────────────
+// ─── Legacy hook ─────────────────────────────────────────────────────────────
 export function useJobs() {
   return useQuery({
     queryKey: ["live-jobs"],
