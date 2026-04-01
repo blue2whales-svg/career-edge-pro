@@ -2,7 +2,6 @@ import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { JOBS, FEATURED_JOBS, type Job } from "@/data/jobs";
 
-// ─── Source label mapping ───────────────────────────────────────────────────
 const SOURCE_LABELS: Record<string, string> = {
   jsearch: "JSearch",
   firecrawl: "Firecrawl",
@@ -11,7 +10,6 @@ const SOURCE_LABELS: Record<string, string> = {
   platform_seed: "CV Edge",
 };
 
-// ─── Time-ago helper ────────────────────────────────────────────────────────
 export function timeAgo(dateStr: string | null | undefined): string {
   if (!dateStr) return "Recently";
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -24,7 +22,6 @@ export function timeAgo(dateStr: string | null | undefined): string {
   return `${days} day${days > 1 ? "s" : ""} ago`;
 }
 
-// ─── Filters interface ─────────────────────────────────────────────────────
 export interface JobFilters {
   search?: string;
   category?: string;
@@ -37,7 +34,6 @@ export interface JobFilters {
 
 const PAGE_SIZE = 20;
 
-// ─── Map DB row to Job ─────────────────────────────────────────────────────
 function mapRow(row: any): Job {
   return {
     title: row.title,
@@ -70,9 +66,8 @@ function mapRow(row: any): Job {
   };
 }
 
-// ─── Build Supabase query with filters ──────────────────────────────────────
 function buildQuery(filters: JobFilters) {
-  let query = supabase
+  let query: any = supabase
     .from("cached_jobs")
     .select("*", { count: "exact" })
     .eq("is_active", true)
@@ -108,7 +103,6 @@ function buildQuery(filters: JobFilters) {
   return query;
 }
 
-// ─── Paginated jobs hook ────────────────────────────────────────────────────
 export function useJobsPaginated(filters: JobFilters) {
   return useInfiniteQuery({
     queryKey: ["jobs-paginated", filters],
@@ -153,12 +147,11 @@ export function useJobsPaginated(filters: JobFilters) {
   });
 }
 
-// ─── Featured jobs hook ─────────────────────────────────────────────────────
 export function useFeaturedJobs() {
   return useQuery({
     queryKey: ["featured-jobs"],
     queryFn: async () => {
-      const { data: explicit } = await supabase
+      const { data: explicit }: any = await supabase
         .from("cached_jobs")
         .select("*")
         .eq("is_active", true)
@@ -168,7 +161,7 @@ export function useFeaturedJobs() {
 
       if (explicit && explicit.length >= 3) return explicit.map(mapRow);
 
-      const { data: hot } = await supabase
+      const { data: hot }: any = await supabase
         .from("cached_jobs")
         .select("*")
         .eq("is_active", true)
@@ -178,7 +171,7 @@ export function useFeaturedJobs() {
 
       if (hot && hot.length >= 3) return hot.map(mapRow);
 
-      const { data: top } = await supabase
+      const { data: top }: any = await supabase
         .from("cached_jobs")
         .select("*")
         .eq("is_active", true)
@@ -194,7 +187,6 @@ export function useFeaturedJobs() {
   });
 }
 
-// ─── Category counts hook ───────────────────────────────────────────────────
 export interface CategoryCount {
   category: string;
   count: number;
@@ -204,13 +196,37 @@ export function useCategoryCounts() {
   return useQuery({
     queryKey: ["category-counts"],
     queryFn: async () => {
-      const [kenya, gulf, cruise, remote, visa, health, total] = await Promise.all([
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("market_tag", "kenya"),
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).in("market_tag", ["uae", "qatar", "saudi", "kuwait", "bahrain", "oman"]),
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("market_tag", "cruise"),
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("market_tag", "remote"),
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("visa_sponsorship", true),
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("industry", "Healthcare"),
+      const [kenya, gulf, cruise, remote, visa, health, total]: any[] = await Promise.all([
+        supabase
+          .from("cached_jobs")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true)
+          .eq("market_tag", "kenya"),
+        supabase
+          .from("cached_jobs")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true)
+          .in("market_tag", ["uae", "qatar", "saudi", "kuwait", "bahrain", "oman"]),
+        supabase
+          .from("cached_jobs")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true)
+          .eq("market_tag", "cruise"),
+        supabase
+          .from("cached_jobs")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true)
+          .eq("market_tag", "remote"),
+        supabase
+          .from("cached_jobs")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true)
+          .eq("visa_sponsorship", true),
+        supabase
+          .from("cached_jobs")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true)
+          .eq("industry", "Healthcare"),
         supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true),
       ]);
 
@@ -221,7 +237,7 @@ export function useCategoryCounts() {
         "Remote Jobs": remote.count || 0,
         "Visa Sponsorship": visa.count || 0,
         "Healthcare Jobs": health.count || 0,
-        "total": total.count || 0,
+        total: total.count || 0,
       } as Record<string, number>;
     },
     staleTime: 1000 * 60 * 5,
@@ -229,7 +245,6 @@ export function useCategoryCounts() {
   });
 }
 
-// ─── Static fallback filter ────────────────────────────────────────────────
 function filterStatic(jobs: Job[], filters: JobFilters): Job[] {
   return jobs.filter((job) => {
     if (filters.search) {
@@ -253,12 +268,11 @@ function filterStatic(jobs: Job[], filters: JobFilters): Job[] {
   });
 }
 
-// ─── Legacy hook ─────────────────────────────────────────────────────────────
 export function useJobs() {
   return useQuery({
     queryKey: ["live-jobs"],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data }: any = await supabase
         .from("cached_jobs")
         .select("*")
         .eq("is_active", true)
@@ -273,16 +287,16 @@ export function useJobs() {
       const liveJobs = data.map(mapRow);
 
       const featured = (() => {
-        const explicit = liveJobs.filter((j) => j.featured === true);
+        const explicit = liveJobs.filter((j: any) => j.featured === true);
         if (explicit.length >= 3) return explicit.slice(0, 6);
-        const hot = liveJobs.filter((j) => j.hot === true || (j.hot_score && j.hot_score >= 40));
+        const hot = liveJobs.filter((j: any) => j.hot === true || (j.hot_score && j.hot_score >= 40));
         if (hot.length >= 3) return hot.slice(0, 6);
         return liveJobs.slice(0, 6);
       })();
 
       const combined = [...liveJobs, ...JOBS];
       const seen = new Set<string>();
-      const deduped = combined.filter((j) => {
+      const deduped = combined.filter((j: any) => {
         const key = `${j.title.toLowerCase()}|${j.company.toLowerCase()}`;
         if (seen.has(key)) return false;
         seen.add(key);
