@@ -1134,6 +1134,15 @@ export const MARKETS = [
 
 export const JOB_CATEGORIES = [
   "All Categories",
+  "Kenya Jobs",
+  "Gulf Jobs",
+  "Cruise Jobs",
+  "Remote Jobs",
+  "Healthcare Jobs",
+  "Europe Jobs",
+  "Engineering Jobs",
+  "Hospitality Jobs",
+  "Drivers & Logistics",
   "Engineering",
   "Hospitality",
   "Healthcare",
@@ -1143,12 +1152,4 @@ export const JOB_CATEGORIES = [
   "Sales",
   "Administration",
   "Security",
-  "Customer Service",
-  "Marketing",
-  "Education",
-  "Creative",
-  "Retail",
-  "General Work",
-  "Cruise Jobs",
-  "Remote Jobs",
 ];
