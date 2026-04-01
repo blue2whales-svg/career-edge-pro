@@ -205,12 +205,36 @@ export function useCategoryCounts() {
     queryKey: ["category-counts"],
     queryFn: async () => {
       const [kenya, gulf, cruise, remote, visa, health, total] = await Promise.all([
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("market_tag", "kenya"),
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).in("market_tag", ["uae", "qatar", "saudi", "kuwait", "bahrain", "oman"]),
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("market_tag", "cruise"),
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("market_tag", "remote"),
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("visa_sponsorship", true),
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("industry", "Healthcare"),
+        supabase
+          .from("cached_jobs")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true)
+          .eq("market_tag", "kenya"),
+        supabase
+          .from("cached_jobs")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true)
+          .in("market_tag", ["uae", "qatar", "saudi", "kuwait", "bahrain", "oman"]),
+        supabase
+          .from("cached_jobs")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true)
+          .eq("market_tag", "cruise"),
+        supabase
+          .from("cached_jobs")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true)
+          .eq("market_tag", "remote"),
+        supabase
+          .from("cached_jobs")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true)
+          .eq("visa_sponsorship", true),
+        supabase
+          .from("cached_jobs")
+          .select("*", { count: "exact", head: true })
+          .eq("is_active", true)
+          .eq("industry", "Healthcare"),
         supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true),
       ]);
 
@@ -221,7 +245,7 @@ export function useCategoryCounts() {
         "Remote Jobs": remote.count || 0,
         "Visa Sponsorship": visa.count || 0,
         "Healthcare Jobs": health.count || 0,
-        "total": total.count || 0,
+        total: total.count || 0,
       } as Record<string, number>;
     },
     staleTime: 1000 * 60 * 5,
