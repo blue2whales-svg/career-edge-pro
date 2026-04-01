@@ -8,15 +8,29 @@ const corsHeaders = {
 
 function guessIndustry(title: string, employer: string): string {
   const t = (title + " " + employer).toLowerCase();
-  if (/nurse|doctor|medical|health|hospital|pharma|dental/i.test(t)) return "Healthcare";
+  if (/nurse|doctor|medical|health|hospital|pharma|dental|clinic/i.test(t)) return "Healthcare";
   if (/engineer|civil|mechanical|electrical|structural/i.test(t)) return "Engineering";
-  if (/software|developer|data|devops|cloud|cyber/i.test(t)) return "Technology";
-  if (/account|finance|bank|audit/i.test(t)) return "Finance";
+  if (/software|developer|data|devops|cloud|cyber|frontend|backend/i.test(t)) return "Technology";
+  if (/account|finance|bank|audit|tax/i.test(t)) return "Finance";
   if (/teacher|lecturer|educat|school/i.test(t)) return "Education";
-  if (/housemaid|nanny|housekeeper|domestic|caregiver/i.test(t)) return "Domestic & Housekeeping";
-  if (/hotel|restaurant|chef|cruise|hospitality/i.test(t)) return "Cruise & Hospitality";
-  if (/driv|transport|logist|warehouse/i.test(t)) return "Operations";
+  if (/hotel|restaurant|chef|cruise|hospitality|waiter|barista|cook/i.test(t)) return "Hospitality";
+  if (/driv|transport|logist|warehouse|delivery/i.test(t)) return "Logistics";
+  if (/sales|marketing|business develop/i.test(t)) return "Sales";
+  if (/admin|secretary|receptionist|office|hr\b|human resource/i.test(t)) return "Administration";
+  if (/security|guard|surveillance/i.test(t)) return "Security";
   return "Operations";
+}
+
+function guessCategory(title: string, market: string, industry: string): string {
+  if (market === "Cruise") return "Cruise Jobs";
+  if (market === "Remote") return "Remote Jobs";
+  if (["UAE", "Qatar", "Saudi Arabia", "Kuwait", "Bahrain", "Oman"].includes(market)) return "Gulf Jobs";
+  if (market === "Kenya") return "Kenya Jobs";
+  if (industry === "Healthcare") return "Healthcare Jobs";
+  if (market === "UK" || market === "Germany" || market === "Europe") return "Europe Jobs";
+  if (market === "USA") return "USA Jobs";
+  if (market === "Australia" || market === "Canada") return "Remote Jobs";
+  return "Kenya Jobs";
 }
 
 function detectVisa(title: string, desc: string): boolean {
@@ -31,32 +45,34 @@ function hotScore(job: any): number {
   else if (hoursAgo < 72) score += 10;
   if (job.salary && job.salary !== "Competitive") score += 20;
   if (job.visa_sponsorship) score += 25;
-  if (["UAE", "Qatar", "Saudi Arabia", "UK", "Canada", "Australia", "Germany", "Netherlands", "France"].includes(job.market)) score += 15;
+  if (["UAE", "Qatar", "Saudi Arabia", "UK", "Canada", "Australia"].includes(job.market)) score += 15;
   return score;
 }
 
-function extractCountry(location: string, market: string): string {
-  const parts = location.split(",").map(s => s.trim());
-  return parts.length > 1 ? parts[parts.length - 1] : market;
-}
-
-// ─── Adzuna: 8 queries, all parallel ────────────────────────────────────────
+// ─── Adzuna: 12 countries, all parallel ─────────────────────────────────────
 async function fetchAdzuna(appId: string, appKey: string): Promise<any[]> {
   const queries = [
-    { country: "ke", what: "jobs", market: "Kenya", category: "Kenya Jobs" },
-    { country: "gb", what: "visa sponsorship", market: "UK", category: "Visa Sponsorship Jobs" },
-    { country: "gb", what: "nurse doctor healthcare", market: "UK", category: "Healthcare Jobs" },
-    { country: "au", what: "visa sponsorship", market: "Australia", category: "Visa Sponsorship Jobs" },
-    { country: "ca", what: "visa sponsorship", market: "Canada", category: "Visa Sponsorship Jobs" },
-    { country: "de", what: "engineer", market: "Germany", category: "Engineering Jobs" },
-    { country: "nl", what: "jobs", market: "Netherlands", category: "Europe Jobs" },
-    { country: "gb", what: "hospitality hotel chef", market: "UK", category: "Hospitality Jobs" },
+    { country: "ke", what: "jobs", market: "Kenya" },
+    { country: "ke", what: "nurse healthcare", market: "Kenya" },
+    { country: "ae", what: "jobs", market: "UAE" },
+    { country: "ae", what: "hotel hospitality", market: "UAE" },
+    { country: "sa", what: "jobs", market: "Saudi Arabia" },
+    { country: "qa", what: "jobs", market: "Qatar" },
+    { country: "kw", what: "jobs", market: "Kuwait" },
+    { country: "bh", what: "jobs", market: "Bahrain" },
+    { country: "om", what: "jobs", market: "Oman" },
+    { country: "gb", what: "visa sponsorship", market: "UK" },
+    { country: "gb", what: "nurse healthcare", market: "UK" },
+    { country: "us", what: "visa sponsorship", market: "USA" },
+    { country: "au", what: "visa sponsorship", market: "Australia" },
+    { country: "ca", what: "visa sponsorship", market: "Canada" },
+    { country: "de", what: "engineer", market: "Germany" },
   ];
 
   const results = await Promise.allSettled(
     queries.map(q =>
-      fetch(`https://api.adzuna.com/v1/api/jobs/${q.country}/search/1?app_id=${appId}&app_key=${appKey}&what=${encodeURIComponent(q.what)}&results_per_page=15&max_days_old=3&sort_by=date`)
-        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      fetch(`https://api.adzuna.com/v1/api/jobs/${q.country}/search/1?app_id=${appId}&app_key=${appKey}&what=${encodeURIComponent(q.what)}&results_per_page=20&max_days_old=3&sort_by=date`)
+        .then(r => r.ok ? r.json() : Promise.reject(`Adzuna ${q.country}: ${r.status}`))
         .then(data => ({ q, rows: data.results || [] }))
     )
   );
@@ -70,21 +86,25 @@ async function fetchAdzuna(appId: string, appKey: string): Promise<any[]> {
       if (!title) continue;
       const description = (row.description || "").substring(0, 2000).replace(/<[^>]*>/g, "");
       const visa = detectVisa(title, description);
+      const industry = guessIndustry(title, row.company?.display_name || "");
+      const category = guessCategory(title, q.market, industry);
+      const currMap: Record<string, string> = { ke: "KES", gb: "GBP", us: "USD", au: "AUD", ca: "CAD", de: "EUR", ae: "AED", sa: "SAR", qa: "QAR", kw: "KWD", bh: "BHD", om: "OMR" };
+      const curr = currMap[q.country] || "USD";
       const job: any = {
         external_id: `adzuna-${row.id}`, title,
         company: row.company?.display_name || "Company",
         location: row.location?.display_name || q.market,
         salary: row.salary_min && row.salary_max
-          ? `${q.country === "ke" ? "KES" : q.country === "gb" ? "GBP" : q.country === "de" || q.country === "nl" ? "EUR" : "USD"} ${Math.round(row.salary_min).toLocaleString()}–${Math.round(row.salary_max).toLocaleString()}/yr`
+          ? `${curr} ${Math.round(row.salary_min).toLocaleString()}–${Math.round(row.salary_max).toLocaleString()}/yr`
           : "Competitive",
         type: row.contract_time === "part_time" ? "Part-time" : "Full-time",
-        industry: guessIndustry(title, row.company?.display_name || ""),
-        market: q.market, posted_at: row.created || new Date().toISOString(),
+        industry, market: q.market,
+        posted_at: row.created || new Date().toISOString(),
         hot: false, tag: visa ? "✈️ Visa Sponsor" : null,
         source: "adzuna", source_label: "Adzuna",
         apply_url: row.redirect_url || null, description,
-        country: extractCountry(row.location?.display_name || q.market, q.market),
-        category: q.category, visa_sponsorship: visa, hot_score: 0,
+        country: q.market, category,
+        visa_sponsorship: visa, hot_score: 0,
         verified: false, featured: false, is_active: true,
         discovered_at: new Date().toISOString(),
       };
@@ -97,16 +117,20 @@ async function fetchAdzuna(appId: string, appKey: string): Promise<any[]> {
   return jobs;
 }
 
-// ─── Jooble: 7 queries, all parallel ────────────────────────────────────────
+// ─── Jooble: 11 queries, all parallel ───────────────────────────────────────
 async function fetchJooble(apiKey: string): Promise<any[]> {
   const queries = [
-    { keywords: "jobs in Dubai", location: "Dubai", market: "UAE", category: "Gulf Jobs", tag: "🔥 Gulf Hot" },
-    { keywords: "jobs in Qatar", location: "Qatar", market: "Qatar", category: "Gulf Jobs", tag: "🔥 Gulf Hot" },
-    { keywords: "jobs in Saudi Arabia", location: "Saudi Arabia", market: "Saudi Arabia", category: "Gulf Jobs", tag: "🔥 Gulf Hot" },
-    { keywords: "jobs in Kenya", location: "Kenya", market: "Kenya", category: "Kenya Jobs", tag: null },
-    { keywords: "nurse jobs abroad visa sponsorship", location: "", market: "UK", category: "Healthcare Jobs", tag: "✈️ Visa Sponsor" },
-    { keywords: "visa sponsorship jobs Europe", location: "Europe", market: "Europe", category: "Visa Sponsorship Jobs", tag: "✈️ Visa Sponsor" },
-    { keywords: "remote jobs Africa", location: "", market: "Remote", category: "Remote Jobs", tag: "🌍 Remote" },
+    { keywords: "jobs in Kenya", location: "Kenya", market: "Kenya", tag: null },
+    { keywords: "jobs in Dubai", location: "Dubai", market: "UAE", tag: "🔥 Gulf Hot" },
+    { keywords: "jobs in Qatar", location: "Qatar", market: "Qatar", tag: "🔥 Gulf Hot" },
+    { keywords: "jobs in Saudi Arabia", location: "Saudi Arabia", market: "Saudi Arabia", tag: "🔥 Gulf Hot" },
+    { keywords: "jobs in Kuwait", location: "Kuwait", market: "Kuwait", tag: "🔥 Gulf Hot" },
+    { keywords: "jobs in Bahrain", location: "Bahrain", market: "Bahrain", tag: "🔥 Gulf Hot" },
+    { keywords: "jobs in Oman", location: "Oman", market: "Oman", tag: "🔥 Gulf Hot" },
+    { keywords: "cruise ship jobs", location: "", market: "Cruise", tag: "🚢 Cruise Line" },
+    { keywords: "remote jobs Africa", location: "", market: "Remote", tag: "🌍 Remote" },
+    { keywords: "nurse jobs abroad visa sponsorship", location: "", market: "UK", tag: "✈️ Visa Sponsor" },
+    { keywords: "visa sponsorship jobs Europe", location: "Europe", market: "Europe", tag: "✈️ Visa Sponsor" },
   ];
 
   const results = await Promise.allSettled(
@@ -116,7 +140,7 @@ async function fetchJooble(apiKey: string): Promise<any[]> {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ keywords: q.keywords, location: q.location, page: 1 }),
       })
-        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(r => r.ok ? r.json() : Promise.reject(`Jooble ${q.market}: ${r.status}`))
         .then(data => ({ q, rows: data.jobs || [] }))
     )
   );
@@ -130,19 +154,21 @@ async function fetchJooble(apiKey: string): Promise<any[]> {
       if (!title) continue;
       const description = (row.snippet || "").substring(0, 2000).replace(/<[^>]*>/g, "");
       const visa = detectVisa(title, description);
+      const industry = guessIndustry(title, row.company || "");
+      const category = guessCategory(title, q.market, industry);
       const job: any = {
         external_id: row.id ? `jooble-${row.id}` : `jooble-${title.toLowerCase().replace(/\s+/g, "-").substring(0, 80)}`,
         title, company: row.company || "Company",
         location: row.location || q.market,
         salary: row.salary || "Competitive",
         type: row.type || "Full-time",
-        industry: guessIndustry(title, row.company || ""),
-        market: q.market, posted_at: row.updated || new Date().toISOString(),
+        industry, market: q.market,
+        posted_at: row.updated || new Date().toISOString(),
         hot: false, tag: visa ? "✈️ Visa Sponsor" : q.tag,
         source: "jooble", source_label: "Jooble",
         apply_url: row.link || null, description,
-        country: extractCountry(row.location || q.market, q.market),
-        category: q.category, visa_sponsorship: visa, hot_score: 0,
+        country: q.market, category,
+        visa_sponsorship: visa, hot_score: 0,
         verified: false, featured: false, is_active: true,
         discovered_at: new Date().toISOString(),
       };
@@ -152,123 +178,6 @@ async function fetchJooble(apiKey: string): Promise<any[]> {
     }
   }
   console.log(`Jooble: ${jobs.length} jobs`);
-  return jobs;
-}
-
-// ─── Remotive: free, no API key — remote tech/healthcare jobs ───────────────
-async function fetchRemotive(): Promise<any[]> {
-  const queries = [
-    { tag: "software-dev", market: "Remote", category: "Remote Jobs" },
-    { tag: "customer-support", market: "Remote", category: "Remote Jobs" },
-    { tag: "marketing", market: "Remote", category: "Remote Jobs" },
-    { tag: "data", market: "Remote", category: "Remote Jobs" },
-  ];
-
-  const results = await Promise.allSettled(
-    queries.map(q =>
-      fetch(`https://remotive.com/api/remote-jobs?category=${q.tag}&limit=10`)
-        .then(r => r.ok ? r.json() : Promise.reject(r.status))
-        .then(data => ({ q, rows: data.jobs || [] }))
-    )
-  );
-
-  const jobs: any[] = [];
-  for (const r of results) {
-    if (r.status === "rejected") { console.warn("Remotive err:", r.reason); continue; }
-    const { q, rows } = r.value;
-    for (const row of rows) {
-      const title = (row.title || "").trim();
-      if (!title) continue;
-      const description = (row.description || "").substring(0, 2000).replace(/<[^>]*>/g, "");
-      const job: any = {
-        external_id: `remotive-${row.id}`,
-        title,
-        company: row.company_name || "Company",
-        location: row.candidate_required_location || "Remote",
-        salary: row.salary || "Competitive",
-        type: "Remote",
-        industry: guessIndustry(title, row.company_name || ""),
-        market: q.market,
-        posted_at: row.publication_date || new Date().toISOString(),
-        hot: false,
-        tag: "🌍 Remote",
-        source: "remotive",
-        source_label: "Remotive",
-        apply_url: row.url || null,
-        description,
-        country: "Remote",
-        category: q.category,
-        visa_sponsorship: false,
-        hot_score: 0,
-        verified: true,
-        featured: false,
-        is_active: true,
-        discovered_at: new Date().toISOString(),
-      };
-      job.hot_score = hotScore(job);
-      job.hot = job.hot_score >= 50;
-      jobs.push(job);
-    }
-  }
-  console.log(`Remotive: ${jobs.length} jobs`);
-  return jobs;
-}
-
-// ─── Arbeitnow: free, no API key — Europe visa-sponsored jobs ──────────────
-async function fetchArbeitnow(): Promise<any[]> {
-  const queries = [
-    { url: "https://www.arbeitnow.com/api/job-board-api?page=1", market: "Europe", category: "Europe Jobs" },
-    { url: "https://www.arbeitnow.com/api/job-board-api?page=2", market: "Europe", category: "Visa Sponsorship Jobs" },
-  ];
-
-  const results = await Promise.allSettled(
-    queries.map(q =>
-      fetch(q.url)
-        .then(r => r.ok ? r.json() : Promise.reject(r.status))
-        .then(data => ({ q, rows: data.data || [] }))
-    )
-  );
-
-  const jobs: any[] = [];
-  for (const r of results) {
-    if (r.status === "rejected") { console.warn("Arbeitnow err:", r.reason); continue; }
-    const { q, rows } = r.value;
-    for (const row of rows) {
-      const title = (row.title || "").trim();
-      if (!title) continue;
-      const description = (row.description || "").substring(0, 2000).replace(/<[^>]*>/g, "");
-      const visa = row.visa_sponsorship === true || detectVisa(title, description);
-      const job: any = {
-        external_id: `arbeitnow-${row.slug || title.toLowerCase().replace(/\s+/g, "-").substring(0, 80)}`,
-        title,
-        company: row.company_name || "Company",
-        location: row.location || "Germany",
-        salary: "Competitive",
-        type: row.job_types?.includes("full_time") ? "Full-time" : row.job_types?.[0] || "Full-time",
-        industry: guessIndustry(title, row.company_name || ""),
-        market: q.market,
-        posted_at: row.created_at ? new Date(row.created_at * 1000).toISOString() : new Date().toISOString(),
-        hot: false,
-        tag: visa ? "✈️ Visa Sponsor" : "🇪🇺 Europe",
-        source: "arbeitnow",
-        source_label: "Arbeitnow",
-        apply_url: row.url || null,
-        description,
-        country: row.location?.split(",").pop()?.trim() || "Germany",
-        category: visa ? "Visa Sponsorship Jobs" : q.category,
-        visa_sponsorship: visa,
-        hot_score: 0,
-        verified: true,
-        featured: false,
-        is_active: true,
-        discovered_at: new Date().toISOString(),
-      };
-      job.hot_score = hotScore(job);
-      job.hot = job.hot_score >= 50;
-      jobs.push(job);
-    }
-  }
-  console.log(`Arbeitnow: ${jobs.length} jobs`);
   return jobs;
 }
 
@@ -290,8 +199,6 @@ Deno.serve(async (req) => {
     const promises: Promise<any[]>[] = [];
     if (adzunaAppId && adzunaAppKey) promises.push(fetchAdzuna(adzunaAppId, adzunaAppKey));
     if (joobleApiKey) promises.push(fetchJooble(joobleApiKey));
-    promises.push(fetchRemotive());
-    promises.push(fetchArbeitnow());
 
     const settled = await Promise.allSettled(promises);
     const allJobs: any[] = [];
@@ -300,10 +207,10 @@ Deno.serve(async (req) => {
       else console.error("Source failed:", r.reason);
     }
 
-    // Deduplicate
+    // Deduplicate by external_id
     const seen = new Set<string>();
     const unique = allJobs.filter(j => {
-      const key = j.external_id || `${j.title}|${j.company}`;
+      const key = j.external_id;
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
@@ -311,34 +218,32 @@ Deno.serve(async (req) => {
 
     console.log(`📥 ${allJobs.length} fetched, ${unique.length} unique`);
 
-    // Single batch upsert
+    // Batch upsert in chunks of 100
     let inserted = 0;
-    if (unique.length > 0) {
-      const { error } = await supabase.from("cached_jobs").upsert(unique, {
+    const BATCH = 100;
+    for (let i = 0; i < unique.length; i += BATCH) {
+      const batch = unique.slice(i, i + BATCH);
+      const { error } = await supabase.from("cached_jobs").upsert(batch, {
         onConflict: "external_id,source",
-        ignoreDuplicates: true,
+        ignoreDuplicates: false,
       });
       if (error) console.error("Upsert error:", error.message);
-      else inserted = unique.length;
+      else inserted += batch.length;
     }
 
-    // Archive stale jobs (>2 days) — keep platform_seed forever
-    const twoDaysAgo = new Date(Date.now() - 2 * 86400000).toISOString();
+    // Delete jobs older than 3 days (except platform_seed)
+    const threeDaysAgo = new Date(Date.now() - 3 * 86400000).toISOString();
     await supabase.from("cached_jobs")
-      .update({ is_active: false })
-      .lt("discovered_at", twoDaysAgo)
-      .eq("is_active", true)
+      .delete()
+      .lt("discovered_at", threeDaysAgo)
       .neq("source", "platform_seed");
 
-    // Re-activate seeds if below 200
+    // Get active count
     const { count } = await supabase.from("cached_jobs")
       .select("*", { count: "exact", head: true })
       .eq("is_active", true);
-    if ((count || 0) < 200) {
-      await supabase.from("cached_jobs").update({ is_active: true }).eq("source", "platform_seed");
-    }
 
-    console.log(`✅ Inserted ${inserted}, active: ${count}`);
+    console.log(`✅ Inserted/updated ${inserted}, active: ${count}`);
 
     return new Response(
       JSON.stringify({ success: true, fetched: allJobs.length, inserted, active: count }),
