@@ -67,43 +67,66 @@ function mapRow(row: any): Job {
   };
 }
 
-function buildQuery(filters: JobFilters) {
-  let query: any = supabase
-    .from("cached_jobs")
-    .select("*", { count: "exact" })
-    .eq("is_active", true)
-    .order("posted_at", { ascending: false })
-    .order("hot_score", { ascending: false });
-
-  if (filters.search) {
-    const s = `%${filters.search}%`;
-    query = query.or(`title.ilike.${s},company.ilike.${s}`);
-  }
-  if (filters.category && filters.category !== "All Categories") {
-    query = query.eq("category", filters.category);
-  }
-  if (filters.industry && filters.industry !== "All" && filters.industry !== "🔥 Hot Abroad") {
-    query = query.eq("industry", filters.industry);
-  }
-  if (filters.industry === "🔥 Hot Abroad") {
-    query = query.eq("hot", true);
-  }
-  if (filters.market && filters.market !== "All Markets") {
-    query = query.eq("market_tag", filters.market);
-  }
-  if (filters.company) {
-    query = query.ilike("company", `%${filters.company}%`);
-  }
-  if (filters.hotOnly) {
-    query = query.eq("hot", true);
-  }
-  if (filters.visaOnly) {
-    query = query.eq("visa_sponsorship", true);
-  }
-
-  return query;
+// ─── Single page data hook — 1 query for everything ────────────────────────
+export function useJobsPageData() {
+  return useQuery({
+    queryKey: ["jobs-page-data"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_jobs_page_data");
+      if (error || !data) {
+        return {
+          counts: {
+            "Kenya Jobs": 0,
+            "Gulf Jobs": 0,
+            "Cruise Jobs": 0,
+            "Remote Jobs": 0,
+            "Visa Sponsorship": 0,
+            "Healthcare Jobs": 0,
+            total: 0,
+          },
+          jobs: JOBS,
+          featured: FEATURED_JOBS,
+        };
+      }
+      const counts = {
+        "Kenya Jobs": data.counts?.kenya || 0,
+        "Gulf Jobs": data.counts?.gulf || 0,
+        "Cruise Jobs": data.counts?.cruise || 0,
+        "Remote Jobs": data.counts?.remote || 0,
+        "Visa Sponsorship": data.counts?.visa || 0,
+        "Healthcare Jobs": data.counts?.healthcare || 0,
+        total: data.counts?.total || 0,
+      };
+      const jobs = (data.jobs || []).map(mapRow);
+      const featured = jobs.filter((j) => j.hot).slice(0, 6);
+      return { counts, jobs, featured };
+    },
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+  });
 }
 
+// ─── Category counts — now uses cached page data ───────────────────────────
+export function useCategoryCounts() {
+  const { data, isLoading } = useJobsPageData();
+  return {
+    data: data?.counts,
+    isLoading,
+  };
+}
+
+// ─── Featured jobs — now uses cached page data ─────────────────────────────
+export function useFeaturedJobs() {
+  const { data, isLoading } = useJobsPageData();
+  return useQuery({
+    queryKey: ["featured-jobs"],
+    queryFn: async () => data?.featured || FEATURED_JOBS,
+    enabled: !!data,
+    staleTime: 1000 * 60 * 10,
+  });
+}
+
+// ─── Paginated jobs with filters ───────────────────────────────────────────
 export function useJobsPaginated(filters: JobFilters) {
   return useInfiniteQuery({
     queryKey: ["jobs-paginated", filters],
@@ -111,11 +134,36 @@ export function useJobsPaginated(filters: JobFilters) {
       const from = pageParam * PAGE_SIZE;
       const to = from + PAGE_SIZE - 1;
 
-      const query = buildQuery(filters).range(from, to);
+      let query: any = supabase
+        .from("cached_jobs")
+        .select("*", { count: "exact" })
+        .eq("is_active", true)
+        .order("posted_at", { ascending: false })
+        .order("hot_score", { ascending: false })
+        .range(from, to);
+
+      if (filters.search) {
+        const s = `%${filters.search}%`;
+        query = query.or(`title.ilike.${s},company.ilike.${s}`);
+      }
+      if (filters.category && filters.category !== "All Categories") {
+        query = query.eq("category", filters.category);
+      }
+      if (filters.industry && filters.industry !== "All" && filters.industry !== "🔥 Hot Abroad") {
+        query = query.eq("industry", filters.industry);
+      }
+      if (filters.industry === "🔥 Hot Abroad") {
+        query = query.eq("hot", true);
+      }
+      if (filters.market && filters.market !== "All Markets") {
+        query = query.eq("market_tag", filters.market);
+      }
+      if (filters.hotOnly) query = query.eq("hot", true);
+      if (filters.visaOnly) query = query.eq("visa_sponsorship", true);
+
       const { data, error, count } = await query;
 
       if (error) {
-        console.error("Jobs query error:", error);
         const staticFiltered = filterStatic(JOBS, filters);
         return {
           jobs: staticFiltered.slice(from, to + 1),
@@ -125,7 +173,6 @@ export function useJobsPaginated(filters: JobFilters) {
       }
 
       const jobs = (data || []).map(mapRow);
-
       if (pageParam === 0 && jobs.length === 0) {
         const staticFiltered = filterStatic(JOBS, filters);
         return {
@@ -148,81 +195,7 @@ export function useJobsPaginated(filters: JobFilters) {
   });
 }
 
-export function useFeaturedJobs() {
-  return useQuery({
-    queryKey: ["featured-jobs"],
-    queryFn: async () => {
-      const { data: explicit }: any = await supabase
-        .from("cached_jobs")
-        .select("*")
-        .eq("is_active", true)
-        .eq("featured", true)
-        .order("hot_score", { ascending: false })
-        .limit(6);
-
-      if (explicit && explicit.length >= 3) return explicit.map(mapRow);
-
-      const { data: hot }: any = await supabase
-        .from("cached_jobs")
-        .select("*")
-        .eq("is_active", true)
-        .eq("hot", true)
-        .order("hot_score", { ascending: false })
-        .limit(6);
-
-      if (hot && hot.length >= 3) return hot.map(mapRow);
-
-      const { data: top }: any = await supabase
-        .from("cached_jobs")
-        .select("*")
-        .eq("is_active", true)
-        .order("hot_score", { ascending: false })
-        .limit(6);
-
-      if (top && top.length >= 3) return top.map(mapRow);
-
-      return FEATURED_JOBS;
-    },
-    staleTime: 1000 * 60 * 10,
-    refetchOnWindowFocus: false,
-  });
-}
-
-export interface CategoryCount {
-  category: string;
-  count: number;
-}
-
-export function useCategoryCounts() {
-  return useQuery({
-    queryKey: ["category-counts"],
-    queryFn: async () => {
-      const { data, error }: any = await supabase.rpc("get_job_counts");
-      if (error || !data)
-        return {
-          "Kenya Jobs": 0,
-          "Gulf Jobs": 0,
-          "Cruise Jobs": 0,
-          "Remote Jobs": 0,
-          "Visa Sponsorship": 0,
-          "Healthcare Jobs": 0,
-          total: 0,
-        };
-      return {
-        "Kenya Jobs": data.kenya || 0,
-        "Gulf Jobs": data.gulf || 0,
-        "Cruise Jobs": data.cruise || 0,
-        "Remote Jobs": data.remote || 0,
-        "Visa Sponsorship": data.visa || 0,
-        "Healthcare Jobs": data.healthcare || 0,
-        total: data.total || 0,
-      } as Record<string, number>;
-    },
-    staleTime: 1000 * 60 * 5,
-    refetchOnWindowFocus: false,
-  });
-}
-
+// ─── Static fallback filter ────────────────────────────────────────────────
 function filterStatic(jobs: Job[], filters: JobFilters): Job[] {
   return jobs.filter((job) => {
     if (filters.search) {
@@ -239,13 +212,13 @@ function filterStatic(jobs: Job[], filters: JobFilters): Job[] {
       return false;
     if (filters.industry === "🔥 Hot Abroad" && !job.hot) return false;
     if (filters.market && filters.market !== "All Markets" && job.market !== filters.market) return false;
-    if (filters.company && !job.company.toLowerCase().includes(filters.company.toLowerCase())) return false;
     if (filters.hotOnly && !job.hot) return false;
     if (filters.visaOnly && !job.visa_sponsorship) return false;
     return true;
   });
 }
 
+// ─── Legacy hook ──────────────────────────────────────────────────────────
 export function useJobs() {
   return useQuery({
     queryKey: ["live-jobs"],
@@ -255,19 +228,13 @@ export function useJobs() {
         .select("*")
         .eq("is_active", true)
         .order("posted_at", { ascending: false })
-        .order("hot_score", { ascending: false })
         .limit(500);
 
-      if (!data || data.length === 0) {
-        return { jobs: JOBS, featured: FEATURED_JOBS };
-      }
+      if (!data || data.length === 0) return { jobs: JOBS, featured: FEATURED_JOBS };
 
       const liveJobs = data.map(mapRow);
-
       const featured = (() => {
-        const explicit = liveJobs.filter((j: any) => j.featured === true);
-        if (explicit.length >= 3) return explicit.slice(0, 6);
-        const hot = liveJobs.filter((j: any) => j.hot === true || (j.hot_score && j.hot_score >= 40));
+        const hot = liveJobs.filter((j: any) => j.hot === true);
         if (hot.length >= 3) return hot.slice(0, 6);
         return liveJobs.slice(0, 6);
       })();
