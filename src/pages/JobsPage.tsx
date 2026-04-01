@@ -1,4 +1,4 @@
-console.log("ENV URL:", import.meta.env.VITE_SUPABASE_URL);
+
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Globe, Sparkles, SearchX } from "lucide-react";
