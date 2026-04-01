@@ -210,64 +210,26 @@ export function useCategoryCounts() {
   return useQuery({
     queryKey: ["category-counts"],
     queryFn: async () => {
-      const counts: Record<string, number> = {};
+      // Run all count queries in parallel for speed
+      const [kenya, gulf, cruise, remote, visa, health, total] = await Promise.all([
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("market", "Kenya"),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).in("market", ["UAE", "Qatar", "Saudi Arabia", "Oman", "Bahrain", "Kuwait"]),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("category", "Cruise Jobs"),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("category", "Remote Jobs"),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("visa_sponsorship", true),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("industry", "Healthcare"),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true),
+      ]);
 
-      // Kenya
-      const { count: kenya } = await supabase
-        .from("cached_jobs")
-        .select("*", { count: "exact", head: true })
-        .eq("is_active", true)
-        .eq("market", "Kenya");
-      counts["Kenya Jobs"] = kenya || 0;
-
-      // Gulf
-      const { count: gulf } = await supabase
-        .from("cached_jobs")
-        .select("*", { count: "exact", head: true })
-        .eq("is_active", true)
-        .in("market", ["UAE", "Qatar", "Saudi Arabia", "Oman", "Bahrain", "Kuwait"]);
-      counts["Gulf Jobs"] = gulf || 0;
-
-      // Cruise
-      const { count: cruise } = await supabase
-        .from("cached_jobs")
-        .select("*", { count: "exact", head: true })
-        .eq("is_active", true)
-        .eq("category", "Cruise Jobs");
-      counts["Cruise Jobs"] = cruise || 0;
-
-      // Remote
-      const { count: remote } = await supabase
-        .from("cached_jobs")
-        .select("*", { count: "exact", head: true })
-        .eq("is_active", true)
-        .eq("category", "Remote Jobs");
-      counts["Remote Jobs"] = remote || 0;
-
-      // Visa
-      const { count: visa } = await supabase
-        .from("cached_jobs")
-        .select("*", { count: "exact", head: true })
-        .eq("is_active", true)
-        .eq("visa_sponsorship", true);
-      counts["Visa Sponsorship"] = visa || 0;
-
-      // Healthcare
-      const { count: health } = await supabase
-        .from("cached_jobs")
-        .select("*", { count: "exact", head: true })
-        .eq("is_active", true)
-        .eq("industry", "Healthcare");
-      counts["Healthcare Jobs"] = health || 0;
-
-      // Total
-      const { count: total } = await supabase
-        .from("cached_jobs")
-        .select("*", { count: "exact", head: true })
-        .eq("is_active", true);
-      counts["total"] = total || 0;
-
-      return counts;
+      return {
+        "Kenya Jobs": kenya.count || 0,
+        "Gulf Jobs": gulf.count || 0,
+        "Cruise Jobs": cruise.count || 0,
+        "Remote Jobs": remote.count || 0,
+        "Visa Sponsorship": visa.count || 0,
+        "Healthcare Jobs": health.count || 0,
+        "total": total.count || 0,
+      } as Record<string, number>;
     },
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
