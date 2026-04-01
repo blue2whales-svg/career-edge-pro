@@ -197,48 +197,25 @@ export function useCategoryCounts() {
   return useQuery({
     queryKey: ["category-counts"],
     queryFn: async () => {
-      const [kenya, gulf, cruise, remote, visa, health, total]: any[] = await Promise.all([
-        supabase
-          .from("cached_jobs")
-          .select("*", { count: "exact", head: true })
-          .eq("is_active", true)
-          .eq("market_tag", "kenya"),
-        supabase
-          .from("cached_jobs")
-          .select("*", { count: "exact", head: true })
-          .eq("is_active", true)
-          .in("market_tag", ["uae", "qatar", "saudi", "kuwait", "bahrain", "oman"]),
-        supabase
-          .from("cached_jobs")
-          .select("*", { count: "exact", head: true })
-          .eq("is_active", true)
-          .eq("market_tag", "cruise"),
-        supabase
-          .from("cached_jobs")
-          .select("*", { count: "exact", head: true })
-          .eq("is_active", true)
-          .eq("market_tag", "remote"),
-        supabase
-          .from("cached_jobs")
-          .select("*", { count: "exact", head: true })
-          .eq("is_active", true)
-          .eq("visa_sponsorship", true),
-        supabase
-          .from("cached_jobs")
-          .select("*", { count: "exact", head: true })
-          .eq("is_active", true)
-          .eq("industry", "Healthcare"),
-        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true),
-      ]);
-
+      const { data, error }: any = await supabase.rpc("get_job_counts");
+      if (error || !data)
+        return {
+          "Kenya Jobs": 0,
+          "Gulf Jobs": 0,
+          "Cruise Jobs": 0,
+          "Remote Jobs": 0,
+          "Visa Sponsorship": 0,
+          "Healthcare Jobs": 0,
+          total: 0,
+        };
       return {
-        "Kenya Jobs": kenya.count || 0,
-        "Gulf Jobs": gulf.count || 0,
-        "Cruise Jobs": cruise.count || 0,
-        "Remote Jobs": remote.count || 0,
-        "Visa Sponsorship": visa.count || 0,
-        "Healthcare Jobs": health.count || 0,
-        total: total.count || 0,
+        "Kenya Jobs": data.kenya || 0,
+        "Gulf Jobs": data.gulf || 0,
+        "Cruise Jobs": data.cruise || 0,
+        "Remote Jobs": data.remote || 0,
+        "Visa Sponsorship": data.visa || 0,
+        "Healthcare Jobs": data.healthcare || 0,
+        total: data.total || 0,
       } as Record<string, number>;
     },
     staleTime: 1000 * 60 * 5,
