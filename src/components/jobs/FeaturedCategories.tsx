@@ -65,6 +65,7 @@ const categories = [
 
 export function FeaturedCategories({ onFilterChange }: FeaturedCategoriesProps) {
   const { data: counts, isLoading } = useCategoryCounts();
+  console.log("COUNTS DEBUG:", counts);
   return (
     <section className="relative z-10 pb-6 px-4">
       <div className="container max-w-5xl mx-auto">
