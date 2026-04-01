@@ -151,7 +151,7 @@ export function useFeaturedJobs() {
   return useQuery({
     queryKey: ["featured-jobs"],
     queryFn: async () => {
-      const { data: explicit } = await supabase
+      const { data: explicit }: any = await supabase
         .from("cached_jobs")
         .select("*")
         .eq("is_active", true)
@@ -161,7 +161,7 @@ export function useFeaturedJobs() {
 
       if (explicit && explicit.length >= 3) return explicit.map(mapRow);
 
-      const { data: hot } = await supabase
+      const { data: hot }: any = await supabase
         .from("cached_jobs")
         .select("*")
         .eq("is_active", true)
@@ -171,7 +171,7 @@ export function useFeaturedJobs() {
 
       if (hot && hot.length >= 3) return hot.map(mapRow);
 
-      const { data: top } = await supabase
+      const { data: top }: any = await supabase
         .from("cached_jobs")
         .select("*")
         .eq("is_active", true)
@@ -196,7 +196,7 @@ export function useCategoryCounts() {
   return useQuery({
     queryKey: ["category-counts"],
     queryFn: async () => {
-      const [kenya, gulf, cruise, remote, visa, health, total] = await Promise.all([
+      const [kenya, gulf, cruise, remote, visa, health, total]: any[] = await Promise.all([
         supabase
           .from("cached_jobs")
           .select("*", { count: "exact", head: true })
@@ -272,7 +272,7 @@ export function useJobs() {
   return useQuery({
     queryKey: ["live-jobs"],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data }: any = await supabase
         .from("cached_jobs")
         .select("*")
         .eq("is_active", true)
@@ -287,16 +287,16 @@ export function useJobs() {
       const liveJobs = data.map(mapRow);
 
       const featured = (() => {
-        const explicit = liveJobs.filter((j) => j.featured === true);
+        const explicit = liveJobs.filter((j: any) => j.featured === true);
         if (explicit.length >= 3) return explicit.slice(0, 6);
-        const hot = liveJobs.filter((j) => j.hot === true || (j.hot_score && j.hot_score >= 40));
+        const hot = liveJobs.filter((j: any) => j.hot === true || (j.hot_score && j.hot_score >= 40));
         if (hot.length >= 3) return hot.slice(0, 6);
         return liveJobs.slice(0, 6);
       })();
 
       const combined = [...liveJobs, ...JOBS];
       const seen = new Set<string>();
-      const deduped = combined.filter((j) => {
+      const deduped = combined.filter((j: any) => {
         const key = `${j.title.toLowerCase()}|${j.company.toLowerCase()}`;
         if (seen.has(key)) return false;
         seen.add(key);
