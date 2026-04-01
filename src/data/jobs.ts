@@ -1124,6 +1124,12 @@ export const MARKETS = [
   "Bahrain",
   "Cruise",
   "Remote",
+  "UK",
+  "USA",
+  "Australia",
+  "Canada",
+  "Germany",
+  "Europe",
 ];
 
 export const JOB_CATEGORIES = [

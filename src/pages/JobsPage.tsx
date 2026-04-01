@@ -286,11 +286,16 @@ export default function JobsPage() {
             </div>
           ) : allJobs.length === 0 ? (
             <div className="text-center py-20">
-              <SearchX className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No jobs found</h3>
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <RefreshCw className="h-5 w-5 text-primary animate-spin" />
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
+                </span>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Checking live feeds...</h3>
               <p className="text-muted-foreground text-sm mb-6 max-w-md mx-auto">
-                No jobs match your current filters. Try adjusting your search, category, or market filters to discover
-                more opportunities.
+                We're scanning Adzuna, Jooble, and other sources for matching jobs. This usually takes a few seconds.
               </p>
               <div className="flex gap-3 justify-center flex-wrap">
                 <Button
