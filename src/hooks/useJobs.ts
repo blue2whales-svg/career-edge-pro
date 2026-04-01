@@ -2,6 +2,7 @@ import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { JOBS, FEATURED_JOBS, type Job } from "@/data/jobs";
 
+// ─── Source label mapping ───────────────────────────────────────────────────
 const SOURCE_LABELS: Record<string, string> = {
   jsearch: "JSearch",
   firecrawl: "Firecrawl",
@@ -10,6 +11,7 @@ const SOURCE_LABELS: Record<string, string> = {
   platform_seed: "CV Edge",
 };
 
+// ─── Time-ago helper ────────────────────────────────────────────────────────
 export function timeAgo(dateStr: string | null | undefined): string {
   if (!dateStr) return "Recently";
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -22,6 +24,7 @@ export function timeAgo(dateStr: string | null | undefined): string {
   return `${days} day${days > 1 ? "s" : ""} ago`;
 }
 
+// ─── Filters interface ─────────────────────────────────────────────────────
 export interface JobFilters {
   search?: string;
   category?: string;
@@ -34,6 +37,7 @@ export interface JobFilters {
 
 const PAGE_SIZE = 20;
 
+// ─── Map DB row to Job ─────────────────────────────────────────────────────
 function mapRow(row: any): Job {
   return {
     title: row.title,
@@ -66,6 +70,7 @@ function mapRow(row: any): Job {
   };
 }
 
+// ─── Build Supabase query with filters ──────────────────────────────────────
 function buildQuery(filters: JobFilters) {
   let query: any = supabase
     .from("cached_jobs")
@@ -103,6 +108,7 @@ function buildQuery(filters: JobFilters) {
   return query;
 }
 
+// ─── Paginated jobs hook ────────────────────────────────────────────────────
 export function useJobsPaginated(filters: JobFilters) {
   return useInfiniteQuery({
     queryKey: ["jobs-paginated", filters],
@@ -147,6 +153,7 @@ export function useJobsPaginated(filters: JobFilters) {
   });
 }
 
+// ─── Featured jobs hook ─────────────────────────────────────────────────────
 export function useFeaturedJobs() {
   return useQuery({
     queryKey: ["featured-jobs"],
@@ -187,6 +194,7 @@ export function useFeaturedJobs() {
   });
 }
 
+// ─── Category counts hook ───────────────────────────────────────────────────
 export interface CategoryCount {
   category: string;
   count: number;
@@ -245,6 +253,7 @@ export function useCategoryCounts() {
   });
 }
 
+// ─── Static fallback filter ────────────────────────────────────────────────
 function filterStatic(jobs: Job[], filters: JobFilters): Job[] {
   return jobs.filter((job) => {
     if (filters.search) {
@@ -268,6 +277,7 @@ function filterStatic(jobs: Job[], filters: JobFilters): Job[] {
   });
 }
 
+// ─── Legacy hook ─────────────────────────────────────────────────────────────
 export function useJobs() {
   return useQuery({
     queryKey: ["live-jobs"],
