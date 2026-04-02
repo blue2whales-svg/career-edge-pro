@@ -1050,8 +1050,59 @@ const THUMB_MAP: Record<string, JSX.Element> = {
 
 export default function CVBuilderPage() {
   const [selected, setSelected] = useState<string | null>(null);
+  const [unlocked, setUnlocked] = useState(false);
   const navigate = useNavigate();
 
+  // PAYWALL SCREEN
+  if (!unlocked) {
+    return (
+      <PageLayout>
+        <section className="relative z-10 min-h-[80vh] flex items-center justify-center px-4 py-16">
+          <div className="max-w-md w-full rounded-2xl border border-primary/30 bg-card shadow-glow p-8 text-center">
+            <div className="text-4xl mb-4">🔒</div>
+            <h1 className="text-2xl font-serif font-bold mb-2">Your CV is Almost Ready</h1>
+            <p className="text-muted-foreground text-sm mb-5">We've prepared your CV for verified job opportunities.</p>
+            <div className="rounded-xl bg-primary/5 border border-primary/20 px-5 py-4 mb-5 text-left">
+              <p className="text-sm font-semibold text-foreground mb-2">
+                🚀 Your profile matches <span className="text-primary">17+ active jobs</span>
+              </p>
+              <ul className="space-y-1.5 text-sm text-muted-foreground">
+                <li>✅ Premium CV templates</li>
+                <li>✅ Download &amp; apply instantly</li>
+                <li>✅ Full job access</li>
+              </ul>
+            </div>
+            <p className="text-xs text-amber-400 font-medium mb-5">
+              ⏳ Some jobs expire in 24–48 hours — ⚠️ Positions are limited
+            </p>
+            <div className="flex flex-col gap-3">
+              <Button
+                className="w-full bg-gradient-brand border-0 font-semibold shadow-glow gold-shimmer"
+                onClick={() => navigate("/order?method=mpesa")}
+              >
+                Pay with M-Pesa
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full border-primary/30 font-semibold"
+                onClick={() => navigate("/order?method=paypal")}
+              >
+                Pay with PayPal
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-4">
+              Already paid?{" "}
+              <button className="text-primary underline" onClick={() => setUnlocked(true)}>
+                Click here to unlock
+              </button>
+            </p>
+          </div>
+        </section>
+      </PageLayout>
+    );
+  }
+
+  // TEMPLATES (shown after unlock)
   return (
     <PageLayout>
       <section className="relative z-10 pt-12 pb-24 px-4">
@@ -1091,7 +1142,7 @@ export default function CVBuilderPage() {
                 onClick={() => navigate(`/cv-editor/${selected}`)}
                 className="bg-gradient-brand border-0 font-semibold px-10 h-12 shadow-glow gold-shimmer"
               >
-                Use {templates.find((t) => t.id === selected)?.label} Template →
+                Unlock Jobs Now — {templates.find((t) => t.id === selected)?.label} →
               </Button>
             </div>
           )}
