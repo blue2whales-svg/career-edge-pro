@@ -133,10 +133,13 @@ export function PricingSectionNew() {
                   }`}
                   variant={pkg.popular ? "default" : "outline"}
                 >
-                  Get Started
+                  Upgrade & Apply
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
+              <p className="text-xs text-amber-400 font-medium text-center mt-2">
+                ⏳ Some jobs expire in 24–48 hrs — ⚠️ Limited spots
+              </p>
             </motion.div>
           ))}
         </div>
