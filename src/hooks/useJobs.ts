@@ -156,7 +156,7 @@ export function useJobsPaginated(filters: JobFilters) {
         query = query.eq("hot", true);
       }
       if (filters.market && filters.market !== "All Markets") {
-        query = query.eq("market_tag", filters.market);
+        query = query.eq("market", filters.market);
       }
       if (filters.hotOnly) query = query.eq("hot", true);
       if (filters.visaOnly) query = query.eq("visa_sponsorship", true);
