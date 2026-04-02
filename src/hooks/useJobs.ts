@@ -67,7 +67,6 @@ function mapRow(row: any): Job {
   };
 }
 
-// ─── Single page data hook — 1 query for everything ────────────────────────
 export function useJobsPageData() {
   return useQuery({
     queryKey: ["jobs-page-data"],
@@ -101,12 +100,12 @@ export function useJobsPageData() {
       const featured = jobs.filter((j) => j.hot).slice(0, 6);
       return { counts, jobs, featured };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 }
 
-// ─── Category counts — now uses cached page data ───────────────────────────
 export function useCategoryCounts() {
   const { data, isLoading } = useJobsPageData();
   return {
@@ -115,18 +114,18 @@ export function useCategoryCounts() {
   };
 }
 
-// ─── Featured jobs — now uses cached page data ─────────────────────────────
 export function useFeaturedJobs() {
-  const { data, isLoading } = useJobsPageData();
+  const { data } = useJobsPageData();
   return useQuery({
     queryKey: ["featured-jobs"],
     queryFn: async () => data?.featured || FEATURED_JOBS,
     enabled: !!data,
-    staleTime: 1000 * 60 * 10,
+    staleTime: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 }
 
-// ─── Paginated jobs with filters ───────────────────────────────────────────
 export function useJobsPaginated(filters: JobFilters) {
   return useInfiniteQuery({
     queryKey: ["jobs-paginated", filters],
@@ -190,12 +189,12 @@ export function useJobsPaginated(filters: JobFilters) {
       if (nextPage * PAGE_SIZE >= lastPage.totalCount) return undefined;
       return nextPage;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 }
 
-// ─── Static fallback filter ────────────────────────────────────────────────
 function filterStatic(jobs: Job[], filters: JobFilters): Job[] {
   return jobs.filter((job) => {
     if (filters.search) {
@@ -218,7 +217,6 @@ function filterStatic(jobs: Job[], filters: JobFilters): Job[] {
   });
 }
 
-// ─── Legacy hook ──────────────────────────────────────────────────────────
 export function useJobs() {
   return useQuery({
     queryKey: ["live-jobs"],
@@ -252,6 +250,7 @@ export function useJobs() {
     },
     staleTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 }
 
