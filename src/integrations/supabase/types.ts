@@ -586,7 +586,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_jobs_page_data: { Args: never; Returns: Json }
     }
     Enums: {
       [_ in never]: never
