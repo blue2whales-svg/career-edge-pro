@@ -43,7 +43,7 @@ function mapRow(row: any): Job {
     salary: row.salary || "Competitive",
     type: row.type || "Full-time",
     industry: row.industry || "Operations",
-    market: row.market_tag || row.market || "kenya",
+    market: row.market || "Kenya",
     posted: row.posted_at
       ? `Posted ${timeAgo(row.posted_at)}`
       : row.discovered_at
@@ -156,7 +156,7 @@ export function useJobsPaginated(filters: JobFilters) {
         query = query.eq("hot", true);
       }
       if (filters.market && filters.market !== "All Markets") {
-        query = query.eq("market_tag", filters.market);
+        query = query.eq("market", filters.market);
       }
       if (filters.hotOnly) query = query.eq("hot", true);
       if (filters.visaOnly) query = query.eq("visa_sponsorship", true);
