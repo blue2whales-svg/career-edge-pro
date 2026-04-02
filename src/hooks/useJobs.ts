@@ -43,7 +43,7 @@ function mapRow(row: any): Job {
     salary: row.salary || "Competitive",
     type: row.type || "Full-time",
     industry: row.industry || "Operations",
-    market: row.market_tag || row.market || "kenya",
+    market: row.market || "Kenya",
     posted: row.posted_at
       ? `Posted ${timeAgo(row.posted_at)}`
       : row.discovered_at
