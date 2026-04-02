@@ -246,22 +246,45 @@ export default function ServiceQuestions({ selectedServices, values, onChange }:
       {/* LinkedIn questions */}
       {hasLinkedIn && (
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">LinkedIn Profile Revamp</h3>
-          <div className="rounded-lg border border-primary/10 bg-primary/5 p-3 mb-2">
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              🚀 <span className="font-semibold text-foreground">Our LinkedIn service is comprehensive</span> — we'll craft a keyword-rich headline, 
-              compelling About section, detailed Experience entries, and optimised Skills section. You'll also receive 
-              <span className="font-semibold text-foreground"> actionable tips</span> on profile photo, banner, networking, and content strategy.
-            </p>
+          <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">LinkedIn Profile Optimisation</h3>
+          <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 mb-2 space-y-2">
+            <p className="text-xs font-semibold text-foreground uppercase tracking-wide">✅ What you'll receive:</p>
+            <ul className="text-xs text-muted-foreground space-y-1 leading-relaxed">
+              <li>• <span className="text-foreground font-medium">Headline rewrite</span> — keyword-rich, recruiter search optimised</li>
+              <li>• <span className="text-foreground font-medium">Full About section</span> — compelling story format that converts profile views to messages</li>
+              <li>• <span className="text-foreground font-medium">Experience section</span> — every role rewritten with achievement-based bullets</li>
+              <li>• <span className="text-foreground font-medium">Skills section</span> — top 50 keywords mapped to your industry for maximum discoverability</li>
+              <li>• <span className="text-foreground font-medium">Education & Certifications</span> — fully optimised for search</li>
+              <li>• <span className="text-foreground font-medium">Profile strength checklist</span> — photo, banner, URL, featured section tips</li>
+              <li>• <span className="text-foreground font-medium">Networking & content strategy guide (PDF)</span> — how to grow from optimised profile</li>
+            </ul>
           </div>
+
+          {/* Section 1: Current Profile */}
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider pt-1">Current Profile</p>
           <Input
-            placeholder="Your current LinkedIn URL (if any)"
+            placeholder="Your current LinkedIn URL (e.g. linkedin.com/in/yourname)"
             value={values.linkedinUrl || ""}
             onChange={(e) => onChange("linkedinUrl", e.target.value)}
             className="h-12 bg-card border-border"
           />
+          <Textarea
+            placeholder="Paste your current LinkedIn headline (exactly as it appears now)..."
+            value={values.linkedinCurrentHeadline || ""}
+            onChange={(e) => onChange("linkedinCurrentHeadline", e.target.value)}
+            className="min-h-[60px] bg-card border-border"
+          />
+          <Textarea
+            placeholder="Paste your current About/Summary section (leave blank if you don't have one)..."
+            value={values.linkedinCurrentAbout || ""}
+            onChange={(e) => onChange("linkedinCurrentAbout", e.target.value)}
+            className="min-h-[80px] bg-card border-border"
+          />
+
+          {/* Section 2: Role & Industry */}
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider pt-1">Your Role & Industry</p>
           <Input
-            placeholder="Current job title & company"
+            placeholder="Current job title & company (e.g. Marketing Manager at Safaricom)"
             value={values.linkedinCurrentRole || ""}
             onChange={(e) => onChange("linkedinCurrentRole", e.target.value)}
             className="h-12 bg-card border-border"
@@ -272,23 +295,77 @@ export default function ServiceQuestions({ selectedServices, values, onChange }:
             onChange={(e) => onChange("linkedinIndustry", e.target.value)}
             className="h-12 bg-card border-border"
           />
-          <Textarea
-            placeholder="Top 3-5 career achievements you'd like highlighted on LinkedIn..."
-            value={values.linkedinAchievements || ""}
-            onChange={(e) => onChange("linkedinAchievements", e.target.value)}
-            className="min-h-[100px] bg-card border-border"
+          <Input
+            placeholder="Years of total experience (e.g. 5 years)"
+            value={values.linkedinYearsExp || ""}
+            onChange={(e) => onChange("linkedinYearsExp", e.target.value)}
+            className="h-12 bg-card border-border"
           />
+          <Input
+            placeholder="Career stage (e.g. Entry-level, Mid-career, Senior, Executive, Career-changer)"
+            value={values.linkedinCareerStage || ""}
+            onChange={(e) => onChange("linkedinCareerStage", e.target.value)}
+            className="h-12 bg-card border-border"
+          />
+
+          {/* Section 3: Goals & Target */}
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider pt-1">Goals & Target Audience</p>
           <Textarea
-            placeholder="What do you want LinkedIn to achieve? (e.g. attract recruiters in the Gulf, build thought leadership, transition to a new industry, get consulting clients)"
+            placeholder="What do you want LinkedIn to achieve? (e.g. attract Gulf recruiters, transition to product management, land consulting clients, build thought leadership)"
             value={values.linkedinGoals || ""}
             onChange={(e) => onChange("linkedinGoals", e.target.value)}
             className="min-h-[80px] bg-card border-border"
           />
           <Input
-            placeholder="Target audience (e.g. HR managers in Dubai, tech recruiters in London)"
+            placeholder="Target audience (e.g. HR managers in Dubai, tech recruiters in London, NGO hiring teams)"
             value={values.linkedinTargetAudience || ""}
             onChange={(e) => onChange("linkedinTargetAudience", e.target.value)}
             className="h-12 bg-card border-border"
+          />
+          <Input
+            placeholder="Type of opportunity you're seeking (e.g. Full-time, Remote, Consulting, Relocation)"
+            value={values.linkedinOpportunityType || ""}
+            onChange={(e) => onChange("linkedinOpportunityType", e.target.value)}
+            className="h-12 bg-card border-border"
+          />
+          <Input
+            placeholder="Are you open to work? (Yes / No / Open but not publicly)"
+            value={values.linkedinOpenToWork || ""}
+            onChange={(e) => onChange("linkedinOpenToWork", e.target.value)}
+            className="h-12 bg-card border-border"
+          />
+
+          {/* Section 4: Content for Writers */}
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider pt-1">Content for Your Writers</p>
+          <Textarea
+            placeholder="Top 3-5 career achievements to highlight (with numbers where possible — e.g. 'Grew sales by 40%', 'Managed a team of 12', 'Raised KES 5M in funding')..."
+            value={values.linkedinAchievements || ""}
+            onChange={(e) => onChange("linkedinAchievements", e.target.value)}
+            className="min-h-[110px] bg-card border-border"
+          />
+          <Textarea
+            placeholder="Top skills & tools you want ranked for (e.g. Python, Financial Modelling, Stakeholder Management, Salesforce) — list as many as you can..."
+            value={values.linkedinTopSkills || ""}
+            onChange={(e) => onChange("linkedinTopSkills", e.target.value)}
+            className="min-h-[80px] bg-card border-border"
+          />
+          <Textarea
+            placeholder="Certifications, courses, or awards (e.g. CPA, PMP, Google Analytics, Coursera AI cert)..."
+            value={values.linkedinCertifications || ""}
+            onChange={(e) => onChange("linkedinCertifications", e.target.value)}
+            className="min-h-[70px] bg-card border-border"
+          />
+          <Input
+            placeholder="Education (e.g. BSc Finance, University of Nairobi, 2019)"
+            value={values.linkedinEducation || ""}
+            onChange={(e) => onChange("linkedinEducation", e.target.value)}
+            className="h-12 bg-card border-border"
+          />
+          <Textarea
+            placeholder="Describe your personality & tone preference for the profile (e.g. professional & formal, warm & approachable, bold & confident, thought-leader style)..."
+            value={values.linkedinTone || ""}
+            onChange={(e) => onChange("linkedinTone", e.target.value)}
+            className="min-h-[70px] bg-card border-border"
           />
         </div>
       )}
