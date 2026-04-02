@@ -51,9 +51,16 @@ const ALL_SERVICES = [
   },
   {
     icon: Linkedin, title: "LinkedIn Optimisation", category: "Job Seeker",
-    desc: "Full profile rewrite: headline, about section, experience, and skills.",
-    features: ["SEO-optimised headline", "Compelling summary", "Achievement bullets", "Skills endorsement strategy"],
-    price: "From KES 2,490",
+    desc: "Complete profile overhaul — written by specialists to get you found, messaged, and hired.",
+    features: [
+      "Keyword-rich headline (recruiter search optimised)",
+      "Full About section rewrite (storytelling format)",
+      "Experience section — achievement-based bullet rewrites for every role",
+      "Skills section — top 50 industry keywords for maximum discoverability",
+      "Profile strength checklist (photo, banner, URL, featured section tips)",
+      "Networking & content strategy guide (PDF delivery)",
+    ],
+    price: "From KES 2,000",
   },
   {
     icon: BookOpen, title: "Personal Statement", category: "Academic",
