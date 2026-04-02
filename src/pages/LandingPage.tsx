@@ -1,35 +1,16 @@
-import { motion } from "framer-motion";
-import { LiveActivityFeed } from "@/components/LiveActivityFeed";
-import { ArrowRight, Flame } from "lucide-react";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { Flame } from "lucide-react";
 import { MobileNav } from "@/components/landing/MobileNav";
-import { TrustBar } from "@/components/landing/TrustBar";
-import { SpeedSection } from "@/components/landing/SpeedSection";
-import { ServicesSection } from "@/components/landing/ServicesSection";
-import { WhySection } from "@/components/landing/WhySection";
-import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
-import { ScholarshipPreview } from "@/components/landing/ScholarshipPreview";
-import { PricingPreview } from "@/components/landing/PricingPreview";
-import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
-import { StatsBar } from "@/components/landing/StatsBar";
-import { JobsTeaser } from "@/components/landing/JobsTeaser";
-import { AnimatedStatsBar } from "@/components/landing/AnimatedStatsBar";
-import { TrustTestimonials } from "@/components/landing/TrustTestimonials";
-import { GuaranteeBadge } from "@/components/landing/GuaranteeBadge";
-import BeforeAfterSection from "@/components/landing/BeforeAfterSection";
-import { CountriesServed } from "@/components/landing/CountriesServed";
-import { LiveActivityPopup } from "@/components/landing/LiveActivityPopup";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.1, duration: 0.5, ease: [0, 0, 0.2, 1] as const },
-  }),
-};
+import { HeroSection } from "@/components/landing/HeroSection";
+import { JobPreviewSection } from "@/components/landing/JobPreviewSection";
+import { UrgencyStrip } from "@/components/landing/UrgencyStrip";
+import { HowItWorksNew } from "@/components/landing/HowItWorksNew";
+import { SocialProofSection } from "@/components/landing/SocialProofSection";
+import { WhyUpgradeSection } from "@/components/landing/WhyUpgradeSection";
+import { PricingSectionNew } from "@/components/landing/PricingSectionNew";
+import { FinalCTASection } from "@/components/landing/FinalCTASection";
 
 export default function LandingPage() {
   return (
@@ -54,24 +35,11 @@ export default function LandingPage() {
             <span className="font-bold text-lg tracking-tight">CV Edge</span>
           </div>
           <div className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
-            <Link to="/services" className="hover:text-foreground transition-colors">
-              Services
-            </Link>
-            <Link to="/scholarships" className="hover:text-foreground transition-colors">
-              Scholarships
-            </Link>
-            <Link to="/pricing" className="hover:text-foreground transition-colors">
-              Pricing
-            </Link>
-            <Link to="/jobs" className="hover:text-foreground transition-colors">
-              Jobs
-            </Link>
-            <Link to="/how-it-works" className="hover:text-foreground transition-colors">
-              How It Works
-            </Link>
-            <Link to="/samples" className="hover:text-foreground transition-colors">
-              Templates
-            </Link>
+            <Link to="/services" className="hover:text-foreground transition-colors">Services</Link>
+            <Link to="/jobs" className="hover:text-foreground transition-colors">Jobs</Link>
+            <Link to="/pricing" className="hover:text-foreground transition-colors">Pricing</Link>
+            <Link to="/how-it-works" className="hover:text-foreground transition-colors">How It Works</Link>
+            <Link to="/samples" className="hover:text-foreground transition-colors">Templates</Link>
           </div>
           <div className="flex items-center gap-2">
             <Link to="/jobs?industry=%F0%9F%94%A5+Hot+Abroad">
@@ -86,9 +54,7 @@ export default function LandingPage() {
             </Link>
             <div className="hidden md:flex items-center gap-3">
               <Link to="/login">
-                <Button variant="ghost" size="sm">
-                  Log in
-                </Button>
+                <Button variant="ghost" size="sm">Log in</Button>
               </Link>
               <Link to="/order">
                 <Button size="sm" className="bg-gradient-brand border-0 font-semibold shadow-glow-sm gold-shimmer">
@@ -101,154 +67,32 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="relative z-10 pt-16 sm:pt-32 pb-16 sm:pb-20 px-4">
-        <div className="container max-w-5xl mx-auto">
-          <div className="max-w-3xl">
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={fadeUp}
-              custom={0}
-              className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 mb-8"
-            >
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse-soft" />
-              <span className="text-xs font-mono text-primary">Same-day delivery available</span>
-            </motion.div>
+      {/* 1. Hero */}
+      <HeroSection />
 
-            <motion.h1
-              initial="hidden"
-              animate="visible"
-              variants={fadeUp}
-              custom={1}
-              className="text-4xl sm:text-7xl lg:text-8xl font-serif font-bold leading-[1.08] mb-5"
-            >
-              The CV That Gets <span className="text-gradient">You Hired.</span>
-              <br />
-              <span className="text-2xl sm:text-4xl lg:text-5xl font-sans font-medium text-muted-foreground">
-                Today.
-              </span>
-            </motion.h1>
+      {/* Urgency Strip */}
+      <UrgencyStrip />
 
-            <motion.p
-              initial="hidden"
-              animate="visible"
-              variants={fadeUp}
-              custom={2}
-              className="text-base sm:text-xl text-muted-foreground max-w-2xl mb-8 leading-relaxed"
-            >
-              Professional CV writing, cover letters, scholarship essays and career documents — personally crafted by
-              our expert team and delivered same day. We're always online. Pay instantly via M-Pesa.
-            </motion.p>
+      {/* 2. Job Preview */}
+      <JobPreviewSection />
 
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={fadeUp}
-              custom={3}
-              className="flex flex-col sm:flex-row gap-3 mb-8"
-            >
-              <Link to="/order" className="w-full sm:w-auto">
-                <Button
-                  size="lg"
-                  className="w-full sm:w-auto bg-gradient-brand border-0 font-semibold h-13 px-8 shadow-glow gold-shimmer text-base"
-                >
-                  Order My CV Now
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link to="/services" className="w-full sm:w-auto">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full sm:w-auto border-primary/30 font-semibold h-13 px-8 hover:bg-primary/5"
-                >
-                  See All Services
-                </Button>
-              </Link>
-            </motion.div>
+      {/* 3. How It Works */}
+      <HowItWorksNew />
 
-            <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={4} className="max-w-lg">
-              <LiveActivityFeed />
-            </motion.div>
-          </div>
-        </div>
-      </section>
+      {/* Urgency Strip repeat */}
+      <UrgencyStrip />
 
-      {/* Animated Stats Bar */}
-      <AnimatedStatsBar />
+      {/* 4. Social Proof */}
+      <SocialProofSection />
 
-      {/* Trust Bar */}
-      <TrustBar />
+      {/* 5. Why Upgrade */}
+      <WhyUpgradeSection />
 
-      {/* Speed Promise */}
-      <SpeedSection />
+      {/* 6. Pricing */}
+      <PricingSectionNew />
 
-      {/* Services */}
-      <ServicesSection />
-
-      {/* Why CV Edge */}
-      <WhySection />
-
-      {/* Stats */}
-      <StatsBar />
-
-      {/* Jobs Teaser — Big marketing section */}
-      <JobsTeaser />
-
-      {/* Scholarship Preview */}
-      <ScholarshipPreview />
-
-      {/* How It Works */}
-      <HowItWorksSection />
-
-      {/* Pricing Preview */}
-      <PricingPreview />
-
-      {/* Before & After */}
-      <BeforeAfterSection />
-
-      {/* Testimonials */}
-      <TrustTestimonials />
-
-      {/* Countries Served */}
-      <CountriesServed />
-
-      {/* Final CTA */}
-      <section className="relative z-10 py-24 px-4">
-        <div className="container max-w-3xl mx-auto text-center">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            custom={0}
-            className="rounded-2xl border border-primary/20 bg-gradient-brand-subtle p-10 sm:p-14"
-          >
-            <h2 className="text-3xl sm:text-5xl font-serif font-bold mb-4">
-              Ready to Get the <span className="text-gradient">Edge</span>?
-            </h2>
-            <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
-              Join thousands of professionals worldwide who trust CV Edge with their career documents.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link to="/order">
-                <Button
-                  size="lg"
-                  className="bg-gradient-brand border-0 font-semibold h-13 px-10 shadow-glow gold-shimmer text-base"
-                >
-                  Order My Documents Now
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-            </div>
-            <p className="text-xs text-muted-foreground mt-4 font-mono">Pay via M-Pesa · Satisfaction guaranteed</p>
-            <div className="mt-4 flex justify-center">
-              <GuaranteeBadge />
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      {/* 7. Final CTA */}
+      <FinalCTASection />
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-border py-12 px-4">
@@ -265,59 +109,34 @@ export default function LandingPage() {
                 <span className="font-bold">CV Edge</span>
               </div>
               <p className="text-xs text-muted-foreground mb-2">Your Career's Secret Weapon</p>
-              <a
-                href="mailto:support@cvedge.live"
-                className="text-xs text-primary hover:text-primary/80 transition-colors"
-              >
+              <a href="mailto:support@cvedge.live" className="text-xs text-primary hover:text-primary/80 transition-colors">
                 support@cvedge.live
               </a>
             </div>
             <div>
               <h4 className="font-semibold text-sm mb-3">Services</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/services" className="block text-primary hover:text-primary/80 transition-colors">
-                  CV Writing
-                </Link>
-                <Link to="/services" className="block text-primary hover:text-primary/80 transition-colors">
-                  Cover Letters
-                </Link>
-                <Link to="/services" className="block text-primary hover:text-primary/80 transition-colors">
-                  LinkedIn Optimisation
-                </Link>
-                <Link to="/scholarships" className="block text-primary hover:text-primary/80 transition-colors">
-                  Scholarship Essays
-                </Link>
+                <Link to="/services" className="block text-primary hover:text-primary/80 transition-colors">CV Writing</Link>
+                <Link to="/services" className="block text-primary hover:text-primary/80 transition-colors">Cover Letters</Link>
+                <Link to="/services" className="block text-primary hover:text-primary/80 transition-colors">LinkedIn Optimisation</Link>
+                <Link to="/scholarships" className="block text-primary hover:text-primary/80 transition-colors">Scholarship Essays</Link>
               </div>
             </div>
             <div>
               <h4 className="font-semibold text-sm mb-3">Company</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/about" className="block text-primary hover:text-primary/80 transition-colors">
-                  About
-                </Link>
-                <Link to="/how-it-works" className="block text-primary hover:text-primary/80 transition-colors">
-                  How It Works
-                </Link>
-                <Link to="/pricing" className="block text-primary hover:text-primary/80 transition-colors">
-                  Pricing
-                </Link>
-                <Link to="/contact" className="block text-primary hover:text-primary/80 transition-colors">
-                  Contact Us
-                </Link>
+                <Link to="/about" className="block text-primary hover:text-primary/80 transition-colors">About</Link>
+                <Link to="/how-it-works" className="block text-primary hover:text-primary/80 transition-colors">How It Works</Link>
+                <Link to="/pricing" className="block text-primary hover:text-primary/80 transition-colors">Pricing</Link>
+                <Link to="/contact" className="block text-primary hover:text-primary/80 transition-colors">Contact Us</Link>
               </div>
             </div>
             <div>
               <h4 className="font-semibold text-sm mb-3">Account</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/login" className="block text-primary hover:text-primary/80 transition-colors">
-                  Log in
-                </Link>
-                <Link to="/signup" className="block text-primary hover:text-primary/80 transition-colors">
-                  Sign up
-                </Link>
-                <Link to="/order" className="block text-primary hover:text-primary/80 transition-colors">
-                  Order Now
-                </Link>
+                <Link to="/login" className="block text-primary hover:text-primary/80 transition-colors">Log in</Link>
+                <Link to="/signup" className="block text-primary hover:text-primary/80 transition-colors">Sign up</Link>
+                <Link to="/order" className="block text-primary hover:text-primary/80 transition-colors">Order Now</Link>
               </div>
             </div>
           </div>
@@ -332,9 +151,6 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
-
-      {/* Live Activity Popup */}
-      <LiveActivityPopup />
 
       {/* Fixed WhatsApp Button */}
       <a
