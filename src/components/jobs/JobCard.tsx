@@ -27,6 +27,8 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
   const isGulf = job.tag?.includes("Gulf");
   const isVisa = job.visa_sponsorship;
   const isHot = job.hot || (job.hot_score && job.hot_score >= 50);
+  const isAbroad = job.market && !["Kenya"].includes(job.market);
+  const hasHighPay = job.salary && !["Competitive", "Not specified"].includes(job.salary);
   const [matchModalOpen, setMatchModalOpen] = useState(false);
   const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [postingInfo, setPostingInfo] = useState<JobPostingInfo | null>(null);
@@ -110,7 +112,17 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
                   <h3 className="font-semibold text-base sm:text-lg">{job.title}</h3>
                   {isHot && (
                     <span className="inline-flex items-center gap-1 rounded-full bg-brand-red/10 border border-brand-red/20 px-2 py-0.5 text-[10px] font-mono text-brand-red font-semibold">
-                      <Flame className="h-3 w-3" /> HOT
+                      🔥 Urgent Hiring
+                    </span>
+                  )}
+                  {isAbroad && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10px] font-mono text-blue-400 font-semibold">
+                      🌍 Abroad
+                    </span>
+                  )}
+                  {hasHighPay && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-mono text-emerald-400 font-semibold">
+                      💰 High Paying
                     </span>
                   )}
                   {isVisa && (
@@ -145,21 +157,6 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
                     {job.industry}
                   </span>
                 </div>
-
-                {/* ── Real job signal badges ── */}
-                {badges.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {badges.map((b) => (
-                      <span
-                        key={b.label}
-                        style={{ color: b.color, borderColor: b.border, backgroundColor: b.bg }}
-                        className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full border"
-                      >
-                        {b.emoji} {b.label}
-                      </span>
-                    ))}
-                  </div>
-                )}
               </div>
             </div>
           </div>

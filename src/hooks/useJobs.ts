@@ -94,6 +94,11 @@ export function useJobsPageData() {
         "Remote Jobs": data.counts?.remote || 0,
         "Visa Sponsorship": data.counts?.visa || 0,
         "Healthcare Jobs": data.counts?.healthcare || 0,
+        "UK Jobs": data.counts?.uk || 0,
+        "Australia Jobs": data.counts?.australia || 0,
+        "Germany Jobs": data.counts?.germany || 0,
+        "Canada Jobs": data.counts?.canada || 0,
+        "Europe Jobs": data.counts?.europe || 0,
         total: data.counts?.total || 0,
       };
       const jobs = (data.jobs || []).map(mapRow);
@@ -126,6 +131,12 @@ export function useFeaturedJobs() {
   });
 }
 
+// Market filter mapping: handle category-based filters that map to multiple markets
+const CATEGORY_TO_MARKETS: Record<string, string[]> = {
+  "Gulf Jobs": ["UAE", "Qatar", "Saudi Arabia", "Kuwait", "Bahrain", "Oman"],
+  "Europe Jobs": ["Europe", "Germany", "UK"],
+};
+
 export function useJobsPaginated(filters: JobFilters) {
   return useInfiniteQuery({
     queryKey: ["jobs-paginated", filters],
@@ -143,10 +154,16 @@ export function useJobsPaginated(filters: JobFilters) {
 
       if (filters.search) {
         const s = `%${filters.search}%`;
-        query = query.or(`title.ilike.${s},company.ilike.${s}`);
+        query = query.or(`title.ilike.${s},company.ilike.${s},location.ilike.${s}`);
       }
       if (filters.category && filters.category !== "All Categories") {
-        query = query.eq("category", filters.category);
+        // Check if this category maps to multiple markets
+        const marketGroup = CATEGORY_TO_MARKETS[filters.category];
+        if (marketGroup) {
+          query = query.in("market", marketGroup);
+        } else {
+          query = query.eq("category", filters.category);
+        }
       }
       if (filters.industry && filters.industry !== "All" && filters.industry !== "🔥 Hot Abroad") {
         query = query.eq("industry", filters.industry);

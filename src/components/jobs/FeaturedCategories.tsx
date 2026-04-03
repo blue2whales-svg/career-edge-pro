@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,28 +22,28 @@ const categories = [
     icon: "🇰🇪",
     title: "Kenya Jobs",
     subtitle: "Fresh local opportunities in Nairobi, Mombasa & more",
-    filter: { market: "kenya" },
+    filter: { market: "Kenya" },
     countKey: "Kenya Jobs",
   },
   {
     icon: "🏨",
     title: "Dubai & Gulf Jobs",
     subtitle: "Hotels, construction, healthcare & more — tax-free",
-    filter: { market: "uae" },
+    filter: { market: "UAE" },
     countKey: "Gulf Jobs",
   },
   {
     icon: "🚢",
     title: "Cruise Ship Jobs",
     subtitle: "Global cruise lines actively recruiting",
-    filter: { market: "cruise" },
+    filter: { market: "Cruise" },
     countKey: "Cruise Jobs",
   },
   {
     icon: "🌍",
     title: "Remote Jobs",
     subtitle: "Work globally from anywhere in Africa",
-    filter: { market: "remote" },
+    filter: { market: "Remote" },
     countKey: "Remote Jobs",
   },
   {
@@ -65,7 +64,6 @@ const categories = [
 
 export function FeaturedCategories({ onFilterChange }: FeaturedCategoriesProps) {
   const { data: counts, isLoading } = useCategoryCounts();
-  console.log("COUNTS DEBUG:", counts);
   return (
     <section className="relative z-10 pb-6 px-4">
       <div className="container max-w-5xl mx-auto">
