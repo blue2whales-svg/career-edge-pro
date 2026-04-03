@@ -100,10 +100,12 @@ export type Database = {
           id: string
           industry: string | null
           is_active: boolean
+          is_premium: boolean
           location: string
           market: string | null
           posted: string | null
           posted_at: string | null
+          requirements: string[] | null
           salary: string | null
           source: string
           source_label: string | null
@@ -129,10 +131,12 @@ export type Database = {
           id?: string
           industry?: string | null
           is_active?: boolean
+          is_premium?: boolean
           location: string
           market?: string | null
           posted?: string | null
           posted_at?: string | null
+          requirements?: string[] | null
           salary?: string | null
           source?: string
           source_label?: string | null
@@ -158,10 +162,12 @@ export type Database = {
           id?: string
           industry?: string | null
           is_active?: boolean
+          is_premium?: boolean
           location?: string
           market?: string | null
           posted?: string | null
           posted_at?: string | null
+          requirements?: string[] | null
           salary?: string | null
           source?: string
           source_label?: string | null
@@ -455,6 +461,7 @@ export type Database = {
           created_at: string
           display_name: string | null
           email: string | null
+          free_unlocks_used: number
           id: string
           phone: string | null
           updated_at: string
@@ -464,6 +471,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          free_unlocks_used?: number
           id?: string
           phone?: string | null
           updated_at?: string
@@ -473,6 +481,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          free_unlocks_used?: number
           id?: string
           phone?: string | null
           updated_at?: string
