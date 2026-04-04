@@ -1,18 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { Flame, LogOut, User, Gift } from "lucide-react";
 import { MobileNav } from "@/components/landing/MobileNav";
 import { HeroSection } from "@/components/landing/HeroSection";
-import { JobPreviewSection } from "@/components/landing/JobPreviewSection";
-import { UrgencyStrip } from "@/components/landing/UrgencyStrip";
-import { HowItWorksNew } from "@/components/landing/HowItWorksNew";
-import { SocialProofSection } from "@/components/landing/SocialProofSection";
-import { WhyUpgradeSection } from "@/components/landing/WhyUpgradeSection";
-import { PricingSectionNew } from "@/components/landing/PricingSectionNew";
-import { FinalCTASection } from "@/components/landing/FinalCTASection";
 import { supabase } from "@/integrations/supabase/client";
+
+const JobPreviewSection = lazy(() => import("@/components/landing/JobPreviewSection").then(m => ({ default: m.JobPreviewSection })));
+const UrgencyStrip = lazy(() => import("@/components/landing/UrgencyStrip").then(m => ({ default: m.UrgencyStrip })));
+const HowItWorksNew = lazy(() => import("@/components/landing/HowItWorksNew").then(m => ({ default: m.HowItWorksNew })));
+const SocialProofSection = lazy(() => import("@/components/landing/SocialProofSection").then(m => ({ default: m.SocialProofSection })));
+const WhyUpgradeSection = lazy(() => import("@/components/landing/WhyUpgradeSection").then(m => ({ default: m.WhyUpgradeSection })));
+const PricingSectionNew = lazy(() => import("@/components/landing/PricingSectionNew").then(m => ({ default: m.PricingSectionNew })));
+const FinalCTASection = lazy(() => import("@/components/landing/FinalCTASection").then(m => ({ default: m.FinalCTASection })));
 
 export default function LandingPage() {
   const [user, setUser] = useState<any>(null);
@@ -33,11 +34,11 @@ export default function LandingPage() {
   };
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background effects */}
-      <div className="fixed inset-0 bg-grid opacity-20 pointer-events-none" />
-      <div className="fixed top-[-300px] left-[-200px] w-[700px] h-[700px] rounded-full bg-primary/5 blur-[150px] animate-orb pointer-events-none" />
+      {/* Background effects — hidden on mobile for speed */}
+      <div className="fixed inset-0 bg-grid opacity-20 pointer-events-none hidden md:block" />
+      <div className="fixed top-[-300px] left-[-200px] w-[700px] h-[700px] rounded-full bg-primary/5 blur-[150px] animate-orb pointer-events-none hidden md:block" />
       <div
-        className="fixed bottom-[-200px] right-[-200px] w-[500px] h-[500px] rounded-full bg-secondary/3 blur-[120px] animate-orb pointer-events-none"
+        className="fixed bottom-[-200px] right-[-200px] w-[500px] h-[500px] rounded-full bg-secondary/3 blur-[120px] animate-orb pointer-events-none hidden md:block"
         style={{ animationDelay: "-4s" }}
       />
 
@@ -108,29 +109,17 @@ export default function LandingPage() {
       {/* 1. Hero */}
       <HeroSection />
 
-      {/* Urgency Strip */}
-      <UrgencyStrip />
-
-      {/* 2. Job Preview */}
-      <JobPreviewSection />
-
-      {/* 3. How It Works */}
-      <HowItWorksNew />
-
-      {/* Urgency Strip repeat */}
-      <UrgencyStrip />
-
-      {/* 4. Social Proof */}
-      <SocialProofSection />
-
-      {/* 5. Why Upgrade */}
-      <WhyUpgradeSection />
-
-      {/* 6. Pricing */}
-      <PricingSectionNew />
-
-      {/* 7. Final CTA */}
-      <FinalCTASection />
+      {/* Below-fold: lazy loaded */}
+      <Suspense fallback={null}>
+        <UrgencyStrip />
+        <JobPreviewSection />
+        <HowItWorksNew />
+        <UrgencyStrip />
+        <SocialProofSection />
+        <WhyUpgradeSection />
+        <PricingSectionNew />
+        <FinalCTASection />
+      </Suspense>
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-border py-12 px-4">

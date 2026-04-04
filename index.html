@@ -64,7 +64,15 @@
     <noscript><img height="1" width="1" style="display:none"
       src="https://www.facebook.com/tr?id=257212767118333&ev=PageView&noscript=1"
     /></noscript>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Instant loading shell — removed by React on mount -->
+      <div id="splash" style="min-height:100vh;background:#0a0c14;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui,sans-serif">
+        <div style="width:48px;height:48px;border:3px solid #c6a44a;border-top-color:transparent;border-radius:50%;animation:sp .7s linear infinite"></div>
+        <span style="color:#c6a44a;font-size:18px;font-weight:700;margin-top:16px;letter-spacing:1px">CV Edge</span>
+        <span style="color:#6b7280;font-size:12px;margin-top:6px">Loading your career tools…</span>
+      </div>
+      <style>#splash{transition:opacity .2s}@keyframes sp{to{transform:rotate(360deg)}}</style>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
 
     <!-- Facebook Pixel — deferred -->
@@ -80,11 +88,7 @@
         'https://connect.facebook.net/en_US/fbevents.js');
         fbq('init', '257212767118333');
         fbq('track', 'PageView');
-      }, 2000);
-    </script>
-
-    <!-- Google Analytics — deferred -->
-    <script defer>
+      }, 4000);
       setTimeout(function() {
         var s = document.createElement('script');
         s.src = 'https://www.googletagmanager.com/gtag/js?id=G-9NRGTZPQGK';
@@ -96,10 +100,10 @@
           gtag('js', new Date());
           gtag('config', 'G-9NRGTZPQGK');
         };
-      }, 2000);
+      }, 4000);
     </script>
 
-    <!-- Zapier Chatbot — deferred 3s -->
+    <!-- Zapier Chatbot — deferred 8s -->
     <script defer>
       setTimeout(function() {
         var s = document.createElement('script');
@@ -112,7 +116,7 @@
           el.setAttribute('chatbot-id', 'cmn7v2j7b0013tgdtvs9wg03q');
           document.body.appendChild(el);
         };
-      }, 5000);
+      }, 8000);
     </script>
   </body>
 </html>
