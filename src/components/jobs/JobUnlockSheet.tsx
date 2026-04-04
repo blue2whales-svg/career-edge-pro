@@ -102,7 +102,7 @@ export default function JobUnlockSheet({
         plan: "pro",
         status: "active",
         billing_cycle: "monthly",
-        amount: 500,
+        amount: 1000,
         currency: "KES",
       });
     }
