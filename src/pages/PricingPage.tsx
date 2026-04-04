@@ -89,7 +89,7 @@ const PLANS = [
     popular: false,
     accent: "border-primary/30",
     cta: "Post a Job",
-    ctaLink: "/post-job",
+    ctaLink: "/recruiters",
   },
 ];
 
