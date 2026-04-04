@@ -52,9 +52,11 @@ export function JobLockOverlay({
         </div>
 
         {/* Social proof */}
-        <p className={`text-xs font-semibold ${isInternational ? "text-blue-400" : "text-amber-400"}`}>
-          🔥 {socialProofCount} people unlocked this job today
-        </p>
+        {socialProofCount != null && socialProofCount > 0 && (
+          <p className={`text-[11px] ${isInternational ? "text-blue-400/70" : "text-amber-400/70"}`}>
+            {socialProofCount} people viewed this recently
+          </p>
+        )}
 
         {/* Primary CTA — single unlock via payment */}
         <Button
