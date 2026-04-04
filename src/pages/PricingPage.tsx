@@ -1,302 +1,250 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { trackViewContent } from "@/hooks/useFbPixel";
-import { ArrowRight, Check, Zap, Star, Crown, Globe } from "lucide-react";
+import { ArrowRight, Check, Zap, Star, Crown, Globe, Shield, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
-import { GuaranteeBadge } from "@/components/landing/GuaranteeBadge";
 import { SecurityBadges } from "@/components/landing/SecurityBadges";
 import { useIsInternational } from "@/hooks/useIsInternational";
 import { useUsdRate } from "@/hooks/useUsdRate";
 import { PayPalButton } from "@/components/PayPalButton";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
+    opacity: 1, y: 0,
     transition: { delay: i * 0.08, duration: 0.5, ease: [0, 0, 0.2, 1] as const },
   }),
 };
 
-const PACKAGE_PRICES: Record<string, number> = {
-  starter: 1490,
-  professional: 1490,
-  international: 2000,
-  executive: 5490,
-};
-
-const PACKAGES = [
+const PLANS = [
   {
-    name: "Starter",
-    price: "KES 1,490",
-    period: "one-time",
-    desc: "Perfect for entry-level professionals needing a strong foundation.",
+    name: "Free",
+    price: "KSh 0",
+    priceNum: 0,
+    period: "forever",
+    desc: "Get started with basic access to Kenya jobs.",
     icon: Zap,
     features: [
-      "Professional CV Writing",
-      "ATS-Optimised Format",
-      "Same-Day Delivery",
-      "1 Revision Round",
-      "PDF + Word Format",
+      "Unverified Kenya jobs (unlimited)",
+      "1 basic CV with watermark",
+      "Job search and filters",
+      "Basic application tracker",
+    ],
+    notIncluded: [
+      "Verified employer jobs",
+      "International & visa jobs",
+      "Unlimited CV downloads",
+      "Job alerts",
     ],
     popular: false,
     accent: "border-border",
-    package: "starter",
+    cta: "Current Plan",
+    ctaLink: "/signup",
   },
   {
-    name: "ATS Optimized CV",
-    price: "KES 1,490",
-    period: "one-time",
-    desc: "Our most popular package — everything you need to land interviews.",
+    name: "Pro",
+    price: "KSh 500",
+    priceNum: 500,
+    period: "/month",
+    desc: "Unlock everything. Land your dream job faster.",
     icon: Star,
     features: [
-      "CV + Cover Letter + LinkedIn",
-      "ATS-Optimised Format",
-      "Delivered in < 3 Hours",
-      "2 Revision Rounds",
-      "Dedicated Specialist",
-      "PDF + Word + LinkedIn Txt",
-      "ATS Score Report",
+      "Everything in Free",
+      "All verified Kenya employer jobs",
+      "All international + visa jobs",
+      "Unlimited CV downloads (no watermark)",
+      "CV completeness score",
+      "Application tracker",
+      "Job alerts (email + WhatsApp)",
+      "Priority support",
     ],
+    notIncluded: [],
     popular: true,
-    accent: "border-primary shadow-glow",
-    package: "professional",
+    accent: "border-amber-500/50 shadow-[0_0_20px_rgba(245,166,35,0.15)]",
+    cta: "Start Pro — M-Pesa or PayPal",
+    ctaLink: "/order?service=pro_subscription",
   },
   {
-    name: "International CV ✈️",
-    price: "KES 2,000",
-    oldPrice: "KES 4,490",
-    period: "one-time",
-    desc: "ATS CV + Cover Letter + LinkedIn Revamp — tailored for Gulf, UK & EU markets.",
-    icon: Globe,
-    features: [
-      "ATS CV (International Standard)",
-      "2-Page Professional Format",
-      "Tailored Cover Letter",
-      "Comprehensive LinkedIn Revamp",
-      "Quality English & Recruiter Tips",
-      "Keyword-Optimised for Portals",
-      "Delivered in < 3 Hours",
-    ],
-    popular: false,
-    accent: "border-primary/50",
-    package: "international",
-  },
-  {
-    name: "Executive",
-    price: "KES 5,490",
-    period: "one-time",
-    desc: "For senior leaders who need documents that command boardroom attention.",
+    name: "Employer",
+    price: "From KSh 0",
+    priceNum: 0,
+    period: "",
+    desc: "Post jobs and find top candidates.",
     icon: Crown,
     features: [
-      "Executive CV + Cover Letter",
-      "LinkedIn + Executive Bio",
-      "Senior Editor Review",
-      "Delivered in < 6 Hours",
-      "Unlimited Revisions",
-      "All Formats Included",
-      "Priority Support",
-      "Strategy Consultation",
+      "Post Basic job (free, 7 days)",
+      "Post Featured job (KSh 2,000, 14 days)",
+      "Post Pro job (KSh 5,000, 30 days)",
+      "Candidate search access",
+      "Application management",
+      "Company branding",
     ],
+    notIncluded: [],
     popular: false,
-    accent: "border-gold-dark/30",
-    package: "executive",
+    accent: "border-primary/30",
+    cta: "Post a Job",
+    ctaLink: "/post-job",
   },
 ];
 
-const ADD_ONS = [
-  { name: "Additional Cover Letter", price: "KES 1,000" },
-  { name: "CV Review & Critique", price: "KES 1,000" },
-  { name: "Reference Letter Draft", price: "KES 1,500" },
-  { name: "Personal Statement", price: "KES 3,500" },
-  { name: "Scholarship Essay (per essay)", price: "KES 2,500" },
-  { name: "Rush Delivery (< 1 hour)", price: "+KES 1,500" },
+const FAQS = [
+  { q: "Can I cancel anytime?", a: "Yes, cancel anytime from your dashboard. No lock-in period." },
+  { q: "What payment methods do you accept?", a: "M-Pesa (Paybill 4561075) and PayPal. Both are instant and secure." },
+  { q: "Do single unlocks expire?", a: "No. Once you unlock a job, it stays unlocked forever in your account." },
+  { q: "Is my data safe?", a: "Yes. All data is secured with row-level security policies and encrypted connections." },
+  { q: "What's included in Pro?", a: "Unlimited job unlocks, watermark-free CV downloads, application tracking, job alerts, and priority support." },
 ];
 
 export default function PricingPage() {
-  useEffect(() => {
-    trackViewContent("Pricing", "Pricing");
-  }, []);
-
+  useEffect(() => { trackViewContent("Pricing", "Pricing"); }, []);
   const { isInternational } = useIsInternational();
   const usdRate = useUsdRate();
 
   return (
     <PageLayout>
       {/* Hero */}
-      <section className="relative z-10 pt-16 sm:pt-24 pb-16 px-4">
+      <section className="relative z-10 pt-16 sm:pt-24 pb-12 px-4">
         <div className="container max-w-5xl mx-auto text-center">
-          <motion.h1
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            custom={0}
-            className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold leading-[1.08] mb-5"
-          >
-            Transparent pricing. <span className="text-gradient">No surprises.</span>
+          <motion.h1 initial="hidden" animate="visible" variants={fadeUp} custom={0}
+            className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold leading-[1.08] mb-5">
+            Simple pricing. <span className="text-gradient">Maximum value.</span>
           </motion.h1>
-          <motion.p
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            custom={1}
-            className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-4"
-          >
-            One-time payment. No subscriptions. Pay for what you need, when you need it.
+          <motion.p initial="hidden" animate="visible" variants={fadeUp} custom={1}
+            className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
+            Start free. Upgrade when you're ready to unlock premium opportunities.
           </motion.p>
-          <motion.p
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            custom={2}
-            className="text-sm font-mono text-primary"
-          >
-            {isInternational ? "🔒 Secure PayPal checkout — pay in USD" : "📱 Pay instantly via M-Pesa"}
-          </motion.p>
-          <div className="mt-6 flex justify-center">
+          <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={2} className="flex justify-center">
             <SecurityBadges />
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Packages */}
-      <section className="relative z-10 pb-24 px-4">
+      {/* Plans */}
+      <section className="relative z-10 pb-20 px-4">
         <div className="container max-w-5xl mx-auto">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {PACKAGES.map((pkg, i) => (
-              <motion.div
-                key={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                custom={i}
-                className={`rounded-2xl border p-6 sm:p-8 flex flex-col relative ${
-                  pkg.popular ? "bg-gradient-brand-subtle " + pkg.accent : "bg-card " + pkg.accent
-                }`}
-              >
-                {pkg.popular && (
+          <div className="grid md:grid-cols-3 gap-5">
+            {PLANS.map((plan, i) => (
+              <motion.div key={plan.name} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={i}
+                className={`rounded-2xl border p-6 sm:p-8 flex flex-col relative bg-card ${plan.accent}`}>
+                {plan.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="text-xs font-mono text-primary-foreground bg-gradient-brand px-4 py-1 rounded-full font-semibold shadow-glow-sm">
-                      Most Popular
+                    <span className="text-xs font-mono text-black bg-gradient-to-r from-amber-400 to-amber-500 px-4 py-1 rounded-full font-bold shadow-lg">
+                      ⭐ Most Popular
                     </span>
                   </div>
                 )}
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                  <pkg.icon className="h-5 w-5 text-primary" />
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-4 ${
+                  plan.popular ? "bg-amber-500/10" : "bg-primary/10"
+                }`}>
+                  <plan.icon className={`h-5 w-5 ${plan.popular ? "text-amber-400" : "text-primary"}`} />
                 </div>
-                <h3 className="text-xl font-bold mb-1">{pkg.name}</h3>
+                <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
                 <div className="flex items-baseline gap-1 mb-1">
-                  <span className="text-2xl lg:text-3xl font-bold text-primary">
-                    {isInternational ? `$${(PACKAGE_PRICES[pkg.package] * usdRate).toFixed(2)}` : pkg.price}
+                  <span className={`text-3xl font-bold ${plan.popular ? "text-amber-400" : "text-primary"}`}>
+                    {isInternational && plan.priceNum > 0
+                      ? `$${(plan.priceNum * usdRate).toFixed(0)}`
+                      : plan.price}
                   </span>
-                  <span className="text-xs text-muted-foreground">/{pkg.period}</span>
+                  <span className="text-xs text-muted-foreground">{plan.period}</span>
                 </div>
-                {isInternational && <p className="text-xs text-muted-foreground mb-1">{pkg.price} KES</p>}
-                {"oldPrice" in pkg && pkg.oldPrice && (
-                  <p className="text-xs text-muted-foreground line-through mb-2">{pkg.oldPrice}</p>
-                )}
-                <p className="text-sm text-muted-foreground mb-6">{pkg.desc}</p>
-                <ul className="space-y-2.5 mb-8 flex-1">
-                  {pkg.features.map((f, j) => (
+                <p className="text-sm text-muted-foreground mb-6">{plan.desc}</p>
+
+                <ul className="space-y-2.5 mb-6 flex-1">
+                  {plan.features.map((f, j) => (
                     <li key={j} className="flex items-start gap-2 text-sm">
-                      <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                      <Check className={`h-4 w-4 shrink-0 mt-0.5 ${plan.popular ? "text-amber-400" : "text-primary"}`} />
                       <span className="text-muted-foreground">{f}</span>
+                    </li>
+                  ))}
+                  {plan.notIncluded.map((f, j) => (
+                    <li key={`no-${j}`} className="flex items-start gap-2 text-sm opacity-40">
+                      <span className="h-4 w-4 shrink-0 mt-0.5 text-center">✕</span>
+                      <span className="text-muted-foreground line-through">{f}</span>
                     </li>
                   ))}
                 </ul>
 
-                {isInternational ? (
-                  <PayPalButton amountUsd={(PACKAGE_PRICES[pkg.package] * usdRate).toFixed(2)} description={pkg.name} />
-                ) : (
-                  <Link to={`/order?package=${pkg.package}`}>
-                    <Button
-                      className={`w-full h-12 font-semibold ${
-                        pkg.popular ? "bg-gradient-brand border-0 shadow-glow gold-shimmer" : "border-primary/30"
-                      }`}
-                      variant={pkg.popular ? "default" : "outline"}
-                    >
-                      Choose {pkg.name} <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                )}
+                <Link to={plan.ctaLink}>
+                  <Button className={`w-full h-12 font-semibold ${
+                    plan.popular
+                      ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black border-0 shadow-[0_0_20px_rgba(245,166,35,0.3)] gold-shimmer"
+                      : "border-primary/30"
+                  }`} variant={plan.popular ? "default" : "outline"}>
+                    {plan.cta} <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Add-ons */}
+      {/* Single Unlock Pricing */}
+      <section className="relative z-10 pb-16 px-4">
+        <div className="container max-w-3xl mx-auto">
+          <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
+            className="text-2xl sm:text-3xl font-serif font-bold text-center mb-8">
+            Or unlock <span className="text-gradient">individual jobs</span>
+          </motion.h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
+              className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-6 text-center">
+              <p className="text-amber-400 font-semibold mb-1">⭐ Verified Kenya Job</p>
+              <p className="text-3xl font-bold text-amber-400 mb-2">KSh 99</p>
+              <p className="text-xs text-muted-foreground">Unlock company name, full description & apply link</p>
+            </motion.div>
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}
+              className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-6 text-center">
+              <p className="text-blue-400 font-semibold mb-1">🌍 International Job</p>
+              <p className="text-3xl font-bold text-blue-400 mb-2">KSh 199</p>
+              <p className="text-xs text-muted-foreground">Unlock company, description, visa details & apply link</p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
       <section className="relative z-10 pb-24 px-4">
         <div className="container max-w-3xl mx-auto">
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            custom={0}
-            className="text-2xl sm:text-4xl font-serif font-bold text-center mb-10"
-          >
-            Add-on <span className="text-gradient">services</span>
+          <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
+            className="text-2xl sm:text-3xl font-serif font-bold text-center mb-8">
+            Frequently <span className="text-gradient">asked questions</span>
           </motion.h2>
-          <div className="rounded-2xl border border-border bg-card overflow-hidden">
-            {ADD_ONS.map((addon, i) => (
-              <motion.div
-                key={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                custom={i}
-                className={`flex items-center justify-between p-5 ${i < ADD_ONS.length - 1 ? "border-b border-border/50" : ""}`}
-              >
-                <span className="font-medium text-sm sm:text-base">{addon.name}</span>
-                <div className="flex items-center gap-4">
-                  <span className="text-primary font-bold">{addon.price}</span>
-                  <Link to="/order">
-                    <Button size="sm" variant="outline" className="border-primary/30 text-xs">
-                      Add
-                    </Button>
-                  </Link>
-                </div>
-              </motion.div>
+          <Accordion type="single" collapsible className="space-y-3">
+            {FAQS.map((faq, i) => (
+              <AccordionItem key={i} value={`faq-${i}`} className="border border-border rounded-xl px-5 bg-card">
+                <AccordionTrigger className="text-sm font-semibold hover:no-underline">
+                  {faq.q}
+                </AccordionTrigger>
+                <AccordionContent className="text-sm text-muted-foreground">
+                  {faq.a}
+                </AccordionContent>
+              </AccordionItem>
             ))}
-          </div>
+          </Accordion>
         </div>
       </section>
 
       {/* Guarantee */}
-      <section className="relative z-10 py-20 px-4">
+      <section className="relative z-10 py-16 px-4">
         <div className="container max-w-3xl mx-auto text-center">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            custom={0}
-            className="rounded-2xl border border-primary/20 bg-gradient-brand-subtle p-10 sm:p-14"
-          >
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
+            className="rounded-2xl border border-primary/20 bg-gradient-brand-subtle p-10 sm:p-14">
             <h2 className="text-3xl sm:text-4xl font-serif font-bold mb-4">
               100% <span className="text-gradient">Satisfaction Guarantee</span>
             </h2>
             <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-              Not happy with the result? We'll revise it until you are. If you're still not satisfied, we'll refund you.
-              No questions asked.
+              Not happy? We'll revise until you are, or refund you. No questions asked.
             </p>
             <Link to="/order">
-              <Button
-                size="lg"
-                className="w-full sm:w-auto bg-gradient-brand border-0 font-semibold h-13 px-10 shadow-glow gold-shimmer"
-              >
+              <Button size="lg" className="w-full sm:w-auto bg-gradient-brand border-0 font-semibold h-13 px-10 shadow-glow gold-shimmer">
                 Get Started Now <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <div className="mt-6 flex justify-center">
-              <GuaranteeBadge />
-            </div>
-            <SecurityBadges className="mt-4" />
+            <SecurityBadges className="mt-6" />
           </motion.div>
         </div>
       </section>

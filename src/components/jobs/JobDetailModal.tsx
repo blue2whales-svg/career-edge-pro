@@ -1,14 +1,12 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { MapPin, DollarSign, Clock, Building2, Ship, Flame, ArrowRight, CheckCircle2, Briefcase, GraduationCap, Star, Globe2, Lock, Zap } from "lucide-react";
+import { MapPin, DollarSign, Clock, Building2, Ship, Flame, ArrowRight, CheckCircle2, Briefcase, GraduationCap, Star, Globe2, Lock, Zap, Bookmark } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Job } from "../../data/jobs";
-import { useJobAccess } from "../../hooks/useJobAccess";
+import { useJobAccess, type JobTier } from "../../hooks/useJobAccess";
 import { JobLockOverlay } from "./JobLockOverlay";
 import { useMemo } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-
-/* ---------- helpers ---------- */
 
 function generateRequirements(job: Job): string[] {
   const reqs: string[] = [];
@@ -24,11 +22,8 @@ function generateRequirements(job: Job): string[] {
   else if (industry === "Engineering" || industry === "Oil & Gas") { reqs.push("Bachelor's degree in relevant engineering discipline","3–5 years industry experience minimum","Professional certifications (PMP, HSE, etc.) an advantage","Willingness to work in field / remote locations"); }
   else if (industry === "Technology") { reqs.push("Degree in Computer Science, IT, or related field","3+ years hands-on experience with modern tech stack","Strong problem-solving and analytical skills"); }
   else if (industry === "Finance") { reqs.push("Degree in Finance, Accounting, or Business Administration","CPA, ACCA, or CFA qualification preferred","3+ years experience in a financial role"); }
-  else if (industry === "Domestic & Housekeeping") { reqs.push("Previous experience in housekeeping, cleaning, or childcare","Good communication skills","Valid passport with 12+ months validity","Willingness to live-in (for residential positions)","Certificate of good conduct / police clearance"); }
   else { reqs.push("Relevant degree or professional qualification","2+ years experience in a similar role","Strong communication and organizational skills"); }
   if (type === "Full-time" && tag?.includes("Gulf")) reqs.push("Willingness to relocate to the Gulf region");
-  if (title.toLowerCase().includes("fresh graduate") || title.toLowerCase().includes("welcome"))
-    return reqs.filter(r => !r.toLowerCase().includes("years experience")).concat(["Fresh graduates are encouraged to apply"]);
   return reqs;
 }
 
@@ -51,21 +46,16 @@ function isPostedMoreThanOneDay(posted: string | undefined): boolean {
   if (!posted) return false;
   const match = posted.match(/(\d+)\s*(day|hour|minute)/i);
   if (!match) return false;
-  const num = parseInt(match[1]);
-  const unit = match[2].toLowerCase();
-  if (unit.startsWith("day") && num >= 1) return true;
-  return false;
+  return match[2].toLowerCase().startsWith("day") && parseInt(match[1]) >= 1;
 }
 
 function getDaysRemaining(posted: string | undefined): number {
   if (!posted) return 3;
   const match = posted.match(/(\d+)\s*day/i);
   if (!match) return 3;
-  const daysPosted = parseInt(match[1]);
-  return Math.max(1, 4 - daysPosted);
+  return Math.max(1, 4 - parseInt(match[1]));
 }
 
-/* ---------- tag pill component ---------- */
 function TagPill({ label, color, icon }: { label: string; color: "red" | "blue" | "green" | "amber" | "purple"; icon?: React.ReactNode }) {
   const colors = {
     red: "border-red-500/30 text-red-400 bg-red-500/10 shadow-[0_0_8px_rgba(239,68,68,0.2)]",
@@ -75,22 +65,21 @@ function TagPill({ label, color, icon }: { label: string; color: "red" | "blue" 
     purple: "border-purple-500/30 text-purple-400 bg-purple-500/10 shadow-[0_0_8px_rgba(168,85,247,0.2)]",
   };
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-mono font-semibold transition-shadow ${colors[color]}`}>
+    <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-mono font-semibold ${colors[color]}`}>
       {icon}{label}
     </span>
   );
 }
 
-/* ---------- main modal ---------- */
-
 export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; open: boolean; onOpenChange: (open: boolean) => void }) {
-  const { isUnlocked, canUseFreeUnlock, useFreeUnlock, isJobFreeUnlocked, freeUnlocksRemaining } = useJobAccess();
-
-  const sessionSocialProof = useMemo(() => Math.floor(Math.random() * 51) + 30, []);
+  const { isUnlocked, canUseFreeUnlock, useFreeUnlock, isJobFreeUnlocked, freeUnlocksRemaining, sessionSocialProof, getJobTier } = useJobAccess();
 
   if (!job) return null;
+
   const jobKey = `${job.title}|${job.company}`;
-  const hasAccess = isUnlocked || isJobFreeUnlocked(jobKey);
+  const tier: JobTier = getJobTier(job.company, job.market, job.visa_sponsorship);
+  const isFreeJob = tier === "free";
+  const hasAccess = isFreeJob || isUnlocked || isJobFreeUnlocked(jobKey);
 
   const isCruise = job.tag?.includes("Cruise");
   const isGulf = job.tag?.includes("Gulf");
@@ -99,12 +88,18 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
   const sourceDisplay = job.source_label || job.source || "";
   const showUrgency = isPostedMoreThanOneDay(job.posted);
   const daysRemaining = getDaysRemaining(job.posted);
+  const isInternational = tier === "international";
+  const unlockPrice = isInternational ? "KSh 199" : "KSh 99";
 
   const handleFreeUnlock = () => { useFreeUnlock(jobKey); };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg p-0 gap-0 border border-amber-500/10 bg-background/95 backdrop-blur-xl shadow-[0_0_40px_rgba(201,168,76,0.08)] sm:max-h-[85vh] sm:rounded-xl max-sm:!max-w-[100vw] max-sm:!h-[100dvh] max-sm:!max-h-[100dvh] max-sm:!rounded-none max-sm:!top-0 max-sm:!left-0 max-sm:!translate-x-0 max-sm:!translate-y-0 max-sm:!w-screen max-sm:data-[state=open]:animate-in max-sm:data-[state=open]:slide-in-from-bottom-full max-sm:data-[state=closed]:animate-out max-sm:data-[state=closed]:slide-out-to-bottom-full overflow-hidden">
+      <DialogContent className={`max-w-lg p-0 gap-0 bg-background/95 backdrop-blur-xl sm:max-h-[85vh] sm:rounded-xl max-sm:!max-w-[100vw] max-sm:!h-[100dvh] max-sm:!max-h-[100dvh] max-sm:!rounded-none max-sm:!top-0 max-sm:!left-0 max-sm:!translate-x-0 max-sm:!translate-y-0 max-sm:!w-screen max-sm:data-[state=open]:animate-in max-sm:data-[state=open]:slide-in-from-bottom-full max-sm:data-[state=closed]:animate-out max-sm:data-[state=closed]:slide-out-to-bottom-full overflow-hidden border ${
+        isInternational
+          ? "border-blue-500/20 shadow-[0_0_40px_rgba(74,144,226,0.08)]"
+          : "border-amber-500/10 shadow-[0_0_40px_rgba(201,168,76,0.08)]"
+      }`}>
         <div className="overflow-y-auto max-sm:h-[calc(100dvh-72px)] sm:max-h-[85vh]">
           {/* Urgency strip */}
           {showUrgency && (
@@ -114,16 +109,17 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
           )}
 
           {/* Header */}
-          <div className={`p-5 pb-4 border-b border-border/50 ${isCruise ? "bg-blue-500/5" : isGulf ? "bg-amber-500/5" : "bg-gradient-to-br from-amber-500/5 to-transparent"}`}>
+          <div className={`p-5 pb-4 border-b border-border/50 ${
+            isCruise ? "bg-blue-500/5" : isInternational ? "bg-blue-500/5" : "bg-gradient-to-br from-amber-500/5 to-transparent"
+          }`}>
             <DialogHeader>
               <div className="flex items-start gap-3">
-                {/* Icon / Shimmer logo placeholder */}
                 <div className="relative w-14 h-14 rounded-xl flex items-center justify-center shrink-0 overflow-hidden">
                   {!hasAccess ? (
                     <>
-                      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-amber-700/10 blur-sm" />
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-400/15 to-transparent animate-pulse" style={{ animationDuration: "2s" }} />
-                      <Lock className="h-6 w-6 text-amber-400 relative z-10" />
+                      <div className={`absolute inset-0 ${isInternational ? "bg-gradient-to-br from-blue-500/20 to-blue-700/10" : "bg-gradient-to-br from-amber-500/20 to-amber-700/10"} blur-sm`} />
+                      <div className={`absolute inset-0 bg-gradient-to-r from-transparent ${isInternational ? "via-blue-400/15" : "via-amber-400/15"} to-transparent animate-pulse`} style={{ animationDuration: "2s" }} />
+                      <Lock className={`h-6 w-6 relative z-10 ${isInternational ? "text-blue-400" : "text-amber-400"}`} />
                     </>
                   ) : (
                     <div className={`w-full h-full flex items-center justify-center ${isCruise ? "bg-blue-500/10" : "bg-primary/10"}`}>
@@ -140,34 +136,24 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <p className="text-sm mt-1 flex items-center gap-1.5 cursor-help">
-                            <span className="inline-flex items-center gap-1 text-amber-400 font-semibold">
-                              <Lock className="h-3 w-3" /> Confidential Employer
+                            <span className={`inline-flex items-center gap-1 font-semibold ${isInternational ? "text-blue-400" : "text-amber-400"}`}>
+                              {isInternational ? "🌍" : "⭐"} <Lock className="h-3 w-3" /> Confidential {isInternational ? "International" : "Verified"} Employer
                             </span>
-                            <span className="text-muted-foreground">— Unlock to View</span>
                           </p>
                         </TooltipTrigger>
                         <TooltipContent side="bottom" className="max-w-[260px] text-xs">
-                          Top employers post confidentially to avoid candidate floods. Unlock to apply directly.
+                          Top employers post confidentially to control application volume. Unlock to apply directly.
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   )}
-                  {/* Tags */}
                   <div className="flex items-center gap-1.5 mt-2.5 flex-wrap">
-                    {job.tag && (
-                      <TagPill
-                        label={job.tag}
-                        color={isCruise ? "blue" : isGulf ? "amber" : "purple"}
-                        icon={isCruise ? <Ship className="h-3 w-3" /> : <Flame className="h-3 w-3" />}
-                      />
-                    )}
-                    {sourceDisplay && (
-                      <TagPill label={sourceDisplay} color="blue" icon={<Globe2 className="h-2.5 w-2.5" />} />
-                    )}
+                    {tier === "verified" && <TagPill label="Verified Employer" color="amber" icon={<Star className="h-3 w-3" />} />}
+                    {tier === "international" && <TagPill label="International" color="blue" icon={<span>🌍</span>} />}
                     {job.hot && <TagPill label="Urgent Hiring" color="red" icon={<span>🔥</span>} />}
-                    {(job.market && !["Kenya"].includes(job.market)) && <TagPill label="Abroad Opportunity" color="blue" icon={<span>🌍</span>} />}
                     {job.salary && !["Competitive", "Not specified"].includes(job.salary) && <TagPill label="High Paying" color="green" icon={<span>💰</span>} />}
-                    {(job as any).visa_sponsorship && <TagPill label="Visa Sponsor" color="amber" icon={<span>✈️</span>} />}
+                    {job.visa_sponsorship && <TagPill label="Visa Sponsor" color="amber" icon={<span>✈️</span>} />}
+                    {sourceDisplay && <TagPill label={sourceDisplay} color="blue" icon={<Globe2 className="h-2.5 w-2.5" />} />}
                   </div>
                 </div>
               </div>
@@ -190,7 +176,7 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
               ))}
             </div>
 
-            {/* Description preview */}
+            {/* Description */}
             {job.description && (
               <div>
                 <h4 className="flex items-center gap-2 text-sm font-semibold mb-2">
@@ -199,13 +185,16 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   {hasAccess ? job.description : getDescriptionPreview(job.description)}
                 </p>
+                {!hasAccess && job.description.length > 150 && (
+                  <div className="h-8 bg-gradient-to-t from-background to-transparent -mt-8 relative z-10" />
+                )}
               </div>
             )}
 
             {/* Requirements */}
             <div>
               <h4 className="flex items-center gap-2 text-sm font-semibold mb-3">
-                <GraduationCap className="h-4 w-4 text-primary" /> Qualifications & Requirements
+                <GraduationCap className="h-4 w-4 text-primary" /> Requirements
               </h4>
               <ul className="space-y-2">
                 {(hasAccess ? requirements : requirements.slice(0, 2)).map((req, i) => (
@@ -217,7 +206,7 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
                 {!hasAccess && requirements.length > 2 && (
                   <li className="flex items-start gap-2 text-sm text-muted-foreground/50 italic">
                     <Lock className="h-4 w-4 shrink-0 mt-0.5 text-amber-500/50" />
-                    +{requirements.length - 2} more requirements — unlock to see all
+                    +{requirements.length - 2} more — unlock to see all
                   </li>
                 )}
               </ul>
@@ -230,13 +219,12 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
               {hasAccess && (
                 <div>
                   <h4 className="flex items-center gap-2 text-sm font-semibold mb-3">
-                    <Star className="h-4 w-4 text-amber-400" /> Why This Role
+                    <Star className="h-4 w-4 text-amber-400" /> Benefits
                   </h4>
                   <ul className="space-y-2">
-                    {benefits.map((benefit, i) => (
+                    {benefits.map((b, i) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <Star className="h-3.5 w-3.5 text-amber-400 shrink-0 mt-0.5" />
-                        {benefit}
+                        <Star className="h-3.5 w-3.5 text-amber-400 shrink-0 mt-0.5" /> {b}
                       </li>
                     ))}
                   </ul>
@@ -245,29 +233,35 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
 
               {hasAccess && (
                 <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 space-y-2.5">
-                  <p className="text-xs font-semibold text-primary">📋 How to Apply for This Role</p>
+                  <p className="text-xs font-semibold text-primary">📋 How to Apply</p>
                   <ol className="space-y-1.5 text-[11px] text-muted-foreground list-decimal list-inside">
                     <li>Order a <strong className="text-foreground">CV + Cover Letter</strong> tailored for this role</li>
-                    <li>Complete M-Pesa payment — documents ready in 24hrs</li>
-                    <li>Download your docs in <strong className="text-foreground">PDF or MS Word</strong></li>
-                    <li>The <strong className="text-foreground">direct application link</strong> unlocks after payment</li>
+                    <li>Pay via M-Pesa — documents ready in 24hrs</li>
+                    <li>Download in <strong className="text-foreground">PDF or Word</strong></li>
+                    <li>The <strong className="text-foreground">direct apply link</strong> unlocks after payment</li>
                   </ol>
                 </div>
               )}
 
+              {/* Apply CTA for unlocked */}
+              {hasAccess && job.apply_url && (
+                <a href={job.apply_url} target="_blank" rel="noopener noreferrer">
+                  <Button size="lg" className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold h-12 border-0">
+                    Apply Now <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </a>
+              )}
+
               <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-amber-500/5 to-transparent p-5 text-center space-y-3">
-                <p className="text-sm font-semibold">🔥 Employers are hiring <span className="text-primary">NOW</span></p>
-                <p className="text-xs text-muted-foreground">Get a professionally crafted CV tailored to this exact role.</p>
+                <p className="text-sm font-semibold">🔥 Employers hiring <span className="text-primary">NOW</span></p>
                 <Link to={`/order?service=cv&job_title=${encodeURIComponent(job.title)}&company=${encodeURIComponent(job.company)}`} onClick={() => onOpenChange(false)}>
                   <Button size="lg" className="w-full bg-gradient-brand border-0 font-semibold h-12 shadow-glow gold-shimmer mt-2">
-                    Get My CV for This Role <ArrowRight className="ml-2 h-5 w-5" />
+                    Get CV for This Role <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <p className="text-[10px] text-muted-foreground">PDF & Word download · Direct apply link · ATS-optimised</p>
               </div>
             </div>
 
-            {/* Lock overlay */}
             {!hasAccess && (
               <JobLockOverlay
                 jobTitle={job.title}
@@ -276,6 +270,7 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
                 freeUnlocksRemaining={freeUnlocksRemaining}
                 onFreeUnlock={handleFreeUnlock}
                 socialProofCount={sessionSocialProof}
+                tier={tier}
               />
             )}
           </div>
@@ -285,8 +280,15 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
         {!hasAccess && (
           <div className="sm:hidden sticky bottom-0 left-0 right-0 z-30 border-t border-amber-500/20 bg-background/95 backdrop-blur-xl p-3">
             <Link to={`/order?service=cv&job_title=${encodeURIComponent(job.title)}&company=${encodeURIComponent(job.company)}`} onClick={() => onOpenChange(false)}>
-              <Button className="w-full h-12 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-sm shadow-[0_0_20px_rgba(245,158,11,0.3)] animate-pulse" style={{ animationDuration: "3s" }}>
-                <Lock className="h-4 w-4 mr-2" /> UNLOCK & APPLY <ArrowRight className="ml-2 h-4 w-4" />
+              <Button
+                className={`w-full h-12 font-bold text-sm animate-pulse border-0 ${
+                  isInternational
+                    ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-[0_0_20px_rgba(74,144,226,0.3)]"
+                    : "bg-gradient-to-r from-amber-500 to-amber-600 text-black shadow-[0_0_20px_rgba(245,158,11,0.3)]"
+                }`}
+                style={{ animationDuration: "3s" }}
+              >
+                <Lock className="h-4 w-4 mr-2" /> UNLOCK — {unlockPrice} <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
           </div>
