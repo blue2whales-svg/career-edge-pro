@@ -89,39 +89,55 @@ export default function JobUnlockSheet({
     if (pollRef.current) clearInterval(pollRef.current);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
-    const { data: userData } = await supabase.auth.getUser();
-    const userId = userData?.user?.id;
-    if (!userId) { toast.error("Not logged in"); return; }
-
-    if (mode === "single" && jobId) {
-      await supabase.from("job_unlocks").insert({
-        user_id: userId,
-        job_id: jobId,
-        unlock_type: "single",
-        amount_paid: amount,
-        currency: "KES",
-      });
-    }
-
-    if (mode === "pro") {
-      await supabase.from("subscriptions").insert({
-        user_id: userId,
-        plan: "pro",
-        status: "active",
-        billing_cycle: "monthly",
-        amount: 1000,
-        currency: "KES",
-      });
-    }
-
+    // Save phone locally regardless of auth
     if (savePhone && phone) {
       localStorage.setItem("cvedge_mpesa_phone", phone);
-      await supabase.from("profiles").update({ phone: formatPhone(phone) }).eq("user_id", userId);
     }
 
-    setStep("success");
-    toast.success(mode === "pro" ? "🎉 Welcome to Pro! All jobs unlocked" : "✅ Job unlocked! Apply now");
-    onUnlocked();
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData?.user?.id;
+
+    if (userId) {
+      // User is logged in — record unlock in DB
+      if (mode === "single" && jobId) {
+        await supabase.from("job_unlocks").insert({
+          user_id: userId,
+          job_id: jobId,
+          unlock_type: "single",
+          amount_paid: amount,
+          currency: "KES",
+        });
+      }
+
+      if (mode === "pro") {
+        await supabase.from("subscriptions").insert({
+          user_id: userId,
+          plan: "pro",
+          status: "active",
+          billing_cycle: "monthly",
+          amount: 1000,
+          currency: "KES",
+        });
+      }
+
+      if (savePhone && phone) {
+        await supabase.from("profiles").update({ phone: formatPhone(phone) }).eq("user_id", userId);
+      }
+    } else {
+      // Not logged in — store pending unlock in localStorage so it can be saved after signup
+      const pendingUnlock = {
+        mode,
+        jobId,
+        amount,
+        phone: formatPhone(phone),
+        timestamp: Date.now(),
+      };
+      localStorage.setItem("cvedge_pending_unlock", JSON.stringify(pendingUnlock));
+    }
+
+    setStep(userId ? "success" : "signup_prompt");
+    toast.success(mode === "pro" ? "🎉 Payment received! Save your access" : "✅ Payment received!");
+    if (userId) onUnlocked();
   }, [mode, jobId, amount, phone, savePhone, onUnlocked]);
 
   const startPolling = useCallback((crId: string) => {

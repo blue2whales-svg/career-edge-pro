@@ -132,20 +132,10 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
   const handleFreeUnlock = () => { useFreeUnlock(jobKey); };
 
   const handleUnlockClick = () => {
-    if (!userId) {
-      navigate("/login?redirect=/jobs");
-      onOpenChange(false);
-      return;
-    }
     setPaymentMode("single");
   };
 
   const handleProClick = () => {
-    if (!userId) {
-      navigate("/login?redirect=/jobs");
-      onOpenChange(false);
-      return;
-    }
     setPaymentMode("pro");
   };
 
