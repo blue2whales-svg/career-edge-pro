@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, ArrowRight, Flame, X, User, FileText, CheckCircle, BarChart } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, ArrowRight, Flame, X, User, FileText, CheckCircle, BarChart, LogOut, Gift, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
+import { supabase } from "@/integrations/supabase/client";
 
 const NAV_LINKS = [
   { label: "Jobs", to: "/jobs" },
