@@ -2245,7 +2245,7 @@ export default function CVEditorPage() {
                     if (hasPaid) {
                       handleDownload();
                     } else {
-                      setShowMpesa(true);
+                      setShowPaywall(true);
                     }
                   }}
                   disabled={isGenerating}
