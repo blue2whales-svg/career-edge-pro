@@ -261,6 +261,12 @@ export default function PricingPage() {
           </motion.div>
         </div>
       </section>
+      <JobUnlockSheet
+        open={showProSheet}
+        onClose={() => setShowProSheet(false)}
+        mode="pro"
+        onUnlocked={() => { setShowProSheet(false); navigate("/jobs"); }}
+      />
     </PageLayout>
   );
 }
