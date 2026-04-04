@@ -2040,6 +2040,16 @@ export default function CVEditorPage() {
         defaultPackage="starter"
         onPaymentSuccess={onPaymentSuccess}
       />
+      <FreemiumPaywall
+        open={showPaywall}
+        onClose={() => setShowPaywall(false)}
+        templatePrice={templatePrice.label}
+        defaultPackage="starter"
+        onPaymentSuccess={() => {
+          setShowPaywall(false);
+          onPaymentSuccess();
+        }}
+      />
       <div className="cv-editor-root">
         <div className="container max-w-7xl mx-auto">
           <div className="flex items-center gap-4 mb-6">
