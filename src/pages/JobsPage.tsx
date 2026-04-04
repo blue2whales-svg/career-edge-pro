@@ -267,7 +267,17 @@ export default function JobsPage() {
                   }`}
                 >{cat === "All Categories" ? "🔖 All" : cat}</button>
               ))}
-            </div>
+          </div>
+
+          {/* Clear All Filters */}
+          {(selectedMarket !== "All Markets" || selectedIndustry !== "All" || selectedCategory !== "All Categories") && (
+            <button
+              onClick={() => { setSelectedMarket("All Markets"); setSelectedIndustry("All"); setSelectedCategory("All Categories"); setActiveTab("all"); }}
+              className="mt-2 px-3 py-1 rounded-full text-[11px] font-medium text-brand-red border border-brand-red/30 bg-brand-red/5 hover:bg-brand-red/10 transition-all active:scale-95"
+            >
+              ✕ Clear All Filters
+            </button>
+          )}
           </div>
         </div>
       </section>
