@@ -57,7 +57,7 @@ const SERVICES = [
     id: "executive-cv",
     icon: Award,
     label: "Executive CV",
-    price: 2500,
+    price: 2490,
     desc: "C-suite ready — highlights leadership, P&L, and board experience",
   },
   {
