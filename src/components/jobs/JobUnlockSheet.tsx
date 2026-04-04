@@ -383,6 +383,39 @@ export default function JobUnlockSheet({
                   <PayPalButton amountUsd={amountUsd} description={label} onSuccess={handlePayPalSuccess} />
                 </div>
               )}
+
+              {step === "signup_prompt" && (
+                <div className="py-4 space-y-5 text-center">
+                  <div className="w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center mx-auto">
+                    <CheckCircle className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="font-serif font-bold text-xl">✅ Payment Received!</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Create a free account to save your unlock and access the job details anytime.
+                  </p>
+                  <Button
+                    onClick={() => {
+                      handleClose();
+                      onUnlocked();
+                      window.location.href = "/signup?redirect=/jobs";
+                    }}
+                    className={`w-full h-12 font-bold border-0 bg-gradient-to-r ${gradientClass}`}
+                  >
+                    Sign Up & View Job →
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      handleClose();
+                      onUnlocked();
+                      window.location.href = "/login?redirect=/jobs";
+                    }}
+                    className="w-full text-sm text-muted-foreground"
+                  >
+                    Already have an account? Log in
+                  </Button>
+                </div>
+              )}
             </div>
           </motion.div>
         </motion.div>
