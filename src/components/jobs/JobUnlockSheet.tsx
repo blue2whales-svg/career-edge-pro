@@ -414,9 +414,8 @@ export default function JobUnlockSheet({
                 </div>
               )}
             </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </div>
+        </div>
+    </div>
   );
 }
