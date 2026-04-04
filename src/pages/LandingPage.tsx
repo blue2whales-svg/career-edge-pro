@@ -110,16 +110,18 @@ export default function LandingPage() {
       <HeroSection />
 
       {/* Below-fold: lazy loaded */}
-      <Suspense fallback={null}>
-        <UrgencyStrip />
-        <JobPreviewSection />
-        <HowItWorksNew />
-        <UrgencyStrip />
-        <SocialProofSection />
-        <WhyUpgradeSection />
-        <PricingSectionNew />
-        <FinalCTASection />
-      </Suspense>
+      <div style={{ minHeight: '200vh' }}>
+        <Suspense fallback={null}>
+          <UrgencyStrip />
+          <JobPreviewSection />
+          <HowItWorksNew />
+          <UrgencyStrip />
+          <SocialProofSection />
+          <WhyUpgradeSection />
+          <PricingSectionNew />
+          <FinalCTASection />
+        </Suspense>
+      </div>
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-border py-12 px-4">
