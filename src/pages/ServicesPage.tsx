@@ -47,7 +47,7 @@ const ALL_SERVICES = [
     icon: Pen, title: "Cover Letter Writing", category: "Job Seeker",
     desc: "Tailored per application with a compelling hook that gets read.",
     features: ["Company-specific research", "Role alignment", "Compelling narrative", "Action-oriented close"],
-    price: "From KES 1,000",
+    price: "From KES 900",
   },
   {
     icon: Linkedin, title: "LinkedIn Optimisation", category: "Job Seeker",
