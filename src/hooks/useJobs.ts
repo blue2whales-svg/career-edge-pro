@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { INDUSTRIES, MARKETS, JOB_CATEGORIES, type Job } from "@/data/jobs";
+import { type Job } from "@/data/jobs";
 
 const SOURCE_LABELS: Record<string, string> = {
   jsearch: "JSearch",
@@ -34,6 +34,14 @@ export interface JobFilters {
 }
 
 const PAGE_SIZE = 20;
+
+async function feedQuery(body: Record<string, any>): Promise<any> {
+  const { data, error } = await supabase.functions.invoke("fetch-jobs", {
+    body: { mode: "feed", ...body },
+  });
+  if (error) throw error;
+  return data || {};
+}
 
 function mapRow(row: any): Job {
   return {
@@ -71,22 +79,12 @@ export function useJobsPageData() {
   return useQuery({
     queryKey: ["jobs-page-data"],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("get_jobs_page_data");
-      if (error || !data) {
-        return {
-          counts: {
-            "Kenya Jobs": 0,
-            "Gulf Jobs": 0,
-            "Cruise Jobs": 0,
-            "Remote Jobs": 0,
-            "Visa Sponsorship": 0,
-            "Healthcare Jobs": 0,
-            total: 0,
-          },
-          jobs: [],
-          featured: [],
-        };
-      }
+      const data = await feedQuery({
+        page: 0,
+        pageSize: PAGE_SIZE,
+        includeCounts: true,
+        includeFeatured: true,
+      });
       const counts = {
         "Kenya Jobs": data.counts?.kenya || 0,
         "Gulf Jobs": data.counts?.gulf || 0,
@@ -102,7 +100,7 @@ export function useJobsPageData() {
         total: data.counts?.total || 0,
       };
       const jobs = (data.jobs || []).map(mapRow);
-      const featured = jobs.filter((j) => j.hot).slice(0, 6);
+      const featured = (data.featured || []).map(mapRow);
       return { counts, jobs, featured };
     },
     staleTime: 1000 * 60 * 30,
