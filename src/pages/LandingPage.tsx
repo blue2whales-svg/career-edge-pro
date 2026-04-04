@@ -109,29 +109,17 @@ export default function LandingPage() {
       {/* 1. Hero */}
       <HeroSection />
 
-      {/* Urgency Strip */}
-      <UrgencyStrip />
-
-      {/* 2. Job Preview */}
-      <JobPreviewSection />
-
-      {/* 3. How It Works */}
-      <HowItWorksNew />
-
-      {/* Urgency Strip repeat */}
-      <UrgencyStrip />
-
-      {/* 4. Social Proof */}
-      <SocialProofSection />
-
-      {/* 5. Why Upgrade */}
-      <WhyUpgradeSection />
-
-      {/* 6. Pricing */}
-      <PricingSectionNew />
-
-      {/* 7. Final CTA */}
-      <FinalCTASection />
+      {/* Below-fold: lazy loaded */}
+      <Suspense fallback={null}>
+        <UrgencyStrip />
+        <JobPreviewSection />
+        <HowItWorksNew />
+        <UrgencyStrip />
+        <SocialProofSection />
+        <WhyUpgradeSection />
+        <PricingSectionNew />
+        <FinalCTASection />
+      </Suspense>
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-border py-12 px-4">
