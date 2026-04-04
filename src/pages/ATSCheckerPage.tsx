@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useProPlan } from "@/hooks/useProPlan";
 
-const SUPABASE_URL = "https://wspugvdwodqdlyamxzxj.supabase.co/functions/v1/ats-checker";
-const SUPABASE_ANON_KEY = "sb_publishable_nhGjJgV7MxzzyZLkStxzIA_DXY-lMFS";
+const SUPABASE_URL = `https://${import.meta.env.VITE_SUPABASE_PROJECT_ID}.supabase.co/functions/v1/ats-checker`;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
 const gradeColor = (grade) => {
   if (grade === "A") return "text-green-500";
