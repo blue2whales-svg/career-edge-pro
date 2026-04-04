@@ -20,7 +20,7 @@ export function JobLockOverlay({
   canUseFreeUnlock,
   freeUnlocksRemaining = 0,
   onFreeUnlock,
-  socialProofCount = 47,
+  socialProofCount,
   tier = "verified",
   onUnlockClick,
   onProClick,
