@@ -51,137 +51,102 @@ export function MobileNav() {
       >
         <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
 
-        {/* HEADER */}
-        <div className="flex items-center justify-between border-b border-border/50 px-4 py-4 shrink-0">
-          <div className="flex items-center gap-3">
-            <img src={cvedgeLogo} className="w-9 h-9 rounded-full" />
+        {/* HEADER + USER */}
+        <div className="flex items-center justify-between border-b border-border/50 px-4 py-3 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+              {user ? <User className="w-4 h-4 text-primary" /> : <img src={cvedgeLogo} className="w-8 h-8 rounded-full" />}
+            </div>
             <div>
-              <p className="text-sm font-bold">CV Edge</p>
-              <p className="text-xs text-muted-foreground">Career OS</p>
+              <p className="text-sm font-bold leading-tight">{user ? (user.user_metadata?.display_name || user.email?.split("@")[0] || "User") : "CV Edge"}</p>
+              <p className="text-[10px] text-muted-foreground leading-tight">{user ? user.email : "Career OS"}</p>
             </div>
           </div>
-
           <button onClick={() => setOpen(false)}>
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* USER BLOCK */}
-        <div className="px-4 py-4 border-b border-border/40">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <User className="w-5 h-5 text-primary" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold">{user ? (user.user_metadata?.display_name || user.email?.split("@")[0] || "User") : "Guest User"}</p>
-              <p className="text-xs text-muted-foreground">{user ? "Pro member" : "Upgrade to unlock features"}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* QUICK ACTIONS */}
-        <div className="px-4 py-4 space-y-2 border-b border-border/40">
-          <p className="text-xs font-semibold text-muted-foreground uppercase">Quick Actions</p>
-
-          <Link to="/cv-builder" onClick={() => setOpen(false)}>
-            <div className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-primary/5 transition">
-              <FileText className="w-5 h-5 text-primary" />
-              <span className="text-sm font-medium">Build CV</span>
-            </div>
-          </Link>
-
-          <Link to="/ats-checker" onClick={() => setOpen(false)}>
-            <div className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-primary/5 transition">
-              <CheckCircle className="w-5 h-5 text-green-500" />
-              <span className="text-sm font-medium">ATS Check</span>
-            </div>
-          </Link>
-
-          <Link to="/tracker" onClick={() => setOpen(false)}>
-            <div className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-primary/5 transition">
-              <BarChart className="w-5 h-5 text-blue-500" />
-              <span className="text-sm font-medium">Track Jobs</span>
-            </div>
-          </Link>
-
-          {user && (
-            <>
-              <Link to="/dashboard/referrals" onClick={() => setOpen(false)}>
-                <div className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-primary/5 transition">
-                  <Gift className="w-5 h-5 text-amber-400" />
-                  <span className="text-sm font-medium">Refer & Earn</span>
-                </div>
-              </Link>
-              <Link to="/employer-dashboard" onClick={() => setOpen(false)}>
-                <div className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-primary/5 transition">
-                  <Briefcase className="w-5 h-5 text-purple-500" />
-                  <span className="text-sm font-medium">Employer Dashboard</span>
-                </div>
-              </Link>
-            </>
-          )}
-        </div>
-
-        {/* HOT CTA */}
-        <div className="px-4 pt-4">
-          <Link to="/jobs?industry=%F0%9F%94%A5+Hot+Abroad" onClick={() => setOpen(false)}>
-            <Button variant="outline" className="w-full text-destructive border-destructive/40">
-              <Flame className="w-4 h-4 mr-2" />
-              Hot Jobs Abroad
-            </Button>
-          </Link>
-        </div>
-
-        {/* NAV LINKS */}
-        <nav className="mt-4 flex-1 overflow-y-auto px-2 pb-4">
+        {/* ALL LINKS — single scrollable list */}
+        <nav className="flex-1 overflow-y-auto px-3 py-2">
+          {/* Primary nav */}
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-2 pt-1 pb-1">Navigate</p>
           {NAV_LINKS.map((link) => {
             const active = pathname.startsWith(link.to);
-
             return (
               <Link
                 key={link.to}
                 to={link.to}
                 onClick={() => setOpen(false)}
                 className={cn(
-                  "flex items-center justify-between px-4 py-3 rounded-xl text-sm transition",
-                  active ? "bg-primary/10 text-primary" : "hover:bg-primary/5",
+                  "flex items-center justify-between px-3 py-2 rounded-lg text-sm transition",
+                  active ? "bg-primary/10 text-primary font-medium" : "hover:bg-primary/5",
                   link.highlight && "text-yellow-500 font-semibold",
                 )}
               >
                 {link.label}
-                {link.highlight && <span>✨</span>}
+                {link.highlight && <span className="text-xs">✨</span>}
               </Link>
             );
           })}
+
+          {/* Quick tools */}
+          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-2 pt-3 pb-1">Tools</p>
+          {[
+            { to: "/cv-builder", icon: <FileText className="w-4 h-4 text-primary" />, label: "Build CV" },
+            { to: "/ats-checker", icon: <CheckCircle className="w-4 h-4 text-emerald-500" />, label: "ATS Check" },
+            { to: "/tracker", icon: <BarChart className="w-4 h-4 text-blue-500" />, label: "Track Jobs" },
+          ].map((item) => (
+            <Link key={item.to} to={item.to} onClick={() => setOpen(false)} className="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-primary/5 transition">
+              {item.icon}
+              <span className="text-sm">{item.label}</span>
+            </Link>
+          ))}
+
+          {/* Logged-in extras */}
+          {user && (
+            <>
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-2 pt-3 pb-1">Account</p>
+              {[
+                { to: "/portal", icon: <User className="w-4 h-4 text-primary" />, label: "My Portal" },
+                { to: "/dashboard/referrals", icon: <Gift className="w-4 h-4 text-amber-400" />, label: "Refer & Earn" },
+                { to: "/employer-dashboard", icon: <Briefcase className="w-4 h-4 text-purple-500" />, label: "Employer Dashboard" },
+              ].map((item) => (
+                <Link key={item.to} to={item.to} onClick={() => setOpen(false)} className="flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-primary/5 transition">
+                  {item.icon}
+                  <span className="text-sm">{item.label}</span>
+                </Link>
+              ))}
+            </>
+          )}
+
+          {/* Hot CTA */}
+          <div className="mt-3 px-1">
+            <Link to="/jobs?industry=%F0%9F%94%A5+Hot+Abroad" onClick={() => setOpen(false)}>
+              <Button variant="outline" size="sm" className="w-full text-destructive border-destructive/40 text-xs gap-1.5">
+                <Flame className="w-3.5 h-3.5" /> Hot Jobs Abroad
+              </Button>
+            </Link>
+          </div>
         </nav>
 
         {/* FOOTER */}
-        <div className="border-t border-border/50 px-4 py-4 space-y-3 shrink-0">
+        <div className="border-t border-border/50 px-4 py-3 space-y-2 shrink-0">
           {user ? (
-            <>
-              <Link to="/portal" onClick={() => setOpen(false)}>
-                <Button variant="outline" className="w-full gap-2">
-                  <User className="w-4 h-4" /> My Portal
-                </Button>
-              </Link>
-              <Button onClick={handleLogout} variant="outline" className="w-full gap-2 text-destructive border-destructive/30">
-                <LogOut className="w-4 h-4" /> Log out
-              </Button>
-            </>
+            <Button onClick={handleLogout} variant="outline" size="sm" className="w-full gap-2 text-destructive border-destructive/30">
+              <LogOut className="w-3.5 h-3.5" /> Log out
+            </Button>
           ) : (
-            <>
-              <Link to="/login" onClick={() => setOpen(false)}>
-                <Button variant="outline" className="w-full">
-                  Log in
+            <div className="flex gap-2">
+              <Link to="/login" onClick={() => setOpen(false)} className="flex-1">
+                <Button variant="outline" size="sm" className="w-full">Log in</Button>
+              </Link>
+              <Link to="/signup" onClick={() => setOpen(false)} className="flex-1">
+                <Button size="sm" className="w-full bg-gradient-brand gap-1">
+                  Sign Up <ArrowRight className="w-3.5 h-3.5" />
                 </Button>
               </Link>
-              <Link to="/signup" onClick={() => setOpen(false)}>
-                <Button className="w-full bg-gradient-brand">
-                  Sign Up Free
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </Link>
-            </>
+            </div>
           )}
         </div>
       </SheetContent>
