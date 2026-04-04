@@ -37,8 +37,8 @@ const PACKAGES = [
   },
   {
     name: "Executive",
-    price: "KES 5,490",
-    originalPrice: "KES 15,000",
+    price: "KES 2,490",
+    originalPrice: "KES 8,000",
     desc: "Premium — human-reviewed",
     features: [
       "Executive CV + Cover Letter",

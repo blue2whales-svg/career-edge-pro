@@ -57,7 +57,7 @@ const SERVICES = [
     id: "executive-cv",
     icon: Award,
     label: "Executive CV",
-    price: 2500,
+    price: 2490,
     desc: "C-suite ready — highlights leadership, P&L, and board experience",
   },
   {
@@ -113,7 +113,7 @@ const SERVICES = [
     id: "international-cv",
     icon: Globe,
     label: "International CV",
-    price: 2500,
+    price: 2000,
     desc: "Formatted for Gulf, UK, EU — adapts photo, layout & conventions",
   },
   {
