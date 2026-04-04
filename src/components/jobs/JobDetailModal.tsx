@@ -104,15 +104,7 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
   const isInternational = tier === "international";
   const unlockPrice = isInternational ? "KSh 199" : "KSh 99";
 
-  // Location display logic: blur city on locked international jobs
-  const locationDisplay = (!hasAccess && isInternational)
-    ? `📍 ${getCountryFromLocation(job.location)} — Unlock to see exact location`
-    : job.location;
-
-  // Salary display logic: blur on locked jobs
-  const salaryDisplay = (!hasAccess && !isFreeJob)
-    ? null // will render custom
-    : job.salary;
+  // Location & salary always visible — these are hooks to draw users in
 
   const handleFreeUnlock = () => { useFreeUnlock(jobKey); };
 
