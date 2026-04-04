@@ -173,7 +173,7 @@ export function JobCard({ job, index, onClick, tier = "free", socialProofCount }
                 </p>
                 <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.location}</span>
-                  <span className="flex items-center gap-1"><DollarSign className="h-3 w-3" /> {job.salary}</span>
+                  <span className="flex items-center gap-1 text-amber-400 font-semibold"><DollarSign className="h-3 w-3" /> {generateCardSalary(job)}</span>
                   <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {timeDisplay}</span>
                   {tier === "free" && sourceDisplay && (
                     <span className="flex items-center gap-1 rounded-full border border-border bg-muted/40 px-2 py-0.5 text-[10px] font-mono">

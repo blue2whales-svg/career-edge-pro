@@ -38,6 +38,29 @@ function generateBenefits(job: Job): string[] {
   return benefits;
 }
 
+function generateSalaryDisplay(job: Job): string {
+  if (job.salary && !["Competitive", "Not specified", ""].includes(job.salary)) return job.salary;
+  // Generate realistic salary ranges based on job context
+  const title = job.title.toLowerCase();
+  const isIntl = job.market && job.market !== "Kenya";
+  if (isIntl) {
+    if (title.includes("senior") || title.includes("lead") || title.includes("manager")) return "$3,500 – $6,000/mo";
+    if (title.includes("director") || title.includes("head")) return "$5,000 – $8,000/mo";
+    if (title.includes("nurse") || title.includes("caregiver")) return "$2,000 – $3,500/mo";
+    if (title.includes("engineer") || title.includes("developer")) return "$3,000 – $5,500/mo";
+    if (title.includes("chef") || title.includes("cook")) return "$1,800 – $3,000/mo";
+    return "$1,500 – $4,000/mo";
+  }
+  // Kenya ranges
+  if (title.includes("senior") || title.includes("lead") || title.includes("manager")) return "KSh 150K – 300K/mo";
+  if (title.includes("director") || title.includes("head")) return "KSh 250K – 500K/mo";
+  if (title.includes("nurse") || title.includes("caregiver") || title.includes("clinical")) return "KSh 60K – 120K/mo";
+  if (title.includes("engineer") || title.includes("developer")) return "KSh 100K – 250K/mo";
+  if (title.includes("intern") || title.includes("entry")) return "KSh 25K – 50K/mo";
+  if (title.includes("accountant") || title.includes("finance")) return "KSh 80K – 180K/mo";
+  return "KSh 50K – 150K/mo";
+}
+
 function getDescriptionPreview(desc: string | undefined): string {
   if (!desc) return "";
   return desc.slice(0, 150) + (desc.length > 150 ? "..." : "");
