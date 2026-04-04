@@ -44,6 +44,8 @@ import PortalMessages from "./pages/PortalMessages";
 import PortalSettingsPage from "./pages/PortalSettingsPage";
 import AdminJobsPage from "./pages/AdminJobsPage";
 import NotFound from "./pages/NotFound";
+import ApplicationsPage from "./pages/ApplicationsPage";
+import ReferralsPage from "./pages/ReferralsPage";
 import TermsPage from "./pages/TermsPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import RefundPolicyPage from "./pages/RefundPolicyPage";
