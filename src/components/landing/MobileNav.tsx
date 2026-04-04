@@ -18,7 +18,24 @@ const NAV_LINKS = [
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setOpen(false);
+    navigate("/");
+  };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
