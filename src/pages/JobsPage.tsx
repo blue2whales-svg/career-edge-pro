@@ -218,53 +218,54 @@ export default function JobsPage() {
             </Button>
           </div>
 
-          {/* Mobile: Grid layout filters | Desktop: horizontal scroll */}
-          {/* Category filters */}
+          {/* 🌍 Country / Market */}
           <div className="mb-3">
-            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">📂 Category</p>
-            <div className="flex flex-wrap sm:flex-nowrap gap-1.5 sm:gap-2 sm:overflow-x-auto sm:pb-2 sm:scrollbar-none">
-              {JOB_CATEGORIES.map((cat) => (
-                <button key={cat} onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                    selectedCategory === cat
-                      ? "bg-brand-red text-white shadow-sm"
-                      : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-brand-red/30"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Industry filters */}
-          <div className="mb-3">
-            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">🏢 Industry</p>
-            <div className="flex flex-wrap sm:flex-nowrap gap-1.5 sm:gap-2 sm:overflow-x-auto sm:pb-2 sm:scrollbar-none">
-              {INDUSTRIES.map((ind) => (
-                <button key={ind} onClick={() => setSelectedIndustry(ind)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                    selectedIndustry === ind
-                      ? "bg-gradient-brand text-primary-foreground shadow-sm"
-                      : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/30"
-                  }`}
-                >{ind}</button>
-              ))}
-            </div>
-          </div>
-
-          {/* Market filters */}
-          <div>
-            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">🌍 Market</p>
-            <div className="flex flex-wrap sm:flex-nowrap gap-1.5 sm:gap-2 sm:overflow-x-auto sm:pb-2 sm:scrollbar-none">
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">🌍 Country</p>
+            <div className="flex flex-wrap gap-1">
               {MARKETS.map((mkt) => (
                 <button key={mkt} onClick={() => setSelectedMarket(mkt)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all active:scale-95 ${
                     selectedMarket === mkt
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/30"
+                      ? "bg-primary text-primary-foreground shadow-md ring-1 ring-primary/40"
+                      : "border border-border bg-card/80 text-muted-foreground hover:text-foreground hover:border-primary/40"
                   }`}
-                >{mkt}</button>
+                >{mkt === "All Markets" ? "🌐 All" : mkt}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* 🏢 Industry */}
+          <div className="mb-3">
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">🏢 Industry</p>
+            <div className="flex flex-wrap gap-1">
+              {INDUSTRIES.filter(i => i !== "🔥 Hot Abroad").map((ind) => (
+                <button key={ind} onClick={() => setSelectedIndustry(ind)}
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all active:scale-95 ${
+                    selectedIndustry === ind
+                      ? "bg-gradient-brand text-primary-foreground shadow-md ring-1 ring-brand-gold/40"
+                      : "border border-border bg-card/80 text-muted-foreground hover:text-foreground hover:border-brand-gold/30"
+                  }`}
+                >{ind === "All" ? "📋 All" : ind}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* 📂 Category */}
+          <div className="mb-2">
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">📂 Category</p>
+            <div className="flex flex-wrap gap-1">
+              {JOB_CATEGORIES.filter((c, i, arr) => {
+                // Remove duplicates like "Engineering" vs "Engineering Jobs"
+                if (["Engineering", "Hospitality", "Healthcare", "Finance", "Technology", "Logistics", "Sales", "Administration", "Security"].includes(c)) return false;
+                return true;
+              }).map((cat) => (
+                <button key={cat} onClick={() => setSelectedCategory(cat)}
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all active:scale-95 ${
+                    selectedCategory === cat
+                      ? "bg-brand-red text-white shadow-md ring-1 ring-brand-red/40"
+                      : "border border-border bg-card/80 text-muted-foreground hover:text-foreground hover:border-brand-red/30"
+                  }`}
+                >{cat === "All Categories" ? "🔖 All" : cat}</button>
               ))}
             </div>
           </div>
