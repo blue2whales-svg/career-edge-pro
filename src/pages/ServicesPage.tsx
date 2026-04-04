@@ -142,11 +142,11 @@ const QUIZ_QUESTIONS = [
 ];
 
 const QUIZ_RESULTS: Record<string, { title: string; desc: string; service: string; price: string }> = {
-  ats: { title: "ATS-Optimised CV", desc: "Engineered to beat applicant tracking systems at large companies.", service: "ats-cv", price: "KES 2,490" },
+  ats: { title: "ATS-Optimised CV", desc: "Engineered to beat applicant tracking systems at large companies.", service: "ats-cv", price: "KES 1,490" },
   professional: { title: "Professional CV", desc: "Clean, corporate layout trusted by HR managers across all industries.", service: "cv", price: "KES 1,490" },
   modern: { title: "Modern CV", desc: "Contemporary visual design that stands out for creative and tech roles.", service: "modern-cv", price: "KES 2,490" },
-  executive: { title: "Executive CV", desc: "Premium positioning for C-suite, VP, and Director-level professionals.", service: "executive-cv", price: "KES 5,490" },
-  international: { title: "International CV", desc: "Formatted for Gulf, UK, EU markets with country-specific conventions.", service: "international-cv", price: "KES 4,490" },
+  executive: { title: "Executive CV", desc: "Premium positioning for C-suite, VP, and Director-level professionals.", service: "executive-cv", price: "KES 2,490" },
+  international: { title: "International CV", desc: "Formatted for Gulf, UK, EU markets with country-specific conventions.", service: "international-cv", price: "KES 2,000" },
 };
 
 function CVQuizSection() {
