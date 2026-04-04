@@ -361,6 +361,36 @@ export type Database = {
         }
         Relationships: []
       }
+      job_unlocks: {
+        Row: {
+          amount_paid: number
+          created_at: string
+          currency: string
+          id: string
+          job_id: string
+          unlock_type: string
+          user_id: string
+        }
+        Insert: {
+          amount_paid?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          job_id: string
+          unlock_type?: string
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          job_id?: string
+          unlock_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
@@ -489,6 +519,33 @@ export type Database = {
         }
         Relationships: []
       }
+      referrals: {
+        Row: {
+          created_at: string
+          credit_amount: number
+          id: string
+          referred_email: string
+          referrer_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          credit_amount?: number
+          id?: string
+          referred_email: string
+          referrer_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          credit_amount?: number
+          id?: string
+          referred_email?: string
+          referrer_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
       revision_requests: {
         Row: {
           created_at: string
@@ -526,6 +583,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      subscriptions: {
+        Row: {
+          amount: number
+          billing_cycle: string
+          currency: string
+          expires_at: string
+          id: string
+          plan: string
+          started_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          billing_cycle?: string
+          currency?: string
+          expires_at?: string
+          id?: string
+          plan?: string
+          started_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          billing_cycle?: string
+          currency?: string
+          expires_at?: string
+          id?: string
+          plan?: string
+          started_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       vault_profiles: {
         Row: {
@@ -587,6 +680,33 @@ export type Database = {
           technical_skills?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      verified_employers: {
+        Row: {
+          created_at: string
+          employer_name: string
+          id: string
+          logo_url: string | null
+          tier: string
+          verified: boolean
+        }
+        Insert: {
+          created_at?: string
+          employer_name: string
+          id?: string
+          logo_url?: string | null
+          tier?: string
+          verified?: boolean
+        }
+        Update: {
+          created_at?: string
+          employer_name?: string
+          id?: string
+          logo_url?: string | null
+          tier?: string
+          verified?: boolean
         }
         Relationships: []
       }
