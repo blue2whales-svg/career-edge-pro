@@ -120,6 +120,7 @@ export function MobileNav() {
               </Link>
             </>
           )}
+        </div>
 
         {/* HOT CTA */}
         <div className="px-4 pt-4">
