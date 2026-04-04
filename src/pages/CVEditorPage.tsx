@@ -1952,7 +1952,8 @@ export default function CVEditorPage() {
 
   // ── Payment state ──
   const [showMpesa, setShowMpesa] = useState(false);
-  const [hasPaid, setHasPaid] = useState(() => sessionStorage.getItem("cvedge_payment_verified") === "true");
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [hasPaid, setHasPaid] = useState(() => sessionStorage.getItem("cvedge_payment_verified") === "true" || localStorage.getItem("cvedge_paid") === "true" || localStorage.getItem("cvedge_pro") === "true");
   const [isGenerating, setIsGenerating] = useState(false);
   const templatePrice = getTemplatePrice(templateId ?? "classic");
 
