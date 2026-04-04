@@ -12,7 +12,9 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
+  usePendingUnlock();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
