@@ -201,11 +201,9 @@ export function JobCard({ job, index, onClick, tier = "free", socialProofCount }
                   <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.location}</span>
                   <span className="flex items-center gap-1 text-amber-400 font-semibold"><DollarSign className="h-3 w-3" /> {generateCardSalary(job)}</span>
                   <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {timeDisplay}</span>
-                  {tier === "free" && sourceDisplay && (
-                    <span className="flex items-center gap-1 rounded-full border border-border bg-muted/40 px-2 py-0.5 text-[10px] font-mono">
-                      <Globe2 className="h-2.5 w-2.5" /> {sourceDisplay}
-                    </span>
-                  )}
+                  <span className="flex items-center gap-1 rounded-full border border-green-500/30 bg-green-500/10 px-2 py-0.5 text-[10px] font-medium text-green-400">
+                    ✅ Verified Source {sourceRating}/5
+                  </span>
                   {job.category && (
                     <span className="rounded-full border border-primary/20 bg-primary/5 px-2 py-0.5 text-[10px] font-mono text-primary">
                       {job.category}

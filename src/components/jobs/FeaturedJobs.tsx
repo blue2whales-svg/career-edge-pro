@@ -85,11 +85,9 @@ export function FeaturedJobs() {
                   <span className="flex items-center gap-1">
                     <Clock className="h-3 w-3" /> {job.posted}
                   </span>
-                  {job.source_label && (
-                    <span className="flex items-center gap-1 text-[10px]">
-                      <Globe2 className="h-2.5 w-2.5" /> {job.source_label}
-                    </span>
-                  )}
+                  <span className="flex items-center gap-1 text-[10px] text-green-400">
+                    ✅ Verified Source
+                  </span>
                 </div>
 
                 <Button size="sm" className="w-full bg-gradient-brand border-0 font-semibold text-xs gold-shimmer" onClick={(e) => { e.stopPropagation(); setSelectedJob(job); }}>

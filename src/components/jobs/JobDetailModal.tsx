@@ -291,7 +291,7 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
                       {job.salary && !["Competitive", "Not specified"].includes(job.salary) && <TagPill label="High Paying" color="green" icon={<span>💰</span>} />}
                       {job.visa_sponsorship && <TagPill label="Visa Sponsor" color="amber" icon={<span>✈️</span>} />}
                       {/* Source badge — only on free jobs */}
-                      {isFreeJob && sourceDisplay && <TagPill label={sourceDisplay} color="blue" icon={<Globe2 className="h-2.5 w-2.5" />} />}
+                      <TagPill label={`Verified Source ${sourceRating}/5`} color="green" icon={<span>✅</span>} />
                     </div>
                   </div>
                 </div>
