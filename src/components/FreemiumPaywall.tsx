@@ -92,7 +92,7 @@ export default function FreemiumPaywall({
                   <span className="text-sm font-semibold">Save more with Pro</span>
                 </div>
                 <p className="text-xs text-muted-foreground mb-3">
-                  Unlimited CV downloads, job alerts, application tracker — KSh 1,000/mo
+                  Unlimited CV downloads, job alerts, application tracker — KSh 500/mo
                 </p>
                 <Link to="/subscribe">
                   <Button variant="outline" size="sm" className="w-full border-primary/30 text-xs">

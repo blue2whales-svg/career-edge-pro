@@ -113,7 +113,7 @@ const SERVICES = [
     id: "international-cv",
     icon: Globe,
     label: "International CV",
-    price: 2500,
+    price: 2000,
     desc: "Formatted for Gulf, UK, EU — adapts photo, layout & conventions",
   },
   {

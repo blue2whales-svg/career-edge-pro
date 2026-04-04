@@ -11,9 +11,9 @@ const PLANS = [
   {
     id: "job-seeker-pro",
     name: "Job Seeker Pro",
-    monthlyPrice: 1000,
-    yearlyPrice: 9600,
-    yearlyMonthly: 800,
+    monthlyPrice: 500,
+    yearlyPrice: 4800,
+    yearlyMonthly: 400,
     icon: Star,
     popular: true,
     mpesaPackage: "pro-monthly",

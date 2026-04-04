@@ -144,13 +144,13 @@ export function CVMatchModal({ job, open, onClose }: CVMatchModalProps) {
                     ))}
                   </ul>
                   <Button onClick={() => { onClose(); setPaymentOpen(true); }} className="w-full font-bold text-sm h-11 border-0 bg-gradient-brand gold-shimmer">
-                    ⚡ Upgrade My CV Now — KSh 5,500
+                    ⚡ Upgrade My CV Now — KSh 2,490
                   </Button>
                 </div>
                 <div className="flex items-center gap-2">
                   <p className="text-xs text-muted-foreground">Or start smaller:</p>
-                  <Button variant="outline" size="sm" className="text-xs h-8" onClick={() => { onClose(); setPaymentOpen(true); }}>Starter — KSh 2,500</Button>
-                  <Button variant="outline" size="sm" className="text-xs h-8" onClick={() => { onClose(); setPaymentOpen(true); }}>Executive — KSh 10,500</Button>
+                  <Button variant="outline" size="sm" className="text-xs h-8" onClick={() => { onClose(); setPaymentOpen(true); }}>Starter — KSh 1,490</Button>
+                  <Button variant="outline" size="sm" className="text-xs h-8" onClick={() => { onClose(); setPaymentOpen(true); }}>International — KSh 2,000</Button>
                 </div>
               </div>
             ) : (

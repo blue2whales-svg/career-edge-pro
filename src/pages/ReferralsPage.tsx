@@ -22,7 +22,7 @@ export default function ReferralsPage() {
 
   const referralLink = useMemo(() => {
     if (!userId) return "";
-    return `https://career-edge-pro.lovable.app/signup?ref=${userId.slice(0, 8)}`;
+    return `https://cvedge.live/signup?ref=${userId.slice(0, 8)}`;
   }, [userId]);
 
   useEffect(() => {
