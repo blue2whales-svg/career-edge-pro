@@ -208,7 +208,12 @@ export default function OrderPage() {
       setSelectedServices(PACKAGE_MAP[pkg].services);
       if (pkg === "international") setFormValues((prev) => ({ ...prev, cvPages: "2" }));
     } else if (singleService) {
-      setSelectedServices((prev) => (prev.includes(singleService) ? prev : [...prev, singleService]));
+      // If user selects "cv", default to "ats-cv" instead (most popular)
+      const resolvedService = singleService === "cv" ? "ats-cv" : singleService;
+      setSelectedServices((prev) => (prev.includes(resolvedService) ? prev : [...prev, resolvedService]));
+    } else {
+      // Default: pre-select ATS CV when no package or service specified
+      setSelectedServices((prev) => prev.length === 0 ? ["ats-cv"] : prev);
     }
     if (jobFromQuery) {
       setFormValues((prev) => ({ ...prev, jobTitle: jobFromQuery, targetCompany: companyFromQuery || "" }));
