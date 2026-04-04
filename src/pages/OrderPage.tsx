@@ -178,6 +178,7 @@ export default function OrderPage() {
   const [paymentError, setPaymentError] = useState<"credentials" | "network" | "generic" | null>(null);
   const [retryingPayment, setRetryingPayment] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [checkoutRequestId, setCheckoutRequestId] = useState("");
   const [documentsGenerating, setDocumentsGenerating] = useState(false);
   const [documentsGenerated, setDocumentsGenerated] = useState(false);
@@ -208,7 +209,12 @@ export default function OrderPage() {
       setSelectedServices(PACKAGE_MAP[pkg].services);
       if (pkg === "international") setFormValues((prev) => ({ ...prev, cvPages: "2" }));
     } else if (singleService) {
-      setSelectedServices((prev) => (prev.includes(singleService) ? prev : [...prev, singleService]));
+      // If user selects "cv", default to "ats-cv" instead (most popular)
+      const resolvedService = singleService === "cv" ? "ats-cv" : singleService;
+      setSelectedServices((prev) => (prev.includes(resolvedService) ? prev : [...prev, resolvedService]));
+    } else {
+      // Default: pre-select ATS CV when no package or service specified
+      setSelectedServices((prev) => prev.length === 0 ? ["ats-cv"] : prev);
     }
     if (jobFromQuery) {
       setFormValues((prev) => ({ ...prev, jobTitle: jobFromQuery, targetCompany: companyFromQuery || "" }));
@@ -869,13 +875,16 @@ export default function OrderPage() {
                         setName(e.target.value);
                         setValidationErrors((prev) => ({ ...prev, name: false }));
                       }}
+                      onBlur={() => setTouched((prev) => ({ ...prev, name: true }))}
                       className={cn(
                         "h-12 bg-card border-border transition-all",
-                        validationErrors.name && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
+                        (validationErrors.name || (touched.name && !name.trim())) && "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
                       )}
                     />
-                    {validationErrors.name && (
-                      <p className="text-xs text-destructive mt-1 animate-pulse font-medium">⚠ Full name is required</p>
+                    {(validationErrors.name || (touched.name && !name.trim())) && (
+                      <p className="text-xs text-destructive mt-1 font-medium flex items-center gap-1">
+                        <AlertTriangle className="h-3 w-3" /> Full name is required — we use it on your CV
+                      </p>
                     )}
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -889,36 +898,48 @@ export default function OrderPage() {
                           setEmail(e.target.value);
                           setValidationErrors((prev) => ({ ...prev, email: false }));
                         }}
+                        onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
                         className={cn(
                           "h-12 bg-card border-border transition-all",
-                          validationErrors.email &&
+                          (validationErrors.email || (touched.email && !email.trim())) &&
                             "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
                         )}
                       />
-                      {validationErrors.email && (
-                        <p className="text-xs text-destructive mt-1 animate-pulse font-medium">
-                          ⚠ Email address is required
+                      {(validationErrors.email || (touched.email && !email.trim())) && (
+                        <p className="text-xs text-destructive mt-1 font-medium flex items-center gap-1">
+                          <AlertTriangle className="h-3 w-3" /> Email is required — your documents are sent here
+                        </p>
+                      )}
+                      {touched.email && email.trim() && !email.includes("@") && (
+                        <p className="text-xs text-destructive mt-1 font-medium flex items-center gap-1">
+                          <AlertTriangle className="h-3 w-3" /> Please enter a valid email address
                         </p>
                       )}
                     </div>
                     <div>
                       <Input
                         ref={phoneRef}
-                        placeholder={isInternational ? "Phone number (optional)" : "M-Pesa number *"}
+                        placeholder={isInternational ? "Phone number (optional)" : "M-Pesa number * (e.g. 0712345678)"}
                         value={phone}
                         onChange={(e) => {
                           setPhone(e.target.value);
                           setValidationErrors((prev) => ({ ...prev, phone: false }));
                         }}
+                        onBlur={() => setTouched((prev) => ({ ...prev, phone: true }))}
                         className={cn(
                           "h-12 bg-card border-border transition-all",
-                          validationErrors.phone &&
+                          (validationErrors.phone || (!isInternational && touched.phone && !phone.trim())) &&
                             "border-destructive ring-2 ring-destructive/30 animate-bounce-subtle",
                         )}
                       />
-                      {validationErrors.phone && (
-                        <p className="text-xs text-destructive mt-1 animate-pulse font-medium">
-                          ⚠ M-Pesa number is required for payment
+                      {(validationErrors.phone || (!isInternational && touched.phone && !phone.trim())) && (
+                        <p className="text-xs text-destructive mt-1 font-medium flex items-center gap-1">
+                          <AlertTriangle className="h-3 w-3" /> M-Pesa number is required for payment
+                        </p>
+                      )}
+                      {!isInternational && touched.phone && phone.trim() && !/^(\+?254|0)\d{9}$/.test(phone.replace(/\s/g, "")) && phone.trim().length > 3 && (
+                        <p className="text-xs text-amber-400 mt-1 font-medium flex items-center gap-1">
+                          <AlertTriangle className="h-3 w-3" /> Format: 0712345678 or +254712345678
                         </p>
                       )}
                     </div>
