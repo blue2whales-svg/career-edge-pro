@@ -287,6 +287,22 @@ export default function RecruitersPage() {
         </div>
       </section>
 
+      {/* Dashboard CTA */}
+      <section className="relative z-10 pb-10 px-4">
+        <div className="container max-w-5xl mx-auto">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
+            className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-8 sm:p-10 flex flex-col sm:flex-row items-center gap-6">
+            <div className="flex-1 text-center sm:text-left">
+              <h3 className="text-xl font-serif font-bold mb-2">Already have a plan?</h3>
+              <p className="text-sm text-muted-foreground">Manage your postings, review applicants, shortlist candidates, and schedule interviews from your dashboard.</p>
+            </div>
+            <Button size="lg" className="h-12 font-semibold shrink-0 gap-2" variant="outline" onClick={() => navigate("/employer-dashboard")}>
+              <Briefcase className="h-4 w-4" /> Go to Dashboard <ArrowRight className="h-4 w-4" />
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Bottom CTA */}
       <section className="relative z-10 pb-16 px-4">
         <div className="container max-w-5xl mx-auto">
