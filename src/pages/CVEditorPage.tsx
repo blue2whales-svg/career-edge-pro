@@ -2280,7 +2280,7 @@ export default function CVEditorPage() {
                   style={{ maxHeight: "60vh", overflowY: "auto" }}
                 >
                   {preview}
-                  <BlurOverlay />
+                  {!hasPaid && <BlurOverlay />}
                 </div>
               </div>
 
