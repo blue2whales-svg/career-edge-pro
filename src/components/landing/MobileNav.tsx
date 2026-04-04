@@ -72,10 +72,9 @@ export function MobileNav() {
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
               <User className="w-5 h-5 text-primary" />
             </div>
-
             <div>
-              <p className="text-sm font-semibold">Guest User</p>
-              <p className="text-xs text-muted-foreground">Upgrade to unlock features</p>
+              <p className="text-sm font-semibold">{user ? (user.user_metadata?.display_name || user.email?.split("@")[0] || "User") : "Guest User"}</p>
+              <p className="text-xs text-muted-foreground">{user ? "Pro member" : "Upgrade to unlock features"}</p>
             </div>
           </div>
         </div>
