@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MapPin, DollarSign, Clock, Building2, ArrowRight, Ship, Flame, Shield, Send, Globe2 } from "lucide-react";
+import { MapPin, DollarSign, Clock, Building2, ArrowRight, Ship, Flame, Shield, Send, Globe2, Lock, Zap, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Job } from "@/data/jobs";
 import { CVMatchModal } from "./CVMatchModal";
 import ApplyModal from "./ApplyModal";
 import { supabase } from "@/integrations/supabase/client";
-import { getJobBadges } from "./cvMatchUtils";
+import { type JobTier } from "@/hooks/useJobAccess";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -22,33 +22,41 @@ interface JobPostingInfo {
   applied: boolean;
 }
 
-export function JobCard({ job, index, onClick }: { job: Job; index: number; onClick?: () => void }) {
+interface JobCardProps {
+  job: Job;
+  index: number;
+  onClick?: () => void;
+  tier?: JobTier;
+  socialProofCount?: number;
+}
+
+export function JobCard({ job, index, onClick, tier = "free", socialProofCount }: JobCardProps) {
   const isCruise = job.tag?.includes("Cruise") || job.category === "Cruise Jobs" || job.market === "Cruise";
-  const isGulf = job.tag?.includes("Gulf");
-  const isVisa = job.visa_sponsorship;
   const isHot = job.hot || (job.hot_score && job.hot_score >= 50);
   const isAbroad = job.market && !["Kenya"].includes(job.market);
   const hasHighPay = job.salary && !["Competitive", "Not specified"].includes(job.salary);
+  const isVisa = job.visa_sponsorship;
   const [matchModalOpen, setMatchModalOpen] = useState(false);
   const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [postingInfo, setPostingInfo] = useState<JobPostingInfo | null>(null);
 
-  const badges = getJobBadges({
-    hot_score: job.hot_score,
-    visa_sponsorship: job.visa_sponsorship,
-    market: job.market,
-    category: job.category,
-    hot: job.hot,
-  });
+  const isLocked = tier !== "free";
+  const isVerified = tier === "verified";
+  const isInternational = tier === "international";
+
+  // Check for closing soon
+  const isClosingSoon = (() => {
+    if (!job.posted) return false;
+    const match = job.posted.match(/(\d+)\s*day/i);
+    return match ? parseInt(match[1]) >= 1 : false;
+  })();
 
   useEffect(() => {
     if (job.apply_url || job.source !== "platform_seed") {
       setPostingInfo(null);
       return;
     }
-
     let isActive = true;
-
     const checkPosting = async () => {
       const { data, error } = await supabase
         .from("job_postings")
@@ -57,32 +65,35 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
         .eq("company", job.company)
         .eq("status", "active")
         .maybeSingle();
-
       if (error || !data || !isActive) return;
-
-        const { data: user } = await supabase.auth.getUser();
-        if (user?.user) {
-          const { data: app } = await supabase
-            .from("applications")
-            .select("id")
-            .eq("job_id", (data as any).id)
-            .eq("candidate_id", user.user.id)
-            .maybeSingle();
-          if (isActive) setPostingInfo({ id: (data as any).id, applied: !!app });
-        } else {
-          setPostingInfo({ id: (data as any).id, applied: false });
-        }
+      const { data: user } = await supabase.auth.getUser();
+      if (user?.user) {
+        const { data: app } = await supabase
+          .from("applications")
+          .select("id")
+          .eq("job_id", (data as any).id)
+          .eq("candidate_id", user.user.id)
+          .maybeSingle();
+        if (isActive) setPostingInfo({ id: (data as any).id, applied: !!app });
+      } else {
+        setPostingInfo({ id: (data as any).id, applied: false });
+      }
     };
-
     void checkPosting();
-
-    return () => {
-      isActive = false;
-    };
+    return () => { isActive = false; };
   }, [job.title, job.company, job.apply_url, job.source]);
 
   const timeDisplay = job.posted || "Recently";
   const sourceDisplay = job.source_label || job.source || "";
+
+  // Border styles per tier
+  const borderClass = isVerified
+    ? "border-amber-500/30 shadow-[0_0_12px_rgba(245,166,35,0.4)] hover:border-amber-500/50"
+    : isInternational
+      ? "border-blue-500/30 shadow-[0_0_12px_rgba(74,144,226,0.4)] hover:border-blue-500/50"
+      : isHot
+        ? "border-brand-red/30 hover:border-brand-red/50"
+        : "border-border hover:border-primary/30";
 
   return (
     <>
@@ -103,39 +114,50 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
         viewport={{ once: true }}
         variants={fadeUp}
         custom={index % 4}
-        className={`group rounded-xl border p-5 sm:p-6 hover:shadow-glow-sm transition-all duration-300 cursor-pointer ${
-          isHot
-            ? "border-brand-red/30 bg-card hover:border-brand-red/50"
-            : "border-border bg-card hover:border-primary/30"
-        }`}
+        className={`group rounded-xl border p-5 sm:p-6 hover:shadow-glow-sm transition-all duration-300 cursor-pointer bg-card ${borderClass}`}
         onClick={onClick}
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex-1">
             <div className="flex items-start gap-3">
-              <div
-                className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
-                  isCruise ? "bg-blue-500/10" : isGulf ? "bg-brand-red/10" : "bg-gradient-brand-subtle"
-                }`}
-              >
-                {isCruise ? <Ship className="h-5 w-5 text-blue-500" /> : <Building2 className="h-5 w-5 text-primary" />}
+              {/* Icon */}
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
+                isLocked ? "relative overflow-hidden" : isCruise ? "bg-blue-500/10" : "bg-gradient-brand-subtle"
+              }`}>
+                {isLocked ? (
+                  <>
+                    <div className={`absolute inset-0 ${isVerified ? "bg-gradient-to-br from-amber-500/20 to-amber-700/10" : "bg-gradient-to-br from-blue-500/20 to-blue-700/10"} blur-sm`} />
+                    <div className={`absolute inset-0 bg-gradient-to-r from-transparent ${isVerified ? "via-amber-400/15" : "via-blue-400/15"} to-transparent animate-pulse`} style={{ animationDuration: "2s" }} />
+                    <Lock className={`h-5 w-5 relative z-10 ${isVerified ? "text-amber-400" : "text-blue-400"}`} />
+                  </>
+                ) : isCruise ? (
+                  <Ship className="h-5 w-5 text-blue-500" />
+                ) : (
+                  <Building2 className="h-5 w-5 text-primary" />
+                )}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h3 className="font-semibold text-base sm:text-lg">{job.title}</h3>
-                  {isHot && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-brand-red/10 border border-brand-red/20 px-2 py-0.5 text-[10px] font-mono text-brand-red font-semibold">
-                      🔥 Urgent Hiring
+                  {/* Tier badges */}
+                  {isVerified && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[10px] font-mono text-amber-400 font-semibold shadow-[0_0_6px_rgba(245,166,35,0.2)]">
+                      <Star className="h-3 w-3" /> Verified Employer
                     </span>
                   )}
-                  {isAbroad && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10px] font-mono text-blue-400 font-semibold">
-                      🌍 Abroad
+                  {isInternational && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10px] font-mono text-blue-400 font-semibold shadow-[0_0_6px_rgba(74,144,226,0.2)]">
+                      🌍 International
+                    </span>
+                  )}
+                  {isHot && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-brand-red/10 border border-brand-red/20 px-2 py-0.5 text-[10px] font-mono text-brand-red font-semibold">
+                      🔥 Urgent
                     </span>
                   )}
                   {hasHighPay && (
                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-mono text-emerald-400 font-semibold">
-                      💰 High Paying
+                      💰 High Pay
                     </span>
                   )}
                   {isVisa && (
@@ -145,17 +167,14 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
                   )}
                   {job.verified && <Shield className="h-3.5 w-3.5 text-primary" />}
                 </div>
-                <p className="text-sm text-muted-foreground">{job.company}</p>
+                {/* Company name — blurred if locked */}
+                <p className={`text-sm ${isLocked ? "text-muted-foreground/60 blur-[3px] select-none" : "text-muted-foreground"}`}>
+                  {isLocked ? "Confidential Employer" : job.company}
+                </p>
                 <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <MapPin className="h-3 w-3" /> {job.location}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <DollarSign className="h-3 w-3" /> {job.salary}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" /> {timeDisplay}
-                  </span>
+                  <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.location}</span>
+                  <span className="flex items-center gap-1"><DollarSign className="h-3 w-3" /> {job.salary}</span>
+                  <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {timeDisplay}</span>
                   {sourceDisplay && (
                     <span className="flex items-center gap-1 rounded-full border border-border bg-muted/40 px-2 py-0.5 text-[10px] font-mono">
                       <Globe2 className="h-2.5 w-2.5" /> {sourceDisplay}
@@ -166,10 +185,22 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
                       {job.category}
                     </span>
                   )}
-                  <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-mono">
-                    {job.industry}
-                  </span>
                 </div>
+                {/* Social proof + urgency on locked cards */}
+                {isLocked && (
+                  <div className="flex items-center gap-3 mt-2">
+                    {socialProofCount && (
+                      <span className="text-[10px] text-amber-400 font-semibold">
+                        🔥 {socialProofCount} unlocked today
+                      </span>
+                    )}
+                    {isClosingSoon && (
+                      <span className="text-[10px] text-red-400 font-semibold flex items-center gap-1">
+                        <Zap className="h-2.5 w-2.5" /> Closing Soon
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -184,22 +215,26 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
                   size="sm"
                   variant="outline"
                   className="text-xs gap-1.5 border-primary/30 text-primary hover:bg-primary/10"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setApplyModalOpen(true);
-                  }}
+                  onClick={(e) => { e.stopPropagation(); setApplyModalOpen(true); }}
                 >
                   <Send className="h-3 w-3" /> Apply
                 </Button>
               ))}
             <Button
-              className="w-full sm:w-auto bg-gradient-brand border-0 font-semibold gold-shimmer shrink-0"
-              onClick={(e) => {
-                e.stopPropagation();
-                onClick?.();
-              }}
+              className={`w-full sm:w-auto border-0 font-semibold shrink-0 ${
+                isVerified
+                  ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black gold-shimmer"
+                  : isInternational
+                    ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+                    : "bg-gradient-brand gold-shimmer"
+              }`}
+              onClick={(e) => { e.stopPropagation(); onClick?.(); }}
             >
-              View Details <ArrowRight className="ml-2 h-4 w-4" />
+              {isLocked ? (
+                <><Lock className="mr-1.5 h-4 w-4" /> Unlock</>
+              ) : (
+                <>View Details <ArrowRight className="ml-2 h-4 w-4" /></>
+              )}
             </Button>
           </div>
         </div>
