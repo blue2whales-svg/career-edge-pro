@@ -105,6 +105,14 @@ export default function PricingPage() {
   useEffect(() => { trackViewContent("Pricing", "Pricing"); }, []);
   const { isInternational } = useIsInternational();
   const usdRate = useUsdRate();
+  const navigate = useNavigate();
+  const [showProSheet, setShowProSheet] = useState(false);
+
+  const handleProClick = async () => {
+    const { data } = await supabase.auth.getUser();
+    if (!data?.user) { navigate("/login?redirect=/pricing"); return; }
+    setShowProSheet(true);
+  };
 
   return (
     <PageLayout>
