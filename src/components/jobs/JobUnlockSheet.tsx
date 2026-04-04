@@ -15,7 +15,7 @@ import { useUsdRate } from "@/hooks/useUsdRate";
 import { useIsInternational } from "@/hooks/useIsInternational";
 
 type Mode = "single" | "pro";
-type Step = "form" | "waiting" | "success" | "failed";
+type Step = "form" | "waiting" | "success" | "failed" | "signup_prompt";
 
 interface JobUnlockSheetProps {
   open: boolean;
