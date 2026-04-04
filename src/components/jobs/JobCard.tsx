@@ -186,19 +186,12 @@ export function JobCard({ job, index, onClick, tier = "free", socialProofCount }
                     </span>
                   )}
                 </div>
-                {/* Social proof + urgency on locked cards */}
-                {isLocked && (
+                {/* Urgency on locked cards */}
+                {isLocked && isClosingSoon && (
                   <div className="flex items-center gap-3 mt-2">
-                    {socialProofCount && (
-                      <span className="text-[10px] text-amber-400 font-semibold">
-                        🔥 {socialProofCount} unlocked today
-                      </span>
-                    )}
-                    {isClosingSoon && (
-                      <span className="text-[10px] text-red-400 font-semibold flex items-center gap-1">
-                        <Zap className="h-2.5 w-2.5" /> Closing Soon
-                      </span>
-                    )}
+                    <span className="text-[10px] text-red-400 font-semibold flex items-center gap-1">
+                      <Zap className="h-2.5 w-2.5" /> Closing Soon
+                    </span>
                   </div>
                 )}
               </div>

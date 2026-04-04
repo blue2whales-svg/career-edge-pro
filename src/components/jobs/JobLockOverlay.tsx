@@ -83,7 +83,7 @@ export function JobLockOverlay({
               : "border-amber-500/20 text-amber-400 hover:bg-amber-500/10"
           }`}
         >
-          <Star className="h-3 w-3 mr-1.5" /> Get Pro — Unlock All Jobs KSh 500/mo
+          <Star className="h-3 w-3 mr-1.5" /> Get Pro — Unlock All Jobs KSh 1,000/mo
         </Button>
 
         {canUseFreeUnlock && (

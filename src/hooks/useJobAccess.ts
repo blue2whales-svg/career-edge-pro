@@ -66,7 +66,7 @@ export function useJobAccess() {
   const [userId, setUserId] = useState<string | null>(null);
   const { employers: verifiedEmployers } = useVerifiedEmployers();
 
-  const sessionSocialProof = useMemo(() => Math.floor(Math.random() * 49) + 32, []);
+  const sessionSocialProof = useMemo(() => Math.floor(Math.random() * 9) + 2, []);
 
   const loadAccess = useCallback(async () => {
     const { data: userData } = await supabase.auth.getUser();

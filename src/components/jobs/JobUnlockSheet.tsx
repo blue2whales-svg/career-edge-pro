@@ -207,9 +207,15 @@ export default function JobUnlockSheet({
             className="w-full sm:max-w-[440px] rounded-t-2xl sm:rounded-2xl border border-border bg-card p-6 relative max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <button onClick={handleClose} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
-              <X className="w-5 h-5" />
-            </button>
+            {/* Back / Close buttons */}
+            <div className="flex items-center justify-between mb-2">
+              <button onClick={handleClose} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+                <ArrowRight className="w-4 h-4 rotate-180" /> Back
+              </button>
+              <button onClick={handleClose} className="text-muted-foreground hover:text-foreground">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
 
             {step === "form" && (
               <div className="space-y-4">
@@ -233,7 +239,7 @@ export default function JobUnlockSheet({
                   themeColor === "blue" ? "border-blue-500/20 bg-blue-500/5" : "border-amber-500/20 bg-amber-500/5"
                 }`}>
                   <p className={`text-3xl font-bold ${themeColor === "blue" ? "text-blue-400" : "text-amber-400"}`}>
-                    KSh {amount}
+                    KSh {amount.toLocaleString()}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     {mode === "pro" ? "per month · cancel anytime" : "one-time · never expires"}
@@ -251,14 +257,16 @@ export default function JobUnlockSheet({
 
                 {/* M-Pesa phone */}
                 <div>
-                  <Label className="text-sm">M-Pesa Phone Number</Label>
+                  <Label className="text-sm font-medium">M-Pesa Phone Number</Label>
                   <Input
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="0712 345 678"
-                    inputMode="numeric"
-                    autoComplete="tel-national"
-                    className="mt-1"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    autoFocus
+                    className="mt-1 text-base h-12"
                   />
                 </div>
 
