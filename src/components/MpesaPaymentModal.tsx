@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { trackPurchase } from "@/hooks/useFbPixel";
 
 const PAYBILL = "4561075";
+const RETRY_DELAY_SECONDS = 8;
 
 const PACKAGES = [
   { value: "starter", label: "Starter — KES 1,490", amount: 1490 },
@@ -217,7 +218,7 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
   };
 
   const startRetryCountdown = (formattedPhone: string, generatedOrderId: string, attempt: number) => {
-    let seconds = 15;
+    let seconds = RETRY_DELAY_SECONDS;
     setRetryCountdown(seconds); setRetryAttempt(attempt);
     if (countdownRef.current) clearInterval(countdownRef.current);
     countdownRef.current = setInterval(() => {
@@ -305,21 +306,34 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
             {/* FORM STEP */}
             {step === "form" && (
               <>
-                <h3 className="font-serif font-bold text-xl mb-1">M-Pesa Payment</h3>
-                <p className="text-sm text-muted-foreground mb-6">Complete your order via M-Pesa</p>
+                <h3 className="font-serif font-bold text-xl mb-1">Instant M-Pesa STK Push</h3>
+                <p className="text-sm text-muted-foreground mb-4">M-Pesa comes first here — enter your number and the prompt pops on your phone.</p>
                 <div className="space-y-4">
                   <div>
-                    <Label className="text-sm">Full Name *</Label>
-                    <Input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="John Doe" className="mt-1" />
-                  </div>
-                  <div>
-                    <Label className="text-sm">Email Address *</Label>
-                    <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="john@example.com" className="mt-1" />
+                    <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 space-y-2">
+                      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+                        <Phone className="h-3.5 w-3.5" /> Fastest checkout
+                      </div>
+                      <p className="text-sm font-semibold text-foreground">Approve on M-Pesa first, then unlock instantly.</p>
+                      <ul className="space-y-1 text-xs text-muted-foreground">
+                        <li>• STK prompt sent to your phone in seconds</li>
+                        <li>• Auto-retries quickly if Safaricom is busy</li>
+                        <li>• Paybill remains as the backup option</li>
+                      </ul>
+                    </div>
                   </div>
                   <div>
                     <Label className="text-sm">M-Pesa Phone Number *</Label>
-                    <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="0712 345 678" className="mt-1" />
-                    <p className="text-xs text-muted-foreground mt-1">Kenyan number (07XX or 01XX)</p>
+                    <Input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="0712 345 678" inputMode="numeric" autoComplete="tel-national" className="mt-1" />
+                    <p className="text-xs text-muted-foreground mt-1">Use your Safaricom number (07XX or 01XX)</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm">Full Name *</Label>
+                    <Input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="John Doe" autoComplete="name" className="mt-1" />
+                  </div>
+                  <div>
+                    <Label className="text-sm">Email Address *</Label>
+                    <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="john@example.com" autoComplete="email" className="mt-1" />
                   </div>
                   <div>
                     <Label className="text-sm">Package</Label>
@@ -329,8 +343,9 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                     </Select>
                   </div>
                   <Button onClick={handleSubmit} disabled={loading} className="w-full h-12 font-bold text-base border-0 bg-gradient-brand gold-shimmer">
-                    {loading ? (<><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processing...</>) : (`Pay KES ${pkg.amount.toLocaleString()} via M-Pesa →`)}
+                    {loading ? (<><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Sending STK Push...</>) : (`Send STK Push — KES ${pkg.amount.toLocaleString()} →`)}
                   </Button>
+                  <p className="text-center text-xs text-primary font-medium">Secure payment · M-Pesa first · Prompt usually arrives in seconds</p>
                   <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
                     <Lock className="h-3 w-3" /><span>Secured by Safaricom M-Pesa</span>
                   </div>
@@ -353,15 +368,15 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-3">
                     <Phone className="h-8 w-8 text-primary animate-pulse" />
                   </div>
-                  <h3 className="font-serif font-bold text-xl mb-1">📱 Check Your Phone!</h3>
-                  <p className="text-sm text-muted-foreground">M-Pesa prompt sent to <strong>{formatPhoneForDisplay(formatPhone(phone))}</strong></p>
+                  <h3 className="font-serif font-bold text-xl mb-1">📲 STK Push Sent</h3>
+                  <p className="text-sm text-muted-foreground">Approve the M-Pesa prompt on <strong>{formatPhoneForDisplay(formatPhone(phone))}</strong> to complete instantly.</p>
                 </div>
                 <div className="rounded-xl border border-border bg-muted/20 p-4"><PaymentTimeline stage={timelineStage} /></div>
                 {retryCountdown > 0 ? (
                   <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-3 text-center">
-                    <p className="text-sm font-medium text-amber-400">M-Pesa busy — Retrying in {retryCountdown}s… (Attempt {retryAttempt}/{maxRetries})</p>
+                    <p className="text-sm font-medium text-amber-400">M-Pesa is busy — retrying automatically in {retryCountdown}s (Attempt {retryAttempt}/{maxRetries})</p>
                     <div className="w-full bg-muted rounded-full h-1.5 mt-2">
-                      <div className="bg-amber-500 h-1.5 rounded-full transition-all duration-1000" style={{ width: `${(retryCountdown / 15) * 100}%` }} />
+                      <div className="bg-amber-500 h-1.5 rounded-full transition-all duration-1000" style={{ width: `${(retryCountdown / RETRY_DELAY_SECONDS) * 100}%` }} />
                     </div>
                   </div>
                 ) : (
@@ -369,9 +384,10 @@ export default function MpesaPaymentModal({ open, onClose, defaultPackage = "pro
                     <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                     <span className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: "0.3s" }} />
                     <span className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: "0.6s" }} />
-                    <span className="text-sm text-muted-foreground ml-2">Waiting for confirmation...</span>
+                      <span className="text-sm text-muted-foreground ml-2">Waiting for your M-Pesa approval...</span>
                   </div>
                 )}
+                <p className="text-center text-xs text-muted-foreground">Keep this page open. Use Paybill only if the STK prompt does not appear.</p>
                 <div className="border-t border-border pt-4 mt-4">
                   <p className="text-xs text-muted-foreground mb-3">Or pay manually via Paybill:</p>
                   <PaybillCard orderId={orderId} amount={pkg.amount} />

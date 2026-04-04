@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Flame, Shield, Zap, CreditCard, Users, RefreshCw, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useJobsPageData } from "@/hooks/useJobs";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -13,6 +14,21 @@ const fadeUp = {
 };
 
 export function HeroSection() {
+  const { data: liveJobsData, isLoading: jobsLoading, isError: jobsError } = useJobsPageData();
+
+  const counts = liveJobsData?.counts;
+  const kenyaCount = counts?.["Kenya Jobs"] || 0;
+  const remoteCount = counts?.["Remote Jobs"] || 0;
+  const totalCount = counts?.total || liveJobsData?.jobs?.length || 0;
+  const internationalCount = Math.max(totalCount - kenyaCount, 0);
+  const hotJob = liveJobsData?.featured?.[0] || liveJobsData?.jobs?.find((job) => job.hot) || liveJobsData?.jobs?.[0];
+
+  const liveStats = [
+    `📍 ${kenyaCount.toLocaleString()} jobs in Kenya`,
+    `🌐 ${remoteCount.toLocaleString()} remote jobs`,
+    `✈️ ${internationalCount.toLocaleString()} international opportunities`,
+  ];
+
   return (
     <section className="relative z-10 pt-14 sm:pt-28 pb-14 sm:pb-20 px-4">
       <div className="container max-w-5xl mx-auto">
@@ -49,7 +65,7 @@ export function HeroSection() {
             starting at <span className="text-primary font-semibold">KES 1,200</span>
           </motion.p>
 
-          {/* MATCHED JOBS ILLUSION */}
+          {/* LIVE JOBS SNAPSHOT */}
           <motion.div
             initial="hidden"
             animate="visible"
@@ -57,15 +73,47 @@ export function HeroSection() {
             custom={3}
             className="rounded-xl border border-primary/20 bg-primary/5 p-4 mb-6 max-w-md"
           >
-            <p className="text-sm font-semibold text-foreground mb-2">🔥 We found opportunities for you right now:</p>
-            <ul className="space-y-1 text-sm text-muted-foreground mb-3">
-              <li>📍 5 jobs in Nairobi</li>
-              <li>🌐 3 remote jobs</li>
-              <li>✈️ 9 international opportunities</li>
-            </ul>
-            <div className="flex items-center gap-2 text-xs text-amber-400 font-medium">
-              🔒 Unlock to view &amp; apply
-            </div>
+            <p className="text-sm font-semibold text-foreground mb-2">🔥 We found live opportunities for you right now:</p>
+
+            {jobsLoading ? (
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">Checking fresh jobs across Kenya, Gulf, cruise, remote, and global markets…</p>
+                <div className="flex items-center gap-2 text-xs font-medium text-primary">
+                  <span className="h-2 w-2 rounded-full bg-primary animate-pulse-soft" />
+                  Live feed syncing now
+                </div>
+              </div>
+            ) : jobsError ? (
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">Live jobs are syncing right now. Tap Jobs to load the latest openings.</p>
+                <Link to="/jobs" className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors">
+                  See live jobs <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            ) : (
+              <>
+                <ul className="space-y-1 text-sm text-muted-foreground mb-3">
+                  {liveStats.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+
+                {hotJob && (
+                  <div className="rounded-lg border border-border/50 bg-background/40 px-3 py-2 mb-3">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-1">Current hot job</p>
+                    <p className="text-sm font-semibold text-foreground line-clamp-1">{hotJob.title}</p>
+                    <p className="text-xs text-muted-foreground line-clamp-1">
+                      {hotJob.location}
+                      {hotJob.company ? ` · ${hotJob.company}` : ""}
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2 text-xs text-primary font-medium">
+                  🔒 Unlock to view &amp; apply
+                </div>
+              </>
+            )}
           </motion.div>
 
           <motion.div
