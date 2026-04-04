@@ -125,7 +125,7 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
   const sourceDisplay = job.source_label || job.source || "";
   const showUrgency = isPostedMoreThan12Hours(job.posted);
   const isInternational = tier === "international";
-  const unlockPrice = isInternational ? "KSh 199" : "KSh 99";
+  const unlockPrice = "KSh 100";
 
   // Location & salary always visible — these are hooks to draw users in
 
