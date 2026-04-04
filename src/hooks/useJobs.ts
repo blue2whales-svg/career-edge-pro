@@ -118,75 +118,21 @@ export function useCategoryCounts() {
 }
 
 export function useFeaturedJobs() {
-  const { data } = useJobsPageData();
-  return useQuery({
-    queryKey: ["featured-jobs"],
-    queryFn: async () => data?.featured || [],
-    enabled: !!data,
-    staleTime: 1000 * 60 * 30,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-  });
+  const { data, isLoading } = useJobsPageData();
+  return { data: data?.featured || [], isLoading };
 }
-
-// Market filter mapping: handle category-based filters that map to multiple markets
-const CATEGORY_TO_MARKETS: Record<string, string[]> = {
-  "Gulf Jobs": ["UAE", "Qatar", "Saudi Arabia", "Kuwait", "Bahrain", "Oman"],
-  "Europe Jobs": ["Europe", "Germany", "UK"],
-};
 
 export function useJobsPaginated(filters: JobFilters) {
   return useInfiniteQuery({
     queryKey: ["jobs-paginated", filters],
     queryFn: async ({ pageParam = 0 }) => {
-      const from = pageParam * PAGE_SIZE;
-      const to = from + PAGE_SIZE - 1;
-
-      let query: any = supabase
-        .from("cached_jobs")
-        .select("*", { count: "exact" })
-        .eq("is_active", true)
-        .order("posted_at", { ascending: false })
-        .order("hot_score", { ascending: false })
-        .range(from, to);
-
-      if (filters.search) {
-        const s = `%${filters.search}%`;
-        query = query.or(`title.ilike.${s},company.ilike.${s},location.ilike.${s}`);
-      }
-      if (filters.category && filters.category !== "All Categories") {
-        // Check if this category maps to multiple markets
-        const marketGroup = CATEGORY_TO_MARKETS[filters.category];
-        if (marketGroup) {
-          query = query.in("market", marketGroup);
-        } else {
-          query = query.eq("category", filters.category);
-        }
-      }
-      if (filters.industry && filters.industry !== "All" && filters.industry !== "🔥 Hot Abroad") {
-        query = query.eq("industry", filters.industry);
-      }
-      if (filters.industry === "🔥 Hot Abroad") {
-        query = query.eq("hot", true);
-      }
-      if (filters.market && filters.market !== "All Markets") {
-        query = query.eq("market", filters.market);
-      }
-      if (filters.hotOnly) query = query.eq("hot", true);
-      if (filters.visaOnly) query = query.eq("visa_sponsorship", true);
-
-      const { data, error, count } = await query;
-
-      if (error) {
-        return { jobs: [], totalCount: 0, page: pageParam };
-      }
-
-      const jobs = (data || []).map(mapRow);
-      if (pageParam === 0 && jobs.length === 0) {
-        return { jobs: [], totalCount: 0, page: 0 };
-      }
-
-      return { jobs, totalCount: count || 0, page: pageParam };
+      const res = await feedQuery({
+        filters,
+        page: Number(pageParam),
+        pageSize: PAGE_SIZE,
+      });
+      const jobs = (res.jobs || []).map(mapRow);
+      return { jobs, totalCount: res.totalCount || 0, page: res.page ?? Number(pageParam) };
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
@@ -200,48 +146,13 @@ export function useJobsPaginated(filters: JobFilters) {
   });
 }
 
-function filterStatic(jobs: Job[], filters: JobFilters): Job[] {
-  return jobs.filter((job) => {
-    if (filters.search) {
-      const s = filters.search.toLowerCase();
-      if (!job.title.toLowerCase().includes(s) && !job.company.toLowerCase().includes(s)) return false;
-    }
-    if (filters.category && filters.category !== "All Categories" && job.category !== filters.category) return false;
-    if (
-      filters.industry &&
-      filters.industry !== "All" &&
-      filters.industry !== "🔥 Hot Abroad" &&
-      job.industry !== filters.industry
-    )
-      return false;
-    if (filters.industry === "🔥 Hot Abroad" && !job.hot) return false;
-    if (filters.market && filters.market !== "All Markets" && job.market !== filters.market) return false;
-    if (filters.hotOnly && !job.hot) return false;
-    if (filters.visaOnly && !job.visa_sponsorship) return false;
-    return true;
-  });
-}
-
 export function useJobs() {
   return useQuery({
     queryKey: ["live-jobs"],
     queryFn: async () => {
-      const { data }: any = await supabase
-        .from("cached_jobs")
-        .select("*")
-        .eq("is_active", true)
-        .order("posted_at", { ascending: false })
-        .limit(500);
-
-      if (!data || data.length === 0) return { jobs: [], featured: [] };
-
-      const liveJobs = data.map(mapRow);
-      const featured = (() => {
-        const hot = liveJobs.filter((j: any) => j.hot === true);
-        if (hot.length >= 3) return hot.slice(0, 6);
-        return liveJobs.slice(0, 6);
-      })();
-
+      const res = await feedQuery({ page: 0, pageSize: 200, includeFeatured: true });
+      const liveJobs = (res.jobs || []).map(mapRow);
+      const featured = (res.featured || []).map(mapRow);
       return { jobs: liveJobs, featured };
     },
     staleTime: 1000 * 60 * 30,
