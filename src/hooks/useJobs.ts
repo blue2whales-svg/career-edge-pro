@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { type Job } from "@/data/jobs";
 
 const SOURCE_LABELS: Record<string, string> = {
@@ -35,12 +34,70 @@ export interface JobFilters {
 
 const PAGE_SIZE = 20;
 
-async function feedQuery(body: Record<string, any>): Promise<any> {
-  const { data, error } = await supabase.functions.invoke("fetch-jobs", {
-    body: { mode: "feed", ...body },
+function getJobsFunctionConfig() {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+  if (!url || !key) {
+    throw new Error("Missing live jobs backend configuration.");
+  }
+
+  return {
+    endpoint: `${url}/functions/v1/fetch-jobs`,
+    key,
+  };
+}
+
+function parseResponseBody(raw: string) {
+  if (!raw) return null;
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return { message: raw };
+  }
+}
+
+async function invokeJobsFunction(body: Record<string, any> = {}) {
+  const { endpoint, key } = getJobsFunctionConfig();
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+    },
+    body: JSON.stringify(body),
   });
-  if (error) throw error;
-  return data || {};
+
+  const raw = await response.text();
+  const data = parseResponseBody(raw);
+
+  if (!response.ok) {
+    throw new Error(data?.error || data?.message || `Jobs request failed (${response.status})`);
+  }
+
+  return data;
+}
+
+function isFeedResponse(data: any) {
+  return Boolean(
+    data &&
+      typeof data === "object" &&
+      (Array.isArray(data.jobs) ||
+        Array.isArray(data.featured) ||
+        typeof data.counts === "object" ||
+        typeof data.totalCount === "number")
+  );
+}
+
+async function feedQuery(body: Record<string, any>): Promise<any> {
+  const data = await invokeJobsFunction({ mode: "feed", ...body });
+  if (!isFeedResponse(data)) {
+    throw new Error("Live jobs feed returned an invalid response.");
+  }
+  return data;
 }
 
 function mapRow(row: any): Job {
@@ -106,6 +163,7 @@ export function useJobsPageData() {
     staleTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
+    retry: 1,
   });
 }
 
@@ -143,6 +201,7 @@ export function useJobsPaginated(filters: JobFilters) {
     staleTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
+    retry: 1,
   });
 }
 
@@ -158,13 +217,16 @@ export function useJobs() {
     staleTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
+    retry: 1,
   });
 }
 
 export async function triggerJobsFetch() {
   try {
-    await supabase.functions.invoke("fetch-jobs");
+    await invokeJobsFunction();
+    return true;
   } catch (err) {
     console.error("Failed to trigger job fetch:", err);
+    return false;
   }
 }
