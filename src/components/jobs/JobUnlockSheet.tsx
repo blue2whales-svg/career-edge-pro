@@ -47,8 +47,8 @@ export default function JobUnlockSheet({
   open, onClose, mode, jobTitle, jobId, company, tier = "verified", onUnlocked,
 }: JobUnlockSheetProps) {
   const isInternational = tier === "international";
-  const amount = mode === "pro" ? 500 : isInternational ? 199 : 99;
-  const label = mode === "pro" ? "CV Edge Pro — KSh 500/mo" : `Unlock Job — KSh ${amount}`;
+  const amount = mode === "pro" ? 1000 : isInternational ? 199 : 99;
+  const label = mode === "pro" ? "CV Edge Pro — KSh 1,000/mo" : `Unlock Job — KSh ${amount}`;
   const usdRate = useUsdRate();
   const amountUsd = (amount * usdRate).toFixed(2);
 
