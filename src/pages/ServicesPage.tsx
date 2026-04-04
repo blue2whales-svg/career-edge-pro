@@ -29,7 +29,7 @@ const ALL_SERVICES = [
     icon: Award, title: "Executive CV Writing", category: "Executive",
     desc: "Premium CVs for C-suite, VP, and Director-level professionals.",
     features: ["Board-level language", "Human editor review", "Executive bio included", "Strategic positioning"],
-    price: "From KES 5,490",
+    price: "From KES 2,490",
   },
   {
     icon: Shield, title: "ATS-Optimised CV", category: "Job Seeker",
