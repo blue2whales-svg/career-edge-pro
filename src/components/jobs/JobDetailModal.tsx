@@ -11,20 +11,96 @@ import JobUnlockSheet from "./JobUnlockSheet";
 
 function generateRequirements(job: Job): string[] {
   const reqs: string[] = [];
-  const { industry, title, tag, type } = job;
+  const { industry, title, tag, type, location } = job;
+  const t = title.toLowerCase();
+
+  // Seed a simple hash from title for deterministic variety
+  let hash = 0;
+  for (let i = 0; i < title.length; i++) hash = ((hash << 5) - hash + title.charCodeAt(i)) | 0;
+  const pick = (arr: string[]) => arr[Math.abs(hash) % arr.length];
+
+  // --- Industry-specific core requirements ---
   if (industry === "Cruise & Hospitality") {
     reqs.push("Valid passport with 12+ months validity");
-    if (tag?.includes("Cruise")) { reqs.push("STCW certification (Basic Safety Training)"); reqs.push("ENG1 / Pre-employment medical certificate"); }
+    if (tag?.includes("Cruise")) {
+      reqs.push("STCW certification (Basic Safety Training)");
+      reqs.push("ENG1 / Pre-employment medical certificate");
+      reqs.push("Ability to live and work onboard for extended contracts (4–8 months)");
+    }
     reqs.push("Minimum 2 years experience in hospitality or related field");
     reqs.push("Excellent communication skills in English");
-    if (title.toLowerCase().includes("chef") || title.toLowerCase().includes("cook")) reqs.push("Culinary diploma or equivalent professional certification");
-    if (title.toLowerCase().includes("nurse")) reqs.push("Registered nursing license valid internationally");
-  } else if (industry === "Healthcare") { reqs.push("Relevant medical degree or nursing diploma","Valid professional license / registration","Minimum 2–3 years clinical experience","BLS / ACLS certification preferred"); }
-  else if (industry === "Engineering" || industry === "Oil & Gas") { reqs.push("Bachelor's degree in relevant engineering discipline","3–5 years industry experience minimum","Professional certifications (PMP, HSE, etc.) an advantage","Willingness to work in field / remote locations"); }
-  else if (industry === "Technology") { reqs.push("Degree in Computer Science, IT, or related field","3+ years hands-on experience with modern tech stack","Strong problem-solving and analytical skills"); }
-  else if (industry === "Finance") { reqs.push("Degree in Finance, Accounting, or Business Administration","CPA, ACCA, or CFA qualification preferred","3+ years experience in a financial role"); }
-  else { reqs.push("Relevant degree or professional qualification","2+ years experience in a similar role","Strong communication and organizational skills"); }
+    if (t.includes("chef") || t.includes("cook")) {
+      reqs.push("Culinary diploma or equivalent professional certification");
+      reqs.push("HACCP / Food Safety Level 2 certification");
+      reqs.push("Experience in high-volume kitchen operations");
+    }
+    if (t.includes("nurse")) {
+      reqs.push("Registered nursing license valid internationally");
+      reqs.push("BLS / ACLS certification required");
+    }
+    reqs.push(pick(["Strong teamwork and interpersonal skills", "Ability to work under pressure in fast-paced environments", "Flexible with shift schedules including weekends and holidays"]));
+  } else if (industry === "Healthcare") {
+    reqs.push("Relevant medical degree or nursing diploma from a recognised institution");
+    reqs.push("Valid professional license / registration with relevant board");
+    reqs.push("Minimum 2–3 years clinical experience in a similar setting");
+    reqs.push("BLS / ACLS certification preferred");
+    if (t.includes("nurse") || t.includes("caregiver")) {
+      reqs.push("Strong patient care and bedside manner skills");
+      reqs.push("Experience with electronic health records (EHR) systems");
+      reqs.push(pick(["Willingness to work rotating shifts including nights", "Experience in geriatric / palliative care is an advantage", "Infection control and prevention knowledge"]));
+    } else {
+      reqs.push("Strong clinical decision-making and diagnostic skills");
+      reqs.push(pick(["Experience with multidisciplinary team collaboration", "Knowledge of current medical protocols and evidence-based practice"]));
+    }
+  } else if (industry === "Engineering" || industry === "Oil & Gas") {
+    reqs.push("Bachelor's degree in relevant engineering discipline");
+    reqs.push("3–5 years industry experience minimum");
+    reqs.push("Professional certifications (PMP, HSE, NEBOSH) an advantage");
+    reqs.push("Willingness to work in field / remote locations");
+    reqs.push(pick(["Proficiency in AutoCAD, SolidWorks, or similar design software", "Experience with project lifecycle management", "Strong understanding of regulatory compliance and safety standards"]));
+    reqs.push(pick(["Excellent report writing and documentation skills", "Valid driving license and willingness to travel"]));
+  } else if (industry === "Technology") {
+    reqs.push("Degree in Computer Science, IT, or related field");
+    reqs.push("3+ years hands-on experience with modern tech stack");
+    reqs.push("Strong problem-solving and analytical skills");
+    if (t.includes("developer") || t.includes("engineer")) {
+      reqs.push(pick(["Proficiency in Python, JavaScript/TypeScript, or Java", "Experience with cloud platforms (AWS, GCP, Azure)", "Familiarity with CI/CD pipelines and DevOps practices"]));
+      reqs.push(pick(["Experience with relational and NoSQL databases", "Understanding of microservices architecture"]));
+    } else if (t.includes("data") || t.includes("analyst")) {
+      reqs.push("Experience with SQL, Python, and data visualisation tools");
+      reqs.push("Strong statistical analysis and reporting skills");
+    } else {
+      reqs.push(pick(["Excellent documentation and technical writing skills", "Ability to work in Agile/Scrum environments"]));
+    }
+  } else if (industry === "Finance") {
+    reqs.push("Degree in Finance, Accounting, or Business Administration");
+    reqs.push("CPA, ACCA, or CFA qualification preferred");
+    reqs.push("3+ years experience in a financial role");
+    reqs.push(pick(["Proficiency in financial modelling and Excel/Google Sheets", "Strong understanding of IFRS / GAAP standards", "Experience with ERP systems (SAP, QuickBooks, Sage)"]));
+    reqs.push(pick(["Excellent attention to detail and analytical mindset", "Knowledge of tax regulations and compliance requirements"]));
+  } else if (industry === "Education") {
+    reqs.push("Bachelor's degree in Education or relevant subject area");
+    reqs.push("TSC registration or equivalent teaching certification");
+    reqs.push("Minimum 2 years teaching experience");
+    reqs.push("Strong classroom management and curriculum development skills");
+    reqs.push(pick(["Proficiency in digital learning tools and LMS platforms", "Excellent written and verbal communication"]));
+  } else {
+    // General / fallback — still varied
+    reqs.push("Relevant degree or professional qualification");
+    reqs.push(pick(["2+ years experience in a similar role", "3+ years progressive experience in the field", "1–2 years hands-on industry experience"]));
+    reqs.push("Strong communication and organizational skills");
+    reqs.push(pick(["Proficiency in Microsoft Office Suite / Google Workspace", "Experience working in a team-oriented environment", "Ability to manage multiple priorities and meet deadlines"]));
+    reqs.push(pick(["Strong attention to detail and quality focus", "Self-motivated with a proactive approach to problem-solving", "Excellent time management and planning abilities"]));
+  }
+
+  // --- Cross-cutting extras based on tags/type ---
   if (type === "Full-time" && tag?.includes("Gulf")) reqs.push("Willingness to relocate to the Gulf region");
+  if (tag?.includes("Visa")) reqs.push("Eligible for employer-sponsored work visa");
+  if (location?.toLowerCase().includes("remote") || type === "Remote") reqs.push("Self-disciplined with proven remote work experience");
+  if (t.includes("senior") || t.includes("lead") || t.includes("manager")) {
+    reqs.push(pick(["Demonstrated leadership and team management skills", "Experience mentoring and developing junior staff", "Track record of delivering projects on time and within budget"]));
+  }
+
   return reqs;
 }
 

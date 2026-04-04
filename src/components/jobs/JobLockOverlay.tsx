@@ -26,7 +26,7 @@ export function JobLockOverlay({
   onProClick,
 }: JobLockOverlayProps) {
   const isInternational = tier === "international";
-  const unlockPrice = isInternational ? "KSh 199" : "KSh 99";
+  const unlockPrice = "KSh 100";
 
   return (
     <div className="absolute inset-0 z-20 flex items-center justify-center bg-background/85 backdrop-blur-md rounded-b-lg">
