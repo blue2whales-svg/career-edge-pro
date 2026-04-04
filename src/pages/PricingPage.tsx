@@ -178,15 +178,17 @@ export default function PricingPage() {
                   ))}
                 </ul>
 
-                <Link to={plan.ctaLink}>
-                  <Button className={`w-full h-12 font-semibold ${
-                    plan.popular
-                      ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black border-0 shadow-[0_0_20px_rgba(245,166,35,0.3)] gold-shimmer"
-                      : "border-primary/30"
-                  }`} variant={plan.popular ? "default" : "outline"}>
+                {plan.popular ? (
+                  <Button onClick={handleProClick} className="w-full h-12 font-semibold bg-gradient-to-r from-amber-500 to-amber-600 text-black border-0 shadow-[0_0_20px_rgba(245,166,35,0.3)] gold-shimmer">
                     {plan.cta} <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
-                </Link>
+                ) : (
+                  <Link to={plan.ctaLink}>
+                    <Button className="w-full h-12 font-semibold border-primary/30" variant="outline">
+                      {plan.cta} <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                )}
               </motion.div>
             ))}
           </div>
