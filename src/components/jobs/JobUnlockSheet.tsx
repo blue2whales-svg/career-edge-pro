@@ -15,7 +15,7 @@ import { useUsdRate } from "@/hooks/useUsdRate";
 import { useIsInternational } from "@/hooks/useIsInternational";
 
 type Mode = "single" | "pro";
-type Step = "form" | "waiting" | "success" | "failed";
+type Step = "form" | "waiting" | "success" | "failed" | "signup_prompt";
 
 interface JobUnlockSheetProps {
   open: boolean;
@@ -89,39 +89,55 @@ export default function JobUnlockSheet({
     if (pollRef.current) clearInterval(pollRef.current);
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
-    const { data: userData } = await supabase.auth.getUser();
-    const userId = userData?.user?.id;
-    if (!userId) { toast.error("Not logged in"); return; }
-
-    if (mode === "single" && jobId) {
-      await supabase.from("job_unlocks").insert({
-        user_id: userId,
-        job_id: jobId,
-        unlock_type: "single",
-        amount_paid: amount,
-        currency: "KES",
-      });
-    }
-
-    if (mode === "pro") {
-      await supabase.from("subscriptions").insert({
-        user_id: userId,
-        plan: "pro",
-        status: "active",
-        billing_cycle: "monthly",
-        amount: 1000,
-        currency: "KES",
-      });
-    }
-
+    // Save phone locally regardless of auth
     if (savePhone && phone) {
       localStorage.setItem("cvedge_mpesa_phone", phone);
-      await supabase.from("profiles").update({ phone: formatPhone(phone) }).eq("user_id", userId);
     }
 
-    setStep("success");
-    toast.success(mode === "pro" ? "🎉 Welcome to Pro! All jobs unlocked" : "✅ Job unlocked! Apply now");
-    onUnlocked();
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData?.user?.id;
+
+    if (userId) {
+      // User is logged in — record unlock in DB
+      if (mode === "single" && jobId) {
+        await supabase.from("job_unlocks").insert({
+          user_id: userId,
+          job_id: jobId,
+          unlock_type: "single",
+          amount_paid: amount,
+          currency: "KES",
+        });
+      }
+
+      if (mode === "pro") {
+        await supabase.from("subscriptions").insert({
+          user_id: userId,
+          plan: "pro",
+          status: "active",
+          billing_cycle: "monthly",
+          amount: 1000,
+          currency: "KES",
+        });
+      }
+
+      if (savePhone && phone) {
+        await supabase.from("profiles").update({ phone: formatPhone(phone) }).eq("user_id", userId);
+      }
+    } else {
+      // Not logged in — store pending unlock in localStorage so it can be saved after signup
+      const pendingUnlock = {
+        mode,
+        jobId,
+        amount,
+        phone: formatPhone(phone),
+        timestamp: Date.now(),
+      };
+      localStorage.setItem("cvedge_pending_unlock", JSON.stringify(pendingUnlock));
+    }
+
+    setStep(userId ? "success" : "signup_prompt");
+    toast.success(mode === "pro" ? "🎉 Payment received! Save your access" : "✅ Payment received!");
+    if (userId) onUnlocked();
   }, [mode, jobId, amount, phone, savePhone, onUnlocked]);
 
   const startPolling = useCallback((crId: string) => {
@@ -365,6 +381,39 @@ export default function JobUnlockSheet({
                     Try Again
                   </Button>
                   <PayPalButton amountUsd={amountUsd} description={label} onSuccess={handlePayPalSuccess} />
+                </div>
+              )}
+
+              {step === "signup_prompt" && (
+                <div className="py-4 space-y-5 text-center">
+                  <div className="w-16 h-16 rounded-full bg-primary/15 flex items-center justify-center mx-auto">
+                    <CheckCircle className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="font-serif font-bold text-xl">✅ Payment Received!</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Create a free account to save your unlock and access the job details anytime.
+                  </p>
+                  <Button
+                    onClick={() => {
+                      handleClose();
+                      onUnlocked();
+                      window.location.href = "/signup?redirect=/jobs";
+                    }}
+                    className={`w-full h-12 font-bold border-0 bg-gradient-to-r ${gradientClass}`}
+                  >
+                    Sign Up & View Job →
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      handleClose();
+                      onUnlocked();
+                      window.location.href = "/login?redirect=/jobs";
+                    }}
+                    className="w-full text-sm text-muted-foreground"
+                  >
+                    Already have an account? Log in
+                  </Button>
                 </div>
               )}
             </div>
