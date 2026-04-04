@@ -156,6 +156,22 @@ const App = () => {
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/refund-policy" element={<RefundPolicyPage />} />
             <Route path="/disclaimer" element={<DisclaimerPage />} />
+            <Route
+              path="/dashboard/applications"
+              element={
+                <AuthGuard>
+                  <ApplicationsPage />
+                </AuthGuard>
+              }
+            />
+            <Route
+              path="/dashboard/referrals"
+              element={
+                <AuthGuard>
+                  <ReferralsPage />
+                </AuthGuard>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
