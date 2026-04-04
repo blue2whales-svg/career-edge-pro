@@ -29,25 +29,25 @@ const ALL_SERVICES = [
     icon: Award, title: "Executive CV Writing", category: "Executive",
     desc: "Premium CVs for C-suite, VP, and Director-level professionals.",
     features: ["Board-level language", "Human editor review", "Executive bio included", "Strategic positioning"],
-    price: "From KES 5,490",
+    price: "From KES 2,490",
   },
   {
     icon: Shield, title: "ATS-Optimised CV", category: "Job Seeker",
     desc: "Engineered specifically to pass applicant tracking systems with high scores.",
     features: ["ATS score guarantee", "Keyword density analysis", "Format compliance", "Machine-readable layout"],
-    price: "From KES 2,490",
+    price: "From KES 1,490",
   },
   {
     icon: Globe, title: "International CV", category: "Job Seeker",
     desc: "Country-specific formatting for 15+ markets worldwide.",
     features: ["Local format standards", "Cultural adaptation", "Language considerations", "Market-specific keywords"],
-    price: "From KES 4,490",
+    price: "From KES 2,000",
   },
   {
     icon: Pen, title: "Cover Letter Writing", category: "Job Seeker",
     desc: "Tailored per application with a compelling hook that gets read.",
     features: ["Company-specific research", "Role alignment", "Compelling narrative", "Action-oriented close"],
-    price: "From KES 1,000",
+    price: "From KES 900",
   },
   {
     icon: Linkedin, title: "LinkedIn Optimisation", category: "Job Seeker",
@@ -96,7 +96,7 @@ const ALL_SERVICES = [
     icon: FileCheck, title: "CV Review & Critique", category: "Job Seeker",
     desc: "Detailed feedback report with actionable improvements for your existing CV.",
     features: ["ATS compatibility check", "Content analysis", "Format assessment", "Improvement roadmap"],
-    price: "From KES 1,000",
+    price: "From KES 900",
   },
 ];
 
@@ -142,11 +142,11 @@ const QUIZ_QUESTIONS = [
 ];
 
 const QUIZ_RESULTS: Record<string, { title: string; desc: string; service: string; price: string }> = {
-  ats: { title: "ATS-Optimised CV", desc: "Engineered to beat applicant tracking systems at large companies.", service: "ats-cv", price: "KES 2,490" },
+  ats: { title: "ATS-Optimised CV", desc: "Engineered to beat applicant tracking systems at large companies.", service: "ats-cv", price: "KES 1,490" },
   professional: { title: "Professional CV", desc: "Clean, corporate layout trusted by HR managers across all industries.", service: "cv", price: "KES 1,490" },
   modern: { title: "Modern CV", desc: "Contemporary visual design that stands out for creative and tech roles.", service: "modern-cv", price: "KES 2,490" },
-  executive: { title: "Executive CV", desc: "Premium positioning for C-suite, VP, and Director-level professionals.", service: "executive-cv", price: "KES 5,490" },
-  international: { title: "International CV", desc: "Formatted for Gulf, UK, EU markets with country-specific conventions.", service: "international-cv", price: "KES 4,490" },
+  executive: { title: "Executive CV", desc: "Premium positioning for C-suite, VP, and Director-level professionals.", service: "executive-cv", price: "KES 2,490" },
+  international: { title: "International CV", desc: "Formatted for Gulf, UK, EU markets with country-specific conventions.", service: "international-cv", price: "KES 2,000" },
 };
 
 function CVQuizSection() {
@@ -333,10 +333,10 @@ export default function ServicesPage() {
                   <tr className="border-b border-border bg-muted/30">
                     <th className="text-left p-4 font-semibold text-muted-foreground">Feature</th>
                      <th className="p-4 font-semibold text-center">Professional<br/><span className="text-primary text-xs font-bold">KES 1,490</span></th>
-                     <th className="p-4 font-semibold text-center">ATS-Optimised<br/><span className="text-primary text-xs font-bold">KES 2,490</span></th>
+                     <th className="p-4 font-semibold text-center">ATS-Optimised<br/><span className="text-primary text-xs font-bold">KES 1,490</span></th>
                      <th className="p-4 font-semibold text-center">Modern<br/><span className="text-primary text-xs font-bold">KES 2,490</span></th>
-                     <th className="p-4 font-semibold text-center">Executive<br/><span className="text-primary text-xs font-bold">KES 5,490</span></th>
-                     <th className="p-4 font-semibold text-center">International<br/><span className="text-primary text-xs font-bold">KES 4,490</span></th>
+                     <th className="p-4 font-semibold text-center">Executive<br/><span className="text-primary text-xs font-bold">KES 2,490</span></th>
+                     <th className="p-4 font-semibold text-center">International<br/><span className="text-primary text-xs font-bold">KES 2,000</span></th>
                   </tr>
                 </thead>
                 <tbody>
