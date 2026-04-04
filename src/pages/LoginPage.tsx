@@ -26,7 +26,8 @@ export default function LoginPage() {
     if (error) {
       toast({ title: error.message, variant: "destructive" });
     } else {
-      navigate("/portal");
+      const redirect = searchParams.get("redirect") || "/portal";
+      navigate(redirect);
     }
     setLoading(false);
   };
