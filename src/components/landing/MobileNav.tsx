@@ -131,32 +131,22 @@ export function MobileNav() {
         </nav>
 
         {/* FOOTER */}
-        <div className="border-t border-border/50 px-4 py-4 space-y-3 shrink-0">
+        <div className="border-t border-border/50 px-4 py-3 space-y-2 shrink-0">
           {user ? (
-            <>
-              <Link to="/portal" onClick={() => setOpen(false)}>
-                <Button variant="outline" className="w-full gap-2">
-                  <User className="w-4 h-4" /> My Portal
-                </Button>
-              </Link>
-              <Button onClick={handleLogout} variant="outline" className="w-full gap-2 text-destructive border-destructive/30">
-                <LogOut className="w-4 h-4" /> Log out
-              </Button>
-            </>
+            <Button onClick={handleLogout} variant="outline" size="sm" className="w-full gap-2 text-destructive border-destructive/30">
+              <LogOut className="w-3.5 h-3.5" /> Log out
+            </Button>
           ) : (
-            <>
-              <Link to="/login" onClick={() => setOpen(false)}>
-                <Button variant="outline" className="w-full">
-                  Log in
+            <div className="flex gap-2">
+              <Link to="/login" onClick={() => setOpen(false)} className="flex-1">
+                <Button variant="outline" size="sm" className="w-full">Log in</Button>
+              </Link>
+              <Link to="/signup" onClick={() => setOpen(false)} className="flex-1">
+                <Button size="sm" className="w-full bg-gradient-brand gap-1">
+                  Sign Up <ArrowRight className="w-3.5 h-3.5" />
                 </Button>
               </Link>
-              <Link to="/signup" onClick={() => setOpen(false)}>
-                <Button className="w-full bg-gradient-brand">
-                  Sign Up Free
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </Link>
-            </>
+            </div>
           )}
         </div>
       </SheetContent>
