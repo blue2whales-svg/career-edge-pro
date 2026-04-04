@@ -20,7 +20,7 @@ const PACKAGES = [
   { value: "professional", label: "Professional — KES 2,490", amount: 2490 },
   { value: "executive", label: "Executive CV — KES 2,490", amount: 2490 },
   { value: "cover-letter", label: "Cover Letter Only — KES 900", amount: 900 },
-  { value: "cv-review", label: "Expert CV Review — KES 1,000", amount: 1000 },
+  { value: "cv-review", label: "Expert CV Review — KES 900", amount: 900 },
   { value: "global", label: "Global Assistance — KES 20,000", amount: 20000 },
   { value: "pro-monthly", label: "CV Edge Pro — KES 1,000/month", amount: 1000 },
   { value: "pro-plus", label: "CV Edge Pro Plus — KES 2,000/month", amount: 2000 },

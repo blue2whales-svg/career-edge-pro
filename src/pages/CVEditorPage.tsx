@@ -1860,7 +1860,7 @@ function getPreview(templateId: string, cv: CVData, accent: string): JSX.Element
 // ─── TEMPLATE PRICING ─────────────────────────────────────────────────────────
 function getTemplatePrice(templateId: string): { label: string; amount: number } {
   if (templateId.startsWith("ats")) return { label: "KES 1,490", amount: 1490 };
-  if (templateId.startsWith("executive")) return { label: "KES 2,500", amount: 2500 };
+  if (templateId.startsWith("executive")) return { label: "KES 2,490", amount: 2490 };
   if (templateId.startsWith("minimal")) return { label: "KES 1,300", amount: 1300 };
   if (templateId === "sidebar" || templateId.startsWith("two-column-creative"))
     return { label: "KES 1,200", amount: 1200 };

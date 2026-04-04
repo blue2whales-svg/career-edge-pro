@@ -333,10 +333,10 @@ export default function ServicesPage() {
                   <tr className="border-b border-border bg-muted/30">
                     <th className="text-left p-4 font-semibold text-muted-foreground">Feature</th>
                      <th className="p-4 font-semibold text-center">Professional<br/><span className="text-primary text-xs font-bold">KES 1,490</span></th>
-                     <th className="p-4 font-semibold text-center">ATS-Optimised<br/><span className="text-primary text-xs font-bold">KES 2,490</span></th>
+                     <th className="p-4 font-semibold text-center">ATS-Optimised<br/><span className="text-primary text-xs font-bold">KES 1,490</span></th>
                      <th className="p-4 font-semibold text-center">Modern<br/><span className="text-primary text-xs font-bold">KES 2,490</span></th>
-                     <th className="p-4 font-semibold text-center">Executive<br/><span className="text-primary text-xs font-bold">KES 5,490</span></th>
-                     <th className="p-4 font-semibold text-center">International<br/><span className="text-primary text-xs font-bold">KES 4,490</span></th>
+                     <th className="p-4 font-semibold text-center">Executive<br/><span className="text-primary text-xs font-bold">KES 2,490</span></th>
+                     <th className="p-4 font-semibold text-center">International<br/><span className="text-primary text-xs font-bold">KES 2,000</span></th>
                   </tr>
                 </thead>
                 <tbody>
