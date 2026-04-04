@@ -34,11 +34,11 @@ export default function LandingPage() {
   };
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background effects */}
-      <div className="fixed inset-0 bg-grid opacity-20 pointer-events-none" />
-      <div className="fixed top-[-300px] left-[-200px] w-[700px] h-[700px] rounded-full bg-primary/5 blur-[150px] animate-orb pointer-events-none" />
+      {/* Background effects — hidden on mobile for speed */}
+      <div className="fixed inset-0 bg-grid opacity-20 pointer-events-none hidden md:block" />
+      <div className="fixed top-[-300px] left-[-200px] w-[700px] h-[700px] rounded-full bg-primary/5 blur-[150px] animate-orb pointer-events-none hidden md:block" />
       <div
-        className="fixed bottom-[-200px] right-[-200px] w-[500px] h-[500px] rounded-full bg-secondary/3 blur-[120px] animate-orb pointer-events-none"
+        className="fixed bottom-[-200px] right-[-200px] w-[500px] h-[500px] rounded-full bg-secondary/3 blur-[120px] animate-orb pointer-events-none hidden md:block"
         style={{ animationDelay: "-4s" }}
       />
 
