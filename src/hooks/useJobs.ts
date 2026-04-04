@@ -13,13 +13,16 @@ const SOURCE_LABELS: Record<string, string> = {
 export function timeAgo(dateStr: string | null | undefined): string {
   if (!dateStr) return "Recently";
   const diff = Date.now() - new Date(dateStr).getTime();
+  if (diff < 0) return "Just now";
   const mins = Math.floor(diff / 60000);
   if (mins < 1) return "Just now";
   if (mins < 60) return `${mins} min${mins > 1 ? "s" : ""} ago`;
   const hours = Math.floor(mins / 60);
   if (hours < 24) return `${hours} hour${hours > 1 ? "s" : ""} ago`;
   const days = Math.floor(hours / 24);
-  return `${days} day${days > 1 ? "s" : ""} ago`;
+  if (days <= 7) return `${days} day${days > 1 ? "s" : ""} ago`;
+  if (days <= 30) return `${Math.ceil(days / 7)} week${Math.ceil(days / 7) > 1 ? "s" : ""} ago`;
+  return "Recently";
 }
 
 export interface JobFilters {
