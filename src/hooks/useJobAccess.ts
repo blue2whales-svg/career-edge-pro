@@ -1,17 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { supabase } from "../integrations/supabase/client";
 
-const STORAGE_KEY = "cvedge_jobs_unlocked";
 const FREE_UNLOCK_KEY = "cvedge_free_unlocks_used";
 const MAX_FREE_UNLOCKS = 3;
-
-function getUnlockedFromStorage(): boolean {
-  try {
-    return localStorage.getItem(STORAGE_KEY) === "true";
-  } catch {
-    return false;
-  }
-}
 
 function getFreeUnlockedJobs(): string[] {
   try {
@@ -24,7 +15,6 @@ function getFreeUnlockedJobs(): string[] {
   }
 }
 
-// Cache verified employers in memory per session
 let verifiedEmployersCache: string[] | null = null;
 
 async function fetchVerifiedEmployers(): Promise<string[]> {
@@ -46,16 +36,11 @@ export function getJobTier(
   verifiedNames: string[]
 ): JobTier {
   const isKenya = !market || market === "Kenya";
-  const isInternational = !isKenya;
-  
-  if (isInternational || visaSponsorship) return "international";
-  
-  // Kenya job — check if company is verified
+  if (!isKenya || visaSponsorship) return "international";
   const companyLower = company.toLowerCase();
   const isVerified = verifiedNames.some(
     (name) => companyLower.includes(name) || name.includes(companyLower)
   );
-  
   return isVerified ? "verified" : "free";
 }
 
@@ -74,64 +59,59 @@ export function useVerifiedEmployers() {
 }
 
 export function useJobAccess() {
-  const [isUnlocked, setIsUnlocked] = useState(getUnlockedFromStorage);
   const [freeUnlockedJobs, setFreeUnlockedJobs] = useState<string[]>(getFreeUnlockedJobs);
   const [checking, setChecking] = useState(true);
   const [hasProSubscription, setHasProSubscription] = useState(false);
+  const [dbUnlockedJobIds, setDbUnlockedJobIds] = useState<string[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
   const { employers: verifiedEmployers } = useVerifiedEmployers();
 
-  // Session-randomized social proof number
   const sessionSocialProof = useMemo(() => Math.floor(Math.random() * 49) + 32, []);
 
-  useEffect(() => {
-    const check = async () => {
-      if (getUnlockedFromStorage()) {
-        setIsUnlocked(true);
-        setChecking(false);
-        return;
-      }
-
-      const { data: userData } = await supabase.auth.getUser();
-      if (userData?.user) {
-        // Check paid orders
-        const { data: orders } = await supabase
-          .from("orders")
-          .select("id")
-          .eq("user_id", userData.user.id)
-          .eq("status", "paid")
-          .limit(1);
-
-        if (orders && orders.length > 0) {
-          localStorage.setItem(STORAGE_KEY, "true");
-          setIsUnlocked(true);
-        }
-
-        // Check active Pro subscription
-        const { data: subs } = await supabase
-          .from("subscriptions")
-          .select("id, expires_at")
-          .eq("user_id", userData.user.id)
-          .eq("status", "active")
-          .limit(1);
-
-        if (subs && subs.length > 0) {
-          const sub = subs[0] as any;
-          if (new Date(sub.expires_at) > new Date()) {
-            setHasProSubscription(true);
-            setIsUnlocked(true);
-            localStorage.setItem(STORAGE_KEY, "true");
-          }
-        }
-      }
+  const loadAccess = useCallback(async () => {
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData?.user) {
       setChecking(false);
-    };
-    check();
+      return;
+    }
+    const uid = userData.user.id;
+    setUserId(uid);
+
+    // Check active Pro subscription
+    const { data: subs } = await supabase
+      .from("subscriptions")
+      .select("id, expires_at, status")
+      .eq("user_id", uid)
+      .eq("status", "active")
+      .limit(1);
+
+    if (subs && subs.length > 0) {
+      const sub = subs[0] as any;
+      if (new Date(sub.expires_at) > new Date()) {
+        setHasProSubscription(true);
+      }
+    }
+
+    // Load individually unlocked jobs
+    const { data: unlocks } = await supabase
+      .from("job_unlocks")
+      .select("job_id")
+      .eq("user_id", uid);
+
+    if (unlocks) {
+      setDbUnlockedJobIds(unlocks.map((u: any) => u.job_id));
+    }
+
+    setChecking(false);
   }, []);
 
-  const markUnlocked = useCallback(() => {
-    localStorage.setItem(STORAGE_KEY, "true");
-    setIsUnlocked(true);
-  }, []);
+  useEffect(() => {
+    loadAccess();
+  }, [loadAccess]);
+
+  const refreshAccess = useCallback(() => {
+    loadAccess();
+  }, [loadAccess]);
 
   const useFreeUnlock = useCallback((jobKey: string) => {
     setFreeUnlockedJobs((prev) => {
@@ -147,8 +127,25 @@ export function useJobAccess() {
     [freeUnlockedJobs]
   );
 
+  const isJobDbUnlocked = useCallback(
+    (jobId: string) => dbUnlockedJobIds.includes(jobId),
+    [dbUnlockedJobIds]
+  );
+
   const freeUnlocksRemaining = Math.max(0, MAX_FREE_UNLOCKS - freeUnlockedJobs.length);
-  const canUseFreeUnlock = freeUnlocksRemaining > 0 && !isUnlocked;
+  const canUseFreeUnlock = freeUnlocksRemaining > 0;
+
+  // Determine if a specific job is accessible
+  const hasJobAccess = useCallback(
+    (jobKey: string, jobId: string, tier: JobTier) => {
+      if (tier === "free") return true;
+      if (hasProSubscription) return true;
+      if (isJobFreeUnlocked(jobKey)) return true;
+      if (isJobDbUnlocked(jobId)) return true;
+      return false;
+    },
+    [hasProSubscription, isJobFreeUnlocked, isJobDbUnlocked]
+  );
 
   const getJobTierFn = useCallback(
     (company: string, market?: string, visa?: boolean) =>
@@ -157,16 +154,18 @@ export function useJobAccess() {
   );
 
   return {
-    isUnlocked,
     checking,
-    markUnlocked,
+    hasProSubscription,
     canUseFreeUnlock,
     useFreeUnlock,
     isJobFreeUnlocked,
+    isJobDbUnlocked,
     freeUnlocksRemaining,
-    hasProSubscription,
     sessionSocialProof,
     getJobTier: getJobTierFn,
     verifiedEmployers,
+    hasJobAccess,
+    refreshAccess,
+    userId,
   };
 }
