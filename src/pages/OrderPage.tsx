@@ -178,6 +178,7 @@ export default function OrderPage() {
   const [paymentError, setPaymentError] = useState<"credentials" | "network" | "generic" | null>(null);
   const [retryingPayment, setRetryingPayment] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [checkoutRequestId, setCheckoutRequestId] = useState("");
   const [documentsGenerating, setDocumentsGenerating] = useState(false);
   const [documentsGenerated, setDocumentsGenerated] = useState(false);
