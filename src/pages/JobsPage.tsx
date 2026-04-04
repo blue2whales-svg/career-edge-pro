@@ -293,7 +293,6 @@ export default function JobsPage() {
               ))}
             </div>
           </FilterAccordion>
-          </div>
         </div>
       </section>
 
