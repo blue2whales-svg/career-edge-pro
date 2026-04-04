@@ -42,15 +42,24 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
   });
 
   useEffect(() => {
+    if (job.apply_url || job.source !== "platform_seed") {
+      setPostingInfo(null);
+      return;
+    }
+
+    let isActive = true;
+
     const checkPosting = async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("job_postings")
         .select("id")
         .eq("title", job.title)
         .eq("company", job.company)
         .eq("status", "active")
         .maybeSingle();
-      if (data) {
+
+      if (error || !data || !isActive) return;
+
         const { data: user } = await supabase.auth.getUser();
         if (user?.user) {
           const { data: app } = await supabase
@@ -59,14 +68,18 @@ export function JobCard({ job, index, onClick }: { job: Job; index: number; onCl
             .eq("job_id", (data as any).id)
             .eq("candidate_id", user.user.id)
             .maybeSingle();
-          setPostingInfo({ id: (data as any).id, applied: !!app });
+          if (isActive) setPostingInfo({ id: (data as any).id, applied: !!app });
         } else {
           setPostingInfo({ id: (data as any).id, applied: false });
         }
-      }
     };
-    checkPosting();
-  }, [job.title, job.company]);
+
+    void checkPosting();
+
+    return () => {
+      isActive = false;
+    };
+  }, [job.title, job.company, job.apply_url, job.source]);
 
   const timeDisplay = job.posted || "Recently";
   const sourceDisplay = job.source_label || job.source || "";
