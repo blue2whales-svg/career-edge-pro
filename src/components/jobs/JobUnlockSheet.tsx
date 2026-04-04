@@ -215,23 +215,20 @@ export default function JobUnlockSheet({
     ? "from-blue-500 to-blue-600 text-white"
     : "from-amber-500 to-amber-600 text-black";
 
+  if (!open) return null;
+
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center"
-          style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }}
-          onClick={handleClose}
-        >
-          <motion.div
-            initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="w-full sm:max-w-[440px] rounded-t-2xl sm:rounded-2xl border border-border bg-card relative overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Scrollable content area */}
-            <div className="max-h-[85vh] overflow-y-auto overscroll-contain p-6">
+    <div
+      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center"
+      style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }}
+      onClick={handleClose}
+    >
+      <div
+        className="w-full sm:max-w-[440px] rounded-t-2xl sm:rounded-2xl border border-border bg-card relative pointer-events-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Scrollable content area */}
+        <div className="max-h-[85vh] overflow-y-auto overscroll-contain p-6">
               {/* Back / Close buttons */}
               <div className="flex items-center justify-between mb-2">
                 <button onClick={handleClose} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
