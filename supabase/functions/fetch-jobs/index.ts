@@ -191,6 +191,17 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
+    // Parse body once
+    let body: any = {};
+    if (req.method === "POST") {
+      try { body = await req.json(); } catch { body = {}; }
+    }
+
+    // ── Feed mode: serve jobs data to the frontend ──────────────────────────
+    if (body.mode === "feed") {
+      return await handleFeedMode(supabase, body);
+    }
+
     const adzunaAppId = Deno.env.get("ADZUNA_APP_ID");
     const adzunaAppKey = Deno.env.get("ADZUNA_APP_KEY");
     const joobleApiKey = Deno.env.get("JOOBLE_API_KEY");
@@ -257,3 +268,111 @@ Deno.serve(async (req) => {
     );
   }
 });
+
+// ─── Feed mode handler ──────────────────────────────────────────────────────
+const GULF_MARKETS = ["UAE", "Qatar", "Saudi Arabia", "Kuwait", "Bahrain", "Oman"];
+const EUROPE_MARKETS = ["Europe", "Germany", "UK"];
+const CATEGORY_TO_MARKETS: Record<string, string[]> = {
+  "Gulf Jobs": GULF_MARKETS,
+  "Europe Jobs": EUROPE_MARKETS,
+};
+
+async function handleFeedMode(supabase: any, body: any) {
+  const page = Math.max(0, Number(body.page ?? 0));
+  const pageSize = Math.min(Math.max(1, Number(body.pageSize ?? 20)), 100);
+  const from = page * pageSize;
+  const to = from + pageSize - 1;
+  const filters = body.filters || {};
+
+  // Build main jobs query
+  let q = supabase
+    .from("cached_jobs")
+    .select("*", { count: "exact" })
+    .eq("is_active", true);
+
+  q = applyFilters(q, filters);
+  q = q.order("posted_at", { ascending: false, nullsFirst: false })
+       .order("hot_score", { ascending: false })
+       .range(from, to);
+
+  // Featured query (hot jobs, sorted by score)
+  const featuredP = body.includeFeatured
+    ? supabase
+        .from("cached_jobs")
+        .select("*")
+        .eq("is_active", true)
+        .eq("hot", true)
+        .order("hot_score", { ascending: false })
+        .order("posted_at", { ascending: false, nullsFirst: false })
+        .limit(6)
+    : Promise.resolve({ data: [] });
+
+  // Counts query (lightweight)
+  const countsP = body.includeCounts
+    ? supabase
+        .from("cached_jobs")
+        .select("market,category,industry,visa_sponsorship")
+        .eq("is_active", true)
+        .limit(5000)
+    : Promise.resolve({ data: [] });
+
+  const [jobsRes, featuredRes, countsRes] = await Promise.all([q, featuredP, countsP]);
+
+  if (jobsRes.error) throw jobsRes.error;
+
+  // Compute counts
+  const counts: Record<string, number> = {
+    kenya: 0, gulf: 0, cruise: 0, remote: 0, visa: 0,
+    healthcare: 0, uk: 0, australia: 0, germany: 0, canada: 0, europe: 0, total: 0,
+  };
+  for (const r of (countsRes.data || [])) {
+    counts.total++;
+    if (r.market === "Kenya") counts.kenya++;
+    if (GULF_MARKETS.includes(r.market || "")) counts.gulf++;
+    if (r.market === "Cruise") counts.cruise++;
+    if (r.market === "Remote") counts.remote++;
+    if (r.visa_sponsorship) counts.visa++;
+    if (r.category === "Healthcare Jobs" || r.industry === "Healthcare") counts.healthcare++;
+    if (r.market === "UK") counts.uk++;
+    if (r.market === "Australia") counts.australia++;
+    if (r.market === "Germany") counts.germany++;
+    if (r.market === "Canada") counts.canada++;
+    if (EUROPE_MARKETS.includes(r.market || "")) counts.europe++;
+  }
+
+  return new Response(JSON.stringify({
+    success: true,
+    jobs: jobsRes.data || [],
+    totalCount: jobsRes.count ?? 0,
+    page,
+    featured: featuredRes.data || [],
+    counts,
+  }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+}
+
+function applyFilters(query: any, f: any) {
+  if (f.search) {
+    const s = `%${f.search.trim()}%`;
+    query = query.or(`title.ilike.${s},company.ilike.${s},location.ilike.${s}`);
+  }
+  if (f.company) {
+    query = query.ilike("company", `%${f.company.trim()}%`);
+  }
+  if (f.category && f.category !== "All Categories") {
+    const mg = CATEGORY_TO_MARKETS[f.category];
+    if (mg) query = query.in("market", mg);
+    else query = query.eq("category", f.category);
+  }
+  if (f.industry && f.industry !== "All" && f.industry !== "🔥 Hot Abroad") {
+    query = query.eq("industry", f.industry);
+  }
+  if (f.industry === "🔥 Hot Abroad") {
+    query = query.eq("hot", true);
+  }
+  if (f.market && f.market !== "All Markets") {
+    query = query.eq("market", f.market);
+  }
+  if (f.hotOnly) query = query.eq("hot", true);
+  if (f.visaOnly) query = query.eq("visa_sponsorship", true);
+  return query;
+}
