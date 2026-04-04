@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { MapPin, DollarSign, Clock, Building2, Ship, ArrowRight, CheckCircle2, Briefcase, GraduationCap, Star, Globe2, Lock, Zap, Bookmark } from "lucide-react";
+import { MapPin, DollarSign, Clock, Building2, Ship, ArrowRight, CheckCircle2, Briefcase, GraduationCap, Star, Globe2, Lock, Zap, Bookmark, MessageCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import type { Job } from "../../data/jobs";
 import { useJobAccess, type JobTier } from "../../hooks/useJobAccess";
@@ -43,11 +43,15 @@ function getDescriptionPreview(desc: string | undefined): string {
   return desc.slice(0, 150) + (desc.length > 150 ? "..." : "");
 }
 
-function isPostedMoreThanOneDay(posted: string | undefined): boolean {
+function isPostedMoreThan12Hours(posted: string | undefined): boolean {
   if (!posted) return false;
   const match = posted.match(/(\d+)\s*(day|hour|minute)/i);
   if (!match) return false;
-  return match[2].toLowerCase().startsWith("day") && parseInt(match[1]) >= 1;
+  const unit = match[2].toLowerCase();
+  const num = parseInt(match[1]);
+  if (unit.startsWith("day")) return true;
+  if (unit.startsWith("hour") && num >= 12) return true;
+  return false;
 }
 
 function getDaysRemaining(posted: string | undefined): number {
@@ -55,6 +59,12 @@ function getDaysRemaining(posted: string | undefined): number {
   const match = posted.match(/(\d+)\s*day/i);
   if (!match) return 3;
   return Math.max(1, 4 - parseInt(match[1]));
+}
+
+/** Extract country from location string (e.g. "London, UK" → "UK") */
+function getCountryFromLocation(location: string): string {
+  const parts = location.split(",").map(s => s.trim());
+  return parts.length > 1 ? parts[parts.length - 1] : location;
 }
 
 function TagPill({ label, color, icon }: { label: string; color: "red" | "blue" | "green" | "amber" | "purple"; icon?: React.ReactNode }) {
@@ -90,10 +100,19 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
   const requirements = generateRequirements(job);
   const benefits = generateBenefits(job);
   const sourceDisplay = job.source_label || job.source || "";
-  const showUrgency = isPostedMoreThanOneDay(job.posted);
-  const daysRemaining = getDaysRemaining(job.posted);
+  const showUrgency = isPostedMoreThan12Hours(job.posted);
   const isInternational = tier === "international";
   const unlockPrice = isInternational ? "KSh 199" : "KSh 99";
+
+  // Location display logic: blur city on locked international jobs
+  const locationDisplay = (!hasAccess && isInternational)
+    ? `📍 ${getCountryFromLocation(job.location)} — Unlock to see exact location`
+    : job.location;
+
+  // Salary display logic: blur on locked jobs
+  const salaryDisplay = (!hasAccess && !isFreeJob)
+    ? null // will render custom
+    : job.salary;
 
   const handleFreeUnlock = () => { useFreeUnlock(jobKey); };
 
@@ -120,6 +139,8 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
     refreshAccess();
   };
 
+  const whatsappShareUrl = `https://wa.me/?text=${encodeURIComponent(`Found this job on CV Edge 🔥 ${job.title} — Check it out: cvedge.live`)}`;
+
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -129,10 +150,10 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
             : "border-amber-500/10 shadow-[0_0_40px_rgba(201,168,76,0.08)]"
         }`}>
           <div className="overflow-y-auto max-sm:h-[calc(100dvh-72px)] sm:max-h-[85vh]">
-            {/* Urgency strip */}
+            {/* Urgency strip — shows for jobs posted 12+ hours ago */}
             {showUrgency && (
               <div className="bg-red-600 text-white text-center py-2 px-4 text-xs font-bold flex items-center justify-center gap-2 animate-pulse">
-                <Zap className="h-3.5 w-3.5" /> Closes in {daysRemaining} day{daysRemaining > 1 ? "s" : ""} — Act fast
+                <Zap className="h-3.5 w-3.5" /> High Interest — Closing Soon
               </div>
             )}
 
@@ -164,7 +185,7 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <p className="text-sm mt-1 flex items-center gap-1.5 cursor-help">
-                              <span className={`inline-flex items-center gap-1 font-semibold ${isInternational ? "text-blue-400" : "text-amber-400"}`}>
+                              <span className={`inline-flex items-center gap-1 font-semibold gold-shimmer ${isInternational ? "text-blue-400" : "text-amber-400"}`}>
                                 {isInternational ? "🌍" : "⭐"} <Lock className="h-3 w-3" /> Confidential {isInternational ? "International" : "Verified"} Employer
                               </span>
                             </p>
@@ -181,7 +202,8 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
                       {job.hot && <TagPill label="Urgent Hiring" color="red" icon={<span>🔥</span>} />}
                       {job.salary && !["Competitive", "Not specified"].includes(job.salary) && <TagPill label="High Paying" color="green" icon={<span>💰</span>} />}
                       {job.visa_sponsorship && <TagPill label="Visa Sponsor" color="amber" icon={<span>✈️</span>} />}
-                      {sourceDisplay && <TagPill label={sourceDisplay} color="blue" icon={<Globe2 className="h-2.5 w-2.5" />} />}
+                      {/* Source badge — only on free jobs */}
+                      {isFreeJob && sourceDisplay && <TagPill label={sourceDisplay} color="blue" icon={<Globe2 className="h-2.5 w-2.5" />} />}
                     </div>
                   </div>
                 </div>
@@ -191,17 +213,34 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
             {/* Info grid */}
             <div className="p-5 pb-3 space-y-4">
               <div className="grid grid-cols-2 gap-2.5">
-                {[
-                  { icon: <MapPin className="h-3.5 w-3.5" />, label: "Location", value: job.location },
-                  { icon: <DollarSign className="h-3.5 w-3.5" />, label: "Salary", value: job.salary },
-                  { icon: <Briefcase className="h-3.5 w-3.5" />, label: "Type", value: job.type },
-                  { icon: <Clock className="h-3.5 w-3.5" />, label: "Posted", value: job.posted },
-                ].map((item, i) => (
-                  <div key={i} className="rounded-lg border border-border/50 bg-muted/20 backdrop-blur-sm p-3">
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">{item.icon} {item.label}</div>
-                    <p className="text-sm font-medium">{item.value}</p>
-                  </div>
-                ))}
+                {/* Location card */}
+                <div className="rounded-lg border border-border/50 bg-muted/20 backdrop-blur-sm p-3">
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1"><MapPin className="h-3.5 w-3.5" /> Location</div>
+                  {(!hasAccess && isInternational) ? (
+                    <p className="text-sm font-medium text-amber-400/80">📍 {getCountryFromLocation(job.location)} — <span className="text-[11px]">Unlock to see exact location</span></p>
+                  ) : (
+                    <p className="text-sm font-medium">{job.location}</p>
+                  )}
+                </div>
+                {/* Salary card */}
+                <div className="rounded-lg border border-border/50 bg-muted/20 backdrop-blur-sm p-3">
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1"><DollarSign className="h-3.5 w-3.5" /> Salary</div>
+                  {(!hasAccess && !isFreeJob) ? (
+                    <p className="text-sm font-medium text-amber-400/80">💰 <span className="text-[11px]">Unlock to see salary</span></p>
+                  ) : (
+                    <p className="text-sm font-medium">{job.salary}</p>
+                  )}
+                </div>
+                {/* Type */}
+                <div className="rounded-lg border border-border/50 bg-muted/20 backdrop-blur-sm p-3">
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1"><Briefcase className="h-3.5 w-3.5" /> Type</div>
+                  <p className="text-sm font-medium">{job.type}</p>
+                </div>
+                {/* Posted */}
+                <div className="rounded-lg border border-border/50 bg-muted/20 backdrop-blur-sm p-3">
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1"><Clock className="h-3.5 w-3.5" /> Posted</div>
+                  <p className="text-sm font-medium">{job.posted}</p>
+                </div>
               </div>
 
               {/* Description */}
@@ -279,6 +318,15 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
                   </a>
                 )}
 
+                {/* WhatsApp share — free jobs only */}
+                {hasAccess && isFreeJob && (
+                  <a href={whatsappShareUrl} target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" className="w-full border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 mt-2">
+                      <MessageCircle className="h-4 w-4 mr-2" /> Share via WhatsApp
+                    </Button>
+                  </a>
+                )}
+
                 <div className="rounded-xl border border-primary/20 bg-gradient-to-br from-amber-500/5 to-transparent p-5 text-center space-y-3">
                   <p className="text-sm font-semibold">🔥 Employers hiring <span className="text-primary">NOW</span></p>
                   <Link to={`/order?service=cv&job_title=${encodeURIComponent(job.title)}&company=${encodeURIComponent(job.company)}`} onClick={() => onOpenChange(false)}>
@@ -305,9 +353,9 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
             </div>
           </div>
 
-          {/* Sticky mobile bottom bar */}
+          {/* Sticky mobile bottom bar — fixed at bottom for locked jobs */}
           {!hasAccess && (
-            <div className="sm:hidden sticky bottom-0 left-0 right-0 z-30 border-t border-amber-500/20 bg-background/95 backdrop-blur-xl p-3">
+            <div className="sm:hidden fixed bottom-0 left-0 right-0 z-[60] border-t border-amber-500/20 bg-background/95 backdrop-blur-xl p-3 safe-area-pb">
               <Button
                 onClick={handleUnlockClick}
                 className={`w-full h-12 font-bold text-sm animate-pulse border-0 ${
