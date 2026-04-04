@@ -1873,28 +1873,64 @@ function getTemplatePrice(templateId: string): { label: string; amount: number }
   return { label: "KES 1,400", amount: 1400 };
 }
 
-// ─── BLUR OVERLAY ─────────────────────────────────────────────────────────────
+// ─── WATERMARK + BLUR OVERLAY ──────────────────────────────────────────────────
 const BlurOverlay = () => (
   <div
     style={{
-      position: "sticky",
-      bottom: 0,
-      left: 0,
-      right: 0,
-      height: "45%",
-      background: "linear-gradient(to bottom, transparent, rgba(0,0,0,0.75))",
-      backdropFilter: "blur(4px)",
-      WebkitBackdropFilter: "blur(4px)",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: 8,
+      position: "absolute",
+      inset: 0,
       pointerEvents: "none",
+      zIndex: 10,
     }}
   >
-    <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>🔒 Download to see full CV</div>
-    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)" }}>Professional format · PDF & DOCX</div>
+    {/* Diagonal watermark */}
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          transform: "rotate(-35deg)",
+          fontSize: "48px",
+          fontWeight: 900,
+          color: "rgba(201,168,76,0.12)",
+          letterSpacing: "12px",
+          textTransform: "uppercase",
+          whiteSpace: "nowrap",
+          userSelect: "none",
+          lineHeight: 1,
+        }}
+      >
+        SAMPLE · CV EDGE
+      </div>
+    </div>
+    {/* Bottom gradient with CTA */}
+    <div
+      style={{
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: "30%",
+        background: "linear-gradient(to bottom, transparent, rgba(0,0,0,0.7))",
+        backdropFilter: "blur(3px)",
+        WebkitBackdropFilter: "blur(3px)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 6,
+      }}
+    >
+      <div style={{ fontSize: 12, fontWeight: 700, color: "#fff" }}>🔒 Pay to remove watermark & download</div>
+      <div style={{ fontSize: 10, color: "rgba(255,255,255,0.6)" }}>From KES 1,200 · Instant download</div>
+    </div>
   </div>
 );
 
