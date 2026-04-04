@@ -411,10 +411,10 @@ export default function JobUnlockSheet({
                     Already have an account? Log in
                   </Button>
                 </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
+      </div>
     </div>
   );
 }
