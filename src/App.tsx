@@ -28,6 +28,7 @@ import PostJobPage from "./pages/PostJobPage";
 import EmployerDashboard from "./pages/EmployerDashboard";
 import DocumentVaultPage from "./pages/DocumentVaultPage";
 import ProPage from "./pages/ProPage";
+import SubscribePage from "./pages/SubscribePage";
 import RecruitersPage from "./pages/RecruitersPage";
 import GlobalServicePage from "./pages/GlobalServicePage";
 import OptimizePage from "./pages/OptimizePage";
