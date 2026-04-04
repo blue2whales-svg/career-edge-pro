@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, ArrowRight, Flame, X, User, FileText, CheckCircle, BarChart } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, ArrowRight, Flame, X, User, FileText, CheckCircle, BarChart, LogOut, Gift, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
+import { supabase } from "@/integrations/supabase/client";
 
 const NAV_LINKS = [
   { label: "Jobs", to: "/jobs" },
@@ -17,7 +18,24 @@ const NAV_LINKS = [
 
 export function MobileNav() {
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setOpen(false);
+    navigate("/");
+  };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -54,10 +72,9 @@ export function MobileNav() {
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
               <User className="w-5 h-5 text-primary" />
             </div>
-
             <div>
-              <p className="text-sm font-semibold">Guest User</p>
-              <p className="text-xs text-muted-foreground">Upgrade to unlock features</p>
+              <p className="text-sm font-semibold">{user ? (user.user_metadata?.display_name || user.email?.split("@")[0] || "User") : "Guest User"}</p>
+              <p className="text-xs text-muted-foreground">{user ? "Pro member" : "Upgrade to unlock features"}</p>
             </div>
           </div>
         </div>
@@ -86,6 +103,23 @@ export function MobileNav() {
               <span className="text-sm font-medium">Track Jobs</span>
             </div>
           </Link>
+
+          {user && (
+            <>
+              <Link to="/dashboard/referrals" onClick={() => setOpen(false)}>
+                <div className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-primary/5 transition">
+                  <Gift className="w-5 h-5 text-amber-400" />
+                  <span className="text-sm font-medium">Refer & Earn</span>
+                </div>
+              </Link>
+              <Link to="/employer-dashboard" onClick={() => setOpen(false)}>
+                <div className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-primary/5 transition">
+                  <Briefcase className="w-5 h-5 text-purple-500" />
+                  <span className="text-sm font-medium">Employer Dashboard</span>
+                </div>
+              </Link>
+            </>
+          )}
         </div>
 
         {/* HOT CTA */}
@@ -123,18 +157,32 @@ export function MobileNav() {
 
         {/* FOOTER */}
         <div className="border-t border-border/50 px-4 py-4 space-y-3 shrink-0">
-          <Link to="/login" onClick={() => setOpen(false)}>
-            <Button variant="outline" className="w-full">
-              Log in
-            </Button>
-          </Link>
-
-          <Link to="/signup" onClick={() => setOpen(false)}>
-            <Button className="w-full bg-gradient-brand">
-              Sign Up Free
-              <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-          </Link>
+          {user ? (
+            <>
+              <Link to="/portal" onClick={() => setOpen(false)}>
+                <Button variant="outline" className="w-full gap-2">
+                  <User className="w-4 h-4" /> My Portal
+                </Button>
+              </Link>
+              <Button onClick={handleLogout} variant="outline" className="w-full gap-2 text-destructive border-destructive/30">
+                <LogOut className="w-4 h-4" /> Log out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" onClick={() => setOpen(false)}>
+                <Button variant="outline" className="w-full">
+                  Log in
+                </Button>
+              </Link>
+              <Link to="/signup" onClick={() => setOpen(false)}>
+                <Button className="w-full bg-gradient-brand">
+                  Sign Up Free
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </SheetContent>
     </Sheet>

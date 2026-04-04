@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Flame } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Flame, LogOut, User, Gift } from "lucide-react";
 import { MobileNav } from "@/components/landing/MobileNav";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { JobPreviewSection } from "@/components/landing/JobPreviewSection";
@@ -11,8 +12,25 @@ import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import { WhyUpgradeSection } from "@/components/landing/WhyUpgradeSection";
 import { PricingSectionNew } from "@/components/landing/PricingSectionNew";
 import { FinalCTASection } from "@/components/landing/FinalCTASection";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function LandingPage() {
+  const [user, setUser] = useState<any>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    navigate("/");
+  };
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Background effects */}
@@ -53,14 +71,34 @@ export default function LandingPage() {
               </Button>
             </Link>
             <div className="hidden md:flex items-center gap-3">
-              <Link to="/login">
-                <Button variant="ghost" size="sm">Log in</Button>
-              </Link>
-              <Link to="/order">
-                <Button size="sm" className="bg-gradient-brand border-0 font-semibold shadow-glow-sm gold-shimmer">
-                  Order Now
-                </Button>
-              </Link>
+              {user ? (
+                <>
+                  <Link to="/dashboard/referrals">
+                    <Button variant="ghost" size="sm" className="gap-1.5 text-amber-400">
+                      <Gift className="h-3.5 w-3.5" /> Refer & Earn
+                    </Button>
+                  </Link>
+                  <Link to="/portal">
+                    <Button variant="ghost" size="sm" className="gap-1.5">
+                      <User className="h-3.5 w-3.5" /> My Portal
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-1.5 text-destructive">
+                    <LogOut className="h-3.5 w-3.5" /> Log out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login">
+                    <Button variant="ghost" size="sm">Log in</Button>
+                  </Link>
+                  <Link to="/order">
+                    <Button size="sm" className="bg-gradient-brand border-0 font-semibold shadow-glow-sm gold-shimmer">
+                      Order Now
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
             <MobileNav />
           </div>
@@ -134,9 +172,20 @@ export default function LandingPage() {
             <div>
               <h4 className="font-semibold text-sm mb-3">Account</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/login" className="block text-primary hover:text-primary/80 transition-colors">Log in</Link>
-                <Link to="/signup" className="block text-primary hover:text-primary/80 transition-colors">Sign up</Link>
-                <Link to="/order" className="block text-primary hover:text-primary/80 transition-colors">Order Now</Link>
+                {user ? (
+                  <>
+                    <Link to="/portal" className="block text-primary hover:text-primary/80 transition-colors">My Portal</Link>
+                    <Link to="/dashboard/referrals" className="block text-primary hover:text-primary/80 transition-colors">Refer & Earn</Link>
+                    <Link to="/employer-dashboard" className="block text-primary hover:text-primary/80 transition-colors">Employer Dashboard</Link>
+                    <button onClick={handleLogout} className="block text-destructive hover:text-destructive/80 transition-colors">Log out</button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login" className="block text-primary hover:text-primary/80 transition-colors">Log in</Link>
+                    <Link to="/signup" className="block text-primary hover:text-primary/80 transition-colors">Sign up</Link>
+                    <Link to="/order" className="block text-primary hover:text-primary/80 transition-colors">Order Now</Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
