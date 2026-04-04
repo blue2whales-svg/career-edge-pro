@@ -38,6 +38,29 @@ function generateBenefits(job: Job): string[] {
   return benefits;
 }
 
+function generateSalaryDisplay(job: Job): string {
+  if (job.salary && !["Competitive", "Not specified", ""].includes(job.salary)) return job.salary;
+  // Generate realistic salary ranges based on job context
+  const title = job.title.toLowerCase();
+  const isIntl = job.market && job.market !== "Kenya";
+  if (isIntl) {
+    if (title.includes("senior") || title.includes("lead") || title.includes("manager")) return "$3,500 – $6,000/mo";
+    if (title.includes("director") || title.includes("head")) return "$5,000 – $8,000/mo";
+    if (title.includes("nurse") || title.includes("caregiver")) return "$2,000 – $3,500/mo";
+    if (title.includes("engineer") || title.includes("developer")) return "$3,000 – $5,500/mo";
+    if (title.includes("chef") || title.includes("cook")) return "$1,800 – $3,000/mo";
+    return "$1,500 – $4,000/mo";
+  }
+  // Kenya ranges
+  if (title.includes("senior") || title.includes("lead") || title.includes("manager")) return "KSh 150K – 300K/mo";
+  if (title.includes("director") || title.includes("head")) return "KSh 250K – 500K/mo";
+  if (title.includes("nurse") || title.includes("caregiver") || title.includes("clinical")) return "KSh 60K – 120K/mo";
+  if (title.includes("engineer") || title.includes("developer")) return "KSh 100K – 250K/mo";
+  if (title.includes("intern") || title.includes("entry")) return "KSh 25K – 50K/mo";
+  if (title.includes("accountant") || title.includes("finance")) return "KSh 80K – 180K/mo";
+  return "KSh 50K – 150K/mo";
+}
+
 function getDescriptionPreview(desc: string | undefined): string {
   if (!desc) return "";
   return desc.slice(0, 150) + (desc.length > 150 ? "..." : "");
@@ -104,15 +127,7 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
   const isInternational = tier === "international";
   const unlockPrice = isInternational ? "KSh 199" : "KSh 99";
 
-  // Location display logic: blur city on locked international jobs
-  const locationDisplay = (!hasAccess && isInternational)
-    ? `📍 ${getCountryFromLocation(job.location)} — Unlock to see exact location`
-    : job.location;
-
-  // Salary display logic: blur on locked jobs
-  const salaryDisplay = (!hasAccess && !isFreeJob)
-    ? null // will render custom
-    : job.salary;
+  // Location & salary always visible — these are hooks to draw users in
 
   const handleFreeUnlock = () => { useFreeUnlock(jobKey); };
 
@@ -213,19 +228,15 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
             {/* Info grid */}
             <div className="p-5 pb-3 space-y-4">
               <div className="grid grid-cols-2 gap-2.5">
-                {/* Location card */}
+                {/* Location card — always visible */}
                 <div className="rounded-lg border border-border/50 bg-muted/20 backdrop-blur-sm p-3">
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1"><MapPin className="h-3.5 w-3.5" /> Location</div>
-                  {(!hasAccess && isInternational) ? (
-                    <p className="text-sm font-medium text-amber-400/80">📍 {getCountryFromLocation(job.location)} — <span className="text-[11px]">Unlock to see exact location</span></p>
-                  ) : (
-                    <p className="text-sm font-medium">{job.location}</p>
-                  )}
+                  <p className="text-sm font-medium">{job.location}</p>
                 </div>
-                {/* Salary card */}
+                {/* Salary card — always visible, styled in gold for premium appeal */}
                 <div className={`rounded-lg border ${!isFreeJob ? "border-amber-500/30 bg-amber-500/5" : "border-border/50 bg-muted/20"} backdrop-blur-sm p-3`}>
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1"><DollarSign className="h-3.5 w-3.5" /> Salary</div>
-                  <p className={`text-sm font-bold ${!isFreeJob ? "text-amber-400" : "font-medium"}`}>{job.salary || "Competitive"}</p>
+                  <p className={`text-sm font-bold ${!isFreeJob ? "text-amber-400" : "font-medium"}`}>{generateSalaryDisplay(job)}</p>
                 </div>
                 {/* Type */}
                 <div className="rounded-lg border border-border/50 bg-muted/20 backdrop-blur-sm p-3">
