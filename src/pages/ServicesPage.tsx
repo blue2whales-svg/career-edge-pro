@@ -96,7 +96,7 @@ const ALL_SERVICES = [
     icon: FileCheck, title: "CV Review & Critique", category: "Job Seeker",
     desc: "Detailed feedback report with actionable improvements for your existing CV.",
     features: ["ATS compatibility check", "Content analysis", "Format assessment", "Improvement roadmap"],
-    price: "From KES 1,000",
+    price: "From KES 900",
   },
 ];
 
