@@ -111,6 +111,7 @@ const App = () => {
               }
             />
             <Route path="/pro" element={<ProPage />} />
+            <Route path="/subscribe" element={<SubscribePage />} />
             <Route path="/recruiters" element={<RecruitersPage />} />
             <Route path="/global-service" element={<GlobalServicePage />} />
             <Route path="/optimize" element={<OptimizePage />} />
