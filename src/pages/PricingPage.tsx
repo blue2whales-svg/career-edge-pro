@@ -206,13 +206,13 @@ export default function PricingPage() {
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={0}
               className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-6 text-center">
               <p className="text-amber-400 font-semibold mb-1">⭐ Verified Kenya Job</p>
-              <p className="text-3xl font-bold text-amber-400 mb-2">KSh 99</p>
+              <p className="text-3xl font-bold text-amber-400 mb-2">KSh 100</p>
               <p className="text-xs text-muted-foreground">Unlock company name, full description & apply link</p>
             </motion.div>
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp} custom={1}
               className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-6 text-center">
               <p className="text-blue-400 font-semibold mb-1">🌍 International Job</p>
-              <p className="text-3xl font-bold text-blue-400 mb-2">KSh 199</p>
+              <p className="text-3xl font-bold text-blue-400 mb-2">KSh 100</p>
               <p className="text-xs text-muted-foreground">Unlock company, description, visa details & apply link</p>
             </motion.div>
           </div>
