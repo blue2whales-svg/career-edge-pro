@@ -20,7 +20,7 @@ export function JobLockOverlay({
   canUseFreeUnlock,
   freeUnlocksRemaining = 0,
   onFreeUnlock,
-  socialProofCount = 47,
+  socialProofCount,
   tier = "verified",
   onUnlockClick,
   onProClick,
@@ -52,9 +52,11 @@ export function JobLockOverlay({
         </div>
 
         {/* Social proof */}
-        <p className={`text-xs font-semibold ${isInternational ? "text-blue-400" : "text-amber-400"}`}>
-          🔥 {socialProofCount} people unlocked this job today
-        </p>
+        {socialProofCount != null && socialProofCount > 0 && (
+          <p className={`text-[11px] ${isInternational ? "text-blue-400/70" : "text-amber-400/70"}`}>
+            {socialProofCount} people viewed this recently
+          </p>
+        )}
 
         {/* Primary CTA — single unlock via payment */}
         <Button
@@ -81,7 +83,7 @@ export function JobLockOverlay({
               : "border-amber-500/20 text-amber-400 hover:bg-amber-500/10"
           }`}
         >
-          <Star className="h-3 w-3 mr-1.5" /> Get Pro — Unlock All Jobs KSh 500/mo
+          <Star className="h-3 w-3 mr-1.5" /> Get Pro — Unlock All Jobs KSh 1,000/mo
         </Button>
 
         {canUseFreeUnlock && (
