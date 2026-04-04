@@ -23,11 +23,19 @@ export function HeroSection() {
   const internationalCount = Math.max(totalCount - kenyaCount, 0);
   const hotJob = liveJobsData?.featured?.[0] || liveJobsData?.jobs?.find((job) => job.hot) || liveJobsData?.jobs?.[0];
 
-  const liveStats = [
-    `📍 ${kenyaCount.toLocaleString()} jobs in Kenya`,
-    `🌐 ${remoteCount.toLocaleString()} remote jobs`,
-    `✈️ ${internationalCount.toLocaleString()} international opportunities`,
-  ];
+  // Build enticing stats — skip any category with 0
+  const liveStats: string[] = [];
+  if (kenyaCount > 0) liveStats.push(`📍 ${kenyaCount.toLocaleString()} jobs in Kenya`);
+  if (remoteCount > 0) liveStats.push(`🌐 ${remoteCount.toLocaleString()} remote jobs`);
+  if (internationalCount > 0) liveStats.push(`✈️ ${internationalCount.toLocaleString()} international opportunities`);
+  if (totalCount > 0 && liveStats.length === 0) liveStats.push(`🔥 ${totalCount.toLocaleString()} live opportunities`);
+  // Always show total as a highlight if we have jobs
+  if (totalCount > 0 && liveStats.length < 3) {
+    const gulfCount = counts?.["Gulf Jobs"] || 0;
+    const cruiseCount = counts?.["Cruise Jobs"] || 0;
+    if (gulfCount > 0 && !liveStats.some(s => s.includes("Gulf"))) liveStats.push(`🏜️ ${gulfCount} Gulf & Middle East jobs`);
+    if (cruiseCount > 0 && !liveStats.some(s => s.includes("Cruise"))) liveStats.push(`🚢 ${cruiseCount} cruise ship opportunities`);
+  }
 
   return (
     <section className="relative z-10 pt-14 sm:pt-28 pb-14 sm:pb-20 px-4">
