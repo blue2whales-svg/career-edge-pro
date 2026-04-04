@@ -41,7 +41,7 @@ const ALL_SERVICES = [
     icon: Globe, title: "International CV", category: "Job Seeker",
     desc: "Country-specific formatting for 15+ markets worldwide.",
     features: ["Local format standards", "Cultural adaptation", "Language considerations", "Market-specific keywords"],
-    price: "From KES 4,490",
+    price: "From KES 2,000",
   },
   {
     icon: Pen, title: "Cover Letter Writing", category: "Job Seeker",
