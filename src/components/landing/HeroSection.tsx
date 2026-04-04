@@ -23,11 +23,19 @@ export function HeroSection() {
   const internationalCount = Math.max(totalCount - kenyaCount, 0);
   const hotJob = liveJobsData?.featured?.[0] || liveJobsData?.jobs?.find((job) => job.hot) || liveJobsData?.jobs?.[0];
 
-  const liveStats = [
-    `📍 ${kenyaCount.toLocaleString()} jobs in Kenya`,
-    `🌐 ${remoteCount.toLocaleString()} remote jobs`,
-    `✈️ ${internationalCount.toLocaleString()} international opportunities`,
-  ];
+  // Build enticing stats — skip any category with 0
+  const liveStats: string[] = [];
+  if (kenyaCount > 0) liveStats.push(`📍 ${kenyaCount.toLocaleString()} jobs in Kenya`);
+  if (remoteCount > 0) liveStats.push(`🌐 ${remoteCount.toLocaleString()} remote jobs`);
+  if (internationalCount > 0) liveStats.push(`✈️ ${internationalCount.toLocaleString()} international opportunities`);
+  if (totalCount > 0 && liveStats.length === 0) liveStats.push(`🔥 ${totalCount.toLocaleString()} live opportunities`);
+  // Always show total as a highlight if we have jobs
+  if (totalCount > 0 && liveStats.length < 3) {
+    const gulfCount = counts?.["Gulf Jobs"] || 0;
+    const cruiseCount = counts?.["Cruise Jobs"] || 0;
+    if (gulfCount > 0 && !liveStats.some(s => s.includes("Gulf"))) liveStats.push(`🏜️ ${gulfCount} Gulf & Middle East jobs`);
+    if (cruiseCount > 0 && !liveStats.some(s => s.includes("Cruise"))) liveStats.push(`🚢 ${cruiseCount} cruise ship opportunities`);
+  }
 
   return (
     <section className="relative z-10 pt-14 sm:pt-28 pb-14 sm:pb-20 px-4">
@@ -73,34 +81,40 @@ export function HeroSection() {
             custom={3}
             className="rounded-xl border border-primary/20 bg-primary/5 p-4 mb-6 max-w-md"
           >
-            <p className="text-sm font-semibold text-foreground mb-2">🔥 We found live opportunities for you right now:</p>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+              </span>
+              <p className="text-sm font-semibold text-foreground">🔥 {totalCount > 0 ? `${totalCount}+ live opportunities` : "Live opportunities"} right now</p>
+            </div>
 
             {jobsLoading ? (
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">Checking fresh jobs across Kenya, Gulf, cruise, remote, and global markets…</p>
+                <p className="text-sm text-muted-foreground">Scanning Kenya, Gulf, cruise, remote &amp; global markets…</p>
                 <div className="flex items-center gap-2 text-xs font-medium text-primary">
                   <span className="h-2 w-2 rounded-full bg-primary animate-pulse-soft" />
-                  Live feed syncing now
+                  Live feed syncing
                 </div>
               </div>
             ) : jobsError ? (
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">Live jobs are syncing right now. Tap Jobs to load the latest openings.</p>
+                <p className="text-sm text-muted-foreground">Live jobs are syncing. Tap Jobs to see latest.</p>
                 <Link to="/jobs" className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors">
                   See live jobs <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
             ) : (
               <>
-                <ul className="space-y-1 text-sm text-muted-foreground mb-3">
+                <ul className="space-y-1.5 text-sm mb-3">
                   {liveStats.map((item) => (
-                    <li key={item}>{item}</li>
+                    <li key={item} className="text-muted-foreground font-medium">{item}</li>
                   ))}
                 </ul>
 
                 {hotJob && (
-                  <div className="rounded-lg border border-border/50 bg-background/40 px-3 py-2 mb-3">
-                    <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-1">Current hot job</p>
+                  <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-3 py-2.5 mb-3">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-amber-400 font-bold mb-1">🔥 Hot Right Now</p>
                     <p className="text-sm font-semibold text-foreground line-clamp-1">{hotJob.title}</p>
                     <p className="text-xs text-muted-foreground line-clamp-1">
                       {hotJob.location}
@@ -109,9 +123,9 @@ export function HeroSection() {
                   </div>
                 )}
 
-                <div className="flex items-center gap-2 text-xs text-primary font-medium">
-                  🔒 Unlock to view &amp; apply
-                </div>
+                <Link to="/jobs" className="inline-flex items-center gap-1.5 text-xs text-primary font-semibold hover:text-primary/80 transition-colors">
+                  🔒 Unlock to view &amp; apply <ArrowRight className="h-3 w-3" />
+                </Link>
               </>
             )}
           </motion.div>
