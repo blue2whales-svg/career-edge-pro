@@ -49,8 +49,8 @@ const PLANS = [
   },
   {
     name: "Pro",
-    price: "KSh 500",
-    priceNum: 500,
+    price: "KSh 1,000",
+    priceNum: 1000,
     period: "/month",
     desc: "Unlock everything. Land your dream job faster.",
     icon: Star,
