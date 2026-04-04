@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { Flame } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Flame, LogOut, User, Gift } from "lucide-react";
 import { MobileNav } from "@/components/landing/MobileNav";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { JobPreviewSection } from "@/components/landing/JobPreviewSection";
@@ -11,8 +12,25 @@ import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import { WhyUpgradeSection } from "@/components/landing/WhyUpgradeSection";
 import { PricingSectionNew } from "@/components/landing/PricingSectionNew";
 import { FinalCTASection } from "@/components/landing/FinalCTASection";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function LandingPage() {
+  const [user, setUser] = useState<any>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    navigate("/");
+  };
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       {/* Background effects */}
