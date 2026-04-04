@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
-import {
   X, Phone, CheckCircle, AlertTriangle, Loader2, Lock,
   Star, Shield, ArrowRight,
 } from "lucide-react";
