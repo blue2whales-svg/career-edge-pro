@@ -156,18 +156,32 @@ export function MobileNav() {
 
         {/* FOOTER */}
         <div className="border-t border-border/50 px-4 py-4 space-y-3 shrink-0">
-          <Link to="/login" onClick={() => setOpen(false)}>
-            <Button variant="outline" className="w-full">
-              Log in
-            </Button>
-          </Link>
-
-          <Link to="/signup" onClick={() => setOpen(false)}>
-            <Button className="w-full bg-gradient-brand">
-              Sign Up Free
-              <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-          </Link>
+          {user ? (
+            <>
+              <Link to="/portal" onClick={() => setOpen(false)}>
+                <Button variant="outline" className="w-full gap-2">
+                  <User className="w-4 h-4" /> My Portal
+                </Button>
+              </Link>
+              <Button onClick={handleLogout} variant="outline" className="w-full gap-2 text-destructive border-destructive/30">
+                <LogOut className="w-4 h-4" /> Log out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link to="/login" onClick={() => setOpen(false)}>
+                <Button variant="outline" className="w-full">
+                  Log in
+                </Button>
+              </Link>
+              <Link to="/signup" onClick={() => setOpen(false)}>
+                <Button className="w-full bg-gradient-brand">
+                  Sign Up Free
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </SheetContent>
     </Sheet>
