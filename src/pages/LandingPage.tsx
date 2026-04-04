@@ -172,9 +172,20 @@ export default function LandingPage() {
             <div>
               <h4 className="font-semibold text-sm mb-3">Account</h4>
               <div className="space-y-2 text-sm">
-                <Link to="/login" className="block text-primary hover:text-primary/80 transition-colors">Log in</Link>
-                <Link to="/signup" className="block text-primary hover:text-primary/80 transition-colors">Sign up</Link>
-                <Link to="/order" className="block text-primary hover:text-primary/80 transition-colors">Order Now</Link>
+                {user ? (
+                  <>
+                    <Link to="/portal" className="block text-primary hover:text-primary/80 transition-colors">My Portal</Link>
+                    <Link to="/dashboard/referrals" className="block text-primary hover:text-primary/80 transition-colors">Refer & Earn</Link>
+                    <Link to="/employer-dashboard" className="block text-primary hover:text-primary/80 transition-colors">Employer Dashboard</Link>
+                    <button onClick={handleLogout} className="block text-destructive hover:text-destructive/80 transition-colors">Log out</button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login" className="block text-primary hover:text-primary/80 transition-colors">Log in</Link>
+                    <Link to="/signup" className="block text-primary hover:text-primary/80 transition-colors">Sign up</Link>
+                    <Link to="/order" className="block text-primary hover:text-primary/80 transition-colors">Order Now</Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
