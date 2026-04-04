@@ -223,13 +223,9 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
                   )}
                 </div>
                 {/* Salary card */}
-                <div className="rounded-lg border border-border/50 bg-muted/20 backdrop-blur-sm p-3">
+                <div className={`rounded-lg border ${!isFreeJob ? "border-amber-500/30 bg-amber-500/5" : "border-border/50 bg-muted/20"} backdrop-blur-sm p-3`}>
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1"><DollarSign className="h-3.5 w-3.5" /> Salary</div>
-                  {(!hasAccess && !isFreeJob) ? (
-                    <p className="text-sm font-medium text-amber-400/80">💰 <span className="text-[11px]">Unlock to see salary</span></p>
-                  ) : (
-                    <p className="text-sm font-medium">{job.salary}</p>
-                  )}
+                  <p className={`text-sm font-bold ${!isFreeJob ? "text-amber-400" : "font-medium"}`}>{job.salary || "Competitive"}</p>
                 </div>
                 {/* Type */}
                 <div className="rounded-lg border border-border/50 bg-muted/20 backdrop-blur-sm p-3">
