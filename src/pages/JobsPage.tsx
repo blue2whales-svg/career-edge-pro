@@ -26,7 +26,7 @@ function FilterAccordion({ title, children, defaultOpen = false }: { title: stri
     </div>
   );
 }
-import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Sparkles, SearchX, Star, Shield } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
