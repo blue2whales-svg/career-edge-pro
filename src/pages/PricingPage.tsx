@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { trackViewContent } from "@/hooks/useFbPixel";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import JobUnlockSheet from "@/components/jobs/JobUnlockSheet";
 import { ArrowRight, Check, Zap, Star, Crown, Globe, Shield, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
