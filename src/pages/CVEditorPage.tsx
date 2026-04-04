@@ -2356,7 +2356,7 @@ export default function CVEditorPage() {
                   {getPreview(templateId ?? "classic", cv, accent)}
                 </div>
                 {preview}
-                <BlurOverlay />
+                {!hasPaid && <BlurOverlay />}
               </div>
             </div>
           </div>
