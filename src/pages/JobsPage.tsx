@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Globe, Sparkles, SearchX, Star, Shield } from "lucide-react";
+import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Sparkles, SearchX, Star, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
