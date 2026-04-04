@@ -205,19 +205,15 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
             {/* Info grid */}
             <div className="p-5 pb-3 space-y-4">
               <div className="grid grid-cols-2 gap-2.5">
-                {/* Location card */}
+                {/* Location card — always visible */}
                 <div className="rounded-lg border border-border/50 bg-muted/20 backdrop-blur-sm p-3">
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1"><MapPin className="h-3.5 w-3.5" /> Location</div>
-                  {(!hasAccess && isInternational) ? (
-                    <p className="text-sm font-medium text-amber-400/80">📍 {getCountryFromLocation(job.location)} — <span className="text-[11px]">Unlock to see exact location</span></p>
-                  ) : (
-                    <p className="text-sm font-medium">{job.location}</p>
-                  )}
+                  <p className="text-sm font-medium">{job.location}</p>
                 </div>
-                {/* Salary card */}
+                {/* Salary card — always visible, styled in gold for premium appeal */}
                 <div className={`rounded-lg border ${!isFreeJob ? "border-amber-500/30 bg-amber-500/5" : "border-border/50 bg-muted/20"} backdrop-blur-sm p-3`}>
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1"><DollarSign className="h-3.5 w-3.5" /> Salary</div>
-                  <p className={`text-sm font-bold ${!isFreeJob ? "text-amber-400" : "font-medium"}`}>{job.salary || "Competitive"}</p>
+                  <p className={`text-sm font-bold ${!isFreeJob ? "text-amber-400" : "font-medium"}`}>{generateSalaryDisplay(job)}</p>
                 </div>
                 {/* Type */}
                 <div className="rounded-lg border border-border/50 bg-muted/20 backdrop-blur-sm p-3">
