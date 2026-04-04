@@ -55,7 +55,7 @@ export default function JobsPage() {
     company: selectedCompany || undefined,
   };
 
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = useJobsPaginated(filters);
+  const { data, isLoading, isError, error, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } = useJobsPaginated(filters);
 
   const { data: counts } = useCategoryCounts();
   const totalActive = counts?.total ?? 0;
@@ -66,7 +66,7 @@ export default function JobsPage() {
   const handleRefresh = useCallback(() => {
     setIsManualRefreshing(true);
     triggerJobsFetch()
-      .then(() => refetch())
+      .finally(() => refetch())
       .finally(() => {
         setTimeout(() => setIsManualRefreshing(false), 2000);
       });
@@ -84,10 +84,6 @@ export default function JobsPage() {
       setSelectedMarket("All Markets");
       setSearch("visa");
     }
-  }, []);
-
-  useEffect(() => {
-    triggerJobsFetch();
   }, []);
 
   return (
@@ -284,18 +280,42 @@ export default function JobsPage() {
                 </div>
               ))}
             </div>
+          ) : isError ? (
+            <div className="text-center py-20">
+              <div className="flex items-center justify-center gap-2 mb-4 text-destructive">
+                <SearchX className="h-5 w-5" />
+                <span className="text-sm font-semibold">Live jobs feed unavailable</span>
+              </div>
+              <p className="text-muted-foreground text-sm mb-6 max-w-md mx-auto">
+                {error instanceof Error ? error.message : "We couldn’t load the current jobs feed right now."}
+              </p>
+              <div className="flex gap-3 justify-center flex-wrap">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSearch("");
+                    setSelectedCategory("All Categories");
+                    setSelectedIndustry("All");
+                    setSelectedMarket("All Markets");
+                    setSelectedCompany("");
+                  }}
+                >
+                  Reset Filters
+                </Button>
+                <Button size="sm" className="bg-gradient-brand border-0" onClick={handleRefresh}>
+                  <RefreshCw className="h-3.5 w-3.5 mr-1.5" /> Try Again
+                </Button>
+              </div>
+            </div>
           ) : allJobs.length === 0 ? (
             <div className="text-center py-20">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <RefreshCw className="h-5 w-5 text-primary animate-spin" />
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
-                </span>
+              <div className="flex items-center justify-center gap-2 mb-4 text-muted-foreground">
+                <SearchX className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-semibold mb-2">Checking live feeds...</h3>
+              <h3 className="text-lg font-semibold mb-2">No current jobs found</h3>
               <p className="text-muted-foreground text-sm mb-6 max-w-md mx-auto">
-                We're scanning Adzuna, Jooble, and other sources for matching jobs. This usually takes a few seconds.
+                There are no live openings for these filters right now. Clear filters or refresh to load the newest jobs.
               </p>
               <div className="flex gap-3 justify-center flex-wrap">
                 <Button
