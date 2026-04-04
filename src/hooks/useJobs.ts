@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { JOBS, FEATURED_JOBS, type Job } from "@/data/jobs";
+import { INDUSTRIES, MARKETS, JOB_CATEGORIES, type Job } from "@/data/jobs";
 
 const SOURCE_LABELS: Record<string, string> = {
   jsearch: "JSearch",
@@ -83,8 +83,8 @@ export function useJobsPageData() {
             "Healthcare Jobs": 0,
             total: 0,
           },
-          jobs: JOBS,
-          featured: FEATURED_JOBS,
+          jobs: [],
+          featured: [],
         };
       }
       const counts = {
@@ -123,7 +123,7 @@ export function useFeaturedJobs() {
   const { data } = useJobsPageData();
   return useQuery({
     queryKey: ["featured-jobs"],
-    queryFn: async () => data?.featured || FEATURED_JOBS,
+    queryFn: async () => data?.featured || [],
     enabled: !!data,
     staleTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
@@ -180,22 +180,12 @@ export function useJobsPaginated(filters: JobFilters) {
       const { data, error, count } = await query;
 
       if (error) {
-        const staticFiltered = filterStatic(JOBS, filters);
-        return {
-          jobs: staticFiltered.slice(from, to + 1),
-          totalCount: staticFiltered.length,
-          page: pageParam,
-        };
+        return { jobs: [], totalCount: 0, page: pageParam };
       }
 
       const jobs = (data || []).map(mapRow);
       if (pageParam === 0 && jobs.length === 0) {
-        const staticFiltered = filterStatic(JOBS, filters);
-        return {
-          jobs: staticFiltered.slice(0, PAGE_SIZE),
-          totalCount: staticFiltered.length,
-          page: 0,
-        };
+        return { jobs: [], totalCount: 0, page: 0 };
       }
 
       return { jobs, totalCount: count || 0, page: pageParam };
@@ -245,7 +235,7 @@ export function useJobs() {
         .order("posted_at", { ascending: false })
         .limit(500);
 
-      if (!data || data.length === 0) return { jobs: JOBS, featured: FEATURED_JOBS };
+      if (!data || data.length === 0) return { jobs: [], featured: [] };
 
       const liveJobs = data.map(mapRow);
       const featured = (() => {
@@ -254,16 +244,7 @@ export function useJobs() {
         return liveJobs.slice(0, 6);
       })();
 
-      const combined = [...liveJobs, ...JOBS];
-      const seen = new Set<string>();
-      const deduped = combined.filter((j: any) => {
-        const key = `${j.title.toLowerCase()}|${j.company.toLowerCase()}`;
-        if (seen.has(key)) return false;
-        seen.add(key);
-        return true;
-      });
-
-      return { jobs: deduped, featured };
+      return { jobs: liveJobs, featured };
     },
     staleTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
