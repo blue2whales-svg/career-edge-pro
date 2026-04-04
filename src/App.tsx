@@ -28,6 +28,7 @@ import PostJobPage from "./pages/PostJobPage";
 import EmployerDashboard from "./pages/EmployerDashboard";
 import DocumentVaultPage from "./pages/DocumentVaultPage";
 import ProPage from "./pages/ProPage";
+import SubscribePage from "./pages/SubscribePage";
 import RecruitersPage from "./pages/RecruitersPage";
 import GlobalServicePage from "./pages/GlobalServicePage";
 import OptimizePage from "./pages/OptimizePage";
@@ -110,6 +111,7 @@ const App = () => {
               }
             />
             <Route path="/pro" element={<ProPage />} />
+            <Route path="/subscribe" element={<SubscribePage />} />
             <Route path="/recruiters" element={<RecruitersPage />} />
             <Route path="/global-service" element={<GlobalServicePage />} />
             <Route path="/optimize" element={<OptimizePage />} />
