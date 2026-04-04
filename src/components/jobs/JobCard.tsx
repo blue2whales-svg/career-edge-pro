@@ -8,6 +8,25 @@ import ApplyModal from "./ApplyModal";
 import { supabase } from "@/integrations/supabase/client";
 import { type JobTier } from "@/hooks/useJobAccess";
 
+function generateCardSalary(job: Job): string {
+  if (job.salary && !["Competitive", "Not specified", ""].includes(job.salary)) return job.salary;
+  const title = job.title.toLowerCase();
+  const isIntl = job.market && job.market !== "Kenya";
+  if (isIntl) {
+    if (title.includes("senior") || title.includes("lead") || title.includes("manager")) return "$3,500 – $6,000/mo";
+    if (title.includes("director") || title.includes("head")) return "$5,000 – $8,000/mo";
+    if (title.includes("nurse") || title.includes("caregiver")) return "$2,000 – $3,500/mo";
+    if (title.includes("engineer") || title.includes("developer")) return "$3,000 – $5,500/mo";
+    return "$1,500 – $4,000/mo";
+  }
+  if (title.includes("senior") || title.includes("lead") || title.includes("manager")) return "KSh 150K – 300K/mo";
+  if (title.includes("director") || title.includes("head")) return "KSh 250K – 500K/mo";
+  if (title.includes("nurse") || title.includes("caregiver") || title.includes("clinical")) return "KSh 60K – 120K/mo";
+  if (title.includes("engineer") || title.includes("developer")) return "KSh 100K – 250K/mo";
+  if (title.includes("intern") || title.includes("entry")) return "KSh 25K – 50K/mo";
+  return "KSh 50K – 150K/mo";
+}
+
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({
