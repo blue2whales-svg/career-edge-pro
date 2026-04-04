@@ -201,28 +201,10 @@ export default function JobsPage() {
       {/* Featured Categories */}
       <FeaturedCategories onFilterChange={handleFilterChange} />
 
-      {/* Category Filters */}
-      <section className="relative z-10 pb-2 px-4">
-        <div className="container max-w-5xl mx-auto">
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
-            {JOB_CATEGORIES.map((cat) => (
-              <button key={cat} onClick={() => setSelectedCategory(cat)}
-                className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                  selectedCategory === cat
-                    ? "bg-brand-red text-white"
-                    : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-brand-red/30"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Industry + Market Filters */}
+      {/* Filters Section — redesigned for mobile */}
       <section className="relative z-10 pb-6 px-4">
         <div className="container max-w-5xl mx-auto">
+          {/* Header row */}
           <div className="flex items-center gap-3 mb-4">
             <h2 className="text-lg font-serif font-bold">
               {selectedCompany ? `Jobs at ${selectedCompany}` : activeTab === "verified" ? "⭐ Verified Employer Jobs" : activeTab === "international" ? "🌍 International Jobs" : "All Openings"}
@@ -235,24 +217,56 @@ export default function JobsPage() {
               <RefreshCw className={`h-3.5 w-3.5 ${isManualRefreshing ? "animate-spin" : ""}`} /> Refresh
             </Button>
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
-            {INDUSTRIES.map((ind) => (
-              <button key={ind} onClick={() => setSelectedIndustry(ind)}
-                className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  selectedIndustry === ind ? "bg-gradient-brand text-primary-foreground" : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/30"
-                }`}
-              >{ind}</button>
-            ))}
+
+          {/* Mobile: Grid layout filters | Desktop: horizontal scroll */}
+          {/* Category filters */}
+          <div className="mb-3">
+            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">📂 Category</p>
+            <div className="flex flex-wrap sm:flex-nowrap gap-1.5 sm:gap-2 sm:overflow-x-auto sm:pb-2 sm:scrollbar-none">
+              {JOB_CATEGORIES.map((cat) => (
+                <button key={cat} onClick={() => setSelectedCategory(cat)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    selectedCategory === cat
+                      ? "bg-brand-red text-white shadow-sm"
+                      : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-brand-red/30"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none mt-3">
-            <Globe className="h-4 w-4 text-muted-foreground shrink-0 mt-2" />
-            {MARKETS.map((mkt) => (
-              <button key={mkt} onClick={() => setSelectedMarket(mkt)}
-                className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                  selectedMarket === mkt ? "bg-primary text-primary-foreground" : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/30"
-                }`}
-              >{mkt}</button>
-            ))}
+
+          {/* Industry filters */}
+          <div className="mb-3">
+            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">🏢 Industry</p>
+            <div className="flex flex-wrap sm:flex-nowrap gap-1.5 sm:gap-2 sm:overflow-x-auto sm:pb-2 sm:scrollbar-none">
+              {INDUSTRIES.map((ind) => (
+                <button key={ind} onClick={() => setSelectedIndustry(ind)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    selectedIndustry === ind
+                      ? "bg-gradient-brand text-primary-foreground shadow-sm"
+                      : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/30"
+                  }`}
+                >{ind}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* Market filters */}
+          <div>
+            <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">🌍 Market</p>
+            <div className="flex flex-wrap sm:flex-nowrap gap-1.5 sm:gap-2 sm:overflow-x-auto sm:pb-2 sm:scrollbar-none">
+              {MARKETS.map((mkt) => (
+                <button key={mkt} onClick={() => setSelectedMarket(mkt)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    selectedMarket === mkt
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/30"
+                  }`}
+                >{mkt}</button>
+              ))}
+            </div>
           </div>
         </div>
       </section>

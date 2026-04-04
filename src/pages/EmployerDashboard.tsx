@@ -130,10 +130,32 @@ export default function EmployerDashboard() {
               <h1 className="text-3xl sm:text-4xl font-serif font-bold">Employer <span className="text-gradient">Dashboard</span></h1>
               <p className="text-sm text-muted-foreground mt-1">Plan: <span className="text-primary font-medium">{plan}</span></p>
             </div>
-            <Button onClick={() => navigate("/post-job?pkg=" + plan)} className="bg-gradient-brand border-0 font-semibold gap-1.5">
-              <Briefcase className="h-4 w-4" /> Post New Job
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" className="text-xs gap-1.5" onClick={() => navigate("/recruiters")}>
+                Upgrade Plan
+              </Button>
+              <Button onClick={() => navigate("/post-job?pkg=" + plan)} className="bg-gradient-brand border-0 font-semibold gap-1.5">
+                <Briefcase className="h-4 w-4" /> Post New Job
+              </Button>
+            </div>
           </div>
+
+          {/* Upsell Banner for non-Pro */}
+          {plan !== "recruiter-pro" && (
+            <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 mb-6 flex flex-col sm:flex-row items-center gap-4">
+              <div className="flex-1">
+                <p className="text-sm font-semibold">🚀 Unlock more hiring power</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {plan === "recruiter-basic"
+                    ? "Upgrade to Featured for shortlisting, badges & 60-day visibility."
+                    : "Upgrade to Pro for messaging, interviews & unlimited postings."}
+                </p>
+              </div>
+              <Button size="sm" className="bg-gradient-brand border-0 font-semibold shrink-0" onClick={() => navigate("/recruiters")}>
+                View Plans
+              </Button>
+            </div>
+          )}
 
           {jobs.length === 0 ? (
             <div className="text-center py-20 rounded-2xl border border-border bg-card">
