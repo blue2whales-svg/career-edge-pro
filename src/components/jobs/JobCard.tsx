@@ -175,7 +175,7 @@ export function JobCard({ job, index, onClick, tier = "free", socialProofCount }
                   <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> {job.location}</span>
                   <span className="flex items-center gap-1"><DollarSign className="h-3 w-3" /> {job.salary}</span>
                   <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {timeDisplay}</span>
-                  {sourceDisplay && (
+                  {tier === "free" && sourceDisplay && (
                     <span className="flex items-center gap-1 rounded-full border border-border bg-muted/40 px-2 py-0.5 text-[10px] font-mono">
                       <Globe2 className="h-2.5 w-2.5" /> {sourceDisplay}
                     </span>
