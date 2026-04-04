@@ -103,7 +103,23 @@ export function MobileNav() {
               <span className="text-sm font-medium">Track Jobs</span>
             </div>
           </Link>
-        </div>
+
+          {user && (
+            <>
+              <Link to="/dashboard/referrals" onClick={() => setOpen(false)}>
+                <div className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-primary/5 transition">
+                  <Gift className="w-5 h-5 text-amber-400" />
+                  <span className="text-sm font-medium">Refer & Earn</span>
+                </div>
+              </Link>
+              <Link to="/employer-dashboard" onClick={() => setOpen(false)}>
+                <div className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-primary/5 transition">
+                  <Briefcase className="w-5 h-5 text-purple-500" />
+                  <span className="text-sm font-medium">Employer Dashboard</span>
+                </div>
+              </Link>
+            </>
+          )}
 
         {/* HOT CTA */}
         <div className="px-4 pt-4">
