@@ -1,6 +1,5 @@
-import { Lock, ArrowRight, Shield, Sparkles, Star } from "lucide-react";
+import { Lock, ArrowRight, Shield, Star } from "lucide-react";
 import { Button } from "../ui/button";
-import { Link } from "react-router-dom";
 import type { JobTier } from "@/hooks/useJobAccess";
 
 interface JobLockOverlayProps {
@@ -11,6 +10,8 @@ interface JobLockOverlayProps {
   onFreeUnlock: () => void;
   socialProofCount?: number;
   tier?: JobTier;
+  onUnlockClick: () => void;
+  onProClick: () => void;
 }
 
 export function JobLockOverlay({
@@ -21,10 +22,11 @@ export function JobLockOverlay({
   onFreeUnlock,
   socialProofCount = 47,
   tier = "verified",
+  onUnlockClick,
+  onProClick,
 }: JobLockOverlayProps) {
   const isInternational = tier === "international";
   const unlockPrice = isInternational ? "KSh 199" : "KSh 99";
-  const themeColor = isInternational ? "blue" : "amber";
 
   return (
     <div className="absolute inset-0 z-20 flex items-center justify-center bg-background/85 backdrop-blur-md rounded-b-lg">
@@ -54,35 +56,33 @@ export function JobLockOverlay({
           🔥 {socialProofCount} people unlocked this job today
         </p>
 
-        {/* Primary CTA — single unlock */}
-        <Link to={`/order?service=cv&job_title=${encodeURIComponent(jobTitle)}&company=${encodeURIComponent(company)}`}>
-          <Button
-            size="lg"
-            className={`w-full h-12 font-bold shadow-lg animate-pulse border-0 ${
-              isInternational
-                ? "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-[0_0_20px_rgba(74,144,226,0.3)]"
-                : "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black shadow-[0_0_20px_rgba(245,158,11,0.3)]"
-            }`}
-            style={{ animationDuration: "3s" }}
-          >
-            <Lock className="h-4 w-4 mr-2" /> Unlock This Job — {unlockPrice} <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </Link>
+        {/* Primary CTA — single unlock via payment */}
+        <Button
+          onClick={onUnlockClick}
+          size="lg"
+          className={`w-full h-12 font-bold shadow-lg animate-pulse border-0 ${
+            isInternational
+              ? "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-[0_0_20px_rgba(74,144,226,0.3)]"
+              : "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black shadow-[0_0_20px_rgba(245,158,11,0.3)]"
+          }`}
+          style={{ animationDuration: "3s" }}
+        >
+          <Lock className="h-4 w-4 mr-2" /> Unlock This Job — {unlockPrice} <ArrowRight className="ml-2 h-4 w-4" />
+        </Button>
 
         {/* Pro CTA */}
-        <Link to="/pricing">
-          <Button
-            variant="outline"
-            size="sm"
-            className={`w-full text-xs mt-1 ${
-              isInternational
-                ? "border-blue-500/20 text-blue-400 hover:bg-blue-500/10"
-                : "border-amber-500/20 text-amber-400 hover:bg-amber-500/10"
-            }`}
-          >
-            <Star className="h-3 w-3 mr-1.5" /> Get Pro — Unlock All Jobs KSh 500/mo
-          </Button>
-        </Link>
+        <Button
+          onClick={onProClick}
+          variant="outline"
+          size="sm"
+          className={`w-full text-xs mt-1 ${
+            isInternational
+              ? "border-blue-500/20 text-blue-400 hover:bg-blue-500/10"
+              : "border-amber-500/20 text-amber-400 hover:bg-amber-500/10"
+          }`}
+        >
+          <Star className="h-3 w-3 mr-1.5" /> Get Pro — Unlock All Jobs KSh 500/mo
+        </Button>
 
         {canUseFreeUnlock && (
           <Button

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { trackViewContent } from "@/hooks/useFbPixel";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import JobUnlockSheet from "@/components/jobs/JobUnlockSheet";
 import { ArrowRight, Check, Zap, Star, Crown, Globe, Shield, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -102,6 +105,14 @@ export default function PricingPage() {
   useEffect(() => { trackViewContent("Pricing", "Pricing"); }, []);
   const { isInternational } = useIsInternational();
   const usdRate = useUsdRate();
+  const navigate = useNavigate();
+  const [showProSheet, setShowProSheet] = useState(false);
+
+  const handleProClick = async () => {
+    const { data } = await supabase.auth.getUser();
+    if (!data?.user) { navigate("/login?redirect=/pricing"); return; }
+    setShowProSheet(true);
+  };
 
   return (
     <PageLayout>
@@ -167,15 +178,17 @@ export default function PricingPage() {
                   ))}
                 </ul>
 
-                <Link to={plan.ctaLink}>
-                  <Button className={`w-full h-12 font-semibold ${
-                    plan.popular
-                      ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black border-0 shadow-[0_0_20px_rgba(245,166,35,0.3)] gold-shimmer"
-                      : "border-primary/30"
-                  }`} variant={plan.popular ? "default" : "outline"}>
+                {plan.popular ? (
+                  <Button onClick={handleProClick} className="w-full h-12 font-semibold bg-gradient-to-r from-amber-500 to-amber-600 text-black border-0 shadow-[0_0_20px_rgba(245,166,35,0.3)] gold-shimmer">
                     {plan.cta} <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
-                </Link>
+                ) : (
+                  <Link to={plan.ctaLink}>
+                    <Button className="w-full h-12 font-semibold border-primary/30" variant="outline">
+                      {plan.cta} <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                )}
               </motion.div>
             ))}
           </div>
@@ -248,6 +261,12 @@ export default function PricingPage() {
           </motion.div>
         </div>
       </section>
+      <JobUnlockSheet
+        open={showProSheet}
+        onClose={() => setShowProSheet(false)}
+        mode="pro"
+        onUnlocked={() => { setShowProSheet(false); navigate("/jobs"); }}
+      />
     </PageLayout>
   );
 }
