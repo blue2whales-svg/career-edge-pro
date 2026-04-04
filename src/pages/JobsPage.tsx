@@ -1,6 +1,32 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
-import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Sparkles, SearchX, Star, Shield } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, Briefcase, ArrowRight, Flame, RefreshCw, Sparkles, SearchX, Star, Shield, ChevronDown } from "lucide-react";
+
+function FilterAccordion({ title, children, defaultOpen = false }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="mb-2 rounded-lg border border-border/40 bg-card/40 overflow-hidden">
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between px-3 py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+        {title}
+        <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="px-3 pb-2.5">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -218,67 +244,81 @@ export default function JobsPage() {
             </Button>
           </div>
 
-          {/* 🌍 Country / Market */}
-          <div className="mb-3">
-            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">🌍 Country</p>
+          {/* Active filter chips + Clear */}
+          <div className="flex flex-wrap items-center gap-1.5 mb-3">
+            {selectedMarket !== "All Markets" && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-primary/15 text-primary border border-primary/30">
+                🌍 {selectedMarket}
+                <button onClick={() => setSelectedMarket("All Markets")} className="ml-0.5 hover:text-foreground">✕</button>
+              </span>
+            )}
+            {selectedIndustry !== "All" && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-brand-gold/15 text-brand-gold border border-brand-gold/30">
+                🏢 {selectedIndustry}
+                <button onClick={() => setSelectedIndustry("All")} className="ml-0.5 hover:text-foreground">✕</button>
+              </span>
+            )}
+            {selectedCategory !== "All Categories" && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-brand-red/15 text-brand-red border border-brand-red/30">
+                📂 {selectedCategory}
+                <button onClick={() => setSelectedCategory("All Categories")} className="ml-0.5 hover:text-foreground">✕</button>
+              </span>
+            )}
+            {(selectedMarket !== "All Markets" || selectedIndustry !== "All" || selectedCategory !== "All Categories") && (
+              <button
+                onClick={() => { setSelectedMarket("All Markets"); setSelectedIndustry("All"); setSelectedCategory("All Categories"); setActiveTab("all"); }}
+                className="px-2.5 py-1 rounded-full text-[11px] font-medium text-brand-red border border-brand-red/30 bg-brand-red/5 hover:bg-brand-red/10 transition-all active:scale-95"
+              >
+                ✕ Clear All
+              </button>
+            )}
+          </div>
+
+          {/* Collapsible filter groups */}
+          <FilterAccordion title="🌍 Country" defaultOpen>
             <div className="flex flex-wrap gap-1">
               {MARKETS.map((mkt) => (
                 <button key={mkt} onClick={() => setSelectedMarket(mkt)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all active:scale-95 ${
+                  className={`px-2 py-0.5 rounded-full text-[10px] font-medium transition-all active:scale-95 ${
                     selectedMarket === mkt
-                      ? "bg-primary text-primary-foreground shadow-md ring-1 ring-primary/40"
-                      : "border border-border bg-card/80 text-muted-foreground hover:text-foreground hover:border-primary/40"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "border border-border/60 bg-card/60 text-muted-foreground"
                   }`}
-                >{mkt === "All Markets" ? "🌐 All" : mkt}</button>
+                >{mkt === "All Markets" ? "All" : mkt}</button>
               ))}
             </div>
-          </div>
+          </FilterAccordion>
 
-          {/* 🏢 Industry */}
-          <div className="mb-3">
-            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">🏢 Industry</p>
+          <FilterAccordion title="🏢 Industry">
             <div className="flex flex-wrap gap-1">
               {INDUSTRIES.filter(i => i !== "🔥 Hot Abroad").map((ind) => (
                 <button key={ind} onClick={() => setSelectedIndustry(ind)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all active:scale-95 ${
+                  className={`px-2 py-0.5 rounded-full text-[10px] font-medium transition-all active:scale-95 ${
                     selectedIndustry === ind
-                      ? "bg-gradient-brand text-primary-foreground shadow-md ring-1 ring-brand-gold/40"
-                      : "border border-border bg-card/80 text-muted-foreground hover:text-foreground hover:border-brand-gold/30"
+                      ? "bg-brand-gold/20 text-brand-gold border border-brand-gold/40"
+                      : "border border-border/60 bg-card/60 text-muted-foreground"
                   }`}
-                >{ind === "All" ? "📋 All" : ind}</button>
+                >{ind === "All" ? "All" : ind}</button>
               ))}
             </div>
-          </div>
+          </FilterAccordion>
 
-          {/* 📂 Category */}
-          <div className="mb-2">
-            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">📂 Category</p>
+          <FilterAccordion title="📂 Category">
             <div className="flex flex-wrap gap-1">
-              {JOB_CATEGORIES.filter((c, i, arr) => {
-                // Remove duplicates like "Engineering" vs "Engineering Jobs"
+              {JOB_CATEGORIES.filter((c) => {
                 if (["Engineering", "Hospitality", "Healthcare", "Finance", "Technology", "Logistics", "Sales", "Administration", "Security"].includes(c)) return false;
                 return true;
               }).map((cat) => (
                 <button key={cat} onClick={() => setSelectedCategory(cat)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all active:scale-95 ${
+                  className={`px-2 py-0.5 rounded-full text-[10px] font-medium transition-all active:scale-95 ${
                     selectedCategory === cat
-                      ? "bg-brand-red text-white shadow-md ring-1 ring-brand-red/40"
-                      : "border border-border bg-card/80 text-muted-foreground hover:text-foreground hover:border-brand-red/30"
+                      ? "bg-brand-red/20 text-brand-red border border-brand-red/40"
+                      : "border border-border/60 bg-card/60 text-muted-foreground"
                   }`}
-                >{cat === "All Categories" ? "🔖 All" : cat}</button>
+                >{cat === "All Categories" ? "All" : cat}</button>
               ))}
-          </div>
-
-          {/* Clear All Filters */}
-          {(selectedMarket !== "All Markets" || selectedIndustry !== "All" || selectedCategory !== "All Categories") && (
-            <button
-              onClick={() => { setSelectedMarket("All Markets"); setSelectedIndustry("All"); setSelectedCategory("All Categories"); setActiveTab("all"); }}
-              className="mt-2 px-3 py-1 rounded-full text-[11px] font-medium text-brand-red border border-brand-red/30 bg-brand-red/5 hover:bg-brand-red/10 transition-all active:scale-95"
-            >
-              ✕ Clear All Filters
-            </button>
-          )}
-          </div>
+            </div>
+          </FilterAccordion>
         </div>
       </section>
 
