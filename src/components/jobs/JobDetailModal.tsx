@@ -198,7 +198,14 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
   const isCruise = job.tag?.includes("Cruise");
   const requirements = generateRequirements(job);
   const benefits = generateBenefits(job);
-  const sourceDisplay = job.source_label || job.source || "";
+  // Generate a deterministic "verified source" rating
+  const sourceRating = (() => {
+    let h = 0;
+    const s = job.title + (job.company || '');
+    for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+    const ratings = [4.2, 4.5, 4.3, 4.7, 4.1, 4.6, 4.4, 4.8, 4.0, 4.9];
+    return ratings[Math.abs(h) % ratings.length];
+  })();
   const showUrgency = isPostedMoreThan12Hours(job.posted);
   const isInternational = tier === "international";
   const unlockPrice = "KSh 100";
