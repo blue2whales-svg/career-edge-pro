@@ -1,35 +1,38 @@
-import { useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, Loader2, Eye, EyeOff } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { usePendingUnlock } from "@/hooks/usePendingUnlock";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState("");
+export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  usePendingUnlock();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  useEffect(() => {
+    // Supabase sets the session from the URL hash automatically
+  }, []);
+
+  const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) return;
+    if (password.length < 6) {
+      toast({ title: "Password must be at least 6 characters", variant: "destructive" });
+      return;
+    }
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.updateUser({ password });
 
     if (error) {
       toast({ title: error.message, variant: "destructive" });
     } else {
-      const redirect = searchParams.get("redirect") || "/portal";
-      navigate(redirect);
+      toast({ title: "Password updated successfully!" });
+      navigate("/portal");
     }
     setLoading(false);
   };
@@ -39,14 +42,13 @@ export default function LoginPage() {
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
           <img src={cvedgeLogo} alt="CV Edge" className="h-12 w-auto mx-auto mb-4" />
-          <h1 className="text-2xl font-bold">Welcome back</h1>
-          <p className="text-sm text-muted-foreground mt-1">Sign in to your CV Edge account</p>
+          <h1 className="text-2xl font-bold">Set new password</h1>
+          <p className="text-sm text-muted-foreground mt-1">Enter your new password below</p>
         </div>
-        <form className="space-y-4" onSubmit={handleLogin}>
-          <Input placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="h-11 bg-muted/50" />
+        <form className="space-y-4" onSubmit={handleUpdate}>
           <div className="relative">
             <Input
-              placeholder="Password"
+              placeholder="New password"
               type={showPw ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -60,20 +62,15 @@ export default function LoginPage() {
               {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
-          <div className="flex justify-end">
-            <Link to="/forgot-password" className="text-xs text-primary hover:underline">
-              Forgot password?
-            </Link>
-          </div>
-          <Button type="submit" disabled={loading} className="w-full bg-gradient-brand border-0 h-11 font-semibold">
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gradient-brand border-0 h-11 font-semibold"
+          >
             {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-            Sign In <ArrowRight className="ml-2 h-4 w-4" />
+            Update Password
           </Button>
         </form>
-        <p className="text-center text-sm text-muted-foreground">
-          Don't have an account?{" "}
-          <Link to="/signup" className="text-primary hover:underline">Sign up</Link>
-        </p>
       </div>
     </div>
   );
