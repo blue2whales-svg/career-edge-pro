@@ -46,9 +46,23 @@ function hotScore(job) {
 }
 
 async function fetchAdzuna() {
-  const queries = [
+  // Kenya-heavy queries for maximum local coverage
+  const kenyaQueries = [
     { country: 'ke', what: 'jobs', market: 'Kenya' },
-    { country: 'ke', what: 'nurse healthcare', market: 'Kenya' },
+    { country: 'ke', what: 'nurse healthcare hospital', market: 'Kenya' },
+    { country: 'ke', what: 'accountant finance banking', market: 'Kenya' },
+    { country: 'ke', what: 'sales marketing', market: 'Kenya' },
+    { country: 'ke', what: 'driver logistics warehouse', market: 'Kenya' },
+    { country: 'ke', what: 'engineer', market: 'Kenya' },
+    { country: 'ke', what: 'teacher education', market: 'Kenya' },
+    { country: 'ke', what: 'IT software developer', market: 'Kenya' },
+    { country: 'ke', what: 'hotel chef hospitality', market: 'Kenya' },
+    { country: 'ke', what: 'admin secretary receptionist', market: 'Kenya' },
+    { country: 'ke', what: 'security guard', market: 'Kenya' },
+    { country: 'ke', what: 'NGO UN international', market: 'Kenya' },
+  ];
+
+  const intlQueries = [
     { country: 'ae', what: 'jobs', market: 'UAE' },
     { country: 'ae', what: 'hotel hospitality', market: 'UAE' },
     { country: 'sa', what: 'jobs', market: 'Saudi Arabia' },
@@ -64,10 +78,12 @@ async function fetchAdzuna() {
     { country: 'de', what: 'engineer', market: 'Germany' },
   ];
 
+  const queries = [...kenyaQueries, ...intlQueries];
+
   const jobs = [];
   const results = await Promise.allSettled(
     queries.map(q =>
-      fetch(`https://api.adzuna.com/v1/api/jobs/${q.country}/search/1?app_id=${process.env.ADZUNA_APP_ID}&app_key=${process.env.ADZUNA_APP_KEY}&what=${encodeURIComponent(q.what)}&results_per_page=20&max_days_old=3&sort_by=date`)
+      fetch(`https://api.adzuna.com/v1/api/jobs/${q.country}/search/1?app_id=${process.env.ADZUNA_APP_ID}&app_key=${process.env.ADZUNA_APP_KEY}&what=${encodeURIComponent(q.what)}&results_per_page=${q.country === 'ke' ? 50 : 20}&max_days_old=${q.country === 'ke' ? 7 : 3}&sort_by=date`)
         .then(r => r.json())
         .then(data => ({ q, rows: data.results || [] }))
     )
@@ -114,15 +130,26 @@ async function fetchAdzuna() {
 
 async function fetchJooble() {
   const queries = [
+    // Kenya — diverse keyword coverage
     { keywords: 'jobs in Kenya', location: 'Kenya', market: 'Kenya', tag: null },
+    { keywords: 'Nairobi jobs', location: 'Nairobi', market: 'Kenya', tag: null },
+    { keywords: 'Mombasa jobs', location: 'Mombasa', market: 'Kenya', tag: null },
+    { keywords: 'driver jobs Kenya', location: 'Kenya', market: 'Kenya', tag: null },
+    { keywords: 'accountant jobs Kenya', location: 'Kenya', market: 'Kenya', tag: null },
+    { keywords: 'sales jobs Kenya', location: 'Kenya', market: 'Kenya', tag: null },
+    { keywords: 'nurse jobs Kenya', location: 'Kenya', market: 'Kenya', tag: null },
+    { keywords: 'teacher jobs Kenya', location: 'Kenya', market: 'Kenya', tag: null },
+    { keywords: 'NGO jobs Kenya', location: 'Kenya', market: 'Kenya', tag: null },
+    { keywords: 'IT developer Kenya', location: 'Kenya', market: 'Kenya', tag: null },
+    // Gulf
     { keywords: 'jobs in Dubai', location: 'Dubai', market: 'UAE', tag: '🔥 Gulf Hot' },
     { keywords: 'jobs in Qatar', location: 'Qatar', market: 'Qatar', tag: '🔥 Gulf Hot' },
     { keywords: 'jobs in Saudi Arabia', location: 'Saudi Arabia', market: 'Saudi Arabia', tag: '🔥 Gulf Hot' },
     { keywords: 'jobs in Kuwait', location: 'Kuwait', market: 'Kuwait', tag: '🔥 Gulf Hot' },
-    { keywords: 'jobs in Bahrain', location: 'Bahrain', market: 'Bahrain', tag: '🔥 Gulf Hot' },
-    { keywords: 'jobs in Oman', location: 'Oman', market: 'Oman', tag: '🔥 Gulf Hot' },
+    // Remote & International
     { keywords: 'cruise ship jobs', location: '', market: 'Cruise', tag: '🚢 Cruise Line' },
     { keywords: 'remote jobs Africa', location: '', market: 'Remote', tag: '🌍 Remote' },
+    { keywords: 'remote work from home', location: '', market: 'Remote', tag: '🌍 Remote' },
     { keywords: 'nurse jobs abroad visa sponsorship', location: '', market: 'UK', tag: '✈️ Visa Sponsor' },
     { keywords: 'visa sponsorship jobs Europe', location: 'Europe', market: 'Europe', tag: '✈️ Visa Sponsor' },
   ];
