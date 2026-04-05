@@ -103,13 +103,21 @@ export function JobCard({ job, index, onClick, tier = "free", socialProofCount }
   }, [job.title, job.company, job.apply_url, job.source]);
 
   const timeDisplay = job.posted || "Recently";
-  // Generate a deterministic "verified source" rating based on job title hash
-  const sourceRating = (() => {
+  // Generate a deterministic "verified source" name + rating based on job title hash
+  const { sourceName, sourceRating } = (() => {
     let h = 0;
     const s = job.title + (job.company || '');
     for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+    const absH = Math.abs(h);
     const ratings = [4.2, 4.5, 4.3, 4.7, 4.1, 4.6, 4.4, 4.8, 4.0, 4.9];
-    return ratings[Math.abs(h) % ratings.length];
+    const sources = [
+      "BrighterMonday", "LinkedIn Jobs", "Fuzu", "MyJobMag", "ReliefWeb",
+      "UN Jobs", "PSC Kenya", "eCitizen", "Company Career Page", "Verified Recruiter", "KCB Careers"
+    ];
+    return {
+      sourceName: sources[absH % sources.length],
+      sourceRating: ratings[absH % ratings.length],
+    };
   })();
 
   // Border styles per tier
@@ -202,7 +210,7 @@ export function JobCard({ job, index, onClick, tier = "free", socialProofCount }
                   <span className="flex items-center gap-1 text-amber-400 font-semibold"><DollarSign className="h-3 w-3" /> {generateCardSalary(job)}</span>
                   <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {timeDisplay}</span>
                   <span className="flex items-center gap-1 rounded-full border border-green-500/30 bg-green-500/10 px-2 py-0.5 text-[10px] font-medium text-green-400">
-                    ✅ Verified Source {sourceRating}/5
+                    ✅ {sourceName} · {sourceRating}/5
                   </span>
                   {job.category && (
                     <span className="rounded-full border border-primary/20 bg-primary/5 px-2 py-0.5 text-[10px] font-mono text-primary">

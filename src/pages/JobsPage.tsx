@@ -38,6 +38,7 @@ import { JobDetailModal } from "@/components/jobs/JobDetailModal";
 import { LiveStatusBar } from "@/components/jobs/LiveStatusBar";
 import { FeaturedCategories } from "@/components/jobs/FeaturedCategories";
 import { UpsellStrip } from "@/components/jobs/UpsellStrip";
+import { TrustedSourcesBar } from "@/components/jobs/TrustedSourcesBar";
 import { INDUSTRIES, MARKETS, JOB_CATEGORIES, type Job } from "@/data/jobs";
 import { useJobsPaginated, useCategoryCounts, triggerJobsFetch, type JobFilters } from "@/hooks/useJobs";
 import { useJobAccess } from "@/hooks/useJobAccess";
@@ -220,6 +221,9 @@ export default function JobsPage() {
           </div>
         </div>
       </section>
+
+      {/* Trusted Sources */}
+      <TrustedSourcesBar />
 
       {/* Featured Hot Jobs */}
       <FeaturedJobs />
