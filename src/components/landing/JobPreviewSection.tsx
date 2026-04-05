@@ -76,6 +76,7 @@ export function JobPreviewSection() {
                     <span className="line-clamp-1">{job.location}</span>
                   </div>
                   <span className="text-xs font-mono text-primary">{job.salary || "Competitive"}</span>
+                  <span className="text-[9px] text-green-400 mt-1 block">✅ {["BrighterMonday","LinkedIn Jobs","Fuzu","MyJobMag","PSC Kenya"][i % 5]}</span>
                 </motion.div>
               ))}
         </div>
