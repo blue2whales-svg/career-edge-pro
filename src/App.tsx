@@ -13,6 +13,8 @@ import LandingPage from "./pages/LandingPage";
 // Lazy-load everything else
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const SignupPage = lazy(() => import("./pages/SignupPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const ServicesPage = lazy(() => import("./pages/ServicesPage"));
 const ScholarshipsPage = lazy(() => import("./pages/ScholarshipsPage"));
 const PricingPage = lazy(() => import("./pages/PricingPage"));
@@ -60,8 +62,8 @@ function PageLoader() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="flex flex-col items-center gap-3">
-        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-        <span className="text-sm text-muted-foreground">Loading…</span>
+        <div className="w-10 h-10 rounded-full border-[3px] border-primary border-t-transparent animate-spin" />
+        <span className="text-xs font-semibold tracking-widest text-primary">CV EDGE</span>
       </div>
     </div>
   );
@@ -82,6 +84,8 @@ const App = () => {
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/scholarships" element={<ScholarshipsPage />} />
               <Route path="/pricing" element={<PricingPage />} />
