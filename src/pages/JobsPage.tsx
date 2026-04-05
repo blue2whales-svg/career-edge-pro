@@ -222,6 +222,9 @@ export default function JobsPage() {
         </div>
       </section>
 
+      {/* Trusted Sources */}
+      <TrustedSourcesBar />
+
       {/* Featured Hot Jobs */}
       <FeaturedJobs />
 
