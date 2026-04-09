@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import type { Job } from "@/data/jobs";
 import { CVMatchModal } from "./CVMatchModal";
 import ApplyModal from "./ApplyModal";
+import OwnerQuickApplyModal from "./OwnerQuickApplyModal";
 import { supabase } from "@/integrations/supabase/client";
 import { type JobTier } from "@/hooks/useJobAccess";
 
