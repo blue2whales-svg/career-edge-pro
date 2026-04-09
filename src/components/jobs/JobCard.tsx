@@ -60,9 +60,11 @@ export function JobCard({ job, index, onClick, tier = "free", socialProofCount, 
   const isVisa = job.visa_sponsorship;
   const [matchModalOpen, setMatchModalOpen] = useState(false);
   const [applyModalOpen, setApplyModalOpen] = useState(false);
+  const [quickApplyOpen, setQuickApplyOpen] = useState(false);
   const [postingInfo, setPostingInfo] = useState<JobPostingInfo | null>(null);
 
-  const isLocked = tier !== "free";
+  // Owner bypasses all locks
+  const isLocked = isOwner ? false : tier !== "free";
   const isVerified = tier === "verified";
   const isInternational = tier === "international";
 
