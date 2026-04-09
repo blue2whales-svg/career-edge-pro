@@ -78,6 +78,7 @@ export default function JobsPage() {
   const [activeTab, setActiveTab] = useState("all");
 
   const { getJobTier, sessionSocialProof } = useJobAccess();
+  const { isOwner, userId: ownerId } = useOwner();
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(search), 300);
@@ -399,6 +400,8 @@ export default function JobsPage() {
                         onClick={() => setSelectedJob(job)}
                         tier={tier}
                         socialProofCount={tier !== "free" ? sessionSocialProof : undefined}
+                        isOwner={isOwner}
+                        ownerId={ownerId}
                       />
                       {i > 0 && (i + 1) % 6 === 0 && (
                         <UpsellStrip variant={Math.floor(i / 6) % 2 === 0 ? "ats" : "bundle"} />
