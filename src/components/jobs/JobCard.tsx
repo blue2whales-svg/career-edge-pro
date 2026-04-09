@@ -147,6 +147,14 @@ export function JobCard({ job, index, onClick, tier = "free", socialProofCount, 
           onApplied={() => setPostingInfo((prev) => (prev ? { ...prev, applied: true } : null))}
         />
       )}
+      {isOwner && ownerId && (
+        <OwnerQuickApplyModal
+          job={job}
+          open={quickApplyOpen}
+          onClose={() => setQuickApplyOpen(false)}
+          userId={ownerId}
+        />
+      )}
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -178,7 +186,6 @@ export function JobCard({ job, index, onClick, tier = "free", socialProofCount, 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h3 className="font-semibold text-base sm:text-lg">{job.title}</h3>
-                  {/* Tier badges */}
                   {isVerified && (
                     <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 text-[10px] font-mono text-amber-400 font-semibold shadow-[0_0_6px_rgba(245,166,35,0.2)]">
                       <Star className="h-3 w-3" /> Verified Employer
@@ -206,7 +213,6 @@ export function JobCard({ job, index, onClick, tier = "free", socialProofCount, 
                   )}
                   {job.verified && <Shield className="h-3.5 w-3.5 text-primary" />}
                 </div>
-                {/* Company name — blurred if locked */}
                 <p className={`text-sm ${isLocked ? "text-muted-foreground/60 blur-[3px] select-none" : "text-muted-foreground"}`}>
                   {isLocked ? "Confidential Employer" : job.company}
                 </p>
@@ -223,7 +229,6 @@ export function JobCard({ job, index, onClick, tier = "free", socialProofCount, 
                     </span>
                   )}
                 </div>
-                {/* Urgency on locked cards */}
                 {isLocked && isClosingSoon && (
                   <div className="flex items-center gap-3 mt-2">
                     <span className="text-[10px] text-red-400 font-semibold flex items-center gap-1">
@@ -235,7 +240,17 @@ export function JobCard({ job, index, onClick, tier = "free", socialProofCount, 
             </div>
           </div>
           <div className="flex gap-2 items-center shrink-0">
-            {postingInfo &&
+            {/* Owner Quick Apply button */}
+            {isOwner && (
+              <Button
+                size="sm"
+                className="text-xs gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold border-0 shadow-[0_0_12px_rgba(245,166,35,0.3)]"
+                onClick={(e) => { e.stopPropagation(); setQuickApplyOpen(true); }}
+              >
+                <Zap className="h-3.5 w-3.5" /> Quick Apply
+              </Button>
+            )}
+            {!isOwner && postingInfo &&
               (postingInfo.applied ? (
                 <span className="text-xs px-3 py-1.5 rounded-full bg-green-500/15 text-green-400 border border-green-500/30 font-medium">
                   ✓ Applied
@@ -250,22 +265,24 @@ export function JobCard({ job, index, onClick, tier = "free", socialProofCount, 
                   <Send className="h-3 w-3" /> Apply
                 </Button>
               ))}
-            <Button
-              className={`w-full sm:w-auto border-0 font-semibold shrink-0 ${
-                isVerified
-                  ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black gold-shimmer"
-                  : isInternational
-                    ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
-                    : "bg-gradient-brand gold-shimmer"
-              }`}
-              onClick={(e) => { e.stopPropagation(); onClick?.(); }}
-            >
-              {isLocked ? (
-                <><Lock className="mr-1.5 h-4 w-4" /> Unlock</>
-              ) : (
-                <>View Details <ArrowRight className="ml-2 h-4 w-4" /></>
-              )}
-            </Button>
+            {!isOwner && (
+              <Button
+                className={`w-full sm:w-auto border-0 font-semibold shrink-0 ${
+                  isVerified
+                    ? "bg-gradient-to-r from-amber-500 to-amber-600 text-black gold-shimmer"
+                    : isInternational
+                      ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+                      : "bg-gradient-brand gold-shimmer"
+                }`}
+                onClick={(e) => { e.stopPropagation(); onClick?.(); }}
+              >
+                {isLocked ? (
+                  <><Lock className="mr-1.5 h-4 w-4" /> Unlock</>
+                ) : (
+                  <>View Details <ArrowRight className="ml-2 h-4 w-4" /></>
+                )}
+              </Button>
+            )}
           </div>
         </div>
       </motion.div>
