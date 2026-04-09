@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Flame, Shield, Zap, CreditCard, Users, RefreshCw, CheckCircle } from "lucide-react";
+import { ArrowRight, Flame, Shield, Zap, CreditCard, Users, RefreshCw, CheckCircle, Globe2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useJobsPageData } from "@/hooks/useJobs";
+import { useIsInternational } from "@/hooks/useIsInternational";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -15,6 +16,7 @@ const fadeUp = {
 
 export function HeroSection() {
   const { data: liveJobsData, isLoading: jobsLoading, isError: jobsError } = useJobsPageData();
+  const { isInternational } = useIsInternational();
 
   const counts = liveJobsData?.counts;
   const kenyaCount = counts?.["Kenya Jobs"] || 0;
@@ -23,13 +25,18 @@ export function HeroSection() {
   const internationalCount = Math.max(totalCount - kenyaCount, 0);
   const hotJob = liveJobsData?.featured?.[0] || liveJobsData?.jobs?.find((job) => job.hot) || liveJobsData?.jobs?.[0];
 
-  // Build enticing stats — skip any category with 0
+  // Geo-targeted stats: international visitors see remote/global first
   const liveStats: string[] = [];
-  if (kenyaCount > 0) liveStats.push(`📍 ${kenyaCount.toLocaleString()} jobs in Kenya`);
-  if (remoteCount > 0) liveStats.push(`🌐 ${remoteCount.toLocaleString()} remote jobs`);
-  if (internationalCount > 0) liveStats.push(`✈️ ${internationalCount.toLocaleString()} international opportunities`);
+  if (isInternational) {
+    if (remoteCount > 0) liveStats.push(`🌐 ${remoteCount.toLocaleString()} remote jobs`);
+    if (internationalCount > 0) liveStats.push(`✈️ ${internationalCount.toLocaleString()} international opportunities`);
+    if (kenyaCount > 0) liveStats.push(`📍 ${kenyaCount.toLocaleString()} jobs in Kenya`);
+  } else {
+    if (kenyaCount > 0) liveStats.push(`📍 ${kenyaCount.toLocaleString()} jobs in Kenya`);
+    if (remoteCount > 0) liveStats.push(`🌐 ${remoteCount.toLocaleString()} remote jobs`);
+    if (internationalCount > 0) liveStats.push(`✈️ ${internationalCount.toLocaleString()} international opportunities`);
+  }
   if (totalCount > 0 && liveStats.length === 0) liveStats.push(`🔥 ${totalCount.toLocaleString()} live opportunities`);
-  // Always show total as a highlight if we have jobs
   if (totalCount > 0 && liveStats.length < 3) {
     const gulfCount = counts?.["Gulf Jobs"] || 0;
     const cruiseCount = counts?.["Cruise Jobs"] || 0;
@@ -41,11 +48,34 @@ export function HeroSection() {
     <section className="relative z-10 pt-14 sm:pt-28 pb-14 sm:pb-20 px-4">
       <div className="container max-w-5xl mx-auto">
         <div className="max-w-3xl">
+
+          {/* GEO-TARGETED BANNER for international visitors */}
+          {isInternational && (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeUp}
+              custom={0}
+              className="flex items-center gap-3 rounded-xl border border-blue-500/30 bg-blue-500/10 px-4 py-3 mb-5"
+            >
+              <Globe2 className="w-5 h-5 text-blue-400 shrink-0" />
+              <div>
+                <p className="text-sm font-semibold text-foreground">🌍 Hiring from Kenya? Post jobs here</p>
+                <p className="text-xs text-muted-foreground">Access {totalCount > 0 ? `${totalCount}+` : ""} remote & international opportunities — or recruit top Kenyan talent</p>
+              </div>
+              <Link to="/jobs?category=Remote" className="shrink-0">
+                <Button size="sm" variant="outline" className="border-blue-500/30 text-blue-400 hover:bg-blue-500/10 text-xs h-8">
+                  Browse Remote <ArrowRight className="ml-1 h-3 w-3" />
+                </Button>
+              </Link>
+            </motion.div>
+          )}
+
           <motion.div
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            custom={0}
+            custom={isInternational ? 1 : 0}
             className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 mb-6"
           >
             <Flame className="w-3.5 h-3.5 text-primary" />
@@ -56,21 +86,28 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            custom={1}
+            custom={isInternational ? 2 : 1}
             className="text-3xl sm:text-6xl lg:text-7xl font-serif font-bold leading-[1.1] mb-4"
           >
-            The Job Is Already Out There. <span className="text-gradient">Can They Find You?</span>
+            {isInternational ? (
+              <>Remote Jobs & Global Talent. <span className="text-gradient">One Platform.</span></>
+            ) : (
+              <>The Job Is Already Out There. <span className="text-gradient">Can They Find You?</span></>
+            )}
           </motion.h1>
 
           <motion.p
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            custom={2}
+            custom={isInternational ? 3 : 2}
             className="text-base sm:text-lg text-muted-foreground max-w-2xl mb-8 leading-relaxed"
           >
-            CV Edge gives you a recruiter-ready CV + access to verified jobs in Kenya, Gulf, Cruise Lines and beyond —
-            starting at <span className="text-primary font-semibold">KES 1,200</span>
+            {isInternational ? (
+              <>CV Edge connects you to verified remote, cruise & international jobs — plus recruiter-ready CVs starting at <span className="text-primary font-semibold">$10</span></>
+            ) : (
+              <>CV Edge gives you a recruiter-ready CV + access to verified jobs in Kenya, Gulf, Cruise Lines and beyond — starting at <span className="text-primary font-semibold">KES 1,200</span></>
+            )}
           </motion.p>
 
           {/* LIVE JOBS SNAPSHOT */}
@@ -78,7 +115,7 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            custom={3}
+            custom={isInternational ? 4 : 3}
             className="rounded-xl border border-primary/20 bg-primary/5 p-4 mb-6 max-w-md"
           >
             <div className="flex items-center gap-2 mb-2">
@@ -91,7 +128,9 @@ export function HeroSection() {
 
             {jobsLoading ? (
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">Scanning Kenya, Gulf, cruise, remote &amp; global markets…</p>
+                <p className="text-sm text-muted-foreground">
+                  {isInternational ? "Scanning remote, cruise & global markets…" : "Scanning Kenya, Gulf, cruise, remote & global markets…"}
+                </p>
                 <div className="flex items-center gap-2 text-xs font-medium text-primary">
                   <span className="h-2 w-2 rounded-full bg-primary animate-pulse-soft" />
                   Live feed syncing
@@ -123,7 +162,7 @@ export function HeroSection() {
                   </div>
                 )}
 
-                <Link to="/jobs" className="inline-flex items-center gap-1.5 text-xs text-primary font-semibold hover:text-primary/80 transition-colors">
+                <Link to={isInternational ? "/jobs?category=Remote" : "/jobs"} className="inline-flex items-center gap-1.5 text-xs text-primary font-semibold hover:text-primary/80 transition-colors">
                   🔒 Unlock to view &amp; apply <ArrowRight className="h-3 w-3" />
                 </Link>
               </>
@@ -134,15 +173,15 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            custom={4}
+            custom={isInternational ? 5 : 4}
             className="flex flex-col sm:flex-row gap-3 mb-3"
           >
-            <Link to="/order" className="w-full sm:w-auto">
+            <Link to={isInternational ? "/jobs?category=Remote" : "/order"} className="w-full sm:w-auto">
               <Button
                 size="lg"
                 className="w-full sm:w-auto bg-gradient-brand border-0 font-semibold h-13 px-8 shadow-glow gold-shimmer text-base"
               >
-                Unlock Jobs Now
+                {isInternational ? "Browse Remote Jobs" : "Unlock Jobs Now"}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
@@ -152,7 +191,7 @@ export function HeroSection() {
                 size="lg"
                 className="w-full sm:w-auto border-primary/30 font-semibold h-13 px-8 hover:bg-primary/5"
               >
-                Get Verified Job Access
+                {isInternational ? "Explore All Jobs" : "Get Verified Job Access"}
               </Button>
             </Link>
           </motion.div>
@@ -162,7 +201,7 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            custom={5}
+            custom={isInternational ? 6 : 5}
             className="text-xs text-amber-400 font-medium mb-5"
           >
             ⏳ Some jobs expire in 24–48 hours — ⚠️ Positions are limited
@@ -173,7 +212,7 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            custom={6}
+            custom={isInternational ? 7 : 6}
             className="flex items-center gap-2 mb-6"
           >
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse-soft" />
@@ -187,7 +226,7 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            custom={7}
+            custom={isInternational ? 8 : 7}
             className="flex flex-wrap items-center gap-3 mb-6"
           >
             <div className="flex items-center gap-1.5 rounded-full border border-border/50 bg-muted/30 px-3 py-1 text-xs text-muted-foreground">
@@ -209,17 +248,25 @@ export function HeroSection() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            custom={8}
+            custom={isInternational ? 9 : 8}
             className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground"
           >
-            <div className="flex items-center gap-1.5">
-              <CreditCard className="h-3.5 w-3.5 text-primary" />
-              <span>M-Pesa</span>
-            </div>
+            {!isInternational && (
+              <div className="flex items-center gap-1.5">
+                <CreditCard className="h-3.5 w-3.5 text-primary" />
+                <span>M-Pesa</span>
+              </div>
+            )}
             <div className="flex items-center gap-1.5">
               <Shield className="h-3.5 w-3.5 text-primary" />
               <span>PayPal</span>
             </div>
+            {isInternational && (
+              <div className="flex items-center gap-1.5">
+                <CreditCard className="h-3.5 w-3.5 text-primary" />
+                <span>Stripe</span>
+              </div>
+            )}
             <div className="flex items-center gap-1.5">
               <Zap className="h-3.5 w-3.5 text-primary" />
               <span>Instant Delivery</span>
