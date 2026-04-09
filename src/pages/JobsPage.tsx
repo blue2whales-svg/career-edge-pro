@@ -42,6 +42,7 @@ import { TrustedSourcesBar } from "@/components/jobs/TrustedSourcesBar";
 import { INDUSTRIES, MARKETS, JOB_CATEGORIES, type Job } from "@/data/jobs";
 import { useJobsPaginated, useCategoryCounts, triggerJobsFetch, type JobFilters } from "@/hooks/useJobs";
 import { useJobAccess } from "@/hooks/useJobAccess";
+import { useOwner } from "@/hooks/useOwner";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
