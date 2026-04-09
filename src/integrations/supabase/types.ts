@@ -486,6 +486,45 @@ export type Database = {
         }
         Relationships: []
       }
+      owner_applications: {
+        Row: {
+          apply_url: string | null
+          company: string
+          cover_letter: string | null
+          created_at: string
+          cv_version: string | null
+          follow_up_date: string | null
+          id: string
+          job_title: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          apply_url?: string | null
+          company: string
+          cover_letter?: string | null
+          created_at?: string
+          cv_version?: string | null
+          follow_up_date?: string | null
+          id?: string
+          job_title: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          apply_url?: string | null
+          company?: string
+          cover_letter?: string | null
+          created_at?: string
+          cv_version?: string | null
+          follow_up_date?: string | null
+          id?: string
+          job_title?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
