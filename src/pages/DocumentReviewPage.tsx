@@ -8,6 +8,7 @@ import ReactMarkdown from "react-markdown";
 import PageLayout from "@/components/PageLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 const SERVICE_LABELS: Record<string, string> = {
   cv: "Professional CV",
@@ -141,7 +142,7 @@ export default function DocumentReviewPage() {
       if (!printWindow) return;
       printWindow.document.write(`<!DOCTYPE html><html><head><title>${label}</title>
 <style>@page{margin:1in}body{font-family:Georgia,serif;font-size:11pt;line-height:1.7;color:#111;max-width:700px;margin:0 auto;padding:40px}h1{font-size:18pt;margin-bottom:6px}h2{font-size:14pt;border-bottom:1px solid #ddd;padding-bottom:4px}h3{font-size:12pt}ul,ol{margin-left:20px}p{margin:8px 0}</style>
-</head><body>${markdownToHtml(editContent)}</body></html>`);
+</head><body>${sanitizeHtml(markdownToHtml(editContent))}</body></html>`);
       printWindow.document.close();
       setTimeout(() => { printWindow.print(); }, 400);
     }
