@@ -1,5 +1,9 @@
 import { useProPlan } from "@/hooks/useProPlan";
 import { useState, useEffect } from "react";
+
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
