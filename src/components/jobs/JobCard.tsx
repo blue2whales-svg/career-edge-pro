@@ -48,9 +48,11 @@ interface JobCardProps {
   onClick?: () => void;
   tier?: JobTier;
   socialProofCount?: number;
+  isOwner?: boolean;
+  ownerId?: string | null;
 }
 
-export function JobCard({ job, index, onClick, tier = "free", socialProofCount }: JobCardProps) {
+export function JobCard({ job, index, onClick, tier = "free", socialProofCount, isOwner, ownerId }: JobCardProps) {
   const isCruise = job.tag?.includes("Cruise") || job.category === "Cruise Jobs" || job.market === "Cruise";
   const isHot = job.hot || (job.hot_score && job.hot_score >= 50);
   const isAbroad = job.market && !["Kenya"].includes(job.market);
