@@ -16,12 +16,14 @@ import {
   Target,
   Star,
   Layout,
+  Shield,
 } from "lucide-react";
 import cvedgeLogo from "@/assets/cvedge-logo.png";
 import { MobileNav } from "@/components/landing/MobileNav";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import ChatPrompt from "@/components/ChatPrompt";
 import { cn } from "@/lib/utils";
+import { useOwner } from "@/hooks/useOwner";
 
 interface PageLayoutProps {
   children: ReactNode;
@@ -38,6 +40,7 @@ const DOCK_LINKS = [
 
 export default function PageLayout({ children }: PageLayoutProps) {
   const { pathname } = useLocation();
+  const { isOwner } = useOwner();
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -73,6 +76,14 @@ export default function PageLayout({ children }: PageLayoutProps) {
               </Button>
             </Link>
             <div className="hidden md:flex items-center gap-3">
+              {isOwner && (
+                <Link to="/admin/jobs">
+                  <Button variant="ghost" size="sm" className="text-amber-500 hover:text-amber-400 gap-1.5">
+                    <Shield className="h-3.5 w-3.5" />
+                    Admin
+                  </Button>
+                </Link>
+              )}
               <Link to="/login">
                 <Button variant="ghost" size="sm">
                   Log in
@@ -165,7 +176,12 @@ export default function PageLayout({ children }: PageLayoutProps) {
                 </Link>
               </div>
             </div>
-          </div>
+              {isOwner && (
+                <Link to="/admin/jobs" className="block text-amber-500 hover:text-amber-400 transition-colors font-medium">
+                  ⚙️ Admin Panel
+                </Link>
+              )}
+            </div>
           <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} CV Edge. All rights reserved.</p>
             <div className="flex flex-wrap gap-4 text-xs">
