@@ -51,7 +51,8 @@ export default function LoginPage() {
     });
 
     if (error) {
-      toast({ title: error.message, variant: "destructive" });
+      console.error("Magic link error:", error);
+      toast({ title: "Error sending magic link email", description: error.message, variant: "destructive" });
     } else {
       setMagicSent(true);
       toast({ title: "Magic link sent! Check your email." });

@@ -36,7 +36,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 }
 
 // Configuration
-const SITE_NAME = "career-edge-pro"
+const SITE_NAME = "CV Edge"
 const SENDER_DOMAIN = "notify.cvedge.live"
 const ROOT_DOMAIN = "cvedge.live"
 const FROM_DOMAIN = "cvedge.live" // Domain shown in From address (may be root or sender subdomain)
