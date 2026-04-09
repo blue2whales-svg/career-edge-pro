@@ -125,7 +125,7 @@ export default function DocumentReviewPage() {
       const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
 <head><meta charset="utf-8"><title>${label}</title>
 <style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.6;color:#222}h1,h2,h3{font-family:Calibri,Arial,sans-serif}h1{font-size:18pt}h2{font-size:14pt}h3{font-size:12pt}ul,ol{margin-left:20px}</style>
-</head><body>${markdownToHtml(editContent)}</body></html>`;
+</head><body>${sanitizeHtml(markdownToHtml(editContent))}</body></html>`;
       const blob = new Blob([html], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
