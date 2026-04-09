@@ -1,5 +1,9 @@
 import { useProPlan } from "@/hooks/useProPlan";
 import { useState, useEffect } from "react";
+
+function escapeHtml(str: string): string {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -184,10 +188,10 @@ function EuropassBuilderInner() {
       "</style></head><body>" +
       "<div class='header'>" +
       "<div><div class='name'>" + profile.firstName.toUpperCase() + " " + profile.lastName.toUpperCase() + "</div>" +
-      "<div style='font-size:10px;color:#555;margin-top:5px'>" + profile.email + " | " + profile.phone + " | " + profile.city + ", " + profile.country + "</div></div>" +
+      "<div style='font-size:10px;color:#555;margin-top:5px'>" + escapeHtml(profile.email) + " | " + escapeHtml(profile.phone) + " | " + escapeHtml(profile.city) + ", " + escapeHtml(profile.country) + "</div></div>" +
       "<div style='color:#003399;font-weight:bold;font-size:14px'>europass</div>" +
       "</div>" +
-      "<pre>" + generatedContent + "</pre>" +
+      "<pre>" + escapeHtml(generatedContent) + "</pre>" +
       "</body></html>"
     );
     win.document.close();

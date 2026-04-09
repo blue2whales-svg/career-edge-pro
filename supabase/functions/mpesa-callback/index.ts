@@ -24,10 +24,39 @@ Deno.serve(async (req) => {
 
     const { ResultCode, CheckoutRequestID, CallbackMetadata } = callback;
 
+    if (!CheckoutRequestID || typeof CheckoutRequestID !== "string") {
+      console.warn("Callback missing CheckoutRequestID — ignoring");
+      return new Response(JSON.stringify({ ResultCode: 0, ResultDesc: "Accepted" }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
+
+    // Verify that this CheckoutRequestID actually exists in our orders table
+    const { data: existingOrder, error: lookupError } = await supabase
+      .from("orders")
+      .select("id, status")
+      .eq("mpesa_checkout_request_id", CheckoutRequestID)
+      .maybeSingle();
+
+    if (lookupError || !existingOrder) {
+      console.warn("Callback for unknown CheckoutRequestID — rejecting:", CheckoutRequestID);
+      return new Response(JSON.stringify({ ResultCode: 0, ResultDesc: "Accepted" }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // Prevent replay: don't re-process already paid orders
+    if (existingOrder.status === "paid") {
+      console.warn("Duplicate callback for already-paid order:", CheckoutRequestID);
+      return new Response(JSON.stringify({ ResultCode: 0, ResultDesc: "Accepted" }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
     if (ResultCode === 0 && CallbackMetadata) {
       const items = CallbackMetadata.Item || [];

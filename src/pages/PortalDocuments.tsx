@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Download, FileText, Loader2 } from "lucide-react";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 interface Doc {
   id: string;
@@ -118,7 +119,7 @@ li{margin-bottom:3px}
       if (!printWindow) return;
       printWindow.document.write(`<!DOCTYPE html><html><head><title>${doc.service_type}</title>
 <style>${execDocStyles}</style>
-</head><body>${htmlContent}</body></html>`);
+</head><body>${sanitizeHtml(htmlContent)}</body></html>`);
       printWindow.document.close();
       setTimeout(() => { printWindow.print(); }, 500);
     }
