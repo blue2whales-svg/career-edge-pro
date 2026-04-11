@@ -192,7 +192,7 @@ export default function LandingPage() {
         </div>
       </footer>
 
-      {/* Fixed WhatsApp Button */}
+      {/* Fixed WhatsApp Button — bottom-right where chatbot was */}
       <a
         href="https://wa.me/254793919962"
         target="_blank"

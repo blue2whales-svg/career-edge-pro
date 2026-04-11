@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { useJobs } from "@/hooks/useJobs";
+import { useIsInternational } from "@/hooks/useIsInternational";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -16,10 +17,24 @@ const fadeUp = {
 
 export function JobPreviewSection() {
   const { data, isLoading } = useJobs();
+  const { isInternational } = useIsInternational();
   const jobs = data?.jobs ?? [];
 
-  const visible = jobs.slice(0, 3);
-  const locked = jobs.slice(3, 7);
+  // Prioritize Kenya jobs for local visitors, international/remote for others
+  const prioritized = isInternational
+    ? [...jobs].sort((a, b) => {
+        const aIntl = a.market !== "Kenya" ? 1 : 0;
+        const bIntl = b.market !== "Kenya" ? 1 : 0;
+        return bIntl - aIntl;
+      })
+    : [...jobs].sort((a, b) => {
+        const aKe = a.market === "Kenya" ? 1 : 0;
+        const bKe = b.market === "Kenya" ? 1 : 0;
+        return bKe - aKe;
+      });
+
+  const visible = prioritized.slice(0, 3);
+  const locked = prioritized.slice(3, 7);
 
   return (
     <section className="relative z-10 py-16 sm:py-24 px-4">

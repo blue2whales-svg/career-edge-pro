@@ -99,20 +99,5 @@
       }, 4000);
     </script>
 
-    <!-- Zapier Chatbot — deferred 8s -->
-    <script defer>
-      setTimeout(function() {
-        var s = document.createElement('script');
-        s.type = 'module';
-        s.src = 'https://interfaces.zapier.com/assets/web-components/zapier-interfaces/zapier-interfaces.esm.js';
-        document.body.appendChild(s);
-        s.onload = function() {
-          var el = document.createElement('zapier-interfaces-chatbot-embed');
-          el.setAttribute('is-popup', 'true');
-          el.setAttribute('chatbot-id', 'cmn7v2j7b0013tgdtvs9wg03q');
-          document.body.appendChild(el);
-        };
-      }, 8000);
-    </script>
   </body>
 </html>
