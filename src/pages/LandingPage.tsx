@@ -197,7 +197,7 @@ export default function LandingPage() {
         href="https://wa.me/254793919962"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg hover:bg-emerald-600 transition-colors"
+        className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 w-14 h-14 rounded-full bg-emerald-500 flex items-center justify-center shadow-lg hover:bg-emerald-600 transition-colors"
         aria-label="Chat on WhatsApp"
       >
         <svg viewBox="0 0 24 24" className="w-7 h-7 fill-white">

@@ -300,7 +300,7 @@ const CATEGORY_TO_MARKETS: Record<string, string[]> = {
 
 async function handleFeedMode(supabase: any, body: any) {
   const page = Math.max(0, Number(body.page ?? 0));
-  const pageSize = Math.min(Math.max(1, Number(body.pageSize ?? 20)), 100);
+  const pageSize = Math.min(Math.max(1, Number(body.pageSize ?? 20)), 200);
   const from = page * pageSize;
   const to = from + pageSize - 1;
   const filters = body.filters || {};
@@ -328,37 +328,51 @@ async function handleFeedMode(supabase: any, body: any) {
         .limit(6)
     : Promise.resolve({ data: [] });
 
-  // Counts query (lightweight)
-  const countsP = body.includeCounts
-    ? supabase
-        .from("cached_jobs")
-        .select("market,category,industry,visa_sponsorship")
-        .eq("is_active", true)
-        .limit(5000)
-    : Promise.resolve({ data: [] });
+  // Counts: use individual count queries to avoid row limits
+  const countFilter = (col: string, val: string) =>
+    supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq(col, val);
+  const countIn = (col: string, vals: string[]) =>
+    supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).in(col, vals);
 
-  const [jobsRes, featuredRes, countsRes] = await Promise.all([q, featuredP, countsP]);
+  const countsP = body.includeCounts
+    ? Promise.all([
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true),
+        countFilter("market", "Kenya"),
+        countIn("market", GULF_MARKETS),
+        countFilter("market", "Cruise"),
+        countFilter("market", "Remote"),
+        supabase.from("cached_jobs").select("*", { count: "exact", head: true }).eq("is_active", true).eq("visa_sponsorship", true),
+        countFilter("industry", "Healthcare"),
+        countFilter("market", "UK"),
+        countFilter("market", "Australia"),
+        countFilter("market", "Germany"),
+        countFilter("market", "Canada"),
+        countIn("market", EUROPE_MARKETS),
+      ])
+    : null;
+
+  const [jobsRes, featuredRes, countsRes] = await Promise.all([q, featuredP, countsP || Promise.resolve(null)]);
 
   if (jobsRes.error) throw jobsRes.error;
 
-  // Compute counts
+  // Compute counts from individual queries
   const counts: Record<string, number> = {
     kenya: 0, gulf: 0, cruise: 0, remote: 0, visa: 0,
     healthcare: 0, uk: 0, australia: 0, germany: 0, canada: 0, europe: 0, total: 0,
   };
-  for (const r of (countsRes.data || [])) {
-    counts.total++;
-    if (r.market === "Kenya") counts.kenya++;
-    if (GULF_MARKETS.includes(r.market || "")) counts.gulf++;
-    if (r.market === "Cruise") counts.cruise++;
-    if (r.market === "Remote") counts.remote++;
-    if (r.visa_sponsorship) counts.visa++;
-    if (r.category === "Healthcare Jobs" || r.industry === "Healthcare") counts.healthcare++;
-    if (r.market === "UK") counts.uk++;
-    if (r.market === "Australia") counts.australia++;
-    if (r.market === "Germany") counts.germany++;
-    if (r.market === "Canada") counts.canada++;
-    if (EUROPE_MARKETS.includes(r.market || "")) counts.europe++;
+  if (countsRes && Array.isArray(countsRes)) {
+    counts.total = countsRes[0]?.count ?? 0;
+    counts.kenya = countsRes[1]?.count ?? 0;
+    counts.gulf = countsRes[2]?.count ?? 0;
+    counts.cruise = countsRes[3]?.count ?? 0;
+    counts.remote = countsRes[4]?.count ?? 0;
+    counts.visa = countsRes[5]?.count ?? 0;
+    counts.healthcare = countsRes[6]?.count ?? 0;
+    counts.uk = countsRes[7]?.count ?? 0;
+    counts.australia = countsRes[8]?.count ?? 0;
+    counts.germany = countsRes[9]?.count ?? 0;
+    counts.canada = countsRes[10]?.count ?? 0;
+    counts.europe = countsRes[11]?.count ?? 0;
   }
 
   return new Response(JSON.stringify({
