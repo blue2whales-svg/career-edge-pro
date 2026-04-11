@@ -22,27 +22,24 @@ export function HeroSection() {
   const kenyaCount = counts?.["Kenya Jobs"] || 0;
   const remoteCount = counts?.["Remote Jobs"] || 0;
   const totalCount = counts?.total || liveJobsData?.jobs?.length || 0;
-  const internationalCount = Math.max(totalCount - kenyaCount, 0);
+  const gulfCount = counts?.["Gulf Jobs"] || 0;
+  const cruiseCount = counts?.["Cruise Jobs"] || 0;
+  const visaCount = counts?.["Visa Sponsorship"] || 0;
   const hotJob = liveJobsData?.featured?.[0] || liveJobsData?.jobs?.find((job) => job.hot) || liveJobsData?.jobs?.[0];
 
   // Geo-targeted stats: international visitors see remote/global first
   const liveStats: string[] = [];
   if (isInternational) {
     if (remoteCount > 0) liveStats.push(`🌐 ${remoteCount.toLocaleString()} remote jobs`);
-    if (internationalCount > 0) liveStats.push(`✈️ ${internationalCount.toLocaleString()} international opportunities`);
-    if (kenyaCount > 0) liveStats.push(`📍 ${kenyaCount.toLocaleString()} jobs in Kenya`);
+    if (visaCount > 0) liveStats.push(`✈️ ${visaCount.toLocaleString()} visa-sponsored roles`);
+    if (gulfCount > 0) liveStats.push(`🏜️ ${gulfCount} Gulf & Middle East jobs`);
   } else {
     if (kenyaCount > 0) liveStats.push(`📍 ${kenyaCount.toLocaleString()} jobs in Kenya`);
     if (remoteCount > 0) liveStats.push(`🌐 ${remoteCount.toLocaleString()} remote jobs`);
-    if (internationalCount > 0) liveStats.push(`✈️ ${internationalCount.toLocaleString()} international opportunities`);
+    if (gulfCount > 0) liveStats.push(`🏜️ ${gulfCount} Gulf & Middle East jobs`);
   }
   if (totalCount > 0 && liveStats.length === 0) liveStats.push(`🔥 ${totalCount.toLocaleString()} live opportunities`);
-  if (totalCount > 0 && liveStats.length < 3) {
-    const gulfCount = counts?.["Gulf Jobs"] || 0;
-    const cruiseCount = counts?.["Cruise Jobs"] || 0;
-    if (gulfCount > 0 && !liveStats.some(s => s.includes("Gulf"))) liveStats.push(`🏜️ ${gulfCount} Gulf & Middle East jobs`);
-    if (cruiseCount > 0 && !liveStats.some(s => s.includes("Cruise"))) liveStats.push(`🚢 ${cruiseCount} cruise ship opportunities`);
-  }
+  if (liveStats.length < 3 && cruiseCount > 0) liveStats.push(`🚢 ${cruiseCount} cruise ship opportunities`);
 
   return (
     <section className="relative z-10 pt-14 sm:pt-28 pb-14 sm:pb-20 px-4">
