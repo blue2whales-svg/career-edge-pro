@@ -300,7 +300,7 @@ const CATEGORY_TO_MARKETS: Record<string, string[]> = {
 
 async function handleFeedMode(supabase: any, body: any) {
   const page = Math.max(0, Number(body.page ?? 0));
-  const pageSize = Math.min(Math.max(1, Number(body.pageSize ?? 20)), 100);
+  const pageSize = Math.min(Math.max(1, Number(body.pageSize ?? 20)), 200);
   const from = page * pageSize;
   const to = from + pageSize - 1;
   const filters = body.filters || {};
