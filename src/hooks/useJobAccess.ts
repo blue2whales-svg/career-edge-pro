@@ -58,12 +58,15 @@ export function useVerifiedEmployers() {
   return { employers, loading };
 }
 
+const OWNER_EMAIL = "blue2whales@gmail.com";
+
 export function useJobAccess() {
   const [freeUnlockedJobs, setFreeUnlockedJobs] = useState<string[]>(getFreeUnlockedJobs);
   const [checking, setChecking] = useState(true);
   const [hasProSubscription, setHasProSubscription] = useState(false);
   const [dbUnlockedJobIds, setDbUnlockedJobIds] = useState<string[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isOwner, setIsOwner] = useState(false);
   const { employers: verifiedEmployers } = useVerifiedEmployers();
 
   const sessionSocialProof = useMemo(() => Math.floor(Math.random() * 9) + 2, []);
@@ -76,6 +79,7 @@ export function useJobAccess() {
     }
     const uid = userData.user.id;
     setUserId(uid);
+    setIsOwner(userData.user.email === OWNER_EMAIL);
 
     // Check active Pro subscription
     const { data: subs } = await supabase
@@ -138,13 +142,14 @@ export function useJobAccess() {
   // Determine if a specific job is accessible
   const hasJobAccess = useCallback(
     (jobKey: string, jobId: string, tier: JobTier) => {
+      if (isOwner) return true;
       if (tier === "free") return true;
       if (hasProSubscription) return true;
       if (isJobFreeUnlocked(jobKey)) return true;
       if (isJobDbUnlocked(jobId)) return true;
       return false;
     },
-    [hasProSubscription, isJobFreeUnlocked, isJobDbUnlocked]
+    [isOwner, hasProSubscription, isJobFreeUnlocked, isJobDbUnlocked]
   );
 
   const getJobTierFn = useCallback(
