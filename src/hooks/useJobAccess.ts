@@ -79,6 +79,7 @@ export function useJobAccess() {
     }
     const uid = userData.user.id;
     setUserId(uid);
+    setIsOwner(userData.user.email === OWNER_EMAIL);
 
     // Check active Pro subscription
     const { data: subs } = await supabase
