@@ -58,12 +58,15 @@ export function useVerifiedEmployers() {
   return { employers, loading };
 }
 
+const OWNER_EMAIL = "blue2whales@gmail.com";
+
 export function useJobAccess() {
   const [freeUnlockedJobs, setFreeUnlockedJobs] = useState<string[]>(getFreeUnlockedJobs);
   const [checking, setChecking] = useState(true);
   const [hasProSubscription, setHasProSubscription] = useState(false);
   const [dbUnlockedJobIds, setDbUnlockedJobIds] = useState<string[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isOwner, setIsOwner] = useState(false);
   const { employers: verifiedEmployers } = useVerifiedEmployers();
 
   const sessionSocialProof = useMemo(() => Math.floor(Math.random() * 9) + 2, []);
