@@ -37,17 +37,14 @@ export interface JobFilters {
 
 const PAGE_SIZE = 20;
 
+// Jobs data lives on Lovable Cloud — always route there regardless of primary client config
+const JOBS_CLOUD_URL = "https://jxuqpxzsbkkywieughgh.supabase.co";
+const JOBS_CLOUD_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4dXFweHpzYmtreXdpZXVnaGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3NDExMjgsImV4cCI6MjA4ODMxNzEyOH0.nzT2xXLGfhmY-ibQBqDMd790_01AihREvgc3ZR6053o";
+
 function getJobsFunctionConfig() {
-  const url = import.meta.env.VITE_SUPABASE_URL;
-  const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-
-  if (!url || !key) {
-    throw new Error("Missing live jobs backend configuration.");
-  }
-
   return {
-    endpoint: `${url}/functions/v1/fetch-jobs`,
-    key,
+    endpoint: `${JOBS_CLOUD_URL}/functions/v1/fetch-jobs`,
+    key: JOBS_CLOUD_KEY,
   };
 }
 
