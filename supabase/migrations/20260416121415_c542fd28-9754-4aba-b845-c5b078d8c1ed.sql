@@ -1,0 +1,1 @@
+UPDATE cached_jobs SET discovered_at = NOW(), updated_at = NOW() WHERE market = 'Kenya' AND is_active = true AND source = 'platform_seed';
