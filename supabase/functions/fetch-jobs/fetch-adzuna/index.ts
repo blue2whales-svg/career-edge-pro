@@ -50,12 +50,22 @@ Deno.serve(async (req) => {
     }
 
     const queries = [
+      // Kenya — broad + role-specific
       { country: "ke", what: "jobs", market: "Kenya", category: "Kenya Jobs" },
+      { country: "ke", what: "accountant", market: "Kenya", category: "Kenya Jobs" },
+      { country: "ke", what: "driver", market: "Kenya", category: "Kenya Jobs" },
       { country: "ke", what: "nurse", market: "Kenya", category: "Healthcare Jobs" },
-      { country: "gb", what: "visa sponsorship", market: "UK", category: "Remote Jobs" },
+      { country: "ke", what: "sales", market: "Kenya", category: "Kenya Jobs" },
+      { country: "ke", what: "engineer", market: "Kenya", category: "Kenya Jobs" },
+      { country: "ke", what: "teacher", market: "Kenya", category: "Kenya Jobs" },
+      { country: "ke", what: "IT", market: "Kenya", category: "Kenya Jobs" },
+      { country: "ke", what: "marketing", market: "Kenya", category: "Kenya Jobs" },
+      { country: "ke", what: "admin", market: "Kenya", category: "Kenya Jobs" },
+      // UK, AU, CA
+      { country: "gb", what: "visa sponsorship", market: "UK", category: "Europe Jobs" },
       { country: "gb", what: "nurse", market: "UK", category: "Healthcare Jobs" },
-      { country: "au", what: "visa sponsorship", market: "Australia", category: "Remote Jobs" },
-      { country: "ca", what: "visa sponsorship", market: "Canada", category: "Remote Jobs" },
+      { country: "au", what: "visa sponsorship", market: "Australia", category: "Australia Jobs" },
+      { country: "ca", what: "visa sponsorship", market: "Canada", category: "Canada Jobs" },
     ];
 
     const jobs: any[] = [];
