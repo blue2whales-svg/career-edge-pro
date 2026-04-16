@@ -130,7 +130,7 @@ async function fetchAdzuna() {
 
 async function fetchJooble() {
   const queries = [
-    // Kenya — diverse keyword coverage
+    // Kenya
     { keywords: 'jobs in Kenya', location: 'Kenya', market: 'Kenya', tag: null },
     { keywords: 'Nairobi jobs', location: 'Nairobi', market: 'Kenya', tag: null },
     { keywords: 'Mombasa jobs', location: 'Mombasa', market: 'Kenya', tag: null },
@@ -143,15 +143,35 @@ async function fetchJooble() {
     { keywords: 'IT developer Kenya', location: 'Kenya', market: 'Kenya', tag: null },
     // Gulf
     { keywords: 'jobs in Dubai', location: 'Dubai', market: 'UAE', tag: '🔥 Gulf Hot' },
+    { keywords: 'hotel hospitality Dubai', location: 'Dubai', market: 'UAE', tag: '🔥 Gulf Hot' },
     { keywords: 'jobs in Qatar', location: 'Qatar', market: 'Qatar', tag: '🔥 Gulf Hot' },
     { keywords: 'jobs in Saudi Arabia', location: 'Saudi Arabia', market: 'Saudi Arabia', tag: '🔥 Gulf Hot' },
     { keywords: 'jobs in Kuwait', location: 'Kuwait', market: 'Kuwait', tag: '🔥 Gulf Hot' },
-    // Remote & International
+    // USA
+    { keywords: 'jobs in USA', location: 'USA', market: 'USA', tag: null },
+    { keywords: 'visa sponsorship jobs USA', location: 'USA', market: 'USA', tag: '✈️ Visa Sponsor' },
+    { keywords: 'software engineer USA', location: 'USA', market: 'USA', tag: null },
+    { keywords: 'nurse jobs USA', location: 'USA', market: 'USA', tag: null },
+    // Europe
+    { keywords: 'jobs in UK', location: 'UK', market: 'UK', tag: null },
+    { keywords: 'visa sponsorship jobs UK', location: 'UK', market: 'UK', tag: '✈️ Visa Sponsor' },
+    { keywords: 'nurse jobs UK', location: 'UK', market: 'UK', tag: null },
+    { keywords: 'jobs in Germany', location: 'Germany', market: 'Germany', tag: null },
+    { keywords: 'engineer jobs Germany', location: 'Germany', market: 'Germany', tag: null },
+    { keywords: 'visa sponsorship jobs Europe', location: 'Europe', market: 'Europe', tag: '✈️ Visa Sponsor' },
+    // Asia
+    { keywords: 'jobs in Singapore', location: 'Singapore', market: 'Singapore', tag: null },
+    { keywords: 'jobs in Malaysia', location: 'Malaysia', market: 'Malaysia', tag: null },
+    { keywords: 'IT jobs India', location: 'India', market: 'India', tag: null },
+    { keywords: 'jobs in Japan', location: 'Japan', market: 'Japan', tag: null },
+    // Cruise & Remote
     { keywords: 'cruise ship jobs', location: '', market: 'Cruise', tag: '🚢 Cruise Line' },
     { keywords: 'remote jobs Africa', location: '', market: 'Remote', tag: '🌍 Remote' },
     { keywords: 'remote work from home', location: '', market: 'Remote', tag: '🌍 Remote' },
-    { keywords: 'nurse jobs abroad visa sponsorship', location: '', market: 'UK', tag: '✈️ Visa Sponsor' },
-    { keywords: 'visa sponsorship jobs Europe', location: 'Europe', market: 'Europe', tag: '✈️ Visa Sponsor' },
+    // Australia & Canada
+    { keywords: 'visa sponsorship jobs Australia', location: 'Australia', market: 'Australia', tag: '✈️ Visa Sponsor' },
+    { keywords: 'jobs in Canada', location: 'Canada', market: 'Canada', tag: null },
+    { keywords: 'visa sponsorship jobs Canada', location: 'Canada', market: 'Canada', tag: '✈️ Visa Sponsor' },
   ];
 
   const jobs = [];
