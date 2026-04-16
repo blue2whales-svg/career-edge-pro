@@ -38,8 +38,9 @@ export interface JobFilters {
 const PAGE_SIZE = 20;
 
 // Route jobs to the primary project
-const JOBS_CLOUD_URL = "https://wspugvdwodqdlyamxzxj.supabase.co";
-const JOBS_CLOUD_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndzcHVndmR3b2RxZGx5YW14enhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzODE5OTQsImV4cCI6MjA4ODk1Nzk5NH0.nW2OFx1oZKzjU5G0SRoQLvdaLi9wQKb3h6zDuGDQbwU";
+// Jobs data lives on Lovable Cloud where fetch-jobs function + API keys are deployed
+const JOBS_CLOUD_URL = "https://jxuqpxzsbkkywieughgh.supabase.co";
+const JOBS_CLOUD_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp4dXFweHpzYmtreXdpZXVnaGdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI3NDExMjgsImV4cCI6MjA4ODMxNzEyOH0.nzT2xXLGfhmY-ibQBqDMd790_01AihREvgc3ZR6053o";
 
 function getJobsFunctionConfig() {
   return {
