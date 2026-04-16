@@ -26,6 +26,9 @@ function guessCategory(title, market, industry) {
   if (industry === 'Healthcare') return 'Healthcare Jobs';
   if (['UK','Germany','Europe'].includes(market)) return 'Europe Jobs';
   if (market === 'USA') return 'USA Jobs';
+  if (['Singapore','Malaysia','India','Japan'].includes(market)) return 'Asia Jobs';
+  if (market === 'Australia') return 'Australia Jobs';
+  if (market === 'Canada') return 'Canada Jobs';
   return 'Kenya Jobs';
 }
 

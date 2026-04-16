@@ -29,7 +29,9 @@ function guessCategory(title: string, market: string, industry: string): string 
   if (industry === "Healthcare") return "Healthcare Jobs";
   if (market === "UK" || market === "Germany" || market === "Europe") return "Europe Jobs";
   if (market === "USA") return "USA Jobs";
-  if (market === "Australia" || market === "Canada") return "Remote Jobs";
+  if (["Singapore", "Malaysia", "India", "Japan"].includes(market)) return "Asia Jobs";
+  if (market === "Australia") return "Australia Jobs";
+  if (market === "Canada") return "Canada Jobs";
   return "Kenya Jobs";
 }
 
@@ -293,9 +295,11 @@ Deno.serve(async (req) => {
 // ─── Feed mode handler ──────────────────────────────────────────────────────
 const GULF_MARKETS = ["UAE", "Qatar", "Saudi Arabia", "Kuwait", "Bahrain", "Oman"];
 const EUROPE_MARKETS = ["Europe", "Germany", "UK"];
+const ASIA_MARKETS = ["Singapore", "Malaysia", "India", "Japan"];
 const CATEGORY_TO_MARKETS: Record<string, string[]> = {
   "Gulf Jobs": GULF_MARKETS,
   "Europe Jobs": EUROPE_MARKETS,
+  "Asia Jobs": ASIA_MARKETS,
 };
 
 async function handleFeedMode(supabase: any, body: any) {
@@ -348,6 +352,8 @@ async function handleFeedMode(supabase: any, body: any) {
         countFilter("market", "Germany"),
         countFilter("market", "Canada"),
         countIn("market", EUROPE_MARKETS),
+        countIn("market", ASIA_MARKETS),
+        countFilter("market", "USA"),
       ])
     : null;
 
@@ -358,7 +364,7 @@ async function handleFeedMode(supabase: any, body: any) {
   // Compute counts from individual queries
   const counts: Record<string, number> = {
     kenya: 0, gulf: 0, cruise: 0, remote: 0, visa: 0,
-    healthcare: 0, uk: 0, australia: 0, germany: 0, canada: 0, europe: 0, total: 0,
+    healthcare: 0, uk: 0, australia: 0, germany: 0, canada: 0, europe: 0, asia: 0, usa: 0, total: 0,
   };
   if (countsRes && Array.isArray(countsRes)) {
     counts.total = countsRes[0]?.count ?? 0;
@@ -373,6 +379,8 @@ async function handleFeedMode(supabase: any, body: any) {
     counts.germany = countsRes[9]?.count ?? 0;
     counts.canada = countsRes[10]?.count ?? 0;
     counts.europe = countsRes[11]?.count ?? 0;
+    counts.asia = countsRes[12]?.count ?? 0;
+    counts.usa = countsRes[13]?.count ?? 0;
   }
 
   return new Response(JSON.stringify({
