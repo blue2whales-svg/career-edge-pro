@@ -58,6 +58,10 @@ const TABS = [
   { key: "verified", label: "Verified Employers", icon: "⭐" },
   { key: "international", label: "International", icon: "🌍" },
   { key: "visa", label: "Visa Sponsorship", icon: "🛂", countKey: "Visa Sponsorship" },
+  { key: "asia", label: "Asia", icon: "🌏", countKey: "Asia Jobs" },
+  { key: "australia", label: "Australia", icon: "🦘", countKey: "Australia Jobs" },
+  { key: "usa", label: "USA", icon: "🇺🇸", countKey: "USA Jobs" },
+  { key: "europe", label: "Europe", icon: "🇪🇺", countKey: "Europe Jobs" },
 ];
 
 export default function JobsPage() {
@@ -91,6 +95,10 @@ export default function JobsPage() {
       case "free": return { market: "Kenya" };
       case "international": return { market: "International" };
       case "visa": return { visaOnly: true };
+      case "asia": return { category: "Asia Jobs" };
+      case "australia": return { market: "Australia" };
+      case "usa": return { market: "USA" };
+      case "europe": return { category: "Europe Jobs" };
       default: return {};
     }
   })();

@@ -155,6 +155,8 @@ export function useJobsPageData() {
         "Germany Jobs": data.counts?.germany || 0,
         "Canada Jobs": data.counts?.canada || 0,
         "Europe Jobs": data.counts?.europe || 0,
+        "Asia Jobs": data.counts?.asia || 0,
+        "USA Jobs": data.counts?.usa || 0,
         total: data.counts?.total || 0,
       };
       const jobs = (data.jobs || []).map(mapRow);
