@@ -110,10 +110,10 @@ function mapRow(row: any): Job {
     type: row.type || "Full-time",
     industry: row.industry || "Operations",
     market: row.market || "Kenya",
-    posted: row.discovered_at
-      ? `Posted ${timeAgo(row.discovered_at)}`
-      : row.posted_at
-        ? `Posted ${timeAgo(row.posted_at)}`
+    posted: row.posted_at
+      ? `Posted ${timeAgo(row.posted_at)}`
+      : row.discovered_at
+        ? `Posted ${timeAgo(row.discovered_at)}`
         : row.posted || "Recently",
     hot: row.hot || false,
     tag: row.tag || undefined,
