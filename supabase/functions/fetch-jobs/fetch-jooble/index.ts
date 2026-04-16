@@ -49,14 +49,49 @@ Deno.serve(async (req) => {
     }
 
     const queries = [
-      { keywords: "cruise ship jobs", location: "", market: "USA", category: "Cruise Jobs", tag: "🚢 Cruise Line" },
-      { keywords: "jobs in Dubai", location: "Dubai", market: "UAE", category: "Gulf Jobs", tag: "🔥 Gulf Hot" },
+      // Kenya
       { keywords: "jobs in Kenya", location: "Kenya", market: "Kenya", category: "Kenya Jobs", tag: null },
-      { keywords: "nurse jobs abroad", location: "", market: "UK", category: "Healthcare Jobs", tag: null },
-      { keywords: "visa sponsorship jobs", location: "", market: "UK", category: "Remote Jobs", tag: "✈️ Visa Sponsor" },
-      { keywords: "driver jobs Dubai", location: "Dubai", market: "UAE", category: "Drivers & Logistics", tag: "🔥 Gulf Hot" },
-      { keywords: "construction jobs Qatar", location: "Qatar", market: "Qatar", category: "Construction Jobs", tag: "🔥 Gulf Hot" },
-      { keywords: "remote jobs Africa", location: "", market: "Kenya", category: "Remote Jobs", tag: "🌍 Remote" },
+      { keywords: "Nairobi jobs", location: "Nairobi", market: "Kenya", category: "Kenya Jobs", tag: null },
+      { keywords: "Mombasa jobs", location: "Mombasa", market: "Kenya", category: "Kenya Jobs", tag: null },
+      { keywords: "driver jobs Kenya", location: "Kenya", market: "Kenya", category: "Kenya Jobs", tag: null },
+      { keywords: "accountant jobs Kenya", location: "Kenya", market: "Kenya", category: "Kenya Jobs", tag: null },
+      { keywords: "nurse jobs Kenya", location: "Kenya", market: "Kenya", category: "Kenya Jobs", tag: null },
+      { keywords: "teacher jobs Kenya", location: "Kenya", market: "Kenya", category: "Kenya Jobs", tag: null },
+      { keywords: "NGO jobs Kenya", location: "Kenya", market: "Kenya", category: "Kenya Jobs", tag: null },
+      { keywords: "IT developer Kenya", location: "Kenya", market: "Kenya", category: "Kenya Jobs", tag: null },
+      // Gulf
+      { keywords: "jobs in Dubai", location: "Dubai", market: "UAE", category: "Gulf Jobs", tag: "🔥 Gulf Hot" },
+      { keywords: "hotel hospitality Dubai", location: "Dubai", market: "UAE", category: "Gulf Jobs", tag: "🔥 Gulf Hot" },
+      { keywords: "driver jobs Dubai", location: "Dubai", market: "UAE", category: "Gulf Jobs", tag: "🔥 Gulf Hot" },
+      { keywords: "jobs in Qatar", location: "Qatar", market: "Qatar", category: "Gulf Jobs", tag: "🔥 Gulf Hot" },
+      { keywords: "construction jobs Qatar", location: "Qatar", market: "Qatar", category: "Gulf Jobs", tag: "🔥 Gulf Hot" },
+      { keywords: "jobs in Saudi Arabia", location: "Saudi Arabia", market: "Saudi Arabia", category: "Gulf Jobs", tag: "🔥 Gulf Hot" },
+      { keywords: "jobs in Kuwait", location: "Kuwait", market: "Kuwait", category: "Gulf Jobs", tag: "🔥 Gulf Hot" },
+      // USA
+      { keywords: "jobs in USA", location: "USA", market: "USA", category: "USA Jobs", tag: null },
+      { keywords: "visa sponsorship jobs USA", location: "USA", market: "USA", category: "USA Jobs", tag: "✈️ Visa Sponsor" },
+      { keywords: "software engineer USA", location: "USA", market: "USA", category: "USA Jobs", tag: null },
+      { keywords: "nurse jobs USA", location: "USA", market: "USA", category: "USA Jobs", tag: null },
+      // Europe
+      { keywords: "jobs in UK", location: "UK", market: "UK", category: "Europe Jobs", tag: null },
+      { keywords: "visa sponsorship jobs UK", location: "UK", market: "UK", category: "Europe Jobs", tag: "✈️ Visa Sponsor" },
+      { keywords: "nurse jobs UK", location: "UK", market: "UK", category: "Europe Jobs", tag: null },
+      { keywords: "jobs in Germany", location: "Germany", market: "Germany", category: "Europe Jobs", tag: null },
+      { keywords: "engineer jobs Germany", location: "Germany", market: "Germany", category: "Europe Jobs", tag: null },
+      { keywords: "visa sponsorship jobs Europe", location: "Europe", market: "Europe", category: "Europe Jobs", tag: "✈️ Visa Sponsor" },
+      // Asia
+      { keywords: "jobs in Singapore", location: "Singapore", market: "Singapore", category: "Asia Jobs", tag: null },
+      { keywords: "jobs in Malaysia", location: "Malaysia", market: "Malaysia", category: "Asia Jobs", tag: null },
+      { keywords: "IT jobs India", location: "India", market: "India", category: "Asia Jobs", tag: null },
+      { keywords: "jobs in Japan", location: "Japan", market: "Japan", category: "Asia Jobs", tag: null },
+      // Cruise & Remote
+      { keywords: "cruise ship jobs", location: "", market: "Cruise", category: "Cruise Jobs", tag: "🚢 Cruise Line" },
+      { keywords: "remote jobs Africa", location: "", market: "Remote", category: "Remote Jobs", tag: "🌍 Remote" },
+      { keywords: "remote work from home", location: "", market: "Remote", category: "Remote Jobs", tag: "🌍 Remote" },
+      // Australia & Canada
+      { keywords: "visa sponsorship jobs Australia", location: "Australia", market: "Australia", category: "Australia Jobs", tag: "✈️ Visa Sponsor" },
+      { keywords: "jobs in Canada", location: "Canada", market: "Canada", category: "Canada Jobs", tag: null },
+      { keywords: "visa sponsorship jobs Canada", location: "Canada", market: "Canada", category: "Canada Jobs", tag: "✈️ Visa Sponsor" },
     ];
 
     const jobs: any[] = [];
