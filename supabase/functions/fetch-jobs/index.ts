@@ -110,13 +110,14 @@ async function fetchAdzuna(appId: string, appKey: string): Promise<any[]> {
     }
   }
 
-  // Serialize requests with a small delay to avoid Adzuna's per-IP rate limit (~1 req/sec)
+  // Serialize Kenya queries (same country = strict per-IP throttle), run intl in parallel.
   const results: { q: any; rows: any[] }[] = [];
-  for (const q of queries) {
-    const res = await fetchOne(q);
-    results.push(res);
-    await sleep(900);
+  for (const q of kenyaQueries) {
+    results.push(await fetchOne(q));
+    await sleep(800);
   }
+  const intlResults = await Promise.all(intlQueries.map(q => fetchOne(q)));
+  results.push(...intlResults);
 
   const jobs: any[] = [];
   for (const r of results) {
