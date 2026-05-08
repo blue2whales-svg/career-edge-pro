@@ -120,8 +120,7 @@ async function fetchAdzuna(appId: string, appKey: string): Promise<any[]> {
 
   const jobs: any[] = [];
   for (const r of results) {
-    if (r.status === "rejected") { console.warn("Adzuna err:", r.reason); continue; }
-    const { q, rows } = r.value;
+    const { q, rows } = r;
     for (const row of rows) {
       const title = row.title?.replace(/<[^>]*>/g, "").trim() || "";
       if (!title) continue;
