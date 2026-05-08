@@ -53,34 +53,24 @@ function hotScore(job: any): number {
 
 // ─── Adzuna: 12 countries, all parallel ─────────────────────────────────────
 async function fetchAdzuna(appId: string, appKey: string): Promise<any[]> {
-  const kenyaQueries = [
-    { country: "ke", what: "jobs", market: "Kenya" },
-    { country: "ke", what: "nurse healthcare hospital", market: "Kenya" },
-    { country: "ke", what: "accountant finance banking", market: "Kenya" },
-    { country: "ke", what: "sales marketing", market: "Kenya" },
-    { country: "ke", what: "driver logistics warehouse", market: "Kenya" },
-    { country: "ke", what: "engineer", market: "Kenya" },
-    { country: "ke", what: "teacher education", market: "Kenya" },
-    { country: "ke", what: "IT software developer", market: "Kenya" },
-    { country: "ke", what: "hotel chef hospitality", market: "Kenya" },
-    { country: "ke", what: "admin secretary receptionist", market: "Kenya" },
-    { country: "ke", what: "security guard", market: "Kenya" },
-    { country: "ke", what: "NGO UN international", market: "Kenya" },
-  ];
+  // Adzuna only supports these countries (gb, us, au, ca, de, fr, in, it, mx, nl, pl, sg, za, at, ch, be, nz, es).
+  // Kenya & Gulf are NOT supported — those return 404. Kenya jobs come from platform_seed + scrapers.
+  const kenyaQueries: any[] = [];
   const intlQueries = [
-    { country: "ae", what: "jobs", market: "UAE" },
-    { country: "ae", what: "hotel hospitality", market: "UAE" },
-    { country: "sa", what: "jobs", market: "Saudi Arabia" },
-    { country: "qa", what: "jobs", market: "Qatar" },
-    { country: "kw", what: "jobs", market: "Kuwait" },
-    { country: "bh", what: "jobs", market: "Bahrain" },
-    { country: "om", what: "jobs", market: "Oman" },
     { country: "gb", what: "visa sponsorship", market: "UK" },
     { country: "gb", what: "nurse healthcare", market: "UK" },
+    { country: "gb", what: "jobs", market: "UK" },
     { country: "us", what: "visa sponsorship", market: "USA" },
+    { country: "us", what: "jobs", market: "USA" },
     { country: "au", what: "visa sponsorship", market: "Australia" },
+    { country: "au", what: "jobs", market: "Australia" },
     { country: "ca", what: "visa sponsorship", market: "Canada" },
+    { country: "ca", what: "jobs", market: "Canada" },
     { country: "de", what: "engineer", market: "Germany" },
+    { country: "de", what: "jobs", market: "Germany" },
+    { country: "sg", what: "jobs", market: "Singapore" },
+    { country: "in", what: "jobs", market: "India" },
+    { country: "za", what: "jobs", market: "South Africa" },
   ];
   const queries = [...kenyaQueries, ...intlQueries];
 
