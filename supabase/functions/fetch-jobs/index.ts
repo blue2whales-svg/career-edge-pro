@@ -53,49 +53,65 @@ function hotScore(job: any): number {
 
 // ─── Adzuna: 12 countries, all parallel ─────────────────────────────────────
 async function fetchAdzuna(appId: string, appKey: string): Promise<any[]> {
-  const kenyaQueries = [
-    { country: "ke", what: "jobs", market: "Kenya" },
-    { country: "ke", what: "nurse healthcare hospital", market: "Kenya" },
-    { country: "ke", what: "accountant finance banking", market: "Kenya" },
-    { country: "ke", what: "sales marketing", market: "Kenya" },
-    { country: "ke", what: "driver logistics warehouse", market: "Kenya" },
-    { country: "ke", what: "engineer", market: "Kenya" },
-    { country: "ke", what: "teacher education", market: "Kenya" },
-    { country: "ke", what: "IT software developer", market: "Kenya" },
-    { country: "ke", what: "hotel chef hospitality", market: "Kenya" },
-    { country: "ke", what: "admin secretary receptionist", market: "Kenya" },
-    { country: "ke", what: "security guard", market: "Kenya" },
-    { country: "ke", what: "NGO UN international", market: "Kenya" },
-  ];
+  // Adzuna only supports these countries (gb, us, au, ca, de, fr, in, it, mx, nl, pl, sg, za, at, ch, be, nz, es).
+  // Kenya & Gulf are NOT supported — those return 404. Kenya jobs come from platform_seed + scrapers.
+  const kenyaQueries: any[] = [];
   const intlQueries = [
-    { country: "ae", what: "jobs", market: "UAE" },
-    { country: "ae", what: "hotel hospitality", market: "UAE" },
-    { country: "sa", what: "jobs", market: "Saudi Arabia" },
-    { country: "qa", what: "jobs", market: "Qatar" },
-    { country: "kw", what: "jobs", market: "Kuwait" },
-    { country: "bh", what: "jobs", market: "Bahrain" },
-    { country: "om", what: "jobs", market: "Oman" },
     { country: "gb", what: "visa sponsorship", market: "UK" },
     { country: "gb", what: "nurse healthcare", market: "UK" },
+    { country: "gb", what: "jobs", market: "UK" },
     { country: "us", what: "visa sponsorship", market: "USA" },
+    { country: "us", what: "jobs", market: "USA" },
     { country: "au", what: "visa sponsorship", market: "Australia" },
+    { country: "au", what: "jobs", market: "Australia" },
     { country: "ca", what: "visa sponsorship", market: "Canada" },
+    { country: "ca", what: "jobs", market: "Canada" },
     { country: "de", what: "engineer", market: "Germany" },
+    { country: "de", what: "jobs", market: "Germany" },
+    { country: "sg", what: "jobs", market: "Singapore" },
+    { country: "in", what: "jobs", market: "India" },
+    { country: "za", what: "jobs", market: "South Africa" },
   ];
   const queries = [...kenyaQueries, ...intlQueries];
 
-  const results = await Promise.allSettled(
-    queries.map(q =>
-      fetch(`https://api.adzuna.com/v1/api/jobs/${q.country}/search/1?app_id=${appId}&app_key=${appKey}&what=${encodeURIComponent(q.what)}&results_per_page=${q.country === "ke" ? 50 : 20}&max_days_old=${q.country === "ke" ? 7 : 3}&sort_by=date`)
-        .then(r => r.ok ? r.json() : Promise.reject(`Adzuna ${q.country}: ${r.status}`))
-        .then(data => ({ q, rows: data.results || [] }))
-    )
-  );
+  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+  async function fetchOne(q: any, attempt = 0): Promise<{ q: any; rows: any[] }> {
+    const url = `https://api.adzuna.com/v1/api/jobs/${q.country}/search/1?app_id=${appId}&app_key=${appKey}&what=${encodeURIComponent(q.what)}&results_per_page=${q.country === "ke" ? 50 : 20}&max_days_old=${q.country === "ke" ? 7 : 3}&sort_by=date`;
+    try {
+      const r = await fetch(url);
+      if (r.status === 429 || r.status === 503) {
+        if (attempt < 3) {
+          await sleep(2000 * (attempt + 1) + Math.random() * 1000);
+          return fetchOne(q, attempt + 1);
+        }
+        console.warn(`Adzuna ${q.country} (${q.what}): ${r.status} after retries`);
+        return { q, rows: [] };
+      }
+      if (!r.ok) {
+        console.warn(`Adzuna ${q.country} (${q.what}): ${r.status}`);
+        return { q, rows: [] };
+      }
+      const data = await r.json();
+      return { q, rows: data.results || [] };
+    } catch (err) {
+      console.warn(`Adzuna fetch err ${q.country}:`, err);
+      return { q, rows: [] };
+    }
+  }
+
+  // Serialize Kenya queries (same country = strict per-IP throttle), run intl in parallel.
+  const results: { q: any; rows: any[] }[] = [];
+  for (const q of kenyaQueries) {
+    results.push(await fetchOne(q));
+    await sleep(800);
+  }
+  const intlResults = await Promise.all(intlQueries.map(q => fetchOne(q)));
+  results.push(...intlResults);
 
   const jobs: any[] = [];
   for (const r of results) {
-    if (r.status === "rejected") { console.warn("Adzuna err:", r.reason); continue; }
-    const { q, rows } = r.value;
+    const { q, rows } = r;
     for (const row of rows) {
       const title = row.title?.replace(/<[^>]*>/g, "").trim() || "";
       if (!title) continue;
