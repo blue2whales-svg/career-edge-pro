@@ -84,13 +84,39 @@ async function fetchAdzuna(appId: string, appKey: string): Promise<any[]> {
   ];
   const queries = [...kenyaQueries, ...intlQueries];
 
-  const results = await Promise.allSettled(
-    queries.map(q =>
-      fetch(`https://api.adzuna.com/v1/api/jobs/${q.country}/search/1?app_id=${appId}&app_key=${appKey}&what=${encodeURIComponent(q.what)}&results_per_page=${q.country === "ke" ? 50 : 20}&max_days_old=${q.country === "ke" ? 7 : 3}&sort_by=date`)
-        .then(r => r.ok ? r.json() : Promise.reject(`Adzuna ${q.country}: ${r.status}`))
-        .then(data => ({ q, rows: data.results || [] }))
-    )
-  );
+  const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
+  async function fetchOne(q: any, attempt = 0): Promise<{ q: any; rows: any[] }> {
+    const url = `https://api.adzuna.com/v1/api/jobs/${q.country}/search/1?app_id=${appId}&app_key=${appKey}&what=${encodeURIComponent(q.what)}&results_per_page=${q.country === "ke" ? 50 : 20}&max_days_old=${q.country === "ke" ? 7 : 3}&sort_by=date`;
+    try {
+      const r = await fetch(url);
+      if (r.status === 429 || r.status === 503) {
+        if (attempt < 3) {
+          await sleep(2000 * (attempt + 1) + Math.random() * 1000);
+          return fetchOne(q, attempt + 1);
+        }
+        console.warn(`Adzuna ${q.country} (${q.what}): ${r.status} after retries`);
+        return { q, rows: [] };
+      }
+      if (!r.ok) {
+        console.warn(`Adzuna ${q.country} (${q.what}): ${r.status}`);
+        return { q, rows: [] };
+      }
+      const data = await r.json();
+      return { q, rows: data.results || [] };
+    } catch (err) {
+      console.warn(`Adzuna fetch err ${q.country}:`, err);
+      return { q, rows: [] };
+    }
+  }
+
+  // Serialize requests with a small delay to avoid Adzuna's per-IP rate limit (~1 req/sec)
+  const results: { q: any; rows: any[] }[] = [];
+  for (const q of queries) {
+    const res = await fetchOne(q);
+    results.push(res);
+    await sleep(900);
+  }
 
   const jobs: any[] = [];
   for (const r of results) {
