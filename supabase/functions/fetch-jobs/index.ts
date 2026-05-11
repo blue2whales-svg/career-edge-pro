@@ -191,6 +191,17 @@ async function fetchJooble(apiKey: string): Promise<any[]> {
     { keywords: "remote work from home", location: "", market: "Remote", tag: "🌍 Remote" },
     { keywords: "nurse jobs abroad visa sponsorship", location: "", market: "UK", tag: "✈️ Visa Sponsor" },
     { keywords: "visa sponsorship jobs Europe", location: "Europe", market: "Europe", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Luxembourg", location: "Luxembourg", market: "Luxembourg", tag: "✈️ Visa Sponsor" },
+    { keywords: "english speaking jobs Luxembourg", location: "Luxembourg", market: "Luxembourg", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Ireland", location: "Ireland", market: "Ireland", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Sweden", location: "Sweden", market: "Sweden", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Denmark", location: "Denmark", market: "Denmark", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Norway", location: "Norway", market: "Norway", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Finland", location: "Finland", market: "Finland", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Portugal", location: "Portugal", market: "Portugal", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Netherlands english", location: "Netherlands", market: "Netherlands", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Germany english", location: "Germany", market: "Germany", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs France english", location: "France", market: "France", tag: "✈️ Visa Sponsor" },
   ];
 
   const results = await Promise.allSettled(
