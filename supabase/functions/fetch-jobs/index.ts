@@ -27,7 +27,7 @@ function guessCategory(title: string, market: string, industry: string): string 
   if (["UAE", "Qatar", "Saudi Arabia", "Kuwait", "Bahrain", "Oman"].includes(market)) return "Gulf Jobs";
   if (market === "Kenya") return "Kenya Jobs";
   if (industry === "Healthcare") return "Healthcare Jobs";
-  if (market === "UK" || market === "Germany" || market === "Europe") return "Europe Jobs";
+  if (["UK", "Germany", "France", "Netherlands", "Belgium", "Austria", "Switzerland", "Italy", "Spain", "Poland", "Luxembourg", "Ireland", "Sweden", "Denmark", "Norway", "Finland", "Portugal", "Europe"].includes(market)) return "Europe Jobs";
   if (market === "USA") return "USA Jobs";
   if (["Singapore", "Malaysia", "India", "Japan"].includes(market)) return "Asia Jobs";
   if (market === "Australia") return "Australia Jobs";
