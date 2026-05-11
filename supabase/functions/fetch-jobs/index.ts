@@ -342,7 +342,7 @@ Deno.serve(async (req) => {
 
 // ─── Feed mode handler ──────────────────────────────────────────────────────
 const GULF_MARKETS = ["UAE", "Qatar", "Saudi Arabia", "Kuwait", "Bahrain", "Oman"];
-const EUROPE_MARKETS = ["Europe", "Germany", "UK"];
+const EUROPE_MARKETS = ["Europe", "Germany", "UK", "France", "Netherlands", "Belgium", "Austria", "Switzerland", "Italy", "Spain", "Poland", "Luxembourg", "Ireland", "Sweden", "Denmark", "Norway", "Finland", "Portugal"];
 const ASIA_MARKETS = ["Singapore", "Malaysia", "India", "Japan"];
 const CATEGORY_TO_MARKETS: Record<string, string[]> = {
   "Gulf Jobs": GULF_MARKETS,
