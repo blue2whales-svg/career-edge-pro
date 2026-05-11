@@ -91,6 +91,12 @@ export default function ForgotPasswordPage() {
               onChange={(e) => setEmail(e.target.value)}
               className="h-11 bg-muted/50"
             />
+            {errorMsg && (
+              <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+                <p className="font-semibold">Error:</p>
+                <p className="break-words">{errorMsg}</p>
+              </div>
+            )}
             <Button
               type="submit"
               disabled={loading}
@@ -99,6 +105,12 @@ export default function ForgotPasswordPage() {
               {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               Send Reset Link
             </Button>
+            {debugInfo && (
+              <details className="text-xs text-muted-foreground">
+                <summary className="cursor-pointer">Debug response</summary>
+                <pre className="mt-2 whitespace-pre-wrap break-all bg-muted/40 p-2 rounded">{debugInfo}</pre>
+              </details>
+            )}
           </form>
         )}
 
