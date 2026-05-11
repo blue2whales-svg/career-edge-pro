@@ -140,7 +140,7 @@ async function fetchAdzuna(appId: string, appKey: string): Promise<any[]> {
       const visa = detectVisa(title, description);
       const industry = guessIndustry(title, row.company?.display_name || "");
       const category = guessCategory(title, q.market, industry);
-      const currMap: Record<string, string> = { ke: "KES", gb: "GBP", us: "USD", au: "AUD", ca: "CAD", de: "EUR", ae: "AED", sa: "SAR", qa: "QAR", kw: "KWD", bh: "BHD", om: "OMR" };
+      const currMap: Record<string, string> = { ke: "KES", gb: "GBP", us: "USD", au: "AUD", ca: "CAD", de: "EUR", fr: "EUR", nl: "EUR", be: "EUR", at: "EUR", it: "EUR", es: "EUR", ch: "CHF", pl: "PLN", ae: "AED", sa: "SAR", qa: "QAR", kw: "KWD", bh: "BHD", om: "OMR" };
       const curr = currMap[q.country] || "USD";
       const job: any = {
         external_id: `adzuna-${row.id}`, title,
