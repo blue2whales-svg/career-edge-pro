@@ -11,23 +11,50 @@ export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<string | null>(null);
   const { toast } = useToast();
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
     setLoading(true);
+    setErrorMsg(null);
+    setDebugInfo(null);
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
+    // Always send the reset link back to the production domain so the
+    // recovery URL works regardless of which preview/sandbox sent it.
+    const redirectTo = "https://cvedge.live/reset-password";
 
-    if (error) {
-      toast({ title: error.message, variant: "destructive" });
-    } else {
-      setSent(true);
+    const startedAt = Date.now();
+    try {
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo,
+      });
+      const ms = Date.now() - startedAt;
+
+      // Log full response so nothing is silently swallowed.
+      console.log("[forgot-password] response", { data, error, ms, redirectTo, email });
+
+      if (error) {
+        const msg = `${error.message}${(error as any).status ? ` (status ${(error as any).status})` : ""}`;
+        setErrorMsg(msg);
+        setDebugInfo(JSON.stringify({ error, ms, redirectTo }, null, 2));
+        toast({ title: "Reset failed", description: msg, variant: "destructive" });
+      } else {
+        setSent(true);
+        setDebugInfo(JSON.stringify({ data, ms, redirectTo }, null, 2));
+        toast({ title: "Reset email requested", description: `Sent to ${email}` });
+      }
+    } catch (err: any) {
+      console.error("[forgot-password] threw", err);
+      const msg = err?.message || String(err);
+      setErrorMsg(`Network/JS error: ${msg}`);
+      setDebugInfo(JSON.stringify({ err: msg }, null, 2));
+      toast({ title: "Unexpected error", description: msg, variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -64,6 +91,12 @@ export default function ForgotPasswordPage() {
               onChange={(e) => setEmail(e.target.value)}
               className="h-11 bg-muted/50"
             />
+            {errorMsg && (
+              <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+                <p className="font-semibold">Error:</p>
+                <p className="break-words">{errorMsg}</p>
+              </div>
+            )}
             <Button
               type="submit"
               disabled={loading}
@@ -72,6 +105,12 @@ export default function ForgotPasswordPage() {
               {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               Send Reset Link
             </Button>
+            {debugInfo && (
+              <details className="text-xs text-muted-foreground">
+                <summary className="cursor-pointer">Debug response</summary>
+                <pre className="mt-2 whitespace-pre-wrap break-all bg-muted/40 p-2 rounded">{debugInfo}</pre>
+              </details>
+            )}
           </form>
         )}
 
