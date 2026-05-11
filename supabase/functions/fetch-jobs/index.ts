@@ -27,7 +27,7 @@ function guessCategory(title: string, market: string, industry: string): string 
   if (["UAE", "Qatar", "Saudi Arabia", "Kuwait", "Bahrain", "Oman"].includes(market)) return "Gulf Jobs";
   if (market === "Kenya") return "Kenya Jobs";
   if (industry === "Healthcare") return "Healthcare Jobs";
-  if (market === "UK" || market === "Germany" || market === "Europe") return "Europe Jobs";
+  if (["UK", "Germany", "France", "Netherlands", "Belgium", "Austria", "Switzerland", "Italy", "Spain", "Poland", "Luxembourg", "Ireland", "Sweden", "Denmark", "Norway", "Finland", "Portugal", "Europe"].includes(market)) return "Europe Jobs";
   if (market === "USA") return "USA Jobs";
   if (["Singapore", "Malaysia", "India", "Japan"].includes(market)) return "Asia Jobs";
   if (market === "Australia") return "Australia Jobs";
@@ -68,6 +68,27 @@ async function fetchAdzuna(appId: string, appKey: string): Promise<any[]> {
     { country: "ca", what: "jobs", market: "Canada" },
     { country: "de", what: "engineer", market: "Germany" },
     { country: "de", what: "jobs", market: "Germany" },
+    { country: "de", what: "english speaking", market: "Germany" },
+    { country: "de", what: "visa sponsorship", market: "Germany" },
+    { country: "de", what: "nurse pflege", market: "Germany" },
+    { country: "fr", what: "jobs", market: "France" },
+    { country: "fr", what: "english speaking", market: "France" },
+    { country: "fr", what: "visa sponsorship", market: "France" },
+    { country: "nl", what: "jobs", market: "Netherlands" },
+    { country: "nl", what: "english speaking", market: "Netherlands" },
+    { country: "nl", what: "visa sponsorship", market: "Netherlands" },
+    { country: "be", what: "jobs", market: "Belgium" },
+    { country: "be", what: "english speaking", market: "Belgium" },
+    { country: "at", what: "jobs", market: "Austria" },
+    { country: "at", what: "english speaking", market: "Austria" },
+    { country: "ch", what: "jobs", market: "Switzerland" },
+    { country: "ch", what: "english speaking", market: "Switzerland" },
+    { country: "it", what: "jobs", market: "Italy" },
+    { country: "it", what: "english speaking", market: "Italy" },
+    { country: "es", what: "jobs", market: "Spain" },
+    { country: "es", what: "english speaking", market: "Spain" },
+    { country: "pl", what: "jobs", market: "Poland" },
+    { country: "pl", what: "english speaking", market: "Poland" },
     { country: "sg", what: "jobs", market: "Singapore" },
     { country: "in", what: "jobs", market: "India" },
     { country: "za", what: "jobs", market: "South Africa" },
@@ -119,7 +140,7 @@ async function fetchAdzuna(appId: string, appKey: string): Promise<any[]> {
       const visa = detectVisa(title, description);
       const industry = guessIndustry(title, row.company?.display_name || "");
       const category = guessCategory(title, q.market, industry);
-      const currMap: Record<string, string> = { ke: "KES", gb: "GBP", us: "USD", au: "AUD", ca: "CAD", de: "EUR", ae: "AED", sa: "SAR", qa: "QAR", kw: "KWD", bh: "BHD", om: "OMR" };
+      const currMap: Record<string, string> = { ke: "KES", gb: "GBP", us: "USD", au: "AUD", ca: "CAD", de: "EUR", fr: "EUR", nl: "EUR", be: "EUR", at: "EUR", it: "EUR", es: "EUR", ch: "CHF", pl: "PLN", ae: "AED", sa: "SAR", qa: "QAR", kw: "KWD", bh: "BHD", om: "OMR" };
       const curr = currMap[q.country] || "USD";
       const job: any = {
         external_id: `adzuna-${row.id}`, title,
@@ -170,6 +191,17 @@ async function fetchJooble(apiKey: string): Promise<any[]> {
     { keywords: "remote work from home", location: "", market: "Remote", tag: "🌍 Remote" },
     { keywords: "nurse jobs abroad visa sponsorship", location: "", market: "UK", tag: "✈️ Visa Sponsor" },
     { keywords: "visa sponsorship jobs Europe", location: "Europe", market: "Europe", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Luxembourg", location: "Luxembourg", market: "Luxembourg", tag: "✈️ Visa Sponsor" },
+    { keywords: "english speaking jobs Luxembourg", location: "Luxembourg", market: "Luxembourg", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Ireland", location: "Ireland", market: "Ireland", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Sweden", location: "Sweden", market: "Sweden", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Denmark", location: "Denmark", market: "Denmark", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Norway", location: "Norway", market: "Norway", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Finland", location: "Finland", market: "Finland", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Portugal", location: "Portugal", market: "Portugal", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Netherlands english", location: "Netherlands", market: "Netherlands", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs Germany english", location: "Germany", market: "Germany", tag: "✈️ Visa Sponsor" },
+    { keywords: "jobs France english", location: "France", market: "France", tag: "✈️ Visa Sponsor" },
   ];
 
   const results = await Promise.allSettled(
@@ -310,7 +342,7 @@ Deno.serve(async (req) => {
 
 // ─── Feed mode handler ──────────────────────────────────────────────────────
 const GULF_MARKETS = ["UAE", "Qatar", "Saudi Arabia", "Kuwait", "Bahrain", "Oman"];
-const EUROPE_MARKETS = ["Europe", "Germany", "UK"];
+const EUROPE_MARKETS = ["Europe", "Germany", "UK", "France", "Netherlands", "Belgium", "Austria", "Switzerland", "Italy", "Spain", "Poland", "Luxembourg", "Ireland", "Sweden", "Denmark", "Norway", "Finland", "Portugal"];
 const ASIA_MARKETS = ["Singapore", "Malaysia", "India", "Japan"];
 const CATEGORY_TO_MARKETS: Record<string, string[]> = {
   "Gulf Jobs": GULF_MARKETS,
