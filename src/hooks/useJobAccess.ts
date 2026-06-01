@@ -30,18 +30,13 @@ async function fetchVerifiedEmployers(): Promise<string[]> {
 export type JobTier = "free" | "verified" | "international";
 
 export function getJobTier(
-  company: string,
-  market: string | undefined,
-  visaSponsorship: boolean | undefined,
-  verifiedNames: string[]
+  _company: string,
+  _market: string | undefined,
+  _visaSponsorship: boolean | undefined,
+  _verifiedNames: string[]
 ): JobTier {
-  const isKenya = !market || market === "Kenya";
-  if (!isKenya || visaSponsorship) return "international";
-  const companyLower = company.toLowerCase();
-  const isVerified = verifiedNames.some(
-    (name) => companyLower.includes(name) || name.includes(companyLower)
-  );
-  return isVerified ? "verified" : "free";
+  // All restrictions removed — every job is freely accessible.
+  return "free";
 }
 
 export function useVerifiedEmployers() {
