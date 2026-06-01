@@ -428,6 +428,8 @@ Deno.serve(async (req) => {
     const promises: Promise<any[]>[] = [];
     if (adzunaAppId && adzunaAppKey) promises.push(fetchAdzuna(adzunaAppId, adzunaAppKey));
     if (joobleApiKey) promises.push(fetchJooble(joobleApiKey));
+    // Always fetch verified remote boards (no API key required)
+    promises.push(fetchRemoteBoards());
 
     const settled = await Promise.allSettled(promises);
     const allJobs: any[] = [];
