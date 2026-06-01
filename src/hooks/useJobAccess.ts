@@ -135,16 +135,10 @@ export function useJobAccess() {
   const canUseFreeUnlock = freeUnlocksRemaining > 0;
 
   // Determine if a specific job is accessible
+  // All job access restrictions removed — every job is unlocked for everyone.
   const hasJobAccess = useCallback(
-    (jobKey: string, jobId: string, tier: JobTier) => {
-      if (isOwner) return true;
-      if (tier === "free") return true;
-      if (hasProSubscription) return true;
-      if (isJobFreeUnlocked(jobKey)) return true;
-      if (isJobDbUnlocked(jobId)) return true;
-      return false;
-    },
-    [isOwner, hasProSubscription, isJobFreeUnlocked, isJobDbUnlocked]
+    (_jobKey: string, _jobId: string, _tier: JobTier) => true,
+    []
   );
 
   const getJobTierFn = useCallback(
