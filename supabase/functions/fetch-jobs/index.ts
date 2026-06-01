@@ -267,6 +267,138 @@ async function fetchJooble(apiKey: string): Promise<any[]> {
   return jobs;
 }
 
+// ─── Verified Remote Boards: RemoteOK + Remotive + WeWorkRemotely ───────────
+async function fetchRemoteBoards(): Promise<any[]> {
+  const jobs: any[] = [];
+
+  // 1) RemoteOK — official JSON feed, verified remote-only board
+  try {
+    const r = await fetch("https://remoteok.com/api", {
+      headers: { "User-Agent": "CVEdge/1.0 (jobs aggregator)" },
+    });
+    if (r.ok) {
+      const data = await r.json();
+      const rows = Array.isArray(data) ? data.slice(1) : []; // first entry is legal notice
+      for (const row of rows) {
+        const title = (row.position || row.title || "").toString().trim();
+        if (!title) continue;
+        const description = (row.description || "").toString().substring(0, 2000).replace(/<[^>]*>/g, "");
+        const industry = guessIndustry(title, row.company || "");
+        const postedAt = row.date || row.created_at || new Date().toISOString();
+        const job: any = {
+          external_id: `remoteok-${row.id || row.slug || title.toLowerCase().replace(/\s+/g, "-").substring(0, 80)}`,
+          title, company: row.company || "Remote Company",
+          location: row.location || "Worldwide Remote",
+          salary: row.salary || (row.salary_min && row.salary_max ? `$${row.salary_min} – $${row.salary_max}` : "Competitive"),
+          type: "Full-time", industry, market: "Remote",
+          posted_at: postedAt, hot: false, tag: "🌍 Remote",
+          source: "remoteok", source_label: "RemoteOK (Verified)",
+          apply_url: row.apply_url || row.url || null, description,
+          country: "Remote", category: "Remote Jobs",
+          visa_sponsorship: false, hot_score: 0,
+          verified: true, featured: false, is_active: true,
+          discovered_at: new Date().toISOString(),
+        };
+        job.hot_score = hotScore(job);
+        job.hot = job.hot_score >= 50;
+        jobs.push(job);
+      }
+    } else {
+      console.warn(`RemoteOK: ${r.status}`);
+    }
+  } catch (e) {
+    console.warn("RemoteOK err:", e);
+  }
+
+  // 2) Remotive — official public API, curated verified remote jobs
+  try {
+    const r = await fetch("https://remotive.com/api/remote-jobs?limit=200");
+    if (r.ok) {
+      const data = await r.json();
+      const rows = data.jobs || [];
+      for (const row of rows) {
+        const title = (row.title || "").trim();
+        if (!title) continue;
+        const description = (row.description || "").substring(0, 2000).replace(/<[^>]*>/g, "");
+        const industry = guessIndustry(title, row.company_name || "");
+        const job: any = {
+          external_id: `remotive-${row.id || row.url}`,
+          title, company: row.company_name || "Remote Company",
+          location: row.candidate_required_location || "Worldwide Remote",
+          salary: row.salary || "Competitive",
+          type: row.job_type || "Full-time", industry, market: "Remote",
+          posted_at: row.publication_date || new Date().toISOString(),
+          hot: false, tag: "🌍 Remote",
+          source: "remotive", source_label: "Remotive (Verified)",
+          apply_url: row.url || null, description,
+          country: "Remote", category: "Remote Jobs",
+          visa_sponsorship: false, hot_score: 0,
+          verified: true, featured: false, is_active: true,
+          discovered_at: new Date().toISOString(),
+        };
+        job.hot_score = hotScore(job);
+        job.hot = job.hot_score >= 50;
+        jobs.push(job);
+      }
+    } else {
+      console.warn(`Remotive: ${r.status}`);
+    }
+  } catch (e) {
+    console.warn("Remotive err:", e);
+  }
+
+  // 3) We Work Remotely — RSS feed (parse XML manually)
+  try {
+    const r = await fetch("https://weworkremotely.com/remote-jobs.rss");
+    if (r.ok) {
+      const xml = await r.text();
+      const items = xml.split(/<item>/i).slice(1);
+      for (const item of items.slice(0, 100)) {
+        const get = (tag: string) => {
+          const m = item.match(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, "i"));
+          return m ? m[1].replace(/<!\[CDATA\[|\]\]>/g, "").trim() : "";
+        };
+        const rawTitle = get("title");
+        if (!rawTitle) continue;
+        // WWR titles are "Company: Job Title"
+        const [companyPart, ...titleParts] = rawTitle.split(":");
+        const company = titleParts.length ? companyPart.trim() : "Remote Company";
+        const title = titleParts.length ? titleParts.join(":").trim() : rawTitle.trim();
+        const link = get("link");
+        const desc = get("description").replace(/<[^>]*>/g, "").substring(0, 2000);
+        const pubDate = get("pubDate");
+        const guid = get("guid") || link;
+        const industry = guessIndustry(title, company);
+        const job: any = {
+          external_id: `wwr-${guid.replace(/[^a-z0-9]/gi, "-").substring(0, 80)}`,
+          title, company,
+          location: "Worldwide Remote",
+          salary: "Competitive",
+          type: "Full-time", industry, market: "Remote",
+          posted_at: pubDate ? new Date(pubDate).toISOString() : new Date().toISOString(),
+          hot: false, tag: "🌍 Remote",
+          source: "weworkremotely", source_label: "We Work Remotely (Verified)",
+          apply_url: link || null, description: desc,
+          country: "Remote", category: "Remote Jobs",
+          visa_sponsorship: false, hot_score: 0,
+          verified: true, featured: false, is_active: true,
+          discovered_at: new Date().toISOString(),
+        };
+        job.hot_score = hotScore(job);
+        job.hot = job.hot_score >= 50;
+        jobs.push(job);
+      }
+    } else {
+      console.warn(`WWR: ${r.status}`);
+    }
+  } catch (e) {
+    console.warn("WWR err:", e);
+  }
+
+  console.log(`Remote boards: ${jobs.length} jobs`);
+  return jobs;
+}
+
 // ─── Main handler ────────────────────────────────────────────────────────────
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
