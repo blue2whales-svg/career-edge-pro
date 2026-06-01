@@ -30,18 +30,13 @@ async function fetchVerifiedEmployers(): Promise<string[]> {
 export type JobTier = "free" | "verified" | "international";
 
 export function getJobTier(
-  company: string,
-  market: string | undefined,
-  visaSponsorship: boolean | undefined,
-  verifiedNames: string[]
+  _company: string,
+  _market: string | undefined,
+  _visaSponsorship: boolean | undefined,
+  _verifiedNames: string[]
 ): JobTier {
-  const isKenya = !market || market === "Kenya";
-  if (!isKenya || visaSponsorship) return "international";
-  const companyLower = company.toLowerCase();
-  const isVerified = verifiedNames.some(
-    (name) => companyLower.includes(name) || name.includes(companyLower)
-  );
-  return isVerified ? "verified" : "free";
+  // All restrictions removed — every job is freely accessible.
+  return "free";
 }
 
 export function useVerifiedEmployers() {
@@ -140,16 +135,10 @@ export function useJobAccess() {
   const canUseFreeUnlock = freeUnlocksRemaining > 0;
 
   // Determine if a specific job is accessible
+  // All job access restrictions removed — every job is unlocked for everyone.
   const hasJobAccess = useCallback(
-    (jobKey: string, jobId: string, tier: JobTier) => {
-      if (isOwner) return true;
-      if (tier === "free") return true;
-      if (hasProSubscription) return true;
-      if (isJobFreeUnlocked(jobKey)) return true;
-      if (isJobDbUnlocked(jobId)) return true;
-      return false;
-    },
-    [isOwner, hasProSubscription, isJobFreeUnlocked, isJobDbUnlocked]
+    (_jobKey: string, _jobId: string, _tier: JobTier) => true,
+    []
   );
 
   const getJobTierFn = useCallback(
