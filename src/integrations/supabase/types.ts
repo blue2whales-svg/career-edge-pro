@@ -400,6 +400,51 @@ export type Database = {
           },
         ]
       }
+      job_alerts: {
+        Row: {
+          active: boolean
+          created_at: string
+          email: string
+          frequency_hours: number
+          id: string
+          include_visa: boolean
+          keywords: string[]
+          last_job_count: number
+          last_sent_at: string | null
+          markets: string[]
+          updated_at: string
+          verified_only: boolean
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          email: string
+          frequency_hours?: number
+          id?: string
+          include_visa?: boolean
+          keywords?: string[]
+          last_job_count?: number
+          last_sent_at?: string | null
+          markets?: string[]
+          updated_at?: string
+          verified_only?: boolean
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          email?: string
+          frequency_hours?: number
+          id?: string
+          include_visa?: boolean
+          keywords?: string[]
+          last_job_count?: number
+          last_sent_at?: string | null
+          markets?: string[]
+          updated_at?: string
+          verified_only?: boolean
+        }
+        Relationships: []
+      }
       job_postings: {
         Row: {
           company: string
