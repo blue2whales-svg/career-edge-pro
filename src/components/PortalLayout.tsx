@@ -22,6 +22,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const NAV_ITEMS = [
   { label: "My Orders", icon: LayoutDashboard, path: "/portal" },
   { label: "Documents", icon: FileText, path: "/portal/documents" },
+  { label: "Job Alerts", icon: Bell, path: "/portal/alerts" },
   { label: "Messages", icon: MessageSquare, path: "/portal/messages" },
   { label: "Settings", icon: Settings, path: "/portal/settings" },
 ];
