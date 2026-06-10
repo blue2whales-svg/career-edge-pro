@@ -139,6 +139,7 @@ const App = () => {
                 <Route path="documents" element={<PortalDocuments />} />
                 <Route path="messages" element={<PortalMessages />} />
                 <Route path="settings" element={<PortalSettingsPage />} />
+                <Route path="alerts" element={<PortalAlertsPage />} />
               </Route>
               <Route
                 path="/admin/jobs"
