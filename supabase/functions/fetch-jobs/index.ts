@@ -312,7 +312,7 @@ async function fetchRemoteBoards(): Promise<any[]> {
 
   // 2) Remotive — official public API, curated verified remote jobs
   try {
-    const r = await fetch("https://remotive.com/api/remote-jobs?limit=200");
+    const r = await fetch("https://remotive.com/api/remote-jobs");
     if (r.ok) {
       const data = await r.json();
       const rows = data.jobs || [];
@@ -353,14 +353,13 @@ async function fetchRemoteBoards(): Promise<any[]> {
     if (r.ok) {
       const xml = await r.text();
       const items = xml.split(/<item>/i).slice(1);
-      for (const item of items.slice(0, 100)) {
+      for (const item of items) {
         const get = (tag: string) => {
           const m = item.match(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, "i"));
           return m ? m[1].replace(/<!\[CDATA\[|\]\]>/g, "").trim() : "";
         };
         const rawTitle = get("title");
         if (!rawTitle) continue;
-        // WWR titles are "Company: Job Title"
         const [companyPart, ...titleParts] = rawTitle.split(":");
         const company = titleParts.length ? companyPart.trim() : "Remote Company";
         const title = titleParts.length ? titleParts.join(":").trim() : rawTitle.trim();
@@ -393,6 +392,126 @@ async function fetchRemoteBoards(): Promise<any[]> {
     }
   } catch (e) {
     console.warn("WWR err:", e);
+  }
+
+  // 4) Arbeitnow — public job board API, verified remote-friendly
+  try {
+    for (let page = 1; page <= 3; page++) {
+      const r = await fetch(`https://www.arbeitnow.com/api/job-board-api?page=${page}`);
+      if (!r.ok) { console.warn(`Arbeitnow p${page}: ${r.status}`); break; }
+      const data = await r.json();
+      const rows = data.data || [];
+      if (!rows.length) break;
+      for (const row of rows) {
+        const title = (row.title || "").trim();
+        if (!title) continue;
+        const tags: string[] = row.tags || [];
+        const isRemote = row.remote === true || /remote/i.test(title) || tags.some((t) => /remote/i.test(t));
+        if (!isRemote) continue;
+        const description = (row.description || "").substring(0, 2000).replace(/<[^>]*>/g, "");
+        const industry = guessIndustry(title, row.company_name || "");
+        const job: any = {
+          external_id: `arbeitnow-${row.slug || title.toLowerCase().replace(/\s+/g, "-").substring(0, 80)}`,
+          title, company: row.company_name || "Remote Company",
+          location: row.location || "Worldwide Remote",
+          salary: "Competitive",
+          type: (row.job_types && row.job_types[0]) || "Full-time",
+          industry, market: "Remote",
+          posted_at: row.created_at ? new Date(row.created_at * 1000).toISOString() : new Date().toISOString(),
+          hot: false, tag: "🌍 Remote",
+          source: "arbeitnow", source_label: "Arbeitnow (Verified)",
+          apply_url: row.url || null, description,
+          country: "Remote", category: "Remote Jobs",
+          visa_sponsorship: tags.some((t) => /visa/i.test(t)), hot_score: 0,
+          verified: true, featured: false, is_active: true,
+          discovered_at: new Date().toISOString(),
+        };
+        job.hot_score = hotScore(job);
+        job.hot = job.hot_score >= 50;
+        jobs.push(job);
+      }
+    }
+  } catch (e) {
+    console.warn("Arbeitnow err:", e);
+  }
+
+  // 5) Jobicy — verified remote jobs public API
+  try {
+    const r = await fetch("https://jobicy.com/api/v2/remote-jobs?count=50");
+    if (r.ok) {
+      const data = await r.json();
+      const rows = data.jobs || [];
+      for (const row of rows) {
+        const title = (row.jobTitle || "").trim();
+        if (!title) continue;
+        const description = (row.jobExcerpt || row.jobDescription || "").substring(0, 2000).replace(/<[^>]*>/g, "");
+        const industry = guessIndustry(title, row.companyName || "");
+        const job: any = {
+          external_id: `jobicy-${row.id || row.url}`,
+          title, company: row.companyName || "Remote Company",
+          location: row.jobGeo || "Worldwide Remote",
+          salary: (row.annualSalaryMin && row.annualSalaryMax)
+            ? `${row.salaryCurrency || "USD"} ${row.annualSalaryMin}–${row.annualSalaryMax}/yr`
+            : "Competitive",
+          type: (row.jobType && row.jobType[0]) || "Full-time",
+          industry, market: "Remote",
+          posted_at: row.pubDate || new Date().toISOString(),
+          hot: false, tag: "🌍 Remote",
+          source: "jobicy", source_label: "Jobicy (Verified)",
+          apply_url: row.url || null, description,
+          country: "Remote", category: "Remote Jobs",
+          visa_sponsorship: false, hot_score: 0,
+          verified: true, featured: false, is_active: true,
+          discovered_at: new Date().toISOString(),
+        };
+        job.hot_score = hotScore(job);
+        job.hot = job.hot_score >= 50;
+        jobs.push(job);
+      }
+    } else {
+      console.warn(`Jobicy: ${r.status}`);
+    }
+  } catch (e) {
+    console.warn("Jobicy err:", e);
+  }
+
+  // 6) Himalayas — public remote jobs API
+  try {
+    const r = await fetch("https://himalayas.app/jobs/api?limit=100");
+    if (r.ok) {
+      const data = await r.json();
+      const rows = data.jobs || [];
+      for (const row of rows) {
+        const title = (row.title || "").trim();
+        if (!title) continue;
+        const description = (row.excerpt || row.description || "").substring(0, 2000).replace(/<[^>]*>/g, "");
+        const industry = guessIndustry(title, row.companyName || "");
+        const locs = Array.isArray(row.locationRestrictions) ? row.locationRestrictions.join(", ") : "";
+        const job: any = {
+          external_id: `himalayas-${row.guid || row.slug || title.toLowerCase().replace(/\s+/g, "-").substring(0, 80)}`,
+          title, company: row.companyName || "Remote Company",
+          location: locs || "Worldwide Remote",
+          salary: (row.minSalary && row.maxSalary) ? `USD ${row.minSalary}–${row.maxSalary}/yr` : "Competitive",
+          type: (row.employmentType && row.employmentType[0]) || "Full-time",
+          industry, market: "Remote",
+          posted_at: row.pubDate || row.publishedDate || new Date().toISOString(),
+          hot: false, tag: "🌍 Remote",
+          source: "himalayas", source_label: "Himalayas (Verified)",
+          apply_url: row.applicationLink || row.url || null, description,
+          country: "Remote", category: "Remote Jobs",
+          visa_sponsorship: false, hot_score: 0,
+          verified: true, featured: false, is_active: true,
+          discovered_at: new Date().toISOString(),
+        };
+        job.hot_score = hotScore(job);
+        job.hot = job.hot_score >= 50;
+        jobs.push(job);
+      }
+    } else {
+      console.warn(`Himalayas: ${r.status}`);
+    }
+  } catch (e) {
+    console.warn("Himalayas err:", e);
   }
 
   console.log(`Remote boards: ${jobs.length} jobs`);
