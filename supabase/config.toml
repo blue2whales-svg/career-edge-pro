@@ -5,6 +5,10 @@ project_id = "jxuqpxzsbkkywieughgh"
     verify_jwt = false
   [functions.auth-email-hook]
     verify_jwt = false
+  [functions.send-job-alerts]
+    verify_jwt = false
+  [functions.manage-job-alerts]
+    verify_jwt = false
   [functions.fetch-jobs]
     verify_jwt = false
   [functions.generate-cv]

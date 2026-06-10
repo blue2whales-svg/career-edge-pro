@@ -48,6 +48,7 @@ const OrderDetailPage = lazy(() => import("./pages/OrderDetailPage"));
 const PortalDocuments = lazy(() => import("./pages/PortalDocuments"));
 const PortalMessages = lazy(() => import("./pages/PortalMessages"));
 const PortalSettingsPage = lazy(() => import("./pages/PortalSettingsPage"));
+const PortalAlertsPage = lazy(() => import("./pages/PortalAlertsPage"));
 const AdminJobsPage = lazy(() => import("./pages/AdminJobsPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const ApplicationsPage = lazy(() => import("./pages/ApplicationsPage"));
@@ -138,6 +139,7 @@ const App = () => {
                 <Route path="documents" element={<PortalDocuments />} />
                 <Route path="messages" element={<PortalMessages />} />
                 <Route path="settings" element={<PortalSettingsPage />} />
+                <Route path="alerts" element={<PortalAlertsPage />} />
               </Route>
               <Route
                 path="/admin/jobs"
