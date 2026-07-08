@@ -15,6 +15,14 @@ const SOURCES = [
   { url: "https://www.brightermonday.co.ke/jobs/nairobi", source_label: "BrighterMonday" },
   { url: "https://www.myjobmag.co.ke/jobs", source_label: "MyJobMag" },
   { url: "https://www.myjobmag.co.ke/jobs-by-location/nairobi", source_label: "MyJobMag" },
+  { url: "https://www.linkedin.com/jobs/search?location=Kenya&f_TPR=r86400", source_label: "LinkedIn" },
+  { url: "https://www.linkedin.com/jobs/search?keywords=&location=Nairobi%2C%20Kenya&f_TPR=r86400", source_label: "LinkedIn" },
+  { url: "https://ke.linkedin.com/jobs/search?keywords=marketing&location=Kenya", source_label: "LinkedIn" },
+  { url: "https://ke.linkedin.com/jobs/search?keywords=sales&location=Kenya", source_label: "LinkedIn" },
+  { url: "https://ke.linkedin.com/jobs/search?keywords=engineer&location=Kenya", source_label: "LinkedIn" },
+  { url: "https://ke.linkedin.com/jobs/search?keywords=finance&location=Kenya", source_label: "LinkedIn" },
+  { url: "https://ke.linkedin.com/jobs/search?keywords=customer%20service&location=Kenya", source_label: "LinkedIn" },
+  { url: "https://ke.linkedin.com/jobs/search?keywords=admin&location=Kenya", source_label: "LinkedIn" },
 ];
 
 const JOBS_SCHEMA = {

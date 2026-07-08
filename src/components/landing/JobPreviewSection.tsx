@@ -36,7 +36,7 @@ export function JobPreviewSection() {
     ? [...jobs].sort((a, b) => Number(b.market !== "Kenya") - Number(a.market !== "Kenya"))
     : [...jobs].sort((a, b) => Number(b.market === "Kenya") - Number(a.market === "Kenya"));
 
-  const visible = prioritized.slice(0, 9);
+  const visible = prioritized.slice(0, 16);
   const totalCount = jobs.length;
 
   return (
@@ -94,7 +94,7 @@ export function JobPreviewSection() {
         {/* Jobs grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
           {isLoading
-            ? [...Array(9)].map((_, i) => (
+            ? [...Array(16)].map((_, i) => (
                 <div key={i} className="rounded-xl border border-border bg-card p-5">
                   <Skeleton className="h-4 w-3/4 mb-2" />
                   <Skeleton className="h-3 w-1/2 mb-2" />
@@ -102,49 +102,63 @@ export function JobPreviewSection() {
                   <Skeleton className="h-3 w-24" />
                 </div>
               ))
-            : visible.map((job, i) => (
-                <motion.div
-                  key={`${job.title}-${job.company}-${i}`}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  variants={fadeUp}
-                  custom={i + 2}
-                  className="group relative overflow-hidden rounded-xl border border-border bg-card p-5 transition-all hover:border-primary/40 hover:shadow-[0_0_24px_-8px_hsl(var(--primary)/0.4)] hover:-translate-y-0.5"
-                >
-                  {/* hover glow */}
-                  <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/[0.06] opacity-0 transition-opacity group-hover:opacity-100" />
-
-                  <div className="flex items-start justify-between gap-2 mb-3">
-                    <h3 className="font-semibold text-sm leading-snug line-clamp-2 flex-1">
-                      {job.title}
-                    </h3>
-                    {i < 3 && (
-                      <span className="shrink-0 inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[9px] font-mono uppercase tracking-wide text-primary">
-                        <Sparkles className="h-2.5 w-2.5" /> Hot
+            : visible.map((job, i) => {
+                const href = job.apply_url || "/jobs";
+                const isExternal = /^https?:\/\//i.test(href);
+                const CardInner = (
+                  <>
+                    <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/[0.06] opacity-0 transition-opacity group-hover:opacity-100" />
+                    <div className="flex items-start justify-between gap-2 mb-3">
+                      <h3 className="font-semibold text-sm leading-snug line-clamp-2 flex-1">
+                        {job.title}
+                      </h3>
+                      {i < 4 && (
+                        <span className="shrink-0 inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[9px] font-mono uppercase tracking-wide text-primary">
+                          <Sparkles className="h-2.5 w-2.5" /> Hot
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
+                      <Building2 className="h-3 w-3 shrink-0" />
+                      <span className="line-clamp-1">{job.company}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3">
+                      <MapPin className="h-3 w-3 shrink-0" />
+                      <span className="line-clamp-1">{job.location}</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 pt-3 border-t border-border/60">
+                      <span className="text-xs font-mono text-primary line-clamp-1">
+                        {job.salary || "Competitive"}
                       </span>
+                      <span className="text-[9px] text-green-400 shrink-0 flex items-center gap-1">
+                        ✅ {job.source_label || SOURCE_BADGES[i % SOURCE_BADGES.length]}
+                      </span>
+                    </div>
+                  </>
+                );
+                const className =
+                  "group relative block overflow-hidden rounded-xl border border-border bg-card p-5 transition-all hover:border-primary/40 hover:shadow-[0_0_24px_-8px_hsl(var(--primary)/0.4)] hover:-translate-y-0.5 cursor-pointer";
+                return (
+                  <motion.div
+                    key={`${job.title}-${job.company}-${i}`}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                    variants={fadeUp}
+                    custom={i + 2}
+                  >
+                    {isExternal ? (
+                      <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+                        {CardInner}
+                      </a>
+                    ) : (
+                      <Link to={href} className={className}>
+                        {CardInner}
+                      </Link>
                     )}
-                  </div>
-
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1">
-                    <Building2 className="h-3 w-3 shrink-0" />
-                    <span className="line-clamp-1">{job.company}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3">
-                    <MapPin className="h-3 w-3 shrink-0" />
-                    <span className="line-clamp-1">{job.location}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-2 pt-3 border-t border-border/60">
-                    <span className="text-xs font-mono text-primary line-clamp-1">
-                      {job.salary || "Competitive"}
-                    </span>
-                    <span className="text-[9px] text-green-400 shrink-0 flex items-center gap-1">
-                      ✅ {SOURCE_BADGES[i % SOURCE_BADGES.length]}
-                    </span>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
         </div>
 
         {/* Stats + CTA */}
