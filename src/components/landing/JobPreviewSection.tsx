@@ -36,7 +36,7 @@ export function JobPreviewSection() {
     ? [...jobs].sort((a, b) => Number(b.market !== "Kenya") - Number(a.market !== "Kenya"))
     : [...jobs].sort((a, b) => Number(b.market === "Kenya") - Number(a.market === "Kenya"));
 
-  const visible = prioritized.slice(0, 9);
+  const visible = prioritized.slice(0, 16);
   const totalCount = jobs.length;
 
   return (
