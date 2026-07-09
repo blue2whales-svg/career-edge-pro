@@ -55,6 +55,7 @@ export function JobPreviewSection() {
 
   const [locFilter, setLocFilter] = useState<LocKey>("all");
   const [activeSources, setActiveSources] = useState<Set<string>>(new Set());
+  const [searchQuery, setSearchQuery] = useState("");
 
   const availableSources = useMemo(() => {
     const set = new Set<string>();
