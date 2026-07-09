@@ -48,6 +48,24 @@ function matchesLocation(job: { market?: string; location?: string; title?: stri
   return true;
 }
 
+type Preset = {
+  id: string;
+  name: string;
+  loc: LocKey;
+  sources: string[];
+  query: string;
+};
+
+const PRESETS_KEY = "cvedge_job_filter_presets_v1";
+const LAST_KEY = "cvedge_job_filter_last_v1";
+
+function loadPresets(): Preset[] {
+  try {
+    const raw = localStorage.getItem(PRESETS_KEY);
+    return raw ? (JSON.parse(raw) as Preset[]) : [];
+  } catch { return []; }
+}
+
 export function JobPreviewSection() {
   const { data, isLoading } = useJobs();
   const { isInternational } = useIsInternational();
@@ -56,6 +74,36 @@ export function JobPreviewSection() {
   const [locFilter, setLocFilter] = useState<LocKey>("all");
   const [activeSources, setActiveSources] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [presets, setPresets] = useState<Preset[]>(() => loadPresets());
+  const [showSaveInput, setShowSaveInput] = useState(false);
+  const [newPresetName, setNewPresetName] = useState("");
+  const hydrated = useRef(false);
+
+  // Restore last-used filters on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(LAST_KEY);
+      if (raw) {
+        const last = JSON.parse(raw) as Omit<Preset, "id" | "name">;
+        if (last.loc) setLocFilter(last.loc);
+        if (Array.isArray(last.sources)) setActiveSources(new Set(last.sources));
+        if (typeof last.query === "string") setSearchQuery(last.query);
+      }
+    } catch {}
+    hydrated.current = true;
+  }, []);
+
+  // Persist last-used filters
+  useEffect(() => {
+    if (!hydrated.current) return;
+    try {
+      localStorage.setItem(LAST_KEY, JSON.stringify({
+        loc: locFilter,
+        sources: Array.from(activeSources),
+        query: searchQuery,
+      }));
+    } catch {}
+  }, [locFilter, activeSources, searchQuery]);
 
   const availableSources = useMemo(() => {
     const set = new Set<string>();
@@ -70,6 +118,39 @@ export function JobPreviewSection() {
       return next;
     });
   };
+
+  const persistPresets = (next: Preset[]) => {
+    setPresets(next);
+    try { localStorage.setItem(PRESETS_KEY, JSON.stringify(next)); } catch {}
+  };
+
+  const savePreset = () => {
+    const name = newPresetName.trim();
+    if (!name) return;
+    const preset: Preset = {
+      id: `${Date.now()}`,
+      name,
+      loc: locFilter,
+      sources: Array.from(activeSources),
+      query: searchQuery,
+    };
+    persistPresets([preset, ...presets.filter((p) => p.name !== name)].slice(0, 8));
+    setNewPresetName("");
+    setShowSaveInput(false);
+  };
+
+  const applyPreset = (p: Preset) => {
+    setLocFilter(p.loc);
+    setActiveSources(new Set(p.sources));
+    setSearchQuery(p.query);
+  };
+
+  const deletePreset = (id: string) => {
+    persistPresets(presets.filter((p) => p.id !== id));
+  };
+
+  const hasActiveFilters = locFilter !== "all" || activeSources.size > 0 || searchQuery.trim() !== "";
+
 
   const q = searchQuery.trim().toLowerCase();
   const filtered = jobs.filter((j: any) => {
