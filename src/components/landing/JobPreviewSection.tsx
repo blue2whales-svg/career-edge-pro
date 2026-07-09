@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Building2, ArrowRight, Briefcase, Sparkles, Clock, TrendingUp, Search } from "lucide-react";
+import { MapPin, Building2, ArrowRight, Briefcase, Sparkles, Clock, TrendingUp, Search, Bookmark, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
