@@ -283,6 +283,69 @@ export function JobPreviewSection() {
             </div>
           )}
 
+          {/* Saved presets */}
+          <div className="flex flex-wrap items-center justify-center gap-1.5">
+            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono mr-1 inline-flex items-center gap-1">
+              <Bookmark className="h-3 w-3" /> Presets:
+            </span>
+            {presets.length === 0 && (
+              <span className="text-[11px] text-muted-foreground italic">None saved yet</span>
+            )}
+            {presets.map((p) => (
+              <span
+                key={p.id}
+                className="group inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 pl-2.5 pr-1 py-1 text-[11px] font-medium text-primary hover:bg-primary/10 transition-all"
+              >
+                <button onClick={() => applyPreset(p)} className="active:scale-95" title="Apply preset">
+                  {p.name}
+                </button>
+                <button
+                  onClick={() => deletePreset(p.id)}
+                  className="ml-0.5 h-4 w-4 inline-flex items-center justify-center rounded-full text-muted-foreground hover:text-brand-red hover:bg-brand-red/10"
+                  title="Delete preset"
+                >
+                  <X className="h-2.5 w-2.5" />
+                </button>
+              </span>
+            ))}
+            {hasActiveFilters && !showSaveInput && (
+              <button
+                onClick={() => setShowSaveInput(true)}
+                className="px-2.5 py-1 rounded-full text-[11px] font-medium border border-dashed border-primary/40 text-primary hover:bg-primary/10 transition-all active:scale-95"
+              >
+                + Save current
+              </button>
+            )}
+            {showSaveInput && (
+              <span className="inline-flex items-center gap-1">
+                <input
+                  autoFocus
+                  type="text"
+                  value={newPresetName}
+                  onChange={(e) => setNewPresetName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") savePreset();
+                    if (e.key === "Escape") { setShowSaveInput(false); setNewPresetName(""); }
+                  }}
+                  placeholder="Preset name"
+                  className="rounded-full border border-primary/30 bg-card px-2.5 py-1 text-[11px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/40 w-32"
+                />
+                <button
+                  onClick={savePreset}
+                  className="px-2 py-1 rounded-full text-[11px] font-medium bg-primary/20 text-primary border border-primary/40 hover:bg-primary/30"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => { setShowSaveInput(false); setNewPresetName(""); }}
+                  className="px-2 py-1 rounded-full text-[11px] font-medium text-muted-foreground hover:text-foreground"
+                >
+                  Cancel
+                </button>
+              </span>
+            )}
+          </div>
+
           {!isLoading && visible.length === 0 && (
             <p className="text-center text-xs text-muted-foreground">
               No jobs match these filters. Try clearing or switching tabs.
