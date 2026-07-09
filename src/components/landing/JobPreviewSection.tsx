@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Building2, ArrowRight, Briefcase, Sparkles, Clock, TrendingUp, Search } from "lucide-react";
+import { MapPin, Building2, ArrowRight, Briefcase, Sparkles, Clock, TrendingUp, Search, Bookmark, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
@@ -48,6 +48,24 @@ function matchesLocation(job: { market?: string; location?: string; title?: stri
   return true;
 }
 
+type Preset = {
+  id: string;
+  name: string;
+  loc: LocKey;
+  sources: string[];
+  query: string;
+};
+
+const PRESETS_KEY = "cvedge_job_filter_presets_v1";
+const LAST_KEY = "cvedge_job_filter_last_v1";
+
+function loadPresets(): Preset[] {
+  try {
+    const raw = localStorage.getItem(PRESETS_KEY);
+    return raw ? (JSON.parse(raw) as Preset[]) : [];
+  } catch { return []; }
+}
+
 export function JobPreviewSection() {
   const { data, isLoading } = useJobs();
   const { isInternational } = useIsInternational();
@@ -56,6 +74,36 @@ export function JobPreviewSection() {
   const [locFilter, setLocFilter] = useState<LocKey>("all");
   const [activeSources, setActiveSources] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [presets, setPresets] = useState<Preset[]>(() => loadPresets());
+  const [showSaveInput, setShowSaveInput] = useState(false);
+  const [newPresetName, setNewPresetName] = useState("");
+  const hydrated = useRef(false);
+
+  // Restore last-used filters on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(LAST_KEY);
+      if (raw) {
+        const last = JSON.parse(raw) as Omit<Preset, "id" | "name">;
+        if (last.loc) setLocFilter(last.loc);
+        if (Array.isArray(last.sources)) setActiveSources(new Set(last.sources));
+        if (typeof last.query === "string") setSearchQuery(last.query);
+      }
+    } catch {}
+    hydrated.current = true;
+  }, []);
+
+  // Persist last-used filters
+  useEffect(() => {
+    if (!hydrated.current) return;
+    try {
+      localStorage.setItem(LAST_KEY, JSON.stringify({
+        loc: locFilter,
+        sources: Array.from(activeSources),
+        query: searchQuery,
+      }));
+    } catch {}
+  }, [locFilter, activeSources, searchQuery]);
 
   const availableSources = useMemo(() => {
     const set = new Set<string>();
@@ -70,6 +118,39 @@ export function JobPreviewSection() {
       return next;
     });
   };
+
+  const persistPresets = (next: Preset[]) => {
+    setPresets(next);
+    try { localStorage.setItem(PRESETS_KEY, JSON.stringify(next)); } catch {}
+  };
+
+  const savePreset = () => {
+    const name = newPresetName.trim();
+    if (!name) return;
+    const preset: Preset = {
+      id: `${Date.now()}`,
+      name,
+      loc: locFilter,
+      sources: Array.from(activeSources),
+      query: searchQuery,
+    };
+    persistPresets([preset, ...presets.filter((p) => p.name !== name)].slice(0, 8));
+    setNewPresetName("");
+    setShowSaveInput(false);
+  };
+
+  const applyPreset = (p: Preset) => {
+    setLocFilter(p.loc);
+    setActiveSources(new Set(p.sources));
+    setSearchQuery(p.query);
+  };
+
+  const deletePreset = (id: string) => {
+    persistPresets(presets.filter((p) => p.id !== id));
+  };
+
+  const hasActiveFilters = locFilter !== "all" || activeSources.size > 0 || searchQuery.trim() !== "";
+
 
   const q = searchQuery.trim().toLowerCase();
   const filtered = jobs.filter((j: any) => {
@@ -201,6 +282,69 @@ export function JobPreviewSection() {
               )}
             </div>
           )}
+
+          {/* Saved presets */}
+          <div className="flex flex-wrap items-center justify-center gap-1.5">
+            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono mr-1 inline-flex items-center gap-1">
+              <Bookmark className="h-3 w-3" /> Presets:
+            </span>
+            {presets.length === 0 && (
+              <span className="text-[11px] text-muted-foreground italic">None saved yet</span>
+            )}
+            {presets.map((p) => (
+              <span
+                key={p.id}
+                className="group inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 pl-2.5 pr-1 py-1 text-[11px] font-medium text-primary hover:bg-primary/10 transition-all"
+              >
+                <button onClick={() => applyPreset(p)} className="active:scale-95" title="Apply preset">
+                  {p.name}
+                </button>
+                <button
+                  onClick={() => deletePreset(p.id)}
+                  className="ml-0.5 h-4 w-4 inline-flex items-center justify-center rounded-full text-muted-foreground hover:text-brand-red hover:bg-brand-red/10"
+                  title="Delete preset"
+                >
+                  <X className="h-2.5 w-2.5" />
+                </button>
+              </span>
+            ))}
+            {hasActiveFilters && !showSaveInput && (
+              <button
+                onClick={() => setShowSaveInput(true)}
+                className="px-2.5 py-1 rounded-full text-[11px] font-medium border border-dashed border-primary/40 text-primary hover:bg-primary/10 transition-all active:scale-95"
+              >
+                + Save current
+              </button>
+            )}
+            {showSaveInput && (
+              <span className="inline-flex items-center gap-1">
+                <input
+                  autoFocus
+                  type="text"
+                  value={newPresetName}
+                  onChange={(e) => setNewPresetName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") savePreset();
+                    if (e.key === "Escape") { setShowSaveInput(false); setNewPresetName(""); }
+                  }}
+                  placeholder="Preset name"
+                  className="rounded-full border border-primary/30 bg-card px-2.5 py-1 text-[11px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary/40 w-32"
+                />
+                <button
+                  onClick={savePreset}
+                  className="px-2 py-1 rounded-full text-[11px] font-medium bg-primary/20 text-primary border border-primary/40 hover:bg-primary/30"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => { setShowSaveInput(false); setNewPresetName(""); }}
+                  className="px-2 py-1 rounded-full text-[11px] font-medium text-muted-foreground hover:text-foreground"
+                >
+                  Cancel
+                </button>
+              </span>
+            )}
+          </div>
 
           {!isLoading && visible.length === 0 && (
             <p className="text-center text-xs text-muted-foreground">
