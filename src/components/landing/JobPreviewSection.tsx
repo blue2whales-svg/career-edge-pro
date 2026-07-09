@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Building2, ArrowRight, Briefcase, Sparkles, Clock, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -27,14 +28,57 @@ const SOURCE_BADGES = [
   "Arbeitnow",
 ];
 
+const LOCATION_TABS = [
+  { key: "all", label: "All" },
+  { key: "kenya", label: "🇰🇪 Kenya" },
+  { key: "remote", label: "🌍 Remote" },
+  { key: "international", label: "✈️ International" },
+] as const;
+
+type LocKey = typeof LOCATION_TABS[number]["key"];
+
+function matchesLocation(job: { market?: string; location?: string; title?: string }, key: LocKey) {
+  if (key === "all") return true;
+  const hay = `${job.location ?? ""} ${job.title ?? ""}`.toLowerCase();
+  const isRemote = /remote|work from home|wfh|anywhere/.test(hay);
+  const isKenya = job.market === "Kenya" || /kenya|nairobi|mombasa|kisumu/.test(hay);
+  if (key === "kenya") return isKenya;
+  if (key === "remote") return isRemote;
+  if (key === "international") return !isKenya;
+  return true;
+}
+
 export function JobPreviewSection() {
   const { data, isLoading } = useJobs();
   const { isInternational } = useIsInternational();
   const jobs = data?.jobs ?? [];
 
+  const [locFilter, setLocFilter] = useState<LocKey>("all");
+  const [activeSources, setActiveSources] = useState<Set<string>>(new Set());
+
+  const availableSources = useMemo(() => {
+    const set = new Set<string>();
+    jobs.forEach((j: any) => { if (j.source_label) set.add(j.source_label); });
+    return Array.from(set).sort();
+  }, [jobs]);
+
+  const toggleSource = (s: string) => {
+    setActiveSources((prev) => {
+      const next = new Set(prev);
+      if (next.has(s)) next.delete(s); else next.add(s);
+      return next;
+    });
+  };
+
+  const filtered = jobs.filter((j: any) => {
+    if (!matchesLocation(j, locFilter)) return false;
+    if (activeSources.size > 0 && !activeSources.has(j.source_label)) return false;
+    return true;
+  });
+
   const prioritized = isInternational
-    ? [...jobs].sort((a, b) => Number(b.market !== "Kenya") - Number(a.market !== "Kenya"))
-    : [...jobs].sort((a, b) => Number(b.market === "Kenya") - Number(a.market === "Kenya"));
+    ? [...filtered].sort((a, b) => Number(b.market !== "Kenya") - Number(a.market !== "Kenya"))
+    : [...filtered].sort((a, b) => Number(b.market === "Kenya") - Number(a.market === "Kenya"));
 
   const visible = prioritized.slice(0, 16);
   const totalCount = jobs.length;
@@ -90,6 +134,63 @@ export function JobPreviewSection() {
             </span>
           )}
         </motion.p>
+
+        {/* Filters */}
+        <div className="mb-6 space-y-3">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {LOCATION_TABS.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setLocFilter(tab.key)}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all active:scale-95 ${
+                  locFilter === tab.key
+                    ? "bg-gradient-brand text-primary-foreground border border-primary/40 shadow-sm"
+                    : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/30"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {availableSources.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-1.5">
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono mr-1">
+                Sources:
+              </span>
+              {availableSources.map((s) => {
+                const active = activeSources.has(s);
+                return (
+                  <button
+                    key={s}
+                    onClick={() => toggleSource(s)}
+                    className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all active:scale-95 ${
+                      active
+                        ? "bg-primary/20 text-primary border border-primary/40"
+                        : "border border-border/60 bg-card/60 text-muted-foreground hover:text-foreground hover:border-primary/30"
+                    }`}
+                  >
+                    {active ? "✓ " : ""}{s}
+                  </button>
+                );
+              })}
+              {activeSources.size > 0 && (
+                <button
+                  onClick={() => setActiveSources(new Set())}
+                  className="px-2.5 py-1 rounded-full text-[11px] font-medium text-brand-red border border-brand-red/30 hover:bg-brand-red/10"
+                >
+                  ✕ Clear
+                </button>
+              )}
+            </div>
+          )}
+
+          {!isLoading && visible.length === 0 && (
+            <p className="text-center text-xs text-muted-foreground">
+              No jobs match these filters. Try clearing or switching tabs.
+            </p>
+          )}
+        </div>
 
         {/* Jobs grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
