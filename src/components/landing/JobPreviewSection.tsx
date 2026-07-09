@@ -71,9 +71,14 @@ export function JobPreviewSection() {
     });
   };
 
+  const q = searchQuery.trim().toLowerCase();
   const filtered = jobs.filter((j: any) => {
     if (!matchesLocation(j, locFilter)) return false;
     if (activeSources.size > 0 && !activeSources.has(j.source_label)) return false;
+    if (q) {
+      const hay = `${j.title ?? ""} ${j.description ?? ""} ${j.company ?? ""}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
     return true;
   });
 
