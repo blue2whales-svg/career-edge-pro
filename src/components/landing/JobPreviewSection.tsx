@@ -135,6 +135,63 @@ export function JobPreviewSection() {
           )}
         </motion.p>
 
+        {/* Filters */}
+        <div className="mb-6 space-y-3">
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {LOCATION_TABS.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setLocFilter(tab.key)}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all active:scale-95 ${
+                  locFilter === tab.key
+                    ? "bg-gradient-brand text-primary-foreground border border-primary/40 shadow-sm"
+                    : "border border-border bg-card text-muted-foreground hover:text-foreground hover:border-primary/30"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {availableSources.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-1.5">
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono mr-1">
+                Sources:
+              </span>
+              {availableSources.map((s) => {
+                const active = activeSources.has(s);
+                return (
+                  <button
+                    key={s}
+                    onClick={() => toggleSource(s)}
+                    className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all active:scale-95 ${
+                      active
+                        ? "bg-primary/20 text-primary border border-primary/40"
+                        : "border border-border/60 bg-card/60 text-muted-foreground hover:text-foreground hover:border-primary/30"
+                    }`}
+                  >
+                    {active ? "✓ " : ""}{s}
+                  </button>
+                );
+              })}
+              {activeSources.size > 0 && (
+                <button
+                  onClick={() => setActiveSources(new Set())}
+                  className="px-2.5 py-1 rounded-full text-[11px] font-medium text-brand-red border border-brand-red/30 hover:bg-brand-red/10"
+                >
+                  ✕ Clear
+                </button>
+              )}
+            </div>
+          )}
+
+          {!isLoading && visible.length === 0 && (
+            <p className="text-center text-xs text-muted-foreground">
+              No jobs match these filters. Try clearing or switching tabs.
+            </p>
+          )}
+        </div>
+
         {/* Jobs grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
           {isLoading
