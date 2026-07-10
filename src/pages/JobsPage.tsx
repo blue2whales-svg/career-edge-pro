@@ -187,7 +187,7 @@ export default function JobsPage() {
 
   return (
     <PageLayout>
-      <JobDetailModal job={selectedJob} open={!!selectedJob} onOpenChange={(open) => !open && setSelectedJob(null)} />
+      <JobDetailModal job={selectedJob} open={!!selectedJob} onOpenChange={(open) => { if (!open) { setSelectedJob(null); updateJobParam(null); } }} />
 
       {/* Hero */}
       <section className="relative z-10 pt-16 sm:pt-24 pb-10 px-4">
