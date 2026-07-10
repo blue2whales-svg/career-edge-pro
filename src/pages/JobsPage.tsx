@@ -454,7 +454,7 @@ export default function JobsPage() {
                       <JobCard
                         job={job}
                         index={i}
-                        onClick={() => setSelectedJob(job)}
+                        onClick={() => { setSelectedJob(job); updateJobParam(slugify(`${job.title}-${job.company}`)); }}
                         tier={tier}
                         socialProofCount={tier !== "free" ? sessionSocialProof : undefined}
                         isOwner={isOwner}
