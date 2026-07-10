@@ -367,6 +367,17 @@ export default function JobsPage() {
             <LiveStatusBar jobCount={totalCount} isRefreshing={isManualRefreshing} onRefresh={handleRefresh} />
           </div>
 
+          {sharedJobError && (
+            <div className="mb-4 rounded-xl border border-destructive/20 bg-destructive/5 p-4 flex items-start gap-3">
+              <SearchX className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-destructive">Job link expired or unavailable</p>
+                <p className="text-xs text-muted-foreground mt-1">The job you followed may have been removed or filled. Browse current openings below.</p>
+              </div>
+              <button onClick={() => setSharedJobError(false)} className="text-xs text-muted-foreground hover:text-foreground px-2 py-1">✕</button>
+            </div>
+          )}
+
           {isLoading ? (
             <div className="space-y-3">
               {[...Array(6)].map((_, i) => (
