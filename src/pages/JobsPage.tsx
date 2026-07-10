@@ -65,8 +65,17 @@ const TABS = [
 ];
 
 export default function JobsPage() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  const updateJobParam = useCallback((slug: string | null) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (slug) next.set("job", slug);
+      else next.delete("job");
+      return next;
+    }, { replace: true });
+  }, [setSearchParams]);
   const initialIndustry = searchParams.get("industry") || "All";
   const initialMarket = searchParams.get("market") || "All Markets";
   const initialCategory = searchParams.get("category") || "All Categories";
