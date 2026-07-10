@@ -119,6 +119,16 @@ export default function JobsPage() {
   const allJobs = data?.pages.flatMap((p) => p.jobs) ?? [];
   const totalCount = data?.pages[0]?.totalCount ?? 0;
 
+  // Deep-link: open a specific job when ?job=<slug> is present (e.g. from WhatsApp share)
+  const sharedJobSlug = searchParams.get("job");
+  const slugify = (s: string) =>
+    s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 120);
+  useEffect(() => {
+    if (!sharedJobSlug || selectedJob || allJobs.length === 0) return;
+    const match = allJobs.find((j) => slugify(`${j.title}-${j.company}`) === sharedJobSlug);
+    if (match) setSelectedJob(match);
+  }, [sharedJobSlug, allJobs, selectedJob]);
+
   // Filter by tab for verified/free locally
   const filteredJobs = allJobs.filter((job) => {
     if (activeTab === "verified") {
