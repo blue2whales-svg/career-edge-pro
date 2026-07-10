@@ -30,7 +30,7 @@ function FilterAccordion({ title, children, defaultOpen = false }: { title: stri
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import { FeaturedJobs } from "@/components/jobs/FeaturedJobs";
 import { JobCard } from "@/components/jobs/JobCard";
@@ -66,6 +66,7 @@ const TABS = [
 
 export default function JobsPage() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const initialIndustry = searchParams.get("industry") || "All";
   const initialMarket = searchParams.get("market") || "All Markets";
   const initialCategory = searchParams.get("category") || "All Categories";
@@ -80,6 +81,7 @@ export default function JobsPage() {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [isManualRefreshing, setIsManualRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
+  const [sharedJobError, setSharedJobError] = useState(false);
 
   const { getJobTier, sessionSocialProof } = useJobAccess();
   const { isOwner, userId: ownerId } = useOwner();
@@ -124,10 +126,22 @@ export default function JobsPage() {
   const slugify = (s: string) =>
     s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 120);
   useEffect(() => {
-    if (!sharedJobSlug || selectedJob || allJobs.length === 0) return;
+    if (!sharedJobSlug || selectedJob) return;
+    if (allJobs.length === 0) {
+      if (!isLoading) {
+        setSharedJobError(true);
+        navigate("/jobs", { replace: true });
+      }
+      return;
+    }
     const match = allJobs.find((j) => slugify(`${j.title}-${j.company}`) === sharedJobSlug);
-    if (match) setSelectedJob(match);
-  }, [sharedJobSlug, allJobs, selectedJob]);
+    if (match) {
+      setSelectedJob(match);
+    } else {
+      setSharedJobError(true);
+      navigate("/jobs", { replace: true });
+    }
+  }, [sharedJobSlug, allJobs, selectedJob, isLoading, navigate]);
 
   // Filter by tab for verified/free locally
   const filteredJobs = allJobs.filter((job) => {
@@ -352,6 +366,17 @@ export default function JobsPage() {
           <div className="mb-4">
             <LiveStatusBar jobCount={totalCount} isRefreshing={isManualRefreshing} onRefresh={handleRefresh} />
           </div>
+
+          {sharedJobError && (
+            <div className="mb-4 rounded-xl border border-destructive/20 bg-destructive/5 p-4 flex items-start gap-3">
+              <SearchX className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-destructive">Job link expired or unavailable</p>
+                <p className="text-xs text-muted-foreground mt-1">The job you followed may have been removed or filled. Browse current openings below.</p>
+              </div>
+              <button onClick={() => setSharedJobError(false)} className="text-xs text-muted-foreground hover:text-foreground px-2 py-1">✕</button>
+            </div>
+          )}
 
           {isLoading ? (
             <div className="space-y-3">
