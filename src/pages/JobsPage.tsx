@@ -135,11 +135,16 @@ export default function JobsPage() {
   const slugify = (s: string) =>
     s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 120);
   useEffect(() => {
-    if (!sharedJobSlug || selectedJob) return;
+    // URL → modal state sync
+    if (!sharedJobSlug) {
+      if (selectedJob) setSelectedJob(null);
+      return;
+    }
+    if (selectedJob && slugify(`${selectedJob.title}-${selectedJob.company}`) === sharedJobSlug) return;
     if (allJobs.length === 0) {
       if (!isLoading) {
         setSharedJobError(true);
-        navigate("/jobs", { replace: true });
+        updateJobParam(null);
       }
       return;
     }
@@ -148,9 +153,9 @@ export default function JobsPage() {
       setSelectedJob(match);
     } else {
       setSharedJobError(true);
-      navigate("/jobs", { replace: true });
+      updateJobParam(null);
     }
-  }, [sharedJobSlug, allJobs, selectedJob, isLoading, navigate]);
+  }, [sharedJobSlug, allJobs, selectedJob, isLoading, updateJobParam]);
 
   // Filter by tab for verified/free locally
   const filteredJobs = allJobs.filter((job) => {
