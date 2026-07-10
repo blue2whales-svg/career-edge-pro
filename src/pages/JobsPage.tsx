@@ -126,10 +126,22 @@ export default function JobsPage() {
   const slugify = (s: string) =>
     s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 120);
   useEffect(() => {
-    if (!sharedJobSlug || selectedJob || allJobs.length === 0) return;
+    if (!sharedJobSlug || selectedJob) return;
+    if (allJobs.length === 0) {
+      if (!isLoading) {
+        setSharedJobError(true);
+        navigate("/jobs", { replace: true });
+      }
+      return;
+    }
     const match = allJobs.find((j) => slugify(`${j.title}-${j.company}`) === sharedJobSlug);
-    if (match) setSelectedJob(match);
-  }, [sharedJobSlug, allJobs, selectedJob]);
+    if (match) {
+      setSelectedJob(match);
+    } else {
+      setSharedJobError(true);
+      navigate("/jobs", { replace: true });
+    }
+  }, [sharedJobSlug, allJobs, selectedJob, isLoading, navigate]);
 
   // Filter by tab for verified/free locally
   const filteredJobs = allJobs.filter((job) => {
