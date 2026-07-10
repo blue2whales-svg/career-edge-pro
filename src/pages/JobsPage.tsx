@@ -30,7 +30,7 @@ function FilterAccordion({ title, children, defaultOpen = false }: { title: stri
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import PageLayout from "@/components/PageLayout";
 import { FeaturedJobs } from "@/components/jobs/FeaturedJobs";
 import { JobCard } from "@/components/jobs/JobCard";
@@ -65,8 +65,18 @@ const TABS = [
 ];
 
 export default function JobsPage() {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+
+
+  const updateJobParam = useCallback((slug: string | null) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      if (slug) next.set("job", slug);
+      else next.delete("job");
+      return next;
+    }, { replace: true });
+  }, [setSearchParams]);
   const initialIndustry = searchParams.get("industry") || "All";
   const initialMarket = searchParams.get("market") || "All Markets";
   const initialCategory = searchParams.get("category") || "All Categories";
@@ -126,11 +136,16 @@ export default function JobsPage() {
   const slugify = (s: string) =>
     s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 120);
   useEffect(() => {
-    if (!sharedJobSlug || selectedJob) return;
+    // URL → modal state sync
+    if (!sharedJobSlug) {
+      if (selectedJob) setSelectedJob(null);
+      return;
+    }
+    if (selectedJob && slugify(`${selectedJob.title}-${selectedJob.company}`) === sharedJobSlug) return;
     if (allJobs.length === 0) {
       if (!isLoading) {
         setSharedJobError(true);
-        navigate("/jobs", { replace: true });
+        updateJobParam(null);
       }
       return;
     }
@@ -139,9 +154,9 @@ export default function JobsPage() {
       setSelectedJob(match);
     } else {
       setSharedJobError(true);
-      navigate("/jobs", { replace: true });
+      updateJobParam(null);
     }
-  }, [sharedJobSlug, allJobs, selectedJob, isLoading, navigate]);
+  }, [sharedJobSlug, allJobs, selectedJob, isLoading, updateJobParam]);
 
   // Filter by tab for verified/free locally
   const filteredJobs = allJobs.filter((job) => {
@@ -173,7 +188,7 @@ export default function JobsPage() {
 
   return (
     <PageLayout>
-      <JobDetailModal job={selectedJob} open={!!selectedJob} onOpenChange={(open) => !open && setSelectedJob(null)} />
+      <JobDetailModal job={selectedJob} open={!!selectedJob} onOpenChange={(open) => { if (!open) { setSelectedJob(null); updateJobParam(null); } }} />
 
       {/* Hero */}
       <section className="relative z-10 pt-16 sm:pt-24 pb-10 px-4">
@@ -440,7 +455,7 @@ export default function JobsPage() {
                       <JobCard
                         job={job}
                         index={i}
-                        onClick={() => setSelectedJob(job)}
+                        onClick={() => { setSelectedJob(job); updateJobParam(slugify(`${job.title}-${job.company}`)); }}
                         tier={tier}
                         socialProofCount={tier !== "free" ? sessionSocialProof : undefined}
                         isOwner={isOwner}
