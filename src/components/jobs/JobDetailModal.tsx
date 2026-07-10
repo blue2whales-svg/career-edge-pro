@@ -227,7 +227,16 @@ export function JobDetailModal({ job, open, onOpenChange }: { job: Job | null; o
     refreshAccess();
   };
 
-  const whatsappShareUrl = `https://wa.me/?text=${encodeURIComponent(`Found this job on CV Edge 🔥 ${job.title} — Check it out: cvedge.live`)}`;
+  const jobSlug = `${job.title}-${job.company}`
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 120);
+  const shareOrigin = typeof window !== "undefined" ? window.location.origin : "https://cvedge.live";
+  const jobShareLink = `${shareOrigin}/jobs?job=${encodeURIComponent(jobSlug)}`;
+  const whatsappShareUrl = `https://wa.me/?text=${encodeURIComponent(
+    `Found this job on CV Edge 🔥 ${job.title} at ${job.company} (${job.location}) — View & apply: ${jobShareLink}`
+  )}`;
 
   return (
     <>
