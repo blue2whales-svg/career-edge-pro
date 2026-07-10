@@ -66,6 +66,7 @@ const TABS = [
 
 export default function JobsPage() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const initialIndustry = searchParams.get("industry") || "All";
   const initialMarket = searchParams.get("market") || "All Markets";
   const initialCategory = searchParams.get("category") || "All Categories";
@@ -80,6 +81,7 @@ export default function JobsPage() {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [isManualRefreshing, setIsManualRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
+  const [sharedJobError, setSharedJobError] = useState(false);
 
   const { getJobTier, sessionSocialProof } = useJobAccess();
   const { isOwner, userId: ownerId } = useOwner();
