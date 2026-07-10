@@ -66,7 +66,8 @@ const TABS = [
 
 export default function JobsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+
+
 
   const updateJobParam = useCallback((slug: string | null) => {
     setSearchParams((prev) => {
